@@ -12,6 +12,7 @@
     "grant.permission": "การเข้าถึง",
     "delete": "ลบ",
     "save": "บันทึก",
+    "cancel": "ยกเลิก",
 
     "filter.status": "สถานะแอดมิน",
     "active": "เปิดใช้งานอยู่",
@@ -23,11 +24,17 @@
 
     "new.admin": "สร้างแอดมิน",
     "edit.admin": "แก้ไขแอดมิน {{adminName}}",
+    "delete.admin": "ลบแอดมิน {{adminName}}",
     "form.username": "ชื่อผู้ใช้",
     "form.password": "รหัสผ่าน",
     "form.name": "ชื่อ",
     "form.mobile.number": "เบอร์โทรศัพท์",
     "form.role": "ตำแหน่ง",
+    "form.delete.confirmation": "ยืนยันที่จะลบแอดมินหรือไม่ ?",
+    "edit.successfully": "แก้ไขสำเร็จ",
+    "delete.successfully": "ลบสำเร็จ",
+    "edit.admin.successfully": "ทำการแก้ไข {{adminName}} สำเร็จ",
+    "delete.admin.successfully": "ทำการลบ {{adminName}} สำเร็จ",
 
     "admin": "Admin",
     "super.admin": "Super Admin"

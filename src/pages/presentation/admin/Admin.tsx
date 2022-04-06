@@ -30,6 +30,7 @@ import useSortableData from '../../../hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
 import AdminFilter from './AdminFilter'
 import AdminEditModal from './AdminEditModal'
+import AdminDeleteModal from './AdminDeleteModal'
 
 interface AdminRowAction {
 	icon: string,
@@ -47,6 +48,7 @@ const Admin = () => {
 	const [isOpenUpdatedAtDatePicker, setIsOpenUpdatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
 	const [isOpenAdminModal, setIsOpenAdminModal] = useState<"add" | "edit">()
+	const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
 	const [selectedRowData, setSelectedRowData] = useState<any>()
 
 	const ADMIN_ROW_ACTIONS: AdminRowAction[] = [
@@ -62,7 +64,7 @@ const Admin = () => {
 		},
 		{
 			icon: 'Delete',
-			onClick: () => {},
+			onClick: () => setIsOpenDeleteModal(true),
 			title: t('delete')
 		}
 	]
@@ -395,6 +397,7 @@ const Admin = () => {
 				</div>
 			</Page>
 			<AdminEditModal setIsOpen={setIsOpenAdminModal} isOpen={Boolean(isOpenAdminModal)} type={isOpenAdminModal} data={selectedRowData} />
+			<AdminDeleteModal setIsOpen={setIsOpenDeleteModal} isOpen={Boolean(isOpenDeleteModal)} data={selectedRowData} />
 		</PageWrapper>
 	)
 }

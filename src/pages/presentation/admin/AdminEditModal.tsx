@@ -33,21 +33,19 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, type, data }: AdminEditModalInt
             role: data?.role || 'Admin'
 		},
 		onSubmit: (values) => {
-            console.log(values)
-
+            // EDIT
 			setIsOpen(false)
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<Icon icon='Info' size='lg' className='me-1' />
-					<span>Updated Successfully</span>
+					<span>{t('edit.successfully')}</span>
 				</span>,
-				'Customer has been updated successfully',
+				t('edit.admin.successfully', { adminName: data?.name }),
 			)
 		},
 	})
 
     const { values, setFieldValue } = formik
-    console.log(values)
 
     useEffect(() => {
         if (type === 'edit') {
