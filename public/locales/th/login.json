@@ -1,0 +1,10 @@
+{
+	"welcome": "ยินดีต้อนรับ",
+    "sign.in.to.continue": "เข้าสู่ระบบเพื่อเริ่ม",
+    "your.email.or.username": "อีเมลหรือชื่อผู้ใช้ของคุณ",
+    "password": "รหัสผ่าน",
+    "continue": "ต่อไป",
+    "verification": "ยืนยันตัวตน",
+    "you.will.get.otp": "คุณจะได้รับรหัส 6 หลักผ่าน SMS",
+    "otp": "รหัส 6 หลัก"
+}
