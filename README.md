@@ -1,4 +1,4 @@
-# Facit | React Admin Dashboard Template V2.2.0
+# Trading Fund 
 
 Node version must be 16 or higher.
 
