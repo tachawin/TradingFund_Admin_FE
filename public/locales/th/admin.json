@@ -27,5 +27,8 @@
     "form.password": "รหัสผ่าน",
     "form.name": "ชื่อ",
     "form.mobile.number": "เบอร์โทรศัพท์",
-    "form.role": "ตำแหน่ง"
+    "form.role": "ตำแหน่ง",
+
+    "admin": "Admin",
+    "super.admin": "Super Admin"
 }

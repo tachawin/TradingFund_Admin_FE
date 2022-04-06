@@ -73,7 +73,7 @@ const Customer = () => {
 				<div className='pt-3 pb-5 d-flex align-items-center'>
 					<span className='display-4 fw-bold me-3'>{item.name}</span>
 					<span className='border border-success border-2 text-success fw-bold px-3 py-2 rounded'>
-						{item.type}
+						{item.role}
 					</span>
 				</div>
 				<div className='row'>

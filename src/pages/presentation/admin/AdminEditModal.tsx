@@ -46,6 +46,8 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, type, data }: AdminEditModalInt
 		},
 	})
 
+    const { values, setFieldValue } = formik
+    console.log(values)
 
     useEffect(() => {
         if (type === 'edit') {
@@ -85,7 +87,28 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, type, data }: AdminEditModalInt
                         <Input onChange={formik.handleChange} value={formik.values.mobileNumber} />
                     </FormGroup>
                     <FormGroup id='role' label={t('form.role')}>
-                        <Input onChange={formik.handleChange} value={formik.values.role} />
+                        <div className='row row-cols-2 g-3'>
+                            <div className='col'>
+                                <Button
+                                    color={values.role === 'Admin' ? 'dark' : 'light'}
+                                    isLight
+                                    className='rounded-1 w-100'
+                                    size='lg'
+                                    onClick={() => setFieldValue('role', 'Admin')}>
+                                    {t('admin')}
+                                </Button>
+                            </div>
+                            <div className='col'>
+                                <Button
+                                    color={values.role === 'Super Admin' ? 'dark' : 'light'}
+                                    isLight
+                                    className='rounded-1 w-100'
+                                    size='lg'
+                                    onClick={() => setFieldValue('role', 'Super Admin')}>
+                                    {t('super.admin')}
+                                </Button>
+                            </div>
+                        </div>
                     </FormGroup>
                 </div>
             </ModalBody>

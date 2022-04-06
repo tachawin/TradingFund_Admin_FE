@@ -302,7 +302,7 @@ const Admin = () => {
 															</div>
 															<div className='text-muted'>
 																<Icon icon='Label' />{' '}
-																<small>{i.type}</small>
+																<small>{i.role}</small>
 															</div>
 														</div>
 													</div>

@@ -50,9 +50,7 @@ const Login = () => {
 		},
 	})
 
-	const { errors, touched, isSubmitting, handleSubmit, getFieldProps } = formik
-
-	console.log(errors, touched)
+	const { errors, touched,handleSubmit, getFieldProps } = formik
 
 	return (
 		<PageWrapper
@@ -68,36 +66,35 @@ const Login = () => {
 								<div className='text-center h4 text-muted'>{t('sign.in.to.continue')}</div>
 							</div>
 							<Form id="login-form" className='row g-4' autoComplete="off" noValidate onSubmit={handleSubmit}>
-							{/* <form className='row g-4'> */}
 								<div className='col-12'>
-											<FormGroup
-												id='login-username'
-												isFloating
-												label={t('your.email.or.username')}>
-												<Input 
-													autoComplete='username' 
-													isValid={Boolean(errors.username)}
-													isTouched={Boolean(touched.username)}
-													invalidFeedback={errors.username}
-													isValidMessage={Boolean(touched.username)}
-													{...getFieldProps('username')} 
-												/>
-											</FormGroup>
-											<FormGroup
-												className='mt-4'
-												id='login-password'
-												isFloating
-												label={t('password')}>
-												<Input
-													type='password'
-													autoComplete='password'
-													isValid={Boolean(errors.password)}
-													isTouched={Boolean(touched.password)}
-													invalidFeedback={errors.password}
-													isValidMessage={Boolean(touched.password)}
-													{...getFieldProps('password')}
-												/>
-											</FormGroup>
+									<FormGroup
+										id='login-username'
+										isFloating
+										label={t('your.email.or.username')}>
+										<Input 
+											autoComplete='username' 
+											isValid={Boolean(errors.username)}
+											isTouched={Boolean(touched.username)}
+											invalidFeedback={errors.username}
+											isValidMessage={Boolean(touched.username)}
+											{...getFieldProps('username')} 
+										/>
+									</FormGroup>
+									<FormGroup
+										className='mt-4'
+										id='login-password'
+										isFloating
+										label={t('password')}>
+										<Input
+											type='password'
+											autoComplete='password'
+											isValid={Boolean(errors.password)}
+											isTouched={Boolean(touched.password)}
+											invalidFeedback={errors.password}
+											isValidMessage={Boolean(touched.password)}
+											{...getFieldProps('password')}
+										/>
+									</FormGroup>
 								</div>
 								<Button
 									color='info'
