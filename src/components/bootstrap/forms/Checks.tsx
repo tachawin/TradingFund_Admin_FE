@@ -1,4 +1,4 @@
-import { Children, cloneElement, forwardRef, ReactNode } from 'react';
+import { ChangeEventHandler, Children, cloneElement, forwardRef, ReactNode } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Validation from './Validation';
@@ -105,12 +105,13 @@ interface ChecksInterface {
 	isValidMessage?: boolean,
 	isTooltipFeedback?: boolean,
 	onBlur?: any,
-	onChange?: any,
+	onChange?: ChangeEventHandler<HTMLInputElement>,
 	onFocus?: any,
 	onInput?: any,
 	onInvalid?: any,
 	onSelect?: any,
-	ariaLabel?: any,	
+	ariaLabel?: any,
+	containerClassName?: string
 }
 
 const Checks = forwardRef<any, ChecksInterface>(
@@ -139,6 +140,7 @@ const Checks = forwardRef<any, ChecksInterface>(
 			onInvalid,
 			onSelect,
 			ariaLabel,
+			containerClassName,
 			...props
 		},
 		ref,
@@ -181,7 +183,7 @@ const Checks = forwardRef<any, ChecksInterface>(
 				className={classNames('form-check', {
 					'form-switch': type === 'switch',
 					'form-check-inline': isInline,
-				})}>
+				}, containerClassName)}>
 				{_inner}
 				{label && (
 					<label className='form-check-label' htmlFor={id}>

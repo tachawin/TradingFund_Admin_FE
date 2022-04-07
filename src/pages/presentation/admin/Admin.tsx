@@ -31,6 +31,19 @@ import { useTranslation } from 'react-i18next'
 import AdminFilter from './AdminFilter'
 import AdminEditModal from './AdminEditModal'
 import AdminDeleteModal from './AdminDeleteModal'
+import AdminPermissionModal from './AdminPermissionModal'
+
+const mockPermission = { 
+    report: '0011',
+    customer: '1001',
+    deposit: '0000',
+    withdraw: '1111',
+    bank: '1111',
+    reward: '1011',
+    credit: '0101',
+    chat: '0001',
+    product: '1100'
+}
 
 interface AdminRowAction {
 	icon: string,
@@ -49,6 +62,7 @@ const Admin = () => {
 	const [searchInput, setSearchInput] = useState('')
 	const [isOpenAdminModal, setIsOpenAdminModal] = useState<"add" | "edit">()
 	const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
+	const [isOpenPermissionModal, setIsOpenPermissionModal] = useState(false)
 	const [selectedRowData, setSelectedRowData] = useState<any>()
 
 	const ADMIN_ROW_ACTIONS: AdminRowAction[] = [
@@ -59,7 +73,7 @@ const Admin = () => {
 		},
 		{
 			icon: 'Visibility',
-			onClick: () => {},
+			onClick: () => setIsOpenPermissionModal(true),
 			title: t('grant.permission')
 		},
 		{
@@ -397,6 +411,7 @@ const Admin = () => {
 				</div>
 			</Page>
 			<AdminEditModal setIsOpen={setIsOpenAdminModal} isOpen={Boolean(isOpenAdminModal)} type={isOpenAdminModal} data={selectedRowData} />
+			<AdminPermissionModal setIsOpen={setIsOpenPermissionModal} isOpen={Boolean(isOpenPermissionModal)} id={selectedRowData?.id} name={selectedRowData?.name} permissions={mockPermission} />
 			<AdminDeleteModal setIsOpen={setIsOpenDeleteModal} isOpen={Boolean(isOpenDeleteModal)} data={selectedRowData} />
 		</PageWrapper>
 	)

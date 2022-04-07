@@ -24,6 +24,7 @@
 
     "new.admin": "สร้างแอดมิน",
     "edit.admin": "แก้ไขแอดมิน {{adminName}}",
+    "edit.admin.permission": "แก้ไขการเข้าถึงของ {{adminName}}",
     "delete.admin": "ลบแอดมิน {{adminName}}",
     "form.username": "ชื่อผู้ใช้",
     "form.password": "รหัสผ่าน",
@@ -37,5 +38,20 @@
     "delete.admin.successfully": "ทำการลบ {{adminName}} สำเร็จ",
 
     "admin": "Admin",
-    "super.admin": "Super Admin"
+    "super.admin": "Super Admin",
+
+    "permission.features": "ฟีเจอร์",
+    "permission.access": "อ่าน",
+    "permission.create": "สร้าง",
+    "permission.update": "แก้ไข",
+    "permission.delete": "ลบ",
+    "permission.report": "รายงาน",
+    "permission.customer": "ลูกค้า",
+    "permission.deposit": "ฝากเงิน",
+    "permission.withdraw": "ถอนเงิน",
+    "permission.bank": "ธนาคารบริษัท",
+    "permission.reward": "แลกรางวัล",
+    "permission.credit": "แลกเครดิต",
+    "permission.chat": "แชทสนทนา",
+    "permission.product": "รายการสินค้า"
 }
