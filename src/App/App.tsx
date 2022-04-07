@@ -86,7 +86,6 @@ const App = () => {
 							{withOutAsidePages.map((path) => (
 								<Route key={path} path={path} />
 							))}
-							<Route path='*' element={<Aside />} />
 						</Routes>
 						<Wrapper />
 					</div>

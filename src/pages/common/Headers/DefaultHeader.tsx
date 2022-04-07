@@ -1,19 +1,17 @@
-import Header, { HeaderLeft } from '../../../layout/Header/Header';
+import User from 'layout/User/User';
+import Header, { HeaderLeft, HeaderRight } from '../../../layout/Header/Header';
 import Navigation from '../../../layout/Navigation/Navigation';
-import { componentsMenu, layoutMenu } from '../../../menu';
-import CommonHeaderRight from './CommonHeaderRight';
+import { dashboardMenu } from '../../../menu';
 
 const DefaultHeader = () => {
 	return (
 		<Header>
 			<HeaderLeft>
-				<Navigation
-					menu={{ ...layoutMenu, ...componentsMenu }}
-					id='header-top-menu'
-					horizontal={true}
-				/>
+				<Navigation menu={dashboardMenu} horizontal id='aside-dashboard' />
 			</HeaderLeft>
-			<CommonHeaderRight />
+			<HeaderRight>
+				<User />
+			</HeaderRight>
 		</Header>
 	);
 };

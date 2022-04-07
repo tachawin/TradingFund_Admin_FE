@@ -7,14 +7,15 @@
 
 	display: flex;
 	align-items: center;
-	background-color: auto-shade-tint(map-deep-get($aside, background-color), 8%);
+	background-color: transparent;
 	color: color-contrast(
-		auto-shade-tint(map-deep-get($aside, background-color), 8%),
+		auto-shade-tint(map-deep-get($aside, background-color), 60%),
 		map-deep-get($navigation, item, color-dark),
 		map-deep-get($navigation, item, color-light)
 	);
 	cursor: pointer;
 	transition: $transition-base;
+	border-radius: 10px;
 
 	&.open {
 		@include padding(
@@ -24,11 +25,11 @@
 			(map-deep-get($avatar, padding-y) * 0.5) (map-deep-get($avatar, padding-x) * 0.5)
 		);
 
-		border-radius: $border-radius * 0.5;
+		border-radius: 10px;
 	}
 
 	&:hover {
-		background-color: auto-shade-tint(map-deep-get($aside, background-color), 16%);
+		background-color: auto-shade-tint(map-deep-get($aside, background-color), 90%);
 	}
 }
 

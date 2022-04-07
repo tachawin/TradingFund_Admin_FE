@@ -2,7 +2,7 @@ import React, { lazy } from 'react'
 import { dashboardMenu, pages } from '../menu'
 
 const LANDING = {
-	DASHBOARD: lazy(() => import('../pages/dashboard/DashboardPage')),
+	DASHBOARD: lazy(() => import('../pages/presentation/dashboard/Dashboard')),
 	DASHBOARD_BOOKING: lazy(() => import('../pages/dashboard/DashboardBookingPage')),
 	SUMMARY: lazy(() => import('../pages/SummaryPage')),
 	ADMIN: lazy(() => import('../pages/presentation/admin/Admin'))
@@ -24,8 +24,8 @@ const presentation = [
 		exact: true,
 	},
 	{
-		path: dashboardMenu.dashboardBooking.path,
-		element: <LANDING.DASHBOARD_BOOKING />,
+		path: dashboardMenu.admin.path,
+		element: <LANDING.ADMIN />,
 		exact: true,
 	},
 	{

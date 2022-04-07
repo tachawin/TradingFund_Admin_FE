@@ -38,10 +38,10 @@ export const dashboardMenu = {
 		icon: 'Dashboard',
 		subMenu: null,
 	},
-	dashboardBooking: {
-		id: 'dashboard-booking',
-		text: 'Dashboard Booking',
-		path: 'dashboard-booking',
+	admin: {
+		id: 'admin',
+		text: 'Admin',
+		path: 'admin',
 		icon: 'emoji_transportation',
 		subMenu: null,
 	},
@@ -319,7 +319,7 @@ export const demoPages = {
 		path: 'appointment',
 		icon: 'Today',
 		subMenu: {
-			dashboard: dashboardMenu.dashboardBooking,
+			dashboard: dashboardMenu.admin,
 			calendar: {
 				id: 'calendar',
 				text: 'Calendar',

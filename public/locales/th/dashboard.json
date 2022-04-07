@@ -1,0 +1,12 @@
+{
+	"customer.traffic": "จำนวนลูกค้า",
+    "day": "วัน",
+    "week": "สัปดาห์",
+    "month": "เดือน",
+
+    "day.time": "กลางวัน",
+    "night.time": "กลางคืน",
+
+    "deposit": "ฝากเงิน",
+    "withdraw": "ถอนเงิน"
+}

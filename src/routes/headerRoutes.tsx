@@ -6,7 +6,6 @@ import DefaultHeader from '../pages/common/Headers/DefaultHeader'
 const headers = [
 	{ path: pages.login.path, element: null, exact: true },
 	{ path: pages.otp.path, element: null, exact: true },
-	{ path: dashboardMenu.dashboard.path, element: <DashboardHeader />, exact: true },
 	{
 		path: `*`,
 		element: <DefaultHeader />,

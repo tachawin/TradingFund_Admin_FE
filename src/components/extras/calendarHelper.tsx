@@ -1,5 +1,6 @@
 import { View, Views } from 'react-big-calendar';
 import moment from 'moment';
+import 'moment/locale/th'
 import Button, { ButtonGroup } from '../bootstrap/Button';
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from '../bootstrap/Dropdown';
 
@@ -33,7 +34,7 @@ export const getLabel = (date: Date, viewMode: View) => {
 			.format('MMM D')}`;
 	if (viewMode === Views.AGENDA)
 		return `${moment(date).format('L')} - ${moment(date).add(1, 'month').format('L')}`;
-	return moment(date).format('dddd, MMM D');
+	return moment(date).locale('th').format('dddd, MMM D');
 };
 
 export const getTodayButtonLabel = (viewMode: View) => {
