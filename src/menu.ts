@@ -59,6 +59,13 @@ export const dashboardMenu = {
 		icon: 'emoji_transportation',
 		subMenu: null,
 	},
+	customer: {
+		id: 'customer',
+		text: 'Customer',
+		path: 'customer',
+		icon: 'emoji_transportation',
+		subMenu: null,
+	},
 	crmDashboard: {
 		id: 'crmDashboard',
 		text: 'CRM Dashboard',
@@ -104,6 +111,12 @@ export const pages = {
 		text: 'Deposit',
 		path: 'deposit',
 		icon: 'DEPOSIT',
+	},
+	customer: {
+		id: 'customer',
+		text: 'Customer',
+		path: 'customer',
+		icon: 'CUSTOMER',
 	},
 }
 

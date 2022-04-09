@@ -148,7 +148,6 @@ const Deposit = () => {
 		}
 	}
 
-
     const handleOnChangeBankFilter = (event: ChangeEvent<HTMLInputElement>) => {
 		let bank = event.target.name
 		let indexInBankFilter = parseInt(event.target.value)
