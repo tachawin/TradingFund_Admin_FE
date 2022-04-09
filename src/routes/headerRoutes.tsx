@@ -1,6 +1,5 @@
 import React from 'react'
-import { dashboardMenu, pages } from '../menu'
-import DashboardHeader from '../pages/common/Headers/DashboardHeader'
+import { pages } from '../menu'
 import DefaultHeader from '../pages/common/Headers/DefaultHeader'
 
 const headers = [

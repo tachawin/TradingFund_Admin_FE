@@ -45,6 +45,13 @@ export const dashboardMenu = {
 		icon: 'emoji_transportation',
 		subMenu: null,
 	},
+	report: {
+		id: 'report',
+		text: 'Report',
+		path: 'report',
+		icon: 'emoji_transportation',
+		subMenu: null,
+	},
 	crmDashboard: {
 		id: 'crmDashboard',
 		text: 'CRM Dashboard',
@@ -78,6 +85,12 @@ export const pages = {
 		text: 'Admin',
 		path: 'admin',
 		icon: 'ADMIN',
+	},
+	report: {
+		id: 'report',
+		text: 'Report',
+		path: 'report',
+		icon: 'REPORT',
 	},
 }
 

@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react'
-import { useFormik } from 'formik'
+import React from 'react'
 import Modal, {
 	ModalBody,
 	ModalFooter,
@@ -8,8 +7,6 @@ import Modal, {
 } from '../../../components/bootstrap/Modal'
 import showNotification from '../../../components/extras/showNotification'
 import Icon from '../../../components/icon/Icon'
-import FormGroup from '../../../components/bootstrap/forms/FormGroup'
-import Input from '../../../components/bootstrap/forms/Input'
 import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 
