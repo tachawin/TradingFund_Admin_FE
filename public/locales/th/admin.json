@@ -1,36 +1,12 @@
 {
 	"search.admin": "ค้นหาแอดมิน",
-    "column.no": "เลขที่",
-    "column.username": "ชื่อผู้ใช้",
-    "column.name": "ชื่อ",
-    "column.mobile.number": "เบอร์โทร",
-    "column.updated.at": "แก้ไขล่าสุด",
-    "column.created.at": "วันที่สร้าง",
-    "column.status": "สถานะ",
-
-    "edit": "แก้ไข",
     "grant.permission": "การเข้าถึง",
-    "delete": "ลบ",
-    "save": "บันทึก",
-    "cancel": "ยกเลิก",
-
-    "filter.status": "สถานะแอดมิน",
-    "active": "เปิดใช้งานอยู่",
-    "inactive": "ไม่เปิดใช้งาน",
-    "filter.created.at": "วันที่สร้าง",
-    "filter.updated.at": "วันที่อัปเดต",
-    "filter.reset": "ล้าง",
-    "filter": "กรอง",
 
     "new.admin": "สร้างแอดมิน",
     "edit.admin": "แก้ไขแอดมิน {{adminName}}",
     "edit.admin.permission": "แก้ไขการเข้าถึงของ {{adminName}}",
     "delete.admin": "ลบแอดมิน {{adminName}}",
-    "form.username": "ชื่อผู้ใช้",
-    "form.password": "รหัสผ่าน",
-    "form.name": "ชื่อ",
-    "form.mobile.number": "เบอร์โทรศัพท์",
-    "form.role": "ตำแหน่ง",
+
     "form.delete.confirmation": "ยืนยันที่จะลบแอดมินหรือไม่ ?",
     "edit.successfully": "แก้ไขสำเร็จ",
     "delete.successfully": "ลบสำเร็จ",
@@ -38,20 +14,5 @@
     "delete.admin.successfully": "ทำการลบ {{adminName}} สำเร็จ",
 
     "admin": "Admin",
-    "super.admin": "Super Admin",
-
-    "permission.features": "ฟีเจอร์",
-    "permission.access": "อ่าน",
-    "permission.create": "สร้าง",
-    "permission.update": "แก้ไข",
-    "permission.delete": "ลบ",
-    "permission.report": "รายงาน",
-    "permission.customer": "ลูกค้า",
-    "permission.deposit": "ฝากเงิน",
-    "permission.withdraw": "ถอนเงิน",
-    "permission.bank": "ธนาคารบริษัท",
-    "permission.reward": "แลกรางวัล",
-    "permission.credit": "แลกเครดิต",
-    "permission.chat": "แชทสนทนา",
-    "permission.product": "รายการสินค้า"
+    "super.admin": "Super Admin"
 }

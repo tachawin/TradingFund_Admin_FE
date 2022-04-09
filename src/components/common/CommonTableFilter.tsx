@@ -12,7 +12,7 @@ interface Filter {
     children: ReactNode
 }
 
-interface DepositFilterInterface {
+interface CommonTableFilterInterface {
     filters: Filter[]
     resetLabel: string
     onReset: () => void
@@ -20,7 +20,7 @@ interface DepositFilterInterface {
     onSubmit: () => void
 }
 
-const DepositFilter = ({ filters, resetLabel, onReset, submitLabel, onSubmit }: DepositFilterInterface) => {
+const CommonTableFilter = ({ filters, resetLabel, onReset, submitLabel, onSubmit }: CommonTableFilterInterface) => {
 	const [isOpenFilter, setOpenFilter] = useState(false)
 
     return (
@@ -63,4 +63,4 @@ const DepositFilter = ({ filters, resetLabel, onReset, submitLabel, onSubmit }: 
   )
 }
 
-export default DepositFilter
+export default CommonTableFilter

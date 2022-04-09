@@ -27,9 +27,8 @@ import Dropdown, {
 import Checks  from '../../../components/bootstrap/forms/Checks'
 import useSortableData from '../../../hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import ReportFilter from './ReportFilter'
-import FormGroup from 'components/bootstrap/forms/FormGroup'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
+import CommonTableFilter from 'components/common/CommonTableFilter'
 
 const BANK_LIST = [
 	{
@@ -179,7 +178,7 @@ const Report = () => {
 					/>
 				</SubHeaderLeft>
 				<SubHeaderRight>
-					<ReportFilter
+					<CommonTableFilter
 						resetLabel={t('filter.reset')}
 						onReset={resetForm}
 						submitLabel={t('filter')}

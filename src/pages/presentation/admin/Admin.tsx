@@ -28,10 +28,10 @@ import Dropdown, {
 import Checks  from '../../../components/bootstrap/forms/Checks'
 import useSortableData from '../../../hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import AdminFilter from './AdminFilter'
 import AdminEditModal from './AdminEditModal'
 import AdminDeleteModal from './AdminDeleteModal'
 import AdminPermissionModal from './AdminPermissionModal'
+import CommonTableFilter from 'components/common/CommonTableFilter'
 
 const mockPermission = { 
     report: '0011',
@@ -52,7 +52,7 @@ interface AdminRowAction {
 }
 
 const Admin = () => {
-    const { t } = useTranslation('admin')
+    const { t } = useTranslation(['common', 'admin'])
 
 	const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
@@ -74,7 +74,7 @@ const Admin = () => {
 		{
 			icon: 'Visibility',
 			onClick: () => setIsOpenPermissionModal(true),
-			title: t('grant.permission')
+			title: t('admin:grant.permission')
 		},
 		{
 			icon: 'Delete',
@@ -168,13 +168,13 @@ const Admin = () => {
 						id='searchInput'
 						type='search'
 						className='border-0 shadow-none bg-transparent'
-						placeholder={t('search.admin') + '...'}
+						placeholder={t('admin:search.admin') + '...'}
 						onChange={handleSearchChange}
 						value={searchInput}
 					/>
 				</SubHeaderLeft>
 				<SubHeaderRight>
-					<AdminFilter
+					<CommonTableFilter
 						resetLabel={t('filter.reset')}
 						onReset={resetForm}
 						submitLabel={t('filter')}
@@ -230,7 +230,7 @@ const Admin = () => {
 						isLight
 						onClick={() => setIsOpenAdminModal('add')}
 					>
-						{t('new.admin')}
+						{t('admin:new.admin')}
 					</Button>
 				</SubHeaderRight>
 			</SubHeader>

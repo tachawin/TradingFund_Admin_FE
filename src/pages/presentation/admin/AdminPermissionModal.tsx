@@ -24,19 +24,19 @@ interface AdminPermissionModalInterface {
 }
 
 const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: AdminPermissionModalInterface) => {
-    const { t } = useTranslation('admin')
+    const { t } = useTranslation(['common', 'admin'])
     const [permissionsValue, setPermissionValue] = useState(permissions)
 
     const featureTitle: Permission = {
-        report: t("permission.report"),
-        customer: t("permission.customer"),
-        deposit: t("permission.deposit"),
-        withdraw: t("permission.withdraw"),
-        bank: t("permission.bank"),
-        reward: t("permission.reward"),
-        credit: t("permission.credit"),
-        chat: t("permission.chat"),
-        product: t("permission.product"),
+        report: t("report"),
+        customer: t("customer"),
+        deposit: t("deposit"),
+        withdraw: t("withdraw"),
+        bank: t("bank"),
+        reward: t("reward"),
+        credit: t("credit"),
+        chat: t("chat"),
+        product: t("product"),
     }
 
     const onSelectCheckbox = (event: ChangeEvent<HTMLInputElement>) => {
@@ -54,26 +54,26 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
         showNotification(
             <span className='d-flex align-items-center'>
                 <Icon icon='Info' size='lg' className='me-1' />
-                <span>{t('edit.successfully')}</span>
+                <span>{t('admin:edit.successfully')}</span>
             </span>,
-            t('edit.admin.successfully', { adminName: name }),
+            t('admin:edit.admin.successfully', { adminName: name }),
         )
     }
 
     return (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>
             <ModalHeader setIsOpen={setIsOpen} className='p-4 pb-0'>
-                <ModalTitle id={id} className='fw-bolder'>{t('edit.admin.permission', { adminName: name })}</ModalTitle>
+                <ModalTitle id={id} className='fw-bolder'>{t('admin:edit.admin.permission', { adminName: name })}</ModalTitle>
             </ModalHeader>
             <ModalBody>
                 <table className='table table-modern table-hover'>
                     <thead>
                         <tr>
-                            <th className='fw-bold w-25'>{t('permission.features')}</th>
-                            <th className='fw-bold text-center'>{t('permission.access')}</th>
-                            <th className='fw-bold text-center'>{t('permission.create')}</th>
-                            <th className='fw-bold text-center'>{t('permission.update')}</th>
-                            <th className='fw-bold text-center'>{t('permission.delete')}</th>
+                            <th className='fw-bold w-25'>{t('features')}</th>
+                            <th className='fw-bold text-center'>{t('access')}</th>
+                            <th className='fw-bold text-center'>{t('create')}</th>
+                            <th className='fw-bold text-center'>{t('update')}</th>
+                            <th className='fw-bold text-center'>{t('delete')}</th>
                         </tr>
                     </thead>
                     <tbody>

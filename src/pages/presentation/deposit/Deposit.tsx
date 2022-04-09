@@ -21,16 +21,15 @@ import Button from '../../../components/bootstrap/Button'
 import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import Dropdown, {
-	DropdownItem,
 	DropdownMenu,
 	DropdownToggle,
 } from '../../../components/bootstrap/Dropdown'
 import Checks  from '../../../components/bootstrap/forms/Checks'
 import useSortableData from '../../../hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import DepositFilter from './DepositFilter'
 import DepositModal from './DepositModal'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
+import CommonTableFilter from 'components/common/CommonTableFilter'
 
 const BANK_LIST = [
 	{
@@ -77,7 +76,6 @@ const Deposit = () => {
 
 	const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
-    const [isOpenDropdown, setIsOpenDropdown] = useState<number | null>(null)
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
     const [isOpenDepositModal, setIsOpenDepositModal] = useState<DepositModalProperties>()
@@ -191,7 +189,7 @@ const Deposit = () => {
 					/>
 				</SubHeaderLeft>
 				<SubHeaderRight>
-					<DepositFilter
+					<CommonTableFilter
 						resetLabel={t('filter.reset')}
 						onReset={resetForm}
 						submitLabel={t('filter')}

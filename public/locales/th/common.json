@@ -1,0 +1,42 @@
+{
+	"edit": "แก้ไข",
+    "delete": "ลบ",
+    "save": "บันทึก",
+    "cancel": "ยกเลิก",
+
+    "column.no": "เลขที่",
+    "column.username": "ชื่อผู้ใช้",
+    "column.name": "ชื่อ",
+    "column.mobile.number": "เบอร์โทร",
+    "column.updated.at": "แก้ไขล่าสุด",
+    "column.created.at": "วันที่สร้าง",
+    "column.status": "สถานะ",
+
+    "filter.status": "สถานะ",
+    "active": "เปิดใช้งานอยู่",
+    "inactive": "ไม่เปิดใช้งาน",
+    "filter.created.at": "วันที่สร้าง",
+    "filter.updated.at": "วันที่อัปเดต",
+    "filter.reset": "ล้าง",
+    "filter": "กรอง",
+
+    "form.username": "ชื่อผู้ใช้",
+    "form.password": "รหัสผ่าน",
+    "form.name": "ชื่อ",
+    "form.mobile.number": "เบอร์โทรศัพท์",
+    "form.role": "ตำแหน่ง",
+
+    "features": "ฟีเจอร์",
+    "access": "อ่าน",
+    "create": "สร้าง",
+    "update": "แก้ไข",
+    "report": "รายงาน",
+    "customer": "ลูกค้า",
+    "deposit": "ฝากเงิน",
+    "withdraw": "ถอนเงิน",
+    "bank": "ธนาคารบริษัท",
+    "reward": "แลกรางวัล",
+    "credit": "แลกเครดิต",
+    "chat": "แชทสนทนา",
+    "product": "รายการสินค้า"
+}

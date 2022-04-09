@@ -22,7 +22,7 @@ interface AdminEditModalInterface {
 }
 
 const AdminEditModal = ({ id, isOpen, setIsOpen, type, data }: AdminEditModalInterface) => {
-    const { t } = useTranslation('admin')
+    const { t } = useTranslation(['common', 'admin'])
 
 	const formik = useFormik({
 		initialValues: {
@@ -38,9 +38,9 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, type, data }: AdminEditModalInt
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<Icon icon='Info' size='lg' className='me-1' />
-					<span>{t('edit.successfully')}</span>
+					<span>{t('admin:edit.successfully')}</span>
 				</span>,
-				t('edit.admin.successfully', { adminName: data?.name }),
+				t('admin:edit.admin.successfully', { adminName: data?.name }),
 			)
 		},
 	})
@@ -64,7 +64,7 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, type, data }: AdminEditModalInt
     return (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>
             <ModalHeader setIsOpen={setIsOpen} className='p-4'>
-                <ModalTitle id={id}>{type === 'add' ? t('new.admin') : t('edit.admin', { adminName: data?.name }) }</ModalTitle>
+                <ModalTitle id={id}>{type === 'add' ? t('admin:new.admin') : t('admin:edit.admin', { adminName: data?.name }) }</ModalTitle>
             </ModalHeader>
             <ModalBody className='px-4'>
                 <div className='row g-4'>
@@ -93,7 +93,7 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, type, data }: AdminEditModalInt
                                     className='rounded-1 w-100'
                                     size='lg'
                                     onClick={() => setFieldValue('role', 'Admin')}>
-                                    {t('admin')}
+                                    {t('admin:admin')}
                                 </Button>
                             </div>
                             <div className='col'>
@@ -103,7 +103,7 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, type, data }: AdminEditModalInt
                                     className='rounded-1 w-100'
                                     size='lg'
                                     onClick={() => setFieldValue('role', 'Super Admin')}>
-                                    {t('super.admin')}
+                                    {t('admin:super.admin')}
                                 </Button>
                             </div>
                         </div>
