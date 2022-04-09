@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useState } from 'react'
+import { ChangeEvent, MouseEvent, ReactNode, useCallback, useState } from 'react'
 import { useFormik } from 'formik'
 import debounce from 'lodash/debounce'
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper'
@@ -21,14 +21,15 @@ import Button from '../../../components/bootstrap/Button'
 import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import Dropdown, {
+	DropdownItem,
 	DropdownMenu,
 	DropdownToggle,
 } from '../../../components/bootstrap/Dropdown'
 import Checks  from '../../../components/bootstrap/forms/Checks'
 import useSortableData from '../../../hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import ReportFilter from './ReportFilter'
-import FormGroup from 'components/bootstrap/forms/FormGroup'
+import DepositFilter from './DepositFilter'
+import DepositModal from './DepositModal'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 
 const BANK_LIST = [
@@ -49,10 +50,11 @@ const BANK_LIST = [
 	}
 ]
 
-interface ReportFilterInterface {
+interface DepositFilterInterface {
 	searchInput: string
-	deposit: boolean
-	withdraw: boolean
+	isSuccess: boolean
+	isNotFound: boolean
+    isCancel: boolean
 	price: {
 		min: string
 		max: string
@@ -65,31 +67,39 @@ interface ReportFilterInterface {
 	}[]
 }
 
-const Report = () => {
-    const { t } = useTranslation('report')
+interface DepositModalProperties {
+	type: string
+	selectedRow: any
+}
+
+const Deposit = () => {
+    const { t } = useTranslation('deposit')
 
 	const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
-	const [isOpenTimestampDatePicker, setIsOpenTimestampDatePicker] = useState(false)
+    const [isOpenDropdown, setIsOpenDropdown] = useState<number | null>(null)
+	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
+    const [isOpenDepositModal, setIsOpenDepositModal] = useState<DepositModalProperties>()
 
-	const formik = useFormik<ReportFilterInterface>({
+	const formik = useFormik<DepositFilterInterface>({
 		initialValues: {
 			searchInput: '',
-			deposit: false,
-			withdraw: false,
-			price: {
-				min: '',
-				max: ''
-			},
-			bank: [],
+			isSuccess: false,
+            isNotFound: false,
+            isCancel: false,
+            price: {
+                min: '',
+                max: ''
+            },
 			timestamp: [
 				{
 					startDate: moment().startOf('week').add('-1', 'week').toDate(),
 					endDate: moment().endOf('week').toDate(),
 					key: 'selection',
 				},
-			]
+			],
+            bank: []
 		},
 		onSubmit: (values) => {
 			console.log('submit filter')
@@ -138,7 +148,8 @@ const Report = () => {
 		}
 	}
 
-	const handleOnChangeBankFilter = (event: ChangeEvent<HTMLInputElement>) => {
+
+    const handleOnChangeBankFilter = (event: ChangeEvent<HTMLInputElement>) => {
 		let bank = event.target.name
 		let indexInBankFilter = parseInt(event.target.value)
 		let isSelected = event.target.checked
@@ -152,13 +163,15 @@ const Report = () => {
 		setFieldValue('bank', newBankFilterValue )
 	}
 
-	const handleExportPDF = () => {
-		// EXPORT PDF
-	}
-
-	const handlePrint = () => {
-		// PRINT
-	}
+    const getStatusText = (status: string): ReactNode => {
+        if (status === 'success') {
+            return <div className='fw-bold text-success'>{t('success')}</div>
+        } else if (status === 'not-found') {
+            return <div className='fw-bold text-warning'>{t('not.found')}</div>
+        } else {
+            return <div className='fw-bold text-danger'>{t('cancel')}</div>
+        }
+    }
 
 	return (
 		<PageWrapper title={demoPages.crm.subMenu.customersList.text}>
@@ -173,48 +186,55 @@ const Report = () => {
 						id='searchInput'
 						type='search'
 						className='border-0 shadow-none bg-transparent'
-						placeholder={t('search.transaction') + '...'}
+						placeholder={t('search.deposit.transaction') + '...'}
 						onChange={handleSearchChange}
 						value={searchInput}
 					/>
 				</SubHeaderLeft>
 				<SubHeaderRight>
-					<ReportFilter
+					<DepositFilter
 						resetLabel={t('filter.reset')}
 						onReset={resetForm}
 						submitLabel={t('filter')}
 						onSubmit={handleSubmit}
 						filters={[
 							{
-								label: t('filter.type'),
+								label: t('filter.status'),
 								children: <div>
-									<Checks
-										id='deposit'
-										label={t('deposit')}
-										onChange={handleChange}
-										checked={values.deposit}
-										ariaLabel={t('deposit')}
-									/>
-									<Checks
-										id='withdraw'
-										label={t('withdraw')}
-										onChange={handleChange}
-										checked={values.withdraw}
-										ariaLabel={t('withdraw')}
-									/>
-								</div>
+                                    <Checks
+                                        id='isSuccess'
+                                        label={t('success')}
+                                        onChange={handleChange}
+                                        checked={values.isSuccess}
+                                        ariaLabel={t('success')}
+                                    />
+                                    <Checks
+                                        id='isNotFound'
+                                        label={t('not.found')}
+                                        onChange={handleChange}
+                                        checked={values.isNotFound}
+                                        ariaLabel={t('not.found')}
+                                    />
+                                    <Checks
+                                        id='isCancel'
+                                        label={t('cancel')}
+                                        onChange={handleChange}
+                                        checked={values.isCancel}
+                                        ariaLabel={t('cancel')}
+                                    />
+                                </div>
 							},
 							{
 								label: t('filter.timestamp'),
 								children: <Dropdown >
-									<DropdownToggle hasIcon={false} isOpen={Boolean(isOpenTimestampDatePicker)} setIsOpen={setIsOpenTimestampDatePicker}>
+									<DropdownToggle hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
 										<Button color='dark' isLight data-tour='date-range'>
 											{`${moment(values.timestamp[0].startDate).format('MMM Do YY')} - ${moment(
 												values.timestamp[0].endDate,
 											).format('MMM Do YY')}`}
 										</Button>
 									</DropdownToggle>
-									<DropdownMenu isAlignmentEnd isOpen={isOpenTimestampDatePicker} setIsOpen={setIsOpenTimestampDatePicker}>
+									<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
 										{datePicker(values.timestamp, 'timestamp')}
 									</DropdownMenu>
 								</Dropdown>
@@ -265,20 +285,12 @@ const Report = () => {
 					/>
 					<SubheaderSeparator />
 					<Button
-						icon='FilePDF'
+						icon='AttachMoney'
 						color='primary'
 						isLight
-						onClick={() => handleExportPDF()}
+						onClick={() => setIsOpenDepositModal({ type: "add", selectedRow: null})}
 					>
-						{t('export.pdf')}
-					</Button>
-					<Button
-						icon='Print'
-						color='primary'
-						isLight
-						onClick={() => handlePrint()}
-					>
-						{t('print')}
+						{t('deposit')}
 					</Button>
 				</SubHeaderRight>
 			</SubHeader>
@@ -292,20 +304,20 @@ const Report = () => {
 										<tr>
                                             <th 
 												onClick={() => requestSort('no')}
-												className='cursor-pointer text-decoration-underline text-center'>
+												className='cursor-pointer text-decoration-underline'>
 												{t('column.no')}
 											</th>
                                             <th
-												onClick={() => requestSort('type')}
+												onClick={() => requestSort('status')}
 												className='cursor-pointer text-decoration-underline'>
-												{t('column.type')}{' '}
+												{t('column.status')}{' '}
 												<Icon
 													size='lg'
-													className={getClassNamesFor('type')}
+													className={getClassNamesFor('status')}
 													icon='FilterList'
 												/>
 											</th>
-											<th
+                                            <th
 												onClick={() => requestSort('timestamp')}
 												className='cursor-pointer text-decoration-underline'>
 												{t('column.timestamp')}{' '}
@@ -316,16 +328,26 @@ const Report = () => {
 												/>
 											</th>
 											<th
-												onClick={() => requestSort('bank')}
+												onClick={() => requestSort('from')}
 												className='cursor-pointer text-decoration-underline'>
-												{t('column.bank')}{' '}
+												{t('column.from')}{' '}
 												<Icon
 													size='lg'
-													className={getClassNamesFor('bank')}
+													className={getClassNamesFor('from')}
 													icon='FilterList'
 												/>
 											</th>
-											<th
+                                            <th
+												onClick={() => requestSort('to')}
+												className='cursor-pointer text-decoration-underline'>
+												{t('column.to')}{' '}
+												<Icon
+													size='lg'
+													className={getClassNamesFor('to')}
+													icon='FilterList'
+												/>
+											</th>
+                                            <th
 												onClick={() => requestSort('amount')}
 												className='cursor-pointer text-decoration-underline'>
 												{t('column.amount')}{' '}
@@ -335,7 +357,9 @@ const Report = () => {
 													icon='FilterList'
 												/>
 											</th>
-											<th>{t('column.notes')}</th>
+											<th>{t('column.mobile.number')}</th>
+                                            <th>{t('column.notes')}</th>
+											<td />
 										</tr>
 									</thead>
 									<tbody>
@@ -345,9 +369,9 @@ const Report = () => {
                                                     <div>{index + 1}</div>
 												</td>
                                                 <td>
-                                                    <div>{i.type}</div>
+                                                    <div>{getStatusText(i.status)}</div>
 												</td>
-												<td>
+                                                <td>
 													<div>{i.date.format('ll')}</div>
 													<div>
 														<small className='text-muted'>
@@ -355,15 +379,18 @@ const Report = () => {
 														</small>
 													</div>
 												</td>
+                                                <td>
+                                                    <div>*{i.payerBankAccountNumber}</div>
+												</td>
 												<td>
 													<div className='d-flex align-items-center'>
 														<div className='flex-grow-1'>
 															<div className='fs-6 fw-bold'>
-																{i.type === 'deposit' ? `*${i.recipientBankAccountNumber}` : `*${i.payerBankAccountNumber}`}
+																*{i.recipientBankAccountNumber}
 															</div>
 															<div className='text-muted'>
 																<Icon icon='Label' />{' '}
-																<small>{i.type === 'deposit' ? i.recipientBankName.toUpperCase() : i.payerBankName.toUpperCase()}</small>
+																<small>{i.recipientBankName.toUpperCase()}</small>
 															</div>
 														</div>
 													</div>
@@ -371,8 +398,35 @@ const Report = () => {
                                                 <td>
                                                     <div>{i.amount.toLocaleString()}</div>
 												</td>
-												<td className='w-25'>
+                                                <td>
+                                                    <div>{i.mobileNumber}</div>
+												</td>
+                                                <td className='w-25'>
                                                     <div>{i.note}</div>
+												</td>
+												<td>
+                                                    {i.status === 'success' ? 
+                                                        <><Button
+                                                            onClick={() => setIsOpenDepositModal({ type: "refund", selectedRow: i})}
+                                                            className='p-0'
+                                                            isLight
+                                                        >
+                                                            {t('refund')}
+                                                        </Button> / </>
+                                                        : i.status === 'not-found' ? <><Button
+                                                            onClick={() => setIsOpenDepositModal({ type: "select-payer", selectedRow: i})}
+                                                            className='p-0'
+                                                            isLight
+                                                        >
+                                                            {t('select.payer')}
+                                                        </Button> / </> : <></>
+                                                    } <Button
+                                                            onClick={() => setIsOpenDepositModal({ type: "edit", selectedRow: i})}
+                                                            className='p-0'
+                                                            isLight
+                                                        >
+                                                            {t('edit')}
+                                                        </Button>
 												</td>
 											</tr>
 										))}
@@ -391,8 +445,9 @@ const Report = () => {
 					</div>
 				</div>
 			</Page>
+			{isOpenDepositModal && <DepositModal setIsOpen={setIsOpenDepositModal} isOpen={Boolean(isOpenDepositModal)} properties={isOpenDepositModal} />}
 		</PageWrapper>
 	)
 }
 
-export default Report
+export default Deposit

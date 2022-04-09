@@ -1,0 +1,46 @@
+{
+    "search.deposit.transaction": "ค้นหาธุรกรรมการฝากเงิน",
+    "refund": "ดึงเครดิต",
+    "success": "สำเร็จ",
+    "not.found": "ไม่พบ",
+    "cancel": "ถูกดึงเครดิต",
+    "deposit": "ฝากเงิน",
+    "select.payer": "เลือกลูกค้า",
+    "edit": "แก้ไข",
+    "save": "บันทึก",
+
+    "filter": "กรอง",
+    "filter.reset": "ล้าง",
+    "filter.status": "สถานะ",
+    "filter.timestamp": "วันที่ทำรายการ",
+    "filter.amount": "จำนวนเงิน",
+    "filter.min": "ขั้นต่ำ",
+    "filter.to": "ถึง",
+    "filter.max": "สูงสุด",
+    "filter.bank": "ธนาคารปลายทาง",
+
+    "column.no": "ลำดับ",
+    "column.status": "สถานะ",
+    "column.timestamp": "วันที่ทำรายการ",
+    "column.from": "โอนจาก",
+    "column.to": "เข้าบัญชี",
+    "column.amount": "จำนวนเงิน",
+    "column.mobile.number": "เบอร์โทรศัพท์",
+    "column.notes": "หมายเหตุ",
+
+    "form.time": "เวลาที่โอน",
+    "form.date": "วันที่โอน",
+    "form.payer.bank.account.number": "โอนจาก",
+    "form.recipient.bank.account.number": "เข้าบัญชี",
+    "form.recipient.bank.account.number.placeholder": "กรุณาเลือกบัญชีบริษัทที่ลูกค้าโอนเข้า",
+    "form.amount": "จำนวนเงิน",
+    "form.mobile.number": "เบอร์โทรศัพท์",
+    "form.notes": "หมายเหตุ",
+    "form.notes.refund.reason.placeholder": "กรุณาใส่เหตุผลดึงเครดิต",
+
+    "save.deposit.successfully": "บันทึกรายการโอนสำเร็จ",
+    "save.deposit.from.mobile.number.successfully": "บันทึกรายการโอนจาก {{mobileNumber}} สำเร็จ",
+
+    "refund.successfully": "ดึงเครดิตสำเร็จ",
+    "refund.deposit.from.mobile.number.successfully": "ดึงเครดิตจาก {{mobileNumber}} สำเร็จ"
+}

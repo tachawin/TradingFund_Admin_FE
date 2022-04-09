@@ -6,7 +6,8 @@ const LANDING = {
 	DASHBOARD_BOOKING: lazy(() => import('../pages/dashboard/DashboardBookingPage')),
 	SUMMARY: lazy(() => import('../pages/SummaryPage')),
 	ADMIN: lazy(() => import('../pages/presentation/admin/Admin')),
-	REPORT: lazy(() => import('../pages/presentation/report/Report'))
+	REPORT: lazy(() => import('../pages/presentation/report/Report')),
+	DEPOSIT: lazy(() => import('../pages/presentation/deposit/Deposit'))
 }
 
 const AUTH = {
@@ -61,6 +62,11 @@ const presentation = [
 	{
 		path: pages.report.path,
 		element: <LANDING.REPORT />,
+		exact: true,
+	},
+	{
+		path: pages.deposit.path,
+		element: <LANDING.DEPOSIT />,
 		exact: true,
 	}
 ]
