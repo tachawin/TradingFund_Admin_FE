@@ -39,17 +39,37 @@ import banks from 'common/data/dummyBankData'
 interface DepositFilterInterface {
 	searchInput: string
 	bank: string[]
+	level: string[]
 	createdAtDate: {
 		startDate: Date
 		endDate: Date
 		key: string
-	}[],
+	}[]
     updatedAtDate: {
 		startDate: Date
 		endDate: Date
 		key: string
 	}[]
 }
+
+const levels = [
+	{
+		id: 0,
+		name: 'Platinum'
+	},
+	{
+		id: 1,
+		name: 'Gold'
+	},
+	{
+		id: 2,
+		name: 'Silver'
+	},
+	{
+		id: 3,
+		name: 'Bronze'
+	}
+]
 
 const Customer = () => {
     const { t } = useTranslation(['common', 'customer'])
@@ -70,6 +90,7 @@ const Customer = () => {
 		initialValues: {
 			searchInput: '',
             bank: [],
+			level: [],
 			createdAtDate: [
 				{
 					startDate: moment().startOf('week').add('-1', 'week').toDate(),
@@ -145,6 +166,19 @@ const Customer = () => {
 		setFieldValue('bank', newBankFilterValue )
 	}
 
+	const handleOnChangeLevelFilter = (event: ChangeEvent<HTMLInputElement>) => {
+		let bank = event.target.name
+		let indexInLevelFilter = parseInt(event.target.value)
+		let isSelected = event.target.checked
+		let newLevelFilterValue = values.level
+
+		if (isSelected) {
+			newLevelFilterValue.push(bank)
+		} else {
+			newLevelFilterValue.splice(indexInLevelFilter, 1)
+		}
+		setFieldValue('bank', newLevelFilterValue )
+	}
 
 	return (
 		<PageWrapper title={demoPages.crm.subMenu.customersList.text}>
@@ -218,6 +252,22 @@ const Customer = () => {
 										{datePicker(values.updatedAtDate, 'updatedAtDate')}
 									</DropdownMenu>
 								</Dropdown>
+							},
+							{
+								label: t('filter.level'),
+								children: levels.map((level: any) => {
+									let indexInLevelFilter = values.level.indexOf(level.name)
+									return <Checks
+											key={level.id}
+											label={level.name}
+											name={level.name}
+											value={indexInLevelFilter}
+											onChange={handleOnChangeLevelFilter}
+											checked={indexInLevelFilter > -1}
+											ariaLabel={level.name}
+										/>
+									}
+								)
 							}
 						]} 
 					/>

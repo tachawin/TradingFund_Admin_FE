@@ -19,6 +19,7 @@
     "active": "เปิดใช้งานอยู่",
     "inactive": "ไม่เปิดใช้งาน",
     "filter.bank": "ธนาคาร",
+    "filter.level": "ระดับลูกค้า",
     "filter.created.at": "วันที่สร้าง",
     "filter.updated.at": "วันที่อัปเดต",
     "filter.reset": "ล้าง",
