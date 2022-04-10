@@ -9,7 +9,7 @@ import SubHeader, {
 } from '../../../layout/SubHeader/SubHeader';
 import Page from '../../../layout/Page/Page';
 import { demoPages } from '../../../menu';
-import data from '../../../common/data/dummyCustomerData';
+import data from '../../../common/data/dummyAdminData';
 import Button from '../../../components/bootstrap/Button';
 import Card, {
 	CardActions,

@@ -13,6 +13,7 @@ import Input from '../../../components/bootstrap/forms/Input'
 import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
+import banks from 'common/data/dummyBankData'
 
 interface DepositModalProperties {
 	type: string
@@ -26,27 +27,6 @@ interface DepositModalInterface {
     properties: DepositModalProperties
     data?: any
 }
-
-const BANK_LIST = [
-	{
-		id: 0,
-		name: 'scb',
-		label: 'SCB',
-        number: '1234'
-	},
-	{
-		id: 1,
-		name: 'kasikorn bank',
-		label: 'KBANK',
-        number: '5543'
-	},
-	{
-		id: 2,
-		name: 'ttb',
-		label: 'TTB',
-        number: '9892'
-	}
-]
 
 const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterface) => {
     const { t } = useTranslation('deposit')
@@ -155,7 +135,7 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
                                     name='recipientBankAccountNumber'
                                     ariaLabel={t('form.recipient.bank.account.number')}
                                     placeholder={t('form.recipient.bank.account.number.placeholder')}
-                                    list={BANK_LIST.map(
+                                    list={banks.map(
                                         (bank) => `${bank.label} *${bank.number}`,
                                     )}
                                     onChange={formik.handleChange}

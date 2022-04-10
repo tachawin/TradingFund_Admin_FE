@@ -12,7 +12,7 @@ import { demoPages } from '../../../menu'
 import Card, { CardBody } from '../../../components/bootstrap/Card'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
-import data from '../../../common/data/dummyCustomerData'
+import data from '../../../common/data/dummyAdminData'
 import PaginationButtons, {
 	dataPagination,
 	PER_COUNT,

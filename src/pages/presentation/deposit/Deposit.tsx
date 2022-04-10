@@ -30,24 +30,7 @@ import { useTranslation } from 'react-i18next'
 import DepositModal from './DepositModal'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
-
-const BANK_LIST = [
-	{
-		id: 0,
-		name: 'scb',
-		label: 'SCB'
-	},
-	{
-		id: 1,
-		name: 'kasikorn bank',
-		label: 'KBANK'
-	},
-	{
-		id: 2,
-		name: 'ttb',
-		label: 'TTB'
-	}
-]
+import banks from 'common/data/dummyBankData'
 
 interface DepositFilterInterface {
 	searchInput: string
@@ -263,7 +246,7 @@ const Deposit = () => {
 							{
 								label: t('filter.bank'),
 								children: <div>
-									{BANK_LIST.map((bank: any) => {
+									{banks.map((bank: any) => {
 										let indexInBankFilter = values.bank.indexOf(bank.label)
 										return <Checks
 												key={bank.id}

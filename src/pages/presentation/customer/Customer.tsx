@@ -1,4 +1,4 @@
-import { ChangeEvent, MouseEvent, useCallback, useState } from 'react'
+import { ChangeEvent, useCallback, useState } from 'react'
 import { useFormik } from 'formik'
 import debounce from 'lodash/debounce'
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper'
@@ -34,24 +34,7 @@ import { useTranslation } from 'react-i18next'
 // import CustomerPermissionModal from './CustomerPermissionModal'
 import { useNavigate } from 'react-router-dom'
 import CustomerFilter from './CustomerFilter'
-
-const BANK_LIST = [
-	{
-		id: 0,
-		name: 'scb',
-		label: 'SCB'
-	},
-	{
-		id: 1,
-		name: 'kasikorn bank',
-		label: 'KBANK'
-	},
-	{
-		id: 2,
-		name: 'ttb',
-		label: 'TTB'
-	}
-]
+import banks from 'common/data/dummyBankData'
 
 interface DepositFilterInterface {
 	searchInput: string
@@ -68,14 +51,8 @@ interface DepositFilterInterface {
 	}[]
 }
 
-interface CustomerRowAction {
-	icon: string,
-	onClick: (value?: number) => void,
-	title: string
-}
-
 const Customer = () => {
-    const { t } = useTranslation('customer')
+    const { t } = useTranslation(['common', 'customer'])
     const navigate = useNavigate()
 
 	const [currentPage, setCurrentPage] = useState(1)
@@ -88,24 +65,6 @@ const Customer = () => {
 	const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
 	const [isOpenPermissionModal, setIsOpenPermissionModal] = useState(false)
 	const [selectedRowData, setSelectedRowData] = useState<any>()
-
-	const Customer_ROW_ACTIONS: CustomerRowAction[] = [
-		{
-			icon: 'Edit',
-			onClick: () => setIsOpenCustomerModal('edit'),
-			title: t('edit')
-		},
-		{
-			icon: 'Visibility',
-			onClick: () => setIsOpenPermissionModal(true),
-			title: t('grant.permission')
-		},
-		{
-			icon: 'Delete',
-			onClick: () => setIsOpenDeleteModal(true),
-			title: t('delete')
-		}
-	]
 
 	const formik = useFormik<DepositFilterInterface>({
 		initialValues: {
@@ -139,7 +98,6 @@ const Customer = () => {
 	const { 
 		values,
 		setFieldValue,
-		handleChange,
 		resetForm,
 		handleSubmit
 	} = formik
@@ -173,12 +131,6 @@ const Customer = () => {
 		}
 	}
 
-	const handleOnDropdownClick = (onClick: (value?: number) => void, data: any) => {
-		setIsOpenDropdown(null)
-		setSelectedRowData(data)
-		onClick()
-	}
-
     const handleOnChangeBankFilter = (event: ChangeEvent<HTMLInputElement>) => {
 		let bank = event.target.name
 		let indexInBankFilter = parseInt(event.target.value)
@@ -207,7 +159,7 @@ const Customer = () => {
 						id='searchInput'
 						type='search'
 						className='border-0 shadow-none bg-transparent'
-						placeholder={t('search.Customer') + '...'}
+						placeholder={t('customer:search.customer') + '...'}
 						onChange={handleSearchChange}
 						value={searchInput}
 					/>
@@ -222,7 +174,7 @@ const Customer = () => {
 							{
 								label: t('filter.bank'),
 								children: <div>
-									{BANK_LIST.map((bank: any) => {
+									{banks.map((bank: any) => {
 										let indexInBankFilter = values.bank.indexOf(bank.label)
 										return <Checks
 												key={bank.id}
@@ -276,7 +228,7 @@ const Customer = () => {
 						isLight
 						onClick={() => setIsOpenCustomerModal('add')}
 					>
-						{t('new.Customer')}
+						{t('customer:new.customer')}
 					</Button>
 				</SubHeaderRight>
 			</SubHeader>
@@ -293,16 +245,6 @@ const Customer = () => {
 												className='cursor-pointer text-decoration-underline'>
 												{t('column.no')}
 											</th>
-                                            <th
-												onClick={() => requestSort('username')}
-												className='cursor-pointer text-decoration-underline'>
-												{t('column.username')}{' '}
-												<Icon
-													size='lg'
-													className={getClassNamesFor('username')}
-													icon='FilterList'
-												/>
-											</th>
 											<th
 												onClick={() => requestSort('name')}
 												className='cursor-pointer text-decoration-underline'>
@@ -313,17 +255,16 @@ const Customer = () => {
 													icon='FilterList'
 												/>
 											</th>
-											<th>{t('column.mobile.number')}</th>
-											<th
-												onClick={() => requestSort('updatedAt')}
+                                            <th
 												className='cursor-pointer text-decoration-underline'>
-												{t('column.updated.at')}{' '}
+												{t('column.bank.account.number')}{' '}
 												<Icon
 													size='lg'
-													className={getClassNamesFor('updatedAt')}
+													className={getClassNamesFor('bankAccountNumber')}
 													icon='FilterList'
 												/>
 											</th>
+											<th>{t('column.mobile.number')}</th>
 											<th
 												onClick={() => requestSort('createdAt')}
 												className='cursor-pointer text-decoration-underline'>
@@ -334,13 +275,13 @@ const Customer = () => {
 													icon='FilterList'
 												/>
 											</th>
-                                            <th
-												onClick={() => requestSort('status')}
+											<th
+												onClick={() => requestSort('lastActiveAt')}
 												className='cursor-pointer text-decoration-underline'>
-												{t('column.status')}{' '}
+												{t('column.last.active.at')}{' '}
 												<Icon
 													size='lg'
-													className={getClassNamesFor('status')}
+													className={getClassNamesFor('lastActiveAt')}
 													icon='FilterList'
 												/>
 											</th>
@@ -350,11 +291,8 @@ const Customer = () => {
 									<tbody>
 										{dataPagination(items, currentPage, perPage).map((i: any, index: number) => (
 											<tr key={i.id}>
-                                                <td>
+                                                <td className='text-center'>
                                                     <div>{index + 1}</div>
-												</td>
-                                                <td>
-                                                    <div>{i.username}</div>
 												</td>
 												<td>
 													<div className='d-flex align-items-center'>
@@ -363,8 +301,21 @@ const Customer = () => {
 																{i.name}
 															</div>
 															<div className='text-muted'>
+																<Icon icon='StarFill' color={i.level === 'Gold' ? 'warning' : i.level === 'Silver' ? 'light' : i.level === 'Platinum' ? 'primary' : 'danger' } />{' '}
+																<small>{i.level}</small>
+															</div>
+														</div>
+													</div>
+												</td>
+                                                <td>
+													<div className='d-flex align-items-center'>
+														<div className='flex-grow-1'>
+															<div className='fs-6 fw-bold'>
+																{i.bankAccountNumber}
+															</div>
+															<div className='text-muted'>
 																<Icon icon='Label' />{' '}
-																<small>{i.role}</small>
+																<small>{i.bankName.toUpperCase()}</small>
 															</div>
 														</div>
 													</div>
@@ -386,27 +337,6 @@ const Customer = () => {
 														<small className='text-muted'>
 															{i.membershipDate.fromNow()}
 														</small>
-													</div>
-												</td>
-                                                <td>
-													<div className='d-flex align-items-center'>
-														{ i.status === 1 ?
-															<>
-																<span className='badge border border-2 border-light rounded-circle bg-success p-2 me-2'>
-																	<span className='visually-hidden'>
-																		Active status
-																	</span>
-																</span>
-																<span>{t('active')}</span>
-															</> : <>
-																<span className='badge border border-2 border-light rounded-circle bg-l25-dark p-2 me-2'>
-																	<span className='visually-hidden'>
-																		Inacctive status
-																	</span>
-																</span>
-																<span>{t('inactive')}</span>
-															</>
-														}
 													</div>
 												</td>
 												<td>
