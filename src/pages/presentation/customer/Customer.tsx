@@ -33,8 +33,9 @@ import { useTranslation } from 'react-i18next'
 // import CustomerDeleteModal from './CustomerDeleteModal'
 // import CustomerPermissionModal from './CustomerPermissionModal'
 import { useNavigate } from 'react-router-dom'
-import CustomerFilter from './CustomerFilter'
 import banks from 'common/data/dummyBankData'
+import CustomerAddModal from './CustomerAddModal'
+import CommonTableFilter from 'components/common/CommonTableFilter'
 
 interface DepositFilterInterface {
 	searchInput: string
@@ -77,13 +78,10 @@ const Customer = () => {
 
 	const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
-    const [isOpenDropdown, setIsOpenDropdown] = useState<number | null>(null)
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [isOpenUpdatedAtDatePicker, setIsOpenUpdatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
 	const [isOpenCustomerModal, setIsOpenCustomerModal] = useState<"add" | "edit">()
-	const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
-	const [isOpenPermissionModal, setIsOpenPermissionModal] = useState(false)
 	const [selectedRowData, setSelectedRowData] = useState<any>()
 
 	const formik = useFormik<DepositFilterInterface>({
@@ -199,29 +197,27 @@ const Customer = () => {
 					/>
 				</SubHeaderLeft>
 				<SubHeaderRight>
-					<CustomerFilter
+					<CommonTableFilter
 						resetLabel={t('filter.reset')}
 						onReset={resetForm}
 						submitLabel={t('filter')}
 						onSubmit={handleSubmit}
 						filters={[
 							{
-								label: t('filter.bank'),
-								children: <div>
-									{banks.map((bank: any) => {
-										let indexInBankFilter = values.bank.indexOf(bank.label)
-										return <Checks
-												key={bank.id}
-												label={bank.label}
-												name={bank.label}
-												value={indexInBankFilter}
-												onChange={handleOnChangeBankFilter}
-												checked={indexInBankFilter > -1}
-												ariaLabel={bank.label}
-											/>
-										}
-									)}
-								</div>
+								label: t('filter.level'),
+								children: levels.map((level: any) => {
+									let indexInLevelFilter = values.level.indexOf(level.name)
+									return <Checks
+											key={level.id}
+											label={level.name}
+											name={level.name}
+											value={indexInLevelFilter}
+											onChange={handleOnChangeLevelFilter}
+											checked={indexInLevelFilter > -1}
+											ariaLabel={level.name}
+										/>
+									}
+								)
 							},
 							{
 								label: t('filter.created.at'),
@@ -254,21 +250,23 @@ const Customer = () => {
 								</Dropdown>
 							},
 							{
-								label: t('filter.level'),
-								children: levels.map((level: any) => {
-									let indexInLevelFilter = values.level.indexOf(level.name)
-									return <Checks
-											key={level.id}
-											label={level.name}
-											name={level.name}
-											value={indexInLevelFilter}
-											onChange={handleOnChangeLevelFilter}
-											checked={indexInLevelFilter > -1}
-											ariaLabel={level.name}
-										/>
-									}
-								)
-							}
+								label: t('filter.bank'),
+								children: <div>
+									{banks.map((bank: any) => {
+										let indexInBankFilter = values.bank.indexOf(bank.label)
+										return <Checks
+												key={bank.id}
+												label={bank.label}
+												name={bank.label}
+												value={indexInBankFilter}
+												onChange={handleOnChangeBankFilter}
+												checked={indexInBankFilter > -1}
+												ariaLabel={bank.label}
+											/>
+										}
+									)}
+								</div>
+							},
 						]} 
 					/>
 					<SubheaderSeparator />
@@ -416,9 +414,9 @@ const Customer = () => {
 					</div>
 				</div>
 			</Page>
-			{/* <CustomerEditModal setIsOpen={setIsOpenCustomerModal} isOpen={Boolean(isOpenCustomerModal)} type={isOpenCustomerModal} data={selectedRowData} />
-			<CustomerPermissionModal setIsOpen={setIsOpenPermissionModal} isOpen={Boolean(isOpenPermissionModal)} id={selectedRowData?.id} name={selectedRowData?.name} />
-			<CustomerDeleteModal setIsOpen={setIsOpenDeleteModal} isOpen={Boolean(isOpenDeleteModal)} data={selectedRowData} /> */}
+			<CustomerAddModal setIsOpen={setIsOpenCustomerModal} isOpen={Boolean(isOpenCustomerModal)} type={isOpenCustomerModal} data={selectedRowData} />
+			{/* <CustomerPermissionModal setIsOpen={setIsOpenPermissionModal} isOpen={Boolean(isOpenPermissionModal)} id={selectedRowData?.id} name={selectedRowData?.name} /> */}
+			{/* <CustomerDeleteModal setIsOpen={setIsOpenDeleteModal} isOpen={Boolean(isOpenDeleteModal)} data={selectedRowData} /> */}
 		</PageWrapper>
 	)
 }

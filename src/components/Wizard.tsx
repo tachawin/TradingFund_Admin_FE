@@ -1,4 +1,4 @@
-import { Children, cloneElement, useState } from 'react';
+import { Children, cloneElement, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Card, {
@@ -43,12 +43,14 @@ interface WizardInterface {
 	stretch?: string | boolean,
 	className?: string,
 	noValidate?: boolean
+	isValid?: boolean,
+	onNext?: any,
+	activeItemIndex: number,
+	setActiveItemIndex?: any
 }
 
-const Wizard = ({ children, onSubmit, isHeader = false, color = 'primary', stretch, ...props }: WizardInterface) => {
+const Wizard = ({ children, activeItemIndex, setActiveItemIndex, onSubmit, isHeader = false, color = 'primary', stretch, onNext, isValid = false, ...props }: WizardInterface) => {
 	const { themeStatus } = useDarkMode();
-	const [activeItemIndex, setActiveItemIndex] = useState(0);
-
 	const childCount = children.length;
 
 	const getTitleName = (i: any) => {
@@ -68,13 +70,14 @@ const Wizard = ({ children, onSubmit, isHeader = false, color = 'primary', stret
 				aria-hidden={childCount === activeItemIndex + 1}
 				color={color}
 				isLight
-				onClick={() => setActiveItemIndex(activeItemIndex + 1)}>
+				onClick={onNext}>
 				Next
 			</Button>
 			<Button
 				className={classNames({ 'd-none': childCount !== activeItemIndex + 1 })}
 				aria-hidden={childCount !== activeItemIndex + 1}
 				type='submit'
+				onClick={onSubmit}
 				color={color}>
 				Submit
 			</Button>

@@ -36,8 +36,8 @@ const Validation = ({ isTouched = false, invalidFeedback, validFeedback, isToolt
 		)
 	}
 	return (
-		(!invalidFeedback &&
-		validFeedback) ? (
+		!invalidFeedback &&
+		validFeedback ? (
 			<div
 				ref={ref}
 				className={classNames({

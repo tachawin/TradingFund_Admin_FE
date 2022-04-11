@@ -28,6 +28,10 @@
     "form.username": "ชื่อผู้ใช้",
     "form.password": "รหัสผ่าน",
     "form.name": "ชื่อ",
+    "form.bank.account.number": "หมายเลขบัญชี",
+    "form.bank.account.name": "ชื่อบัญชี",
+    "form.bank.name": "ธนาคาร",
+    "form.bank.name.placeholder": "กรุณาใส่ตัวย่อเช่น KBANK SCB BBL เป็นต้น",
     "form.mobile.number": "เบอร์โทรศัพท์",
     "form.role": "ตำแหน่ง",
 

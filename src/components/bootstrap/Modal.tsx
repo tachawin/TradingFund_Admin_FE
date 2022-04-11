@@ -91,6 +91,7 @@ interface ModalInterface {
 	size?: string | null
 	fullScreen?: boolean | string | null
 	isAnimation?: boolean
+	style?: any
 }
 
 const Modal = ({
@@ -105,6 +106,7 @@ const Modal = ({
 	size = null,
 	fullScreen = false,
 	isAnimation = true,
+	style,
 	...props
 }: ModalInterface) => {
 	const refModal = useRef<any>(null);
@@ -179,6 +181,7 @@ const Modal = ({
 							{...props}>
 							<div
 								ref={ref}
+								style={style}
 								className={classNames('modal-dialog', {
 									'modal-dialog-scrollable': isScrollable,
 									'modal-dialog-centered': isCentered,
