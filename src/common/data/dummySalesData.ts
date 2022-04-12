@@ -15,6 +15,7 @@ const data = [
 		price: 36,
 		count: 982,
 		date: moment(),
+		operator: 'Admin A',
 		note: ''
 	},
 	{
@@ -30,6 +31,7 @@ const data = [
 		price: 32,
 		count: 423,
 		date: moment().add(-1, 'day'),
+		operator: 'Admin A',
 		note: 'ยอดเงินไม่เข้า แต่ลูกค้ามีหลักฐานเป็นสลิปครบ กรุณาตรวจสอบวันเวลาและทำรายการแบบ manual'
 	},
 	{
@@ -46,6 +48,7 @@ const data = [
 		price: 24,
 		count: 678,
 		date: moment().add(-1, 'day'),
+		operator: 'Admin A',
 		note: 'ถอนไม่สำเร็จ'
 	},
 	{
@@ -62,6 +65,7 @@ const data = [
 		price: 24,
 		count: 532,
 		date: moment().add(-2, 'day'),
+		operator: 'Admin A',
 		note: ''
 	},
 	{
@@ -78,6 +82,7 @@ const data = [
 		price: 74,
 		count: 235,
 		date: moment().add(-3, 'day'),
+		operator: 'Admin A',
 		note: ''
 	},
 	{
@@ -94,6 +99,7 @@ const data = [
 		price: 58,
 		count: 547,
 		date: moment().add(-3, 'day'),
+		operator: 'Admin A',
 		note: ''
 	},
 	{
@@ -110,6 +116,7 @@ const data = [
 		price: 39,
 		count: 149,
 		date: moment().add(-4, 'day'),
+		operator: 'Admin A',
 		note: ''
 	},
 	{
@@ -126,6 +133,7 @@ const data = [
 		price: 36,
 		count: 132,
 		date: moment().add(-4, 'day'),
+		operator: 'Admin A',
 		note: ''
 	},
 	{
@@ -142,6 +150,7 @@ const data = [
 		price: 78,
 		count: 120,
 		date: moment().add(-5, 'day'),
+		operator: 'Admin A',
 		note: ''
 	},
 	{
@@ -158,6 +167,7 @@ const data = [
 		price: 89,
 		count: 112,
 		date: moment().add(-7, 'day'),
+		operator: 'Admin A',
 		note: ''
 	},
 	{
@@ -174,6 +184,7 @@ const data = [
 		price: 24,
 		count: 90,
 		date: moment().add(-7, 'day'),
+		operator: 'Admin A',
 		note: ''
 	},
 	{
@@ -190,6 +201,7 @@ const data = [
 		price: 12,
 		count: 63,
 		date: moment().add(-9, 'day'),
+		operator: 'Admin A',
 		note: ''
 	},
 	{
@@ -206,6 +218,7 @@ const data = [
 		price: 74,
 		count: 235,
 		date: moment().add(-3, 'day'),
+		operator: 'Admin A',
 		note: ''
 	},
 ];

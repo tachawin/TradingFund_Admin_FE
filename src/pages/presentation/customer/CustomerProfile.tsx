@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
+import 'moment/locale/th'
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper';
 import SubHeader, {
 	SubHeaderLeft
@@ -9,6 +10,8 @@ import Page from '../../../layout/Page/Page';
 import { demoPages, pages } from '../../../menu';
 import data from '../../../common/data/dummyCustomerData';
 import depositData from '../../../common/data/dummySalesData';
+import rewardData from '../../../common/data/dummyRewardData';
+import creditData from '../../../common/data/dummyCreditData';
 import Button from '../../../components/bootstrap/Button';
 import Card, {
 	CardActions,
@@ -18,19 +21,16 @@ import Card, {
 	CardTitle,
 } from '../../../components/bootstrap/Card';
 import Icon from '../../../components/icon/Icon';
-import latestSalesData from '../../../common/data/dummySalesData';
-import useSortableData from '../../../hooks/useSortableData';
-import PaginationButtons, {
-	dataPagination,
-	PER_COUNT,
-} from '../../../components/PaginationButtons';
 import useDarkMode from '../../../hooks/useDarkMode';
 import { useTranslation } from 'react-i18next';
 import DepositTable from '../deposit/DepositTable';
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown';
+import WithdrawTable from '../withdraw/WithdrawTable';
+import RewardTable from '../reward/RewardTable';
+import CreditTable from '../credit/CreditTable';
 
 const CustomerProfile = () => {
-    const { t } = useTranslation('common')
+    const { t } = useTranslation(['common', 'customer'])
 	const { darkModeStatus } = useDarkMode();
 
 	const { id } = useParams();
@@ -40,8 +40,60 @@ const CustomerProfile = () => {
 	const [transactionState, setTransactionState] = useState('deposit')
     const [isOpenTransactionDropdown, setIsOpenTransactionDropdown] = useState(false)
 
+	const getLevelColor = () => item.level === 'Gold' ? 'warning' : item.level === 'Silver' ? 'light' : item.level === 'Platinum' ? 'primary' : 'danger' 
+
+	const transactionHeader = () => 
+		<CardHeader>
+			<CardLabel icon='Receipt'>
+				<CardTitle>{t('customer:transaction.history')}</CardTitle>
+			</CardLabel>
+			<Dropdown>
+				<DropdownToggle isOpen={Boolean(isOpenTransactionDropdown)} setIsOpen={setIsOpenTransactionDropdown}>
+					<span>
+						{transactionState === 'deposit' ? t('deposit') :
+							transactionState === 'withdraw' ? t('withdraw') :
+							transactionState === 'credit' ? t('credit') : t('reward')}
+					</span>
+				</DropdownToggle>
+				<DropdownMenu isAlignmentEnd isOpen={Boolean(isOpenTransactionDropdown)} setIsOpen={setIsOpenTransactionDropdown}>
+					<DropdownItem>
+						<Button
+							color='link'
+							isActive={transactionState === 'deposit'}
+							onClick={() => setTransactionState('deposit')}>
+							{t('deposit')}
+						</Button>
+					</DropdownItem>
+					<DropdownItem>
+						<Button
+							color='link'
+							isActive={transactionState === 'withdraw'}
+							onClick={() => setTransactionState('withdraw')}>
+							{t('withdraw')}
+						</Button>
+					</DropdownItem>
+					<DropdownItem>
+						<Button
+							color='link'
+							isActive={transactionState === 'credit'}
+							onClick={() => setTransactionState('credit')}>
+							{t('credit')}
+						</Button>
+					</DropdownItem>
+					<DropdownItem>
+						<Button
+							color='link'
+							isActive={transactionState === 'reward'}
+							onClick={() => setTransactionState('reward')}>
+							{t('reward')}
+						</Button>
+					</DropdownItem>
+				</DropdownMenu>
+			</Dropdown>
+		</CardHeader>
+
 	return (
-		<PageWrapper title={demoPages.crm.subMenu.customer.text}>
+		<PageWrapper title={pages.customerID.text}>
 			<SubHeader>
 				<SubHeaderLeft>
 					<Button
@@ -50,20 +102,26 @@ const CustomerProfile = () => {
 						icon='ArrowBack'
 						tag='a'
 						to={`../${pages.customer.path}`}>
-						Back to List
+						{t('back')}
 					</Button>
 				</SubHeaderLeft>
 			</SubHeader>
 			<Page className='p-3'>
 				<div className='pt-3 pb-5 d-flex align-items-center'>
 					<span className='display-4 fw-bold me-3'>{item.name}</span>
-					<span className='border border-success border-2 text-success fw-bold px-3 py-2 rounded'>
-						{item.level}
+					<span className={`border border-${getLevelColor()} border-2 text-${getLevelColor()} fw-bold px-3 py-2 rounded`}>
+						<Icon icon='StarFill' color={getLevelColor()} />
+						{' ' + item.level}
 					</span>
 				</div>
 				<div className='row'>
 					<div className='col-lg-4'>
 						<Card className='shadow-3d-primary'>
+							<CardHeader className='pb-0'>
+								<CardLabel icon='Person'>
+									<CardTitle>{t('profile')}</CardTitle>
+								</CardLabel>
+							</CardHeader>
 							<CardBody>
 								<div className='row g-5 py-3'>
 									<div className='col-12'>
@@ -82,7 +140,7 @@ const CustomerProfile = () => {
 															{item.mobileNumber}
 														</div>
 														<div className='text-muted'>
-															{t('mobile.number')}
+															{t('column.mobile.number')}
 														</div>
 													</div>
 												</div>
@@ -98,10 +156,10 @@ const CustomerProfile = () => {
 													</div>
 													<div className='flex-grow-1 ms-3'>
 														<div className='fw-bold fs-5 mb-0'>
-															{item.bankName}
+															{item.bankName.toLocaleUpperCase()}
 														</div>
 														<div className='text-muted'>
-															{t('bank.account')}
+															{t('column.bank.account')}
 														</div>
 													</div>
                                                     <div className='flex-grow-1 ms-3'>
@@ -125,10 +183,10 @@ const CustomerProfile = () => {
 													</div>
 													<div className='flex-grow-1 ms-3'>
 														<div className='fw-bold fs-5 mb-0'>
-                                                            {t('last.active', { date: item.membershipDate.fromNow() })}
+                                                            {t('last.active.at', { date: item.membershipDate.fromNow() })}
 														</div>
 														<div className='text-muted'>
-															{t('has.joined.at', { date: item.membershipDate })}
+															{t('has.joined.at', { date: item.membershipDate.format('ll') })}
 														</div>
 													</div>
 												</div>
@@ -152,7 +210,7 @@ const CustomerProfile = () => {
 												darkModeStatus ? 'o25' : '10'
 											}-warning rounded-2 p-3`}>
 											<div className='flex-shrink-0'>
-												<Icon icon='DoneAll' size='3x' color='warning' />
+												<Icon icon='Cash' size='3x' color='warning' />
 											</div>
 											<div className='flex-grow-1 ms-3'>
 												<div className='fw-bold fs-3 mb-0'>135</div>
@@ -168,14 +226,14 @@ const CustomerProfile = () => {
 												darkModeStatus ? 'o25' : '10'
 											}-info rounded-2 p-3`}>
 											<div className='flex-shrink-0'>
-												<Icon icon='Savings' size='3x' color='info' />
+												<Icon icon='Star' size='3x' color='info' />
 											</div>
 											<div className='flex-grow-1 ms-3'>
 												<div className='fw-bold fs-3 mb-0'>
 													{1260}
 												</div>
 												<div className='text-muted mt-n2 truncate-line-1'>
-                                                    {t('point')}
+                                                    {t('points')}
 												</div>
 											</div>
 										</div>
@@ -186,12 +244,12 @@ const CustomerProfile = () => {
 												darkModeStatus ? 'o25' : '10'
 											}-primary rounded-2 p-3`}>
 											<div className='flex-shrink-0'>
-												<Icon icon='Star' size='3x' color='primary' />
+												<Icon icon='CashCoin' size='3x' color='primary' />
 											</div>
 											<div className='flex-grow-1 ms-3'>
 												<div className='fw-bold fs-3 mb-0'>4.96</div>
 												<div className='text-muted mt-n2 truncate-line-1'>
-                                                    {t('bonus')}
+                                                    {t('cashback.bonus')}
 												</div>
 											</div>
 										</div>
@@ -202,10 +260,10 @@ const CustomerProfile = () => {
 												darkModeStatus ? 'o25' : '10'
 											}-success rounded-2 p-3`}>
 											<div className='flex-shrink-0'>
-												<Icon icon='Timer' size='3x' color='success' />
+												<Icon icon='People' size='3x' color='success' />
 											</div>
 											<div className='flex-grow-1 ms-3'>
-												<div className='fw-bold fs-3 mb-0'>3 years</div>
+												<div className='fw-bold fs-3 mb-0'>30</div>
 												<div className='text-muted mt-n2'>{t('invitation.bonus')}</div>
 											</div>
 										</div>
@@ -215,60 +273,25 @@ const CustomerProfile = () => {
 						</Card>
 					</div>
 					<div className='col-lg-8'>
-						<DepositTable 
-                            cardHeader={
-                                <CardHeader>
-                                    <CardLabel icon='Receipt'>
-                                        <CardTitle>{t('transaction.history')}</CardTitle>
-                                    </CardLabel>
-                                    <Dropdown>
-                                        <DropdownToggle isOpen={Boolean(isOpenTransactionDropdown)} setIsOpen={setIsOpenTransactionDropdown}>
-                                            <span>
-                                                {transactionState === 'deposit' ? t('deposit') :
-                                                    transactionState === 'withdraw' ? t('withdraw') :
-                                                    transactionState === 'credit' ? t('credit') : t('reward')}
-                                            </span>
-                                        </DropdownToggle>
-                                        <DropdownMenu isAlignmentEnd isOpen={Boolean(isOpenTransactionDropdown)} setIsOpen={setIsOpenTransactionDropdown}>
-                                            <DropdownItem>
-                                                <Button
-                                                    color='link'
-                                                    isActive={transactionState === 'deposit'}
-                                                    onClick={() => setTransactionState('deposit')}>
-                                                    {t('deposit')}
-                                                </Button>
-                                            </DropdownItem>
-                                            <DropdownItem>
-                                                <Button
-                                                    color='link'
-                                                    isActive={transactionState === 'withdraw'}
-                                                    onClick={() => setTransactionState('withdraw')}>
-                                                    {t('withdraw')}
-                                                </Button>
-                                            </DropdownItem>
-                                            <DropdownItem>
-                                                <Button
-                                                    color='link'
-                                                    isActive={transactionState === 'credit'}
-                                                    onClick={() => setTransactionState('credit')}>
-                                                    {t('credit')}
-                                                </Button>
-                                            </DropdownItem>
-                                            <DropdownItem>
-                                                <Button
-                                                    color='link'
-                                                    isActive={transactionState === 'reward'}
-                                                    onClick={() => setTransactionState('reward')}>
-                                                    {t('reward')}
-                                                </Button>
-                                            </DropdownItem>
-                                        </DropdownMenu>
-                                    </Dropdown>
-                                </CardHeader>
-                            }
-                            data={depositData} 
-                            disabledColumns={['mobile-number', 'notes']} 
-                        />
+						{transactionState === 'deposit' ?
+							<DepositTable 
+								cardHeader={transactionHeader()}
+								data={depositData} 
+								disabledColumns={['mobile-number', 'notes']} 
+							/> : transactionState === 'withdraw' ?
+							<WithdrawTable 
+								cardHeader={transactionHeader()}
+								data={depositData} 
+								columns={{ lastDepositAmount: false, name: false, from: false }}
+							/> : transactionState === 'reward' ?
+							<RewardTable 
+								cardHeader={transactionHeader()}
+								data={rewardData} 
+							/> : <CreditTable 
+								cardHeader={transactionHeader()}
+								data={creditData} 
+							/>
+						}
 					</div>
 				</div>
 			</Page>

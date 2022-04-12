@@ -10,6 +10,7 @@ import FormGroup from 'components/bootstrap/forms/FormGroup'
 interface Filter {
     label: string
     children: ReactNode
+    disabled?: boolean
 }
 
 interface CommonTableFilterInterface {
@@ -31,7 +32,7 @@ const CommonTableFilter = ({ filters, resetLabel, onReset, submitLabel, onSubmit
                 <div className='container py-2'>
                     <div className='row g-3'>
                         {filters.map((filter: Filter, index: number) => 
-                            <FormGroup label={filter.label} key={index} className='col-12'>
+                            !filter.disabled && <FormGroup label={filter.label} key={index} className='col-12'>
                                 {filter.children}
                             </FormGroup>
                         )}

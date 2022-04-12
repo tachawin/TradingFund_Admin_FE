@@ -1,6 +1,7 @@
 {
     "search.withdraw.transaction": "ค้นหาธุรกรรมถอนเงิน",
     "withdraw.request": "คำขอถอนเงิน",
+    "withdraw.history": "ประวัติถอนเงิน",
 
     "request": "คำขอ",
     "history": "ประวัติ"

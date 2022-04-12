@@ -50,13 +50,18 @@ interface WithdrawModalProperties {
 	selectedRow: any
 }
 
+enum WITHDRAW_TABLE_STATE {
+	REQUEST = 'request',
+	HISTORY = 'history'
+}
+
 const Withdraw = () => {
     const { t } = useTranslation(['common', 'withdraw'])
 
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
     const [isOpenWithdrawModal, setIsOpenWithdrawModal] = useState<WithdrawModalProperties>()
-    const [withdrawTableState, setWithdrawTableState] = useState('request')
+    const [withdrawTableState, setWithdrawTableState] = useState(WITHDRAW_TABLE_STATE.REQUEST)
 
 	const formik = useFormik<WithdrawFilterInterface>({
 		initialValues: {
@@ -203,6 +208,7 @@ const Withdraw = () => {
 							},
                             {
 								label: t('filter.last.deposit.amount'),
+								disabled: withdrawTableState === WITHDRAW_TABLE_STATE.HISTORY,
 								children: <div>
 									<InputGroup>
 										<Input
@@ -226,7 +232,7 @@ const Withdraw = () => {
 								</div>
 							},
 							{
-								label: t('filter.bank'),
+								label: t('filter.payer.bank'),
 								children: <div>
 									{banks.map((bank: any) => {
 										let indexInBankFilter = values.bank.indexOf(bank.label)
@@ -254,29 +260,43 @@ const Withdraw = () => {
                             cardHeader={
                                 <CardHeader>
                                     <CardLabel>
-                                        <CardTitle>{t('withdraw:withdraw.request')}</CardTitle>
+                                        <CardTitle>{
+											withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST ?
+											t('withdraw:withdraw.request') : t('withdraw:withdraw.history')
+										}</CardTitle>
                                     </CardLabel>
                                     <ButtonGroup>
                                         <Button
-                                            color={withdrawTableState === 'request' ? 'success' : 'dark'}
-                                            isLight={withdrawTableState !== 'request'}
-                                            onClick={() => setWithdrawTableState('request')}
+                                            color={withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST ? 'success' : 'dark'}
+                                            isLight={withdrawTableState !== WITHDRAW_TABLE_STATE.REQUEST}
+                                            onClick={() => setWithdrawTableState(WITHDRAW_TABLE_STATE.REQUEST)}
                                         >
                                             {t('withdraw:request')}
                                         </Button>
                                         <Button
-                                            color={withdrawTableState === 'history' ? 'success' : 'dark'}
-                                            isLight={withdrawTableState !== 'history'}
-                                            onClick={() => setWithdrawTableState('history')}
+                                            color={withdrawTableState === WITHDRAW_TABLE_STATE.HISTORY ? 'success' : 'dark'}
+                                            isLight={withdrawTableState !== WITHDRAW_TABLE_STATE.HISTORY}
+                                            onClick={() => setWithdrawTableState(WITHDRAW_TABLE_STATE.HISTORY)}
                                         >
                                             {t('withdraw:history')}
                                         </Button>
                                     </ButtonGroup>
                                 </CardHeader>
                             }
-                            data={data.filter((i: any) => i.status === 'request' )} 
-                            setIsOpenWithdrawModal={setIsOpenWithdrawModal}
-                            columns={{ status: false, mobileNumber: true, notes: false }} 
+                            data={withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST ? 
+								data.filter((i: any) => i.status === 'request') : 
+								data.filter((i: any) => i.status !== 'request')
+							} 
+                            setIsOpenWithdrawModal={withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST ? setIsOpenWithdrawModal : undefined}
+                            columns={{ 
+								status: withdrawTableState === WITHDRAW_TABLE_STATE.HISTORY, 
+								mobileNumber: true, 
+								notes: withdrawTableState === WITHDRAW_TABLE_STATE.HISTORY, 
+								lastDepositAmount: withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST, 
+								from: withdrawTableState === WITHDRAW_TABLE_STATE.HISTORY,
+								operator: withdrawTableState === WITHDRAW_TABLE_STATE.HISTORY,
+								name: true 
+							}} 
                         />
 					</div>
 				</div>
