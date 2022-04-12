@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useFormik } from 'formik'
 import Modal, {
 	ModalBody,
@@ -14,6 +14,7 @@ import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import banks from 'common/data/dummyBankData'
+import * as Yup from 'yup'
 
 interface DepositModalProperties {
 	type: string
@@ -31,8 +32,34 @@ interface DepositModalInterface {
 const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterface) => {
     const { t } = useTranslation('deposit')
     const { type, selectedRow: data } = properties
-    console.log(data)
 
+    const AddDepositSchema = Yup.object().shape({
+        mobileNumber: Yup.string().required('โปรดใส่เบอร์โทรลูกค้า'),
+        amount: Yup.string().required('โปรดใส่จำนวนเงิน'),
+        payerBankAccountNumber: Yup.string().required('โปรดใส่หมายเลขบัญชีลูกค้า'),
+        recipientBankAccountNumber: Yup.string().required('โปรดใส่หมายเลขบัญชีบริษัท'),
+	})
+
+    const RefundDepositSchema = Yup.object().shape({
+        notes: Yup.string().required('โปรดใส่เหตุผลที่ดึงเครดิต')
+	})
+
+    const SelectPayerDepositSchema = Yup.object().shape({
+        mobileNumber: Yup.string().required('โปรดใส่เบอร์โทรลูกค้า')
+	})
+
+    const selectValidationSchema = () => {
+        if (type === 'add') {
+            return AddDepositSchema
+        } else if (type === 'refund') {
+            return RefundDepositSchema
+        } else if (type === 'select-payer') {
+            return SelectPayerDepositSchema
+        } else {
+            return null
+        }
+    }
+	
 	const formik = useFormik({
 		initialValues: {
             date: moment().format('YYYY-MM-DD'),
@@ -43,6 +70,7 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
             recipientBankAccountNumber: data?.recipientBankAccountNumber || '',
             notes: data?.notes || '',
 		},
+        validationSchema: selectValidationSchema(),
 		onSubmit: (values) => {
             // EDIT
             console.log(values)
@@ -69,7 +97,7 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
 		},
 	})
 
-    const { values, handleChange, resetForm, initialValues } = formik
+    const { values, handleChange, resetForm, initialValues, isValid, touched, errors } = formik
 
     useEffect(() => {
         if (type === 'edit') {
@@ -116,7 +144,10 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
                                 <Input 
                                     onChange={handleChange} 
                                     value={values.mobileNumber}
-                                    disabled={type !== 'add'}
+                                    disabled={!['add', 'select-payer'].includes(type)}
+                                    isValid={isValid}
+                                    isTouched={touched.mobileNumber && errors.mobileNumber}
+                                    invalidFeedback={errors.mobileNumber}
                                 />
                             </FormGroup>
                             <FormGroup id='amount' label={t('form.amount')}>
@@ -125,10 +156,20 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
                                     onChange={handleChange} 
                                     value={values.amount}
                                     disabled={type !== 'add'}
+                                    isValid={isValid}
+                                    isTouched={touched.amount && errors.amount}
+                                    invalidFeedback={errors.amount}
                                 />
                             </FormGroup>
                             <FormGroup id='payerBankAccountNumber' label={t('form.payer.bank.account.number')}>
-                                <Input onChange={handleChange} value={values.payerBankAccountNumber} disabled={type === 'edit'} />
+                                <Input 
+                                    onChange={handleChange} 
+                                    value={values.payerBankAccountNumber} 
+                                    disabled={type === 'edit'}
+                                    isValid={isValid}
+                                    isTouched={touched.payerBankAccountNumber && errors.payerBankAccountNumber}
+                                    invalidFeedback={errors.payerBankAccountNumber}
+                                />
                             </FormGroup>
                             <FormGroup id='recipientBankAccountNumber' label={t('form.recipient.bank.account.number')}>
                                 <Input
@@ -141,12 +182,22 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
                                     onChange={formik.handleChange}
                                     value={values.recipientBankAccountNumber}
                                     disabled={type !== 'add'}
+                                    isValid={isValid}
+                                    isTouched={touched.recipientBankAccountNumber && errors.recipientBankAccountNumber}
+                                    invalidFeedback={errors.recipientBankAccountNumber}
                                 />
                             </FormGroup>
                         </>
                     }
                     <FormGroup id='notes' label={t('form.notes')}>
-                        <Input onChange={handleChange} value={values.notes} placeholder={type === 'refund' ? t("form.notes.refund.reason.placeholder") : ''} />
+                        <Input 
+                            onChange={handleChange} 
+                            value={values.notes} 
+                            placeholder={type === 'refund' ? t("form.notes.refund.reason.placeholder") : ''}
+                            isValid={isValid}
+                            isTouched={touched.notes && errors.notes}
+                            invalidFeedback={errors.notes}
+                        />
                     </FormGroup>
                 </div>
             </ModalBody>

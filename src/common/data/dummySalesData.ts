@@ -26,7 +26,6 @@ const data = [
 		payerBankName: 'kbank',
 		recipientBankAccountNumber: '7903',
 		recipientBankName: 'kbank',
-		mobileNumber: '+66 22 221 1234',
 		amount: 500.00,
 		price: 32,
 		count: 423,
