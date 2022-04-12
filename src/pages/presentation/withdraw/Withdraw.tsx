@@ -276,7 +276,7 @@ const Withdraw = () => {
                             }
                             data={data.filter((i: any) => i.status === 'request' )} 
                             setIsOpenWithdrawModal={setIsOpenWithdrawModal}
-                            columns={{ status: false, mobileNumber: true, notes: false }} 
+                            columns={{ status: false, mobileNumber: true, notes: false, lastDepositAmount: true, name: true }} 
                         />
 					</div>
 				</div>

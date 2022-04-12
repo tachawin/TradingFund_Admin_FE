@@ -44,7 +44,7 @@ const WithdrawTable = ({
                         <tr>
                             <th 
                                 onClick={() => requestSort('no')}
-                                className='cursor-pointer text-decoration-underline'>
+                                className='cursor-pointer text-decoration-underline text-center'>
                                 {t('column.no')}
                             </th>
                             <th
@@ -57,16 +57,18 @@ const WithdrawTable = ({
                                     icon='FilterList'
                                 />
                             </th>
-                            <th
-                                onClick={() => requestSort('name')}
-                                className='cursor-pointer text-decoration-underline'>
-                                {t('column.name')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('name')}
-                                    icon='FilterList'
-                                />
-                            </th>
+                            {columns?.name &&
+                                <th
+                                    onClick={() => requestSort('name')}
+                                    className='cursor-pointer text-decoration-underline'>
+                                    {t('column.name')}{' '}
+                                    <Icon
+                                        size='lg'
+                                        className={getClassNamesFor('name')}
+                                        icon='FilterList'
+                                    />
+                                </th>
+                            }
                             {columns?.mobileNumber && <th>{t('column.mobile.number')}</th>}
                             <th
                                 onClick={() => requestSort('to')}
@@ -88,16 +90,18 @@ const WithdrawTable = ({
                                     icon='FilterList'
                                 />
                             </th>
-                            <th
-                                onClick={() => requestSort('lastDepositAmount')}
-                                className='cursor-pointer text-decoration-underline'>
-                                {t('column.last.deposit.amount')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('lastDepositAmount')}
-                                    icon='FilterList'
-                                />
-                            </th>
+                            {columns?.lastDepositAmount &&
+                                <th
+                                    onClick={() => requestSort('lastDepositAmount')}
+                                    className='cursor-pointer text-decoration-underline'>
+                                    {t('column.last.deposit.amount')}{' '}
+                                    <Icon
+                                        size='lg'
+                                        className={getClassNamesFor('lastDepositAmount')}
+                                        icon='FilterList'
+                                    />
+                                </th>
+                            }
                             {columns?.notes && <th>{t('column.notes')}</th>}
                             {columns?.status &&
                                 <th
@@ -128,9 +132,11 @@ const WithdrawTable = ({
                                         </small>
                                     </div>
                                 </td>
-                                <td>
-                                    <div>{i.name}</div>
-                                </td>
+                                {columns?.name &&
+                                    <td>
+                                        <div>{i.name}</div>
+                                    </td>
+                                }
                                 {columns?.mobileNumber &&
                                     <td>
                                         <div>{i.mobileNumber}</div>
@@ -152,9 +158,11 @@ const WithdrawTable = ({
                                 <td>
                                     <div>{i.amount.toLocaleString()}</div>
                                 </td>
-                                <td>
-                                    <div>{i.amount.toLocaleString()}</div>
-                                </td>
+                                {columns?.lastDepositAmount &&
+                                    <td>
+                                        <div>{i.amount.toLocaleString()}</div>
+                                    </td>
+                                }
                                 {columns?.notes &&
                                     <td className='w-25'>
                                         <div>{i.note}</div>

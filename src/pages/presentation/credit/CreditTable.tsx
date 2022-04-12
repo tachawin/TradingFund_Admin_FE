@@ -44,7 +44,7 @@ const CreditTable = ({
                         <tr>
                             <th 
                                 onClick={() => requestSort('no')}
-                                className='cursor-pointer text-decoration-underline'>
+                                className='cursor-pointer text-decoration-underline text-center'>
                                 {t('column.no')}
                             </th>
                             <th

@@ -3,5 +3,7 @@
     "new.customer": "เพิ่มลูกค้า",
 
     "edit.successfully": "แก้ไขสำเร็จ",
-    "edit.customer.successfully": "ทำการแก้ไข {{customerName}} สำเร็จ"
+    "edit.customer.successfully": "ทำการแก้ไข {{customerName}} สำเร็จ",
+
+    "transaction.history": "ประวัติธุรกรรม"
 }
