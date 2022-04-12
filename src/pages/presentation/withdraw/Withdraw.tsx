@@ -4,15 +4,14 @@ import debounce from 'lodash/debounce'
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper'
 import SubHeader, {
 	SubHeaderLeft,
-	SubHeaderRight,
-	SubheaderSeparator,
+	SubHeaderRight
 } from '../../../layout/SubHeader/SubHeader'
 import Page from '../../../layout/Page/Page'
 import { demoPages } from '../../../menu'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
 import data from '../../../common/data/dummySalesData'
-import Button from '../../../components/bootstrap/Button'
+import Button, { ButtonGroup } from '../../../components/bootstrap/Button'
 import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import Dropdown, {
@@ -26,13 +25,15 @@ import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGrou
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import banks from 'common/data/dummyBankData'
 import WithdrawTable from './WithdrawTable'
+import { CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 
 interface WithdrawFilterInterface {
 	searchInput: string
-	isSuccess: boolean
-	isNotFound: boolean
-    isCancel: boolean
-	price: {
+	amount: {
+		min: string
+		max: string
+	},
+    lastDepositAmount: {
 		min: string
 		max: string
 	},
@@ -55,14 +56,16 @@ const Withdraw = () => {
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
     const [isOpenWithdrawModal, setIsOpenWithdrawModal] = useState<WithdrawModalProperties>()
+    const [withdrawTableState, setWithdrawTableState] = useState('request')
 
 	const formik = useFormik<WithdrawFilterInterface>({
 		initialValues: {
 			searchInput: '',
-			isSuccess: false,
-            isNotFound: false,
-            isCancel: false,
-            price: {
+            amount: {
+                min: '',
+                max: ''
+            },
+            lastDepositAmount: {
                 min: '',
                 max: ''
             },
@@ -147,7 +150,7 @@ const Withdraw = () => {
 						id='searchInput'
 						type='search'
 						className='border-0 shadow-none bg-transparent'
-						placeholder={t('Withdraw:search.Withdraw.transaction') + '...'}
+						placeholder={t('withdraw:search.withdraw.transaction') + '...'}
 						onChange={handleSearchChange}
 						value={searchInput}
 					/>
@@ -159,33 +162,7 @@ const Withdraw = () => {
 						submitLabel={t('filter')}
 						onSubmit={handleSubmit}
 						filters={[
-							{
-								label: t('filter.status'),
-								children: <div>
-                                    <Checks
-                                        id='isSuccess'
-                                        label={t('success')}
-                                        onChange={handleChange}
-                                        checked={values.isSuccess}
-                                        ariaLabel={t('success')}
-                                    />
-                                    <Checks
-                                        id='isNotFound'
-                                        label={t('not.found')}
-                                        onChange={handleChange}
-                                        checked={values.isNotFound}
-                                        ariaLabel={t('not.found')}
-                                    />
-                                    <Checks
-                                        id='isCancel'
-                                        label={t('cancel')}
-                                        onChange={handleChange}
-                                        checked={values.isCancel}
-                                        ariaLabel={t('cancel')}
-                                    />
-                                </div>
-							},
-							{
+                            {
 								label: t('filter.timestamp'),
 								children: <Dropdown >
 									<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
@@ -205,20 +182,44 @@ const Withdraw = () => {
 								children: <div>
 									<InputGroup>
 										<Input
-											id='price.min'
+											id='amount.min'
 											ariaLabel='Minimum price'
 											placeholder={t('filter.min')}
-											onChange={formik.handleChange}
-											value={values.price.min}
+											onChange={handleChange}
+											value={values.amount.min}
 											type='number'
 										/>
 										<InputGroupText>{t('filter.to')}</InputGroupText>
 										<Input
-											id='price.max'
+											id='amount.max'
 											ariaLabel='Maximum price'
 											placeholder={t('filter.max')}
-											onChange={formik.handleChange}
-											value={values.price.max}
+											onChange={handleChange}
+											value={values.amount.max}
+											type='number'
+										/>
+									</InputGroup>
+								</div>
+							},
+                            {
+								label: t('filter.last.deposit.amount'),
+								children: <div>
+									<InputGroup>
+										<Input
+											id='lastDepositAmount.min'
+											ariaLabel='Minimum price'
+											placeholder={t('filter.min')}
+											onChange={handleChange}
+											value={values.lastDepositAmount.min}
+											type='number'
+										/>
+										<InputGroupText>{t('filter.to')}</InputGroupText>
+										<Input
+											id='lastDepositAmount.max'
+											ariaLabel='Maximum price'
+											placeholder={t('filter.max')}
+											onChange={handleChange}
+											value={values.lastDepositAmount.max}
 											type='number'
 										/>
 									</InputGroup>
@@ -244,21 +245,39 @@ const Withdraw = () => {
 							},
 						]} 
 					/>
-					<SubheaderSeparator />
-					<Button
-						icon='AttachMoney'
-						color='primary'
-						isLight
-						onClick={() => setIsOpenWithdrawModal({ type: "add", selectedRow: null})}
-					>
-						{t('Withdraw')}
-					</Button>
 				</SubHeaderRight>
 			</SubHeader>
 			<Page>
 				<div className='row h-100'>
 					<div className='col-12'>
-						<WithdrawTable data={data} setIsOpenWithdrawModal={setIsOpenWithdrawModal} />
+						<WithdrawTable
+                            cardHeader={
+                                <CardHeader>
+                                    <CardLabel>
+                                        <CardTitle>{t('withdraw:withdraw.request')}</CardTitle>
+                                    </CardLabel>
+                                    <ButtonGroup>
+                                        <Button
+                                            color={withdrawTableState === 'request' ? 'success' : 'dark'}
+                                            isLight={withdrawTableState !== 'request'}
+                                            onClick={() => setWithdrawTableState('request')}
+                                        >
+                                            {t('withdraw:request')}
+                                        </Button>
+                                        <Button
+                                            color={withdrawTableState === 'history' ? 'success' : 'dark'}
+                                            isLight={withdrawTableState !== 'history'}
+                                            onClick={() => setWithdrawTableState('history')}
+                                        >
+                                            {t('withdraw:history')}
+                                        </Button>
+                                    </ButtonGroup>
+                                </CardHeader>
+                            }
+                            data={data.filter((i: any) => i.status === 'request' )} 
+                            setIsOpenWithdrawModal={setIsOpenWithdrawModal}
+                            columns={{ status: false, mobileNumber: true, notes: false }} 
+                        />
 					</div>
 				</div>
 			</Page>

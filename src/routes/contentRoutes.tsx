@@ -9,7 +9,8 @@ const LANDING = {
 	REPORT: lazy(() => import('../pages/presentation/report/Report')),
 	DEPOSIT: lazy(() => import('../pages/presentation/deposit/Deposit')),
 	CUSTOMER: lazy(() => import('../pages/presentation/customer/Customer')),
-	CUSTOMER_PROFILE: lazy(() => import('../pages/presentation/customer/CustomerProfile'))
+	CUSTOMER_PROFILE: lazy(() => import('../pages/presentation/customer/CustomerProfile')),
+	WITHDRAW: lazy(() => import('../pages/presentation/withdraw/Withdraw')),
 }
 
 const AUTH = {
@@ -79,6 +80,11 @@ const presentation = [
 	{
 		path: `${pages.customerID.path}/:id`,
 		element: <LANDING.CUSTOMER_PROFILE />,
+		exact: true,
+	},
+	{
+		path: pages.withdraw.path,
+		element: <LANDING.WITHDRAW />,
 		exact: true,
 	},
 ]

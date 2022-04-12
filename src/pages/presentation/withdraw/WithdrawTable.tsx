@@ -9,11 +9,16 @@ import Button from 'components/bootstrap/Button'
 interface WithdrawTableInterface {
     data: any
     setIsOpenWithdrawModal?: (value: { type: string, selectedRow: any }) => void
-    disabledColumns?: string[]
+    columns?: any
     cardHeader?: ReactNode
 }
 
-const WithdrawTable = ({ data, setIsOpenWithdrawModal, disabledColumns, cardHeader }: WithdrawTableInterface) => {
+const WithdrawTable = ({ 
+    data, 
+    setIsOpenWithdrawModal, 
+    columns, 
+    cardHeader 
+}: WithdrawTableInterface) => {
     const { t } = useTranslation('common')
 
     const [currentPage, setCurrentPage] = useState(1)
@@ -43,16 +48,6 @@ const WithdrawTable = ({ data, setIsOpenWithdrawModal, disabledColumns, cardHead
                                 {t('column.no')}
                             </th>
                             <th
-                                onClick={() => requestSort('status')}
-                                className='cursor-pointer text-decoration-underline'>
-                                {t('column.status')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('status')}
-                                    icon='FilterList'
-                                />
-                            </th>
-                            <th
                                 onClick={() => requestSort('timestamp')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.timestamp')}{' '}
@@ -63,15 +58,16 @@ const WithdrawTable = ({ data, setIsOpenWithdrawModal, disabledColumns, cardHead
                                 />
                             </th>
                             <th
-                                onClick={() => requestSort('from')}
+                                onClick={() => requestSort('name')}
                                 className='cursor-pointer text-decoration-underline'>
-                                {t('column.from')}{' '}
+                                {t('column.name')}{' '}
                                 <Icon
                                     size='lg'
-                                    className={getClassNamesFor('from')}
+                                    className={getClassNamesFor('name')}
                                     icon='FilterList'
                                 />
                             </th>
+                            {columns?.mobileNumber && <th>{t('column.mobile.number')}</th>}
                             <th
                                 onClick={() => requestSort('to')}
                                 className='cursor-pointer text-decoration-underline'>
@@ -92,8 +88,29 @@ const WithdrawTable = ({ data, setIsOpenWithdrawModal, disabledColumns, cardHead
                                     icon='FilterList'
                                 />
                             </th>
-                            {!disabledColumns?.includes('mobile-number') && <th>{t('column.mobile.number')}</th>}
-                            {!disabledColumns?.includes('notes') && <th>{t('column.notes')}</th>}
+                            <th
+                                onClick={() => requestSort('lastDepositAmount')}
+                                className='cursor-pointer text-decoration-underline'>
+                                {t('column.last.deposit.amount')}{' '}
+                                <Icon
+                                    size='lg'
+                                    className={getClassNamesFor('lastDepositAmount')}
+                                    icon='FilterList'
+                                />
+                            </th>
+                            {columns?.notes && <th>{t('column.notes')}</th>}
+                            {columns?.status &&
+                                <th
+                                    onClick={() => requestSort('status')}
+                                    className='cursor-pointer text-decoration-underline'>
+                                    {t('column.status')}{' '}
+                                    <Icon
+                                        size='lg'
+                                        className={getClassNamesFor('status')}
+                                        icon='FilterList'
+                                    />
+                                </th>
+                            }
                             {setIsOpenWithdrawModal && <td />}
                         </tr>
                     </thead>
@@ -104,9 +121,6 @@ const WithdrawTable = ({ data, setIsOpenWithdrawModal, disabledColumns, cardHead
                                     <div>{index + 1}</div>
                                 </td>
                                 <td>
-                                    <div>{getStatusText(i.status)}</div>
-                                </td>
-                                <td>
                                     <div>{i.date.format('ll')}</div>
                                     <div>
                                         <small className='text-muted'>
@@ -115,8 +129,13 @@ const WithdrawTable = ({ data, setIsOpenWithdrawModal, disabledColumns, cardHead
                                     </div>
                                 </td>
                                 <td>
-                                    <div>*{i.payerBankAccountNumber}</div>
+                                    <div>{i.name}</div>
                                 </td>
+                                {columns?.mobileNumber &&
+                                    <td>
+                                        <div>{i.mobileNumber}</div>
+                                    </td>
+                                }
                                 <td>
                                     <div className='d-flex align-items-center'>
                                         <div className='flex-grow-1'>
@@ -133,39 +152,35 @@ const WithdrawTable = ({ data, setIsOpenWithdrawModal, disabledColumns, cardHead
                                 <td>
                                     <div>{i.amount.toLocaleString()}</div>
                                 </td>
-                                {!disabledColumns?.includes('mobile-number') &&
-                                    <td>
-                                        <div>{i.mobileNumber}</div>
-                                    </td>
-                                }
-                                {!disabledColumns?.includes('notes') &&
+                                <td>
+                                    <div>{i.amount.toLocaleString()}</div>
+                                </td>
+                                {columns?.notes &&
                                     <td className='w-25'>
                                         <div>{i.note}</div>
                                     </td>
                                 }
+                                {columns?.status &&
+                                    <td>
+                                        <div>{getStatusText(i.status)}</div>
+                                    </td>
+                                }
                                 {setIsOpenWithdrawModal && <td>
-                                    {i.status === 'success' ? 
+                                    {i.status === 'request' ? 
                                         <><Button
                                             onClick={() => setIsOpenWithdrawModal({ type: "refund", selectedRow: i})}
                                             className='p-0'
                                             isLight
                                         >
-                                            {t('refund')}
-                                        </Button> / </>
-                                        : i.status === 'not-found' ? <><Button
+                                            {t('withdraw')}
+                                        </Button> / <Button
                                             onClick={() => setIsOpenWithdrawModal({ type: "select-payer", selectedRow: i})}
                                             className='p-0'
                                             isLight
                                         >
-                                            {t('select.payer')}
-                                        </Button> / </> : <></>
-                                    } <Button
-                                            onClick={() => setIsOpenWithdrawModal({ type: "edit", selectedRow: i})}
-                                            className='p-0'
-                                            isLight
-                                        >
-                                        {t('edit')}
-                                    </Button>
+                                            {t('reject')}
+                                        </Button></> : <></>
+                                    }
                                 </td>}
                             </tr>
                         ))}

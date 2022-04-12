@@ -67,8 +67,8 @@ const data = [
 	{
 		id: 5,
 		name: 'Travel Shopping UI Kit',
-		type: 'deposit',
-		status: 'success',
+		type: 'withdraw',
+		status: 'request',
 		payerBankAccountNumber: '1124',
 		payerBankName: 'scb',
 		recipientBankAccountNumber: '8923',
@@ -180,7 +180,7 @@ const data = [
 		id: 12,
 		name: 'Bank App UI Kit',
 		type: 'withdraw',
-		status: 'success',
+		status: 'request',
 		payerBankAccountNumber: '2123',
 		payerBankName: 'kbank',
 		recipientBankAccountNumber: '8923',
@@ -190,6 +190,22 @@ const data = [
 		price: 12,
 		count: 63,
 		date: moment().add(-9, 'day'),
+		note: ''
+	},
+	{
+		id: 13,
+		name: 'Travel Shopping UI Kit',
+		type: 'withdraw',
+		status: 'request',
+		payerBankAccountNumber: '1124',
+		payerBankName: 'scb',
+		recipientBankAccountNumber: '8923',
+		recipientBankName: 'scb',
+		mobileNumber: '+66 81 221 6834',
+		amount: 19999999999.11,
+		price: 74,
+		count: 235,
+		date: moment().add(-3, 'day'),
 		note: ''
 	},
 ];

@@ -66,6 +66,13 @@ export const dashboardMenu = {
 		icon: 'emoji_transportation',
 		subMenu: null,
 	},
+	withdraw: {
+		id: 'withdraw',
+		text: 'Withdraw',
+		path: 'withdraw',
+		icon: 'emoji_transportation',
+		subMenu: null,
+	},
 	crmDashboard: {
 		id: 'crmDashboard',
 		text: 'CRM Dashboard',
@@ -123,6 +130,12 @@ export const pages = {
 		text: 'customerID',
 		path: 'customer',
 		hide: true,
+	},
+	withdraw: {
+		id: 'withdraw',
+		text: 'withdraw',
+		path: 'withdraw',
+		icon: 'WITHDRAW',
 	},
 }
 
