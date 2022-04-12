@@ -21,13 +21,13 @@ import Dropdown, {
 } from '../../../components/bootstrap/Dropdown'
 import Checks  from '../../../components/bootstrap/forms/Checks'
 import { useTranslation } from 'react-i18next'
-import DepositModal from './DepositModal'
+// import WithdrawModal from './WithdrawModal'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import banks from 'common/data/dummyBankData'
-import DepositTable from './DepositTable'
+import WithdrawTable from './WithdrawTable'
 
-interface DepositFilterInterface {
+interface WithdrawFilterInterface {
 	searchInput: string
 	isSuccess: boolean
 	isNotFound: boolean
@@ -44,19 +44,19 @@ interface DepositFilterInterface {
 	}[]
 }
 
-interface DepositModalProperties {
+interface WithdrawModalProperties {
 	type: string
 	selectedRow: any
 }
 
-const Deposit = () => {
-    const { t } = useTranslation(['common', 'deposit'])
+const Withdraw = () => {
+    const { t } = useTranslation(['common', 'withdraw'])
 
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
-    const [isOpenDepositModal, setIsOpenDepositModal] = useState<DepositModalProperties>()
+    const [isOpenWithdrawModal, setIsOpenWithdrawModal] = useState<WithdrawModalProperties>()
 
-	const formik = useFormik<DepositFilterInterface>({
+	const formik = useFormik<WithdrawFilterInterface>({
 		initialValues: {
 			searchInput: '',
 			isSuccess: false,
@@ -147,7 +147,7 @@ const Deposit = () => {
 						id='searchInput'
 						type='search'
 						className='border-0 shadow-none bg-transparent'
-						placeholder={t('deposit:search.deposit.transaction') + '...'}
+						placeholder={t('Withdraw:search.Withdraw.transaction') + '...'}
 						onChange={handleSearchChange}
 						value={searchInput}
 					/>
@@ -249,22 +249,22 @@ const Deposit = () => {
 						icon='AttachMoney'
 						color='primary'
 						isLight
-						onClick={() => setIsOpenDepositModal({ type: "add", selectedRow: null})}
+						onClick={() => setIsOpenWithdrawModal({ type: "add", selectedRow: null})}
 					>
-						{t('deposit')}
+						{t('Withdraw')}
 					</Button>
 				</SubHeaderRight>
 			</SubHeader>
 			<Page>
 				<div className='row h-100'>
 					<div className='col-12'>
-						<DepositTable data={data} setIsOpenDepositModal={setIsOpenDepositModal} />
+						<WithdrawTable data={data} setIsOpenWithdrawModal={setIsOpenWithdrawModal} />
 					</div>
 				</div>
 			</Page>
-			{isOpenDepositModal && <DepositModal setIsOpen={setIsOpenDepositModal} isOpen={Boolean(isOpenDepositModal)} properties={isOpenDepositModal} />}
+			{/* {isOpenWithdrawModal && <WithdrawModal setIsOpen={setIsOpenWithdrawModal} isOpen={Boolean(isOpenWithdrawModal)} properties={isOpenWithdrawModal} />} */}
 		</PageWrapper>
 	)
 }
 
-export default Deposit
+export default Withdraw

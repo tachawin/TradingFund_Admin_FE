@@ -3,14 +3,18 @@ import { Manager, Popper, Reference } from 'react-popper'
 import classNames from 'classnames'
 // import useEventOutside from '@omtanke/react-use-event-outside'
 import useDarkMode from '../../hooks/useDarkMode'
+import Button from './Button'
 
 interface DropdownToggleInterface {
-	children: any
+	children?: any
 	isOpen?: boolean
 	setIsOpen?: (value?: any) => void
 	hasIcon?: boolean
 	isStatic?: boolean
 	index?: number
+	color?: string
+	isLight?: boolean
+	icon?: string
 }
 
 const useEventOutside = (ref: any, onClickOutSide: any) => {
@@ -32,7 +36,7 @@ const useEventOutside = (ref: any, onClickOutSide: any) => {
 	}, [ref]);
 }  
 
-export const DropdownToggle = ({ children, isOpen = false, setIsOpen, hasIcon = true, index }: DropdownToggleInterface) => {
+export const DropdownToggle = ({ children, icon, isOpen = false, setIsOpen, hasIcon = true, index, color, isLight }: DropdownToggleInterface) => {
 	const dropdownButtonRef = useRef(null)
 
 	const setButtonRef = useCallback((node, ref) => {
@@ -41,19 +45,22 @@ export const DropdownToggle = ({ children, isOpen = false, setIsOpen, hasIcon = 
 	}, [])
 
 	return (
-		<div
+		<Button
+			icon={icon}
 			onClick={(e: any) => setIsOpen && setIsOpen(index ?? !isOpen)}
+			color={color || 'primary'}
+			isLight={isLight || true}
 			className={classNames({
 				'dropdown-toggle': hasIcon,
-				'dropdown-toggle-split': children.props.isButtonGroup,
+				'dropdown-toggle-split': children?.props?.isButtonGroup,
 				// Only presentation
 				show: isOpen,
-				'aria-expanded': isOpen,
-			}, children?.props?.className
+				...children?.props?.className
+ 			}, 
 			)}
 		>
 			{children}
-		</div>
+		</Button>
 	)
 }
 

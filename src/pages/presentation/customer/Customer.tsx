@@ -222,12 +222,12 @@ const Customer = () => {
 							{
 								label: t('filter.created.at'),
 								children: <Dropdown >
-									<DropdownToggle hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										<Button color='dark' isLight data-tour='date-range'>
+									<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
+										<span data-tour='date-range'>
 											{`${moment(values.createdAtDate[0].startDate).format('MMM Do YY')} - ${moment(
 												values.createdAtDate[0].endDate,
 											).format('MMM Do YY')}`}
-										</Button>
+										</span>
 									</DropdownToggle>
 									<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
 										{datePicker(values.createdAtDate, 'createdAtDate')}
@@ -237,12 +237,12 @@ const Customer = () => {
 							{
 								label: t('filter.updated.at'),
 								children: <Dropdown>
-									<DropdownToggle hasIcon={false} isOpen={Boolean(isOpenUpdatedAtDatePicker)} setIsOpen={setIsOpenUpdatedAtDatePicker}>
-										<Button color='dark' isLight data-tour='date-range'>
+									<DropdownToggle hasIcon={false} color='dark' isLight isOpen={Boolean(isOpenUpdatedAtDatePicker)} setIsOpen={setIsOpenUpdatedAtDatePicker}>
+										<span data-tour='date-range'>
 											{`${moment(values.updatedAtDate[0].startDate).format('MMM Do YY')} - ${moment(
 												values.updatedAtDate[0].endDate,
 											).format('MMM Do YY')}`}
-										</Button>
+										</span>
 									</DropdownToggle>
 									<DropdownMenu isAlignmentEnd isOpen={isOpenUpdatedAtDatePicker} setIsOpen={setIsOpenUpdatedAtDatePicker}>
 										{datePicker(values.updatedAtDate, 'updatedAtDate')}
@@ -390,7 +390,7 @@ const Customer = () => {
 												<td>
                                                     <Button
                                                         icon='Visibility'
-                                                        onClick={() => navigate(`../${i.id}`)}
+                                                        onClick={() => navigate(`${i.id}`)}
                                                         color='primary'
                                                         isLight
                                                     >
@@ -415,8 +415,6 @@ const Customer = () => {
 				</div>
 			</Page>
 			<CustomerAddModal setIsOpen={setIsOpenCustomerModal} isOpen={Boolean(isOpenCustomerModal)} type={isOpenCustomerModal} data={selectedRowData} />
-			{/* <CustomerPermissionModal setIsOpen={setIsOpenPermissionModal} isOpen={Boolean(isOpenPermissionModal)} id={selectedRowData?.id} name={selectedRowData?.name} /> */}
-			{/* <CustomerDeleteModal setIsOpen={setIsOpenDeleteModal} isOpen={Boolean(isOpenDeleteModal)} data={selectedRowData} /> */}
 		</PageWrapper>
 	)
 }

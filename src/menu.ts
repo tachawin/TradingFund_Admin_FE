@@ -118,6 +118,12 @@ export const pages = {
 		path: 'customer',
 		icon: 'CUSTOMER',
 	},
+	customerID: {
+		id: 'customerID',
+		text: 'customerID',
+		path: 'customer',
+		hide: true,
+	},
 }
 
 export const demoPages = {

@@ -8,7 +8,8 @@ const LANDING = {
 	ADMIN: lazy(() => import('../pages/presentation/admin/Admin')),
 	REPORT: lazy(() => import('../pages/presentation/report/Report')),
 	DEPOSIT: lazy(() => import('../pages/presentation/deposit/Deposit')),
-	CUSTOMER: lazy(() => import('../pages/presentation/customer/Customer'))
+	CUSTOMER: lazy(() => import('../pages/presentation/customer/Customer')),
+	CUSTOMER_PROFILE: lazy(() => import('../pages/presentation/customer/CustomerProfile'))
 }
 
 const AUTH = {
@@ -74,7 +75,12 @@ const presentation = [
 		path: pages.customer.path,
 		element: <LANDING.CUSTOMER />,
 		exact: true
-	}
+	},
+	{
+		path: `${pages.customerID.path}/:id`,
+		element: <LANDING.CUSTOMER_PROFILE />,
+		exact: true,
+	},
 ]
 const contents = [...presentation]
 

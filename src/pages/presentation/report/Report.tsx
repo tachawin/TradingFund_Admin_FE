@@ -189,12 +189,12 @@ const Report = () => {
 							{
 								label: t('filter.timestamp'),
 								children: <Dropdown >
-									<DropdownToggle hasIcon={false} isOpen={Boolean(isOpenTimestampDatePicker)} setIsOpen={setIsOpenTimestampDatePicker}>
-										<Button color='dark' isLight data-tour='date-range'>
+									<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenTimestampDatePicker)} setIsOpen={setIsOpenTimestampDatePicker}>
+										<span data-tour='date-range'>
 											{`${moment(values.timestamp[0].startDate).format('MMM Do YY')} - ${moment(
 												values.timestamp[0].endDate,
 											).format('MMM Do YY')}`}
-										</Button>
+										</span>
 									</DropdownToggle>
 									<DropdownMenu isAlignmentEnd isOpen={isOpenTimestampDatePicker} setIsOpen={setIsOpenTimestampDatePicker}>
 										{datePicker(values.timestamp, 'timestamp')}

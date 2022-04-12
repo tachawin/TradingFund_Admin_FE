@@ -35,10 +35,8 @@ const MetricBoard = ({ title, dayTotal, nightTotal }: MetricInterface) => {
 				</CardLabel>
 				<CardActions>
                     <Dropdown>
-                        <DropdownToggle hasIcon={false} isOpen={isOpenCalendar} setIsOpen={setIsOpenCalendar}>
-                            <Button color='dark' isLight>
-                                {getLabel(date, Views.DAY)}
-                            </Button>
+                        <DropdownToggle color='dark' isLight hasIcon={false} isOpen={isOpenCalendar} setIsOpen={setIsOpenCalendar}>
+                            <span>{getLabel(date, Views.DAY)}</span>
                         </DropdownToggle>
                         <DropdownMenu isAlignmentEnd isOpen={isOpenCalendar} setIsOpen={setIsOpenCalendar}>
                             <DatePicker

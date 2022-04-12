@@ -69,9 +69,7 @@ const EmployeeList = () => {
 				</SubHeaderLeft>
 				<SubHeaderRight>
 					<Dropdown isOpen={filterMenu} setIsOpen={setFilterMenu}>
-						<DropdownToggle hasIcon={false}>
-							<Button icon='FilterAlt' color='primary' isLight />
-						</DropdownToggle>
+						<DropdownToggle icon='FilterAlt' color='primary' isLight hasIcon={false} />
 						<DropdownMenu isAlignmentEnd size='lg' isCloseAfterLeave={false}>
 							<div className='container py-2'>
 								<form className='row g-3' onSubmit={formik.handleSubmit}>

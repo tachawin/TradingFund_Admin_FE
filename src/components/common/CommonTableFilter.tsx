@@ -25,14 +25,8 @@ const CommonTableFilter = ({ filters, resetLabel, onReset, submitLabel, onSubmit
 
     return (
         <Dropdown>
-            <DropdownToggle hasIcon={false} isOpen={Boolean(isOpenFilter)} setIsOpen={setOpenFilter}>
-                <Button
-                    icon='FilterAlt'
-                    color='dark'
-                    isLight
-                    className='btn-only-icon position-relative'>
-                </Button>
-            </DropdownToggle>
+            <DropdownToggle icon='FilterAlt' hasIcon={false} color='dark' isLight isOpen={Boolean(isOpenFilter)} setIsOpen={setOpenFilter} />
+                
             <DropdownMenu isAlignmentEnd size='lg' isOpen={isOpenFilter} setIsOpen={setOpenFilter}>
                 <div className='container py-2'>
                     <div className='row g-3'>

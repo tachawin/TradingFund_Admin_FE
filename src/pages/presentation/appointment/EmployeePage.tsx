@@ -542,14 +542,8 @@ const EmployeePage = () => {
 													</td>
 													<td>
 														<Dropdown>
-															<DropdownToggle hasIcon={false}>
-																<Button
-																	isLink
-																	color={item.status.color}
-																	icon='Circle'
-																	className='text-nowrap'>
-																	{item.status.name}
-																</Button>
+															<DropdownToggle color={item.status.color} icon='Circle' hasIcon={false}>
+																<span>{item.status.name}</span>
 															</DropdownToggle>
 															<DropdownMenu>
 																{Object.values(EVENT_STATUS).map(

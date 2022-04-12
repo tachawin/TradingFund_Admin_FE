@@ -6,14 +6,14 @@ import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
 
-interface DepositTableInterface {
+interface WithdrawTableInterface {
     data: any
-    setIsOpenDepositModal?: (value: { type: string, selectedRow: any }) => void
+    setIsOpenWithdrawModal?: (value: { type: string, selectedRow: any }) => void
     disabledColumns?: string[]
     cardHeader?: ReactNode
 }
 
-const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader }: DepositTableInterface) => {
+const WithdrawTable = ({ data, setIsOpenWithdrawModal, disabledColumns, cardHeader }: WithdrawTableInterface) => {
     const { t } = useTranslation('common')
 
     const [currentPage, setCurrentPage] = useState(1)
@@ -94,7 +94,7 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                             </th>
                             {!disabledColumns?.includes('mobile-number') && <th>{t('column.mobile.number')}</th>}
                             {!disabledColumns?.includes('notes') && <th>{t('column.notes')}</th>}
-                            {setIsOpenDepositModal && <td />}
+                            {setIsOpenWithdrawModal && <td />}
                         </tr>
                     </thead>
                     <tbody>
@@ -143,24 +143,24 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                                         <div>{i.note}</div>
                                     </td>
                                 }
-                                {setIsOpenDepositModal && <td>
+                                {setIsOpenWithdrawModal && <td>
                                     {i.status === 'success' ? 
                                         <><Button
-                                            onClick={() => setIsOpenDepositModal({ type: "refund", selectedRow: i})}
+                                            onClick={() => setIsOpenWithdrawModal({ type: "refund", selectedRow: i})}
                                             className='p-0'
                                             isLight
                                         >
                                             {t('refund')}
                                         </Button> / </>
                                         : i.status === 'not-found' ? <><Button
-                                            onClick={() => setIsOpenDepositModal({ type: "select-payer", selectedRow: i})}
+                                            onClick={() => setIsOpenWithdrawModal({ type: "select-payer", selectedRow: i})}
                                             className='p-0'
                                             isLight
                                         >
                                             {t('select.payer')}
                                         </Button> / </> : <></>
                                     } <Button
-                                            onClick={() => setIsOpenDepositModal({ type: "edit", selectedRow: i})}
+                                            onClick={() => setIsOpenWithdrawModal({ type: "edit", selectedRow: i})}
                                             className='p-0'
                                             isLight
                                         >
@@ -184,4 +184,4 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
     )
 }
 
-export default DepositTable
+export default WithdrawTable
