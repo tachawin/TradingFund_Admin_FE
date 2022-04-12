@@ -7,6 +7,8 @@
     "success": "สำเร็จ",
     "not.found": "ไม่พบ",
     "refund": "ดึงเครดิต",
+    "approve": "ยืนยัน",
+    "reject": "ยกเลิก",
     "select.payer": "เลือกลูกค้า",
 
     "column.no": "เลขที่",
@@ -23,6 +25,10 @@
     "column.from": "โอนจาก",
     "column.to": "เข้าบัญชี",
     "column.amount": "จำนวนเงิน",
+    "column.points": "จำนวนแต้ม",
+    "column.product": "สินค้า",
+    "column.credit": "เครดิต",
+    "column.address": "ที่อยู่จัดส่ง",
     "column.notes": "หมายเหตุ",
 
     "filter.status": "สถานะ",
@@ -36,6 +42,8 @@
     "filter.updated.at": "วันที่อัปเดต",
     "filter.last.deposit.amount": "ยอดฝากล่าสุด",
     "filter.reset": "ล้าง",
+    "filter.points": "จำนวนแต้ม",
+    "filter.credit": "จำนวนเครดิต",
     "filter.min": "ขั้นต่ำ",
     "filter.to": "ถึง",
     "filter.max": "สูงสุด",

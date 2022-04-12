@@ -73,6 +73,20 @@ export const dashboardMenu = {
 		icon: 'emoji_transportation',
 		subMenu: null,
 	},
+	reward: {
+		id: 'reward',
+		text: 'Reward',
+		path: 'reward',
+		icon: 'emoji_transportation',
+		subMenu: null,
+	},
+	credit: {
+		id: 'credit',
+		text: 'Credit',
+		path: 'credit',
+		icon: 'emoji_transportation',
+		subMenu: null,
+	},
 	crmDashboard: {
 		id: 'crmDashboard',
 		text: 'CRM Dashboard',
@@ -136,6 +150,18 @@ export const pages = {
 		text: 'withdraw',
 		path: 'withdraw',
 		icon: 'WITHDRAW',
+	},
+	reward: {
+		id: 'reward',
+		text: 'reward',
+		path: 'reward',
+		icon: 'reward',
+	},
+	credit: {
+		id: 'credit',
+		text: 'credit',
+		path: 'credit',
+		icon: 'credit',
 	},
 }
 
