@@ -46,6 +46,11 @@ interface CreditFilterInterface {
 	}[]
 }
 
+enum CREDIT_TABLE_STATE {
+	REQUEST = 'request',
+	HISTORY = 'history'
+}
+
 interface CreditModalProperties {
 	type: string
 	selectedRow: any
@@ -57,7 +62,7 @@ const Credit = () => {
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
     const [isOpenCreditModal, setIsOpenCreditModal] = useState<CreditModalProperties>()
-    const [CreditTableState, setCreditTableState] = useState('request')
+    const [creditTableState, setCreditTableState] = useState(CREDIT_TABLE_STATE.REQUEST)
 
 	const formik = useFormik<CreditFilterInterface>({
 		initialValues: {
@@ -138,7 +143,9 @@ const Credit = () => {
 						id='searchInput'
 						type='search'
 						className='border-0 shadow-none bg-transparent'
-						placeholder={t('credit:search.credit.transaction') + '...'}
+						placeholder={creditTableState === CREDIT_TABLE_STATE.REQUEST ?
+							t('credit:search.credit.request.transaction') + '...' : t('credit:search.credit.history.transaction') + '...'
+						}
 						onChange={handleSearchChange}
 						value={searchInput}
 					/>
@@ -150,6 +157,26 @@ const Credit = () => {
 						submitLabel={t('filter')}
 						onSubmit={handleSubmit}
 						filters={[
+							{
+								label: t('filter.status'),
+								disabled: creditTableState === CREDIT_TABLE_STATE.REQUEST,
+								children: <div>
+                                    <Checks
+                                        id='isApproved'
+                                        label={t('approve')}
+                                        onChange={handleChange}
+                                        checked={values.isApproved}
+                                        ariaLabel={t('success')}
+                                    />
+                                    <Checks
+                                        id='isRejected'
+                                        label={t('reject')}
+                                        onChange={handleChange}
+                                        checked={values.isRejected}
+                                        ariaLabel={t('not.found')}
+                                    />
+                                </div>
+							},
                             {
 								label: t('filter.timestamp'),
 								children: <Dropdown >
@@ -224,29 +251,33 @@ const Credit = () => {
                             cardHeader={
                                 <CardHeader>
                                     <CardLabel>
-                                        <CardTitle>{t('credit:credit.request')}</CardTitle>
+									<CardTitle>{creditTableState === CREDIT_TABLE_STATE.REQUEST ? 
+										t('credit:credit.request') : t('credit:credit.history')}</CardTitle>
                                     </CardLabel>
                                     <ButtonGroup>
                                         <Button
-                                            color={CreditTableState === 'request' ? 'success' : 'dark'}
-                                            isLight={CreditTableState !== 'request'}
-                                            onClick={() => setCreditTableState('request')}
+                                            color={creditTableState === CREDIT_TABLE_STATE.REQUEST ? 'success' : 'dark'}
+                                            isLight={creditTableState !== CREDIT_TABLE_STATE.REQUEST}
+                                            onClick={() => setCreditTableState(CREDIT_TABLE_STATE.REQUEST)}
                                         >
                                             {t('credit:request')}
                                         </Button>
                                         <Button
-                                            color={CreditTableState === 'history' ? 'success' : 'dark'}
-                                            isLight={CreditTableState !== 'history'}
-                                            onClick={() => setCreditTableState('history')}
+                                            color={creditTableState === CREDIT_TABLE_STATE.HISTORY ? 'success' : 'dark'}
+                                            isLight={creditTableState !== CREDIT_TABLE_STATE.HISTORY}
+                                            onClick={() => setCreditTableState(CREDIT_TABLE_STATE.HISTORY)}
                                         >
                                             {t('credit:history')}
                                         </Button>
                                     </ButtonGroup>
                                 </CardHeader>
                             }
-                            data={data.filter((i: any) => i.status === 'request' )} 
-                            setIsOpenCreditModal={setIsOpenCreditModal}
-                            columns={{ mobileNumber: true, notes: true }} 
+                            data={creditTableState === CREDIT_TABLE_STATE.REQUEST ? 
+								data.filter((i: any) => i.status === 'request') : 
+								data.filter((i: any) => i.status !== 'request')
+							}
+                            setIsOpenCreditModal={creditTableState === CREDIT_TABLE_STATE.REQUEST ? setIsOpenCreditModal : undefined}
+                            columns={{ mobileNumber: true, notes: true, status: creditTableState === CREDIT_TABLE_STATE.HISTORY, operator: creditTableState === CREDIT_TABLE_STATE.HISTORY }} 
                         />
 					</div>
 				</div>

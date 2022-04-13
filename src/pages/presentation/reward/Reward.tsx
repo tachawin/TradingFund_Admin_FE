@@ -136,8 +136,7 @@ const Reward = () => {
 						type='search'
 						className='border-0 shadow-none bg-transparent'
 						placeholder={rewardTableState === REWARD_TABLE_STATE.REQUEST ?
-							t('reward:search.reward.request.transaction')  : t('reward:search.reward.history.transaction')
-							+ '...'
+							t('reward:search.reward.request.transaction') + '...' : t('reward:search.reward.history.transaction') + '...'
 						}
 						onChange={handleSearchChange}
 						value={searchInput}

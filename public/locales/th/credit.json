@@ -1,6 +1,9 @@
 {
-    "search.credit.transaction": "ค้นหาคำขอแลกเครดิต",
+    "search.credit.request.transaction": "ค้นหาคำขอแลกเครดิต",
+    "search.credit.history.transaction": "ค้นหาประวัติแลกเครดิต",
     "credit.request": "คำขอแลกเครดิต",
+    "credit.history": "ประวัติแลกเครดิต",
+
     "request": "คำขอ",
     "history": "ประวัติ"
 }

@@ -78,6 +78,30 @@ const CreditTable = ({
                                     icon='FilterList'
                                 />
                             </th>
+                            {columns?.status &&
+                                <th
+                                    onClick={() => requestSort('status')}
+                                    className='cursor-pointer text-decoration-underline'>
+                                    {t('column.status')}{' '}
+                                    <Icon
+                                        size='lg'
+                                        className={getClassNamesFor('status')}
+                                        icon='FilterList'
+                                    />
+                                </th>
+                            }
+                            {columns?.operator &&
+                                <th
+                                    onClick={() => requestSort('operator')}
+                                    className='cursor-pointer text-decoration-underline'>
+                                    {t('column.operator')}{' '}
+                                    <Icon
+                                        size='lg'
+                                        className={getClassNamesFor('operator')}
+                                        icon='FilterList'
+                                    />
+                                </th>
+                            }
                             {setIsOpenCreditModal && <td />}
                         </tr>
                     </thead>
@@ -106,6 +130,16 @@ const CreditTable = ({
                                 <td>
                                     <div>{i.credit}</div>
                                 </td>
+                                {columns?.status &&
+                                    <td>
+                                        <div>{getStatusText(i.status)}</div>
+                                    </td>
+                                }
+                                {columns?.operator &&
+                                    <td>
+                                        <div>{i.operator}</div>
+                                    </td>
+                                }
                                 {setIsOpenCreditModal && <td>
                                     {i.status === 'request' ? 
                                         <><Button
