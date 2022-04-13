@@ -78,8 +78,32 @@ const RewardTable = ({
                                     icon='FilterList'
                                 />
                             </th>
-                            <th>{t('column.address')}</th>
-                            {columns?.notes && <th>{t('column.notes')}</th>}
+                            <th style={{ width: '15%' }}>{t('column.address')}</th>
+                            {columns?.notes && <th style={{ width: '15%' }}>{t('column.notes')}</th>}
+                            {columns?.status &&
+                                <th
+                                    onClick={() => requestSort('status')}
+                                    className='cursor-pointer text-decoration-underline'>
+                                    {t('column.status')}{' '}
+                                    <Icon
+                                        size='lg'
+                                        className={getClassNamesFor('status')}
+                                        icon='FilterList'
+                                    />
+                                </th>
+                            }
+                            {columns?.operator &&
+                                <th
+                                    onClick={() => requestSort('operator')}
+                                    className='cursor-pointer text-decoration-underline'>
+                                    {t('column.operator')}{' '}
+                                    <Icon
+                                        size='lg'
+                                        className={getClassNamesFor('operator')}
+                                        icon='FilterList'
+                                    />
+                                </th>
+                            }
                             {setIsOpenRewardModal && <td />}
                         </tr>
                     </thead>
@@ -108,12 +132,22 @@ const RewardTable = ({
                                 <td>
                                     <div>{i.product}</div>
                                 </td>
-                                <td className='w-25'>
+                                <td>
                                     <div>{i.address}</div>
                                 </td>
                                 {columns?.notes &&
                                     <td>
                                         <div>{i.note}</div>
+                                    </td>
+                                }
+                                {columns?.status &&
+                                    <td>
+                                        <div>{getStatusText(i.status)}</div>
+                                    </td>
+                                }
+                                {columns?.operator &&
+                                    <td>
+                                        <div>{i.operator}</div>
                                     </td>
                                 }
                                 {setIsOpenRewardModal && <td>

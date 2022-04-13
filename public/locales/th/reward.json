@@ -1,6 +1,9 @@
 {
-    "search.reward.transaction": "ค้นหาคำขอแลกแต้ม",
+    "search.reward.request.transaction": "ค้นหาคำขอแลกแต้ม",
+    "search.reward.history.transaction": "ค้นหาประวัติแลกแต้ม",
     "reward.request": "คำขอแลกแต้ม",
+    "reward.history": "ประวัติแลกแต้ม",
+
     "request": "คำขอ",
     "history": "ประวัติ"
 }

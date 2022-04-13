@@ -7,7 +7,7 @@ import SubHeader, {
 	SubHeaderRight
 } from '../../../layout/SubHeader/SubHeader'
 import Page from '../../../layout/Page/Page'
-import { demoPages } from '../../../menu'
+import { demoPages, pages } from '../../../menu'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
 import data from '../../../common/data/dummyRewardData'
@@ -47,13 +47,18 @@ interface RewardModalProperties {
 	selectedRow: any
 }
 
+enum REWARD_TABLE_STATE {
+	REQUEST = 'request',
+	HISTORY = 'history'
+}
+
 const Reward = () => {
     const { t } = useTranslation(['common', 'reward'])
 
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
     const [isOpenRewardModal, setIsOpenRewardModal] = useState<RewardModalProperties>()
-    const [RewardTableState, setRewardTableState] = useState('request')
+    const [rewardTableState, setRewardTableState] = useState(REWARD_TABLE_STATE.REQUEST)
 
 	const formik = useFormik<RewardFilterInterface>({
 		initialValues: {
@@ -118,7 +123,7 @@ const Reward = () => {
 	}
 
 	return (
-		<PageWrapper title={demoPages.crm.subMenu.customersList.text}>
+		<PageWrapper title={pages.reward.text}>
 			<SubHeader>
 				<SubHeaderLeft>
 					<label
@@ -130,7 +135,10 @@ const Reward = () => {
 						id='searchInput'
 						type='search'
 						className='border-0 shadow-none bg-transparent'
-						placeholder={t('reward:search.reward.transaction') + '...'}
+						placeholder={rewardTableState === REWARD_TABLE_STATE.REQUEST ?
+							t('reward:search.reward.request.transaction')  : t('reward:search.reward.history.transaction')
+							+ '...'
+						}
 						onChange={handleSearchChange}
 						value={searchInput}
 					/>
@@ -142,6 +150,26 @@ const Reward = () => {
 						submitLabel={t('filter')}
 						onSubmit={handleSubmit}
 						filters={[
+							{
+								label: t('filter.status'),
+								disabled: rewardTableState === REWARD_TABLE_STATE.REQUEST,
+								children: <div>
+                                    <Checks
+                                        id='isApproved'
+                                        label={t('approve')}
+                                        onChange={handleChange}
+                                        checked={values.isApproved}
+                                        ariaLabel={t('success')}
+                                    />
+                                    <Checks
+                                        id='isRejected'
+                                        label={t('reject')}
+                                        onChange={handleChange}
+                                        checked={values.isRejected}
+                                        ariaLabel={t('not.found')}
+                                    />
+                                </div>
+							},
                             {
 								label: t('filter.timestamp'),
 								children: <Dropdown >
@@ -192,29 +220,33 @@ const Reward = () => {
                             cardHeader={
                                 <CardHeader>
                                     <CardLabel>
-                                        <CardTitle>{t('reward:reward.request')}</CardTitle>
+                                        <CardTitle>{rewardTableState === REWARD_TABLE_STATE.REQUEST ? 
+										t('reward:reward.request') : t('reward:reward.history')}</CardTitle>
                                     </CardLabel>
                                     <ButtonGroup>
                                         <Button
-                                            color={RewardTableState === 'request' ? 'success' : 'dark'}
-                                            isLight={RewardTableState !== 'request'}
-                                            onClick={() => setRewardTableState('request')}
+                                            color={rewardTableState === REWARD_TABLE_STATE.REQUEST ? 'success' : 'dark'}
+                                            isLight={rewardTableState !== REWARD_TABLE_STATE.REQUEST}
+                                            onClick={() => setRewardTableState(REWARD_TABLE_STATE.REQUEST)}
                                         >
                                             {t('reward:request')}
                                         </Button>
                                         <Button
-                                            color={RewardTableState === 'history' ? 'success' : 'dark'}
-                                            isLight={RewardTableState !== 'history'}
-                                            onClick={() => setRewardTableState('history')}
+                                            color={rewardTableState === REWARD_TABLE_STATE.HISTORY ? 'success' : 'dark'}
+                                            isLight={rewardTableState !== REWARD_TABLE_STATE.HISTORY}
+                                            onClick={() => setRewardTableState(REWARD_TABLE_STATE.HISTORY)}
                                         >
                                             {t('reward:history')}
                                         </Button>
                                     </ButtonGroup>
                                 </CardHeader>
                             }
-                            data={data.filter((i: any) => i.status === 'request' )} 
-                            setIsOpenRewardModal={setIsOpenRewardModal}
-                            columns={{ mobileNumber: true, notes: true }} 
+                            data={rewardTableState === REWARD_TABLE_STATE.REQUEST ? 
+								data.filter((i: any) => i.status === 'request') : 
+								data.filter((i: any) => i.status !== 'request')
+							} 
+                            setIsOpenRewardModal={rewardTableState === REWARD_TABLE_STATE.REQUEST ? setIsOpenRewardModal : undefined}
+                            columns={{ mobileNumber: true, notes: true, status: rewardTableState === REWARD_TABLE_STATE.HISTORY, operator: rewardTableState === REWARD_TABLE_STATE.HISTORY }} 
                         />
 					</div>
 				</div>
