@@ -8,7 +8,7 @@ import Button from 'components/bootstrap/Button'
 
 interface WithdrawTableInterface {
     data: any
-    setIsOpenWithdrawModal?: (value: { type: string, selectedRow: any }) => void
+    setIsOpenWithdrawModal?: (value: { selectedRow: any }) => void
     columns?: any
     cardHeader?: ReactNode
 }
@@ -218,13 +218,13 @@ const WithdrawTable = ({
                                 {setIsOpenWithdrawModal && <td>
                                     {i.status === 'request' ? 
                                         <><Button
-                                            onClick={() => setIsOpenWithdrawModal({ type: "refund", selectedRow: i})}
+                                            onClick={() => setIsOpenWithdrawModal({ selectedRow: i})}
                                             className='p-0'
                                             isLight
                                         >
                                             {t('withdraw')}
                                         </Button> / <Button
-                                            onClick={() => setIsOpenWithdrawModal({ type: "select-payer", selectedRow: i})}
+                                            onClick={() => setIsOpenWithdrawModal({ selectedRow: i})}
                                             className='p-0'
                                             isLight
                                         >

@@ -8,13 +8,13 @@
     "history": "ประวัติ",
 
     "approve.request": "ยืนยันคำขอ",
-    "reject.request": "ปฏิเสธคำขอ",
+    "reject.request": "ยกเลิกคำขอ",
 
     "form.approve.request.confirmation": "ต้องการยืนยันคำขอเพื่อแลก {{credit}} เครดิต ใช่หรือไม่",
-    "form.reject.request.confirmation": "ต้องการปฏิเสธคำขอเพื่อแลก {{credit}} เครดิต ใช่หรือไม่",
+    "form.reject.request.confirmation": "ต้องการยกเลิกคำขอเพื่อแลก {{credit}} เครดิต ใช่หรือไม่",
 
     "approve.successfully": "ยืนยันคำขอแลกเครดิตสำเร็จ",
     "approve.request.successfully": "ยืนยันคำขอแลกเครดิตของ {{mobileNumber}} สำเร็จ",
-    "reject.successfully": "ปฏิเสธคำขอแลกเครดิตสำเร็จ",
-    "reject.request.successfully": "ปฏิเสธคำขอแลกเครดิตของ {{mobileNumber}} สำเร็จ"
+    "reject.successfully": "ยกเลิกคำขอแลกเครดิตสำเร็จ",
+    "reject.request.successfully": "ยกเลิกคำขอแลกเครดิตของ {{mobileNumber}} สำเร็จ"
 }

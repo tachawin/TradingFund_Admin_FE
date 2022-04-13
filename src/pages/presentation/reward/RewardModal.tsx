@@ -64,7 +64,7 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
             </ModalBody>
             <ModalFooter className='px-4 pb-4 flex-nowrap'>
                 <Button isOutline={type === 'approve'} className='w-50' color='info' onClick={() => setIsOpen(false)}>
-                    {t('cancel')}
+                    {t('back')}
                 </Button>
                 <Button isOutline={type === 'reject'} className='w-50'color='info' onClick={type === 'approve' ? handleApprove : handleReject}>
                     {type === 'approve' ? t('approve') : t('reject')}

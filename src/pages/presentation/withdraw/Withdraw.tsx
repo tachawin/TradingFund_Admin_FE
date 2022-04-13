@@ -20,7 +20,7 @@ import Dropdown, {
 } from '../../../components/bootstrap/Dropdown'
 import Checks  from '../../../components/bootstrap/forms/Checks'
 import { useTranslation } from 'react-i18next'
-// import WithdrawModal from './WithdrawModal'
+import WithdrawModal from './WithdrawModal'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import banks from 'common/data/dummyBankData'
@@ -46,7 +46,6 @@ interface WithdrawFilterInterface {
 }
 
 interface WithdrawModalProperties {
-	type: string
 	selectedRow: any
 }
 
@@ -301,7 +300,7 @@ const Withdraw = () => {
 					</div>
 				</div>
 			</Page>
-			{/* {isOpenWithdrawModal && <WithdrawModal setIsOpen={setIsOpenWithdrawModal} isOpen={Boolean(isOpenWithdrawModal)} properties={isOpenWithdrawModal} />} */}
+			{isOpenWithdrawModal && <WithdrawModal setIsOpen={setIsOpenWithdrawModal} isOpen={Boolean(isOpenWithdrawModal)} properties={isOpenWithdrawModal} />}
 		</PageWrapper>
 	)
 }
