@@ -15,6 +15,7 @@ interface DropdownToggleInterface {
 	color?: string
 	isLight?: boolean
 	icon?: string
+	className?: any
 }
 
 const useEventOutside = (ref: any, onClickOutSide: any) => {
@@ -36,7 +37,7 @@ const useEventOutside = (ref: any, onClickOutSide: any) => {
 	}, [ref]);
 }  
 
-export const DropdownToggle = ({ children, icon, isOpen = false, setIsOpen, hasIcon = true, index, color, isLight }: DropdownToggleInterface) => {
+export const DropdownToggle = ({ children, icon, isOpen = false, setIsOpen, hasIcon = true, index, color, isLight, className }: DropdownToggleInterface) => {
 	const dropdownButtonRef = useRef(null)
 
 	const setButtonRef = useCallback((node, ref) => {
@@ -55,7 +56,7 @@ export const DropdownToggle = ({ children, icon, isOpen = false, setIsOpen, hasI
 				'dropdown-toggle-split': children?.props?.isButtonGroup,
 				// Only presentation
 				show: isOpen,
-				...children?.props?.className
+				...className
  			}, 
 			)}
 		>

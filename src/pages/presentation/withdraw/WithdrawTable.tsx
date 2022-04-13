@@ -9,13 +9,15 @@ import Button from 'components/bootstrap/Button'
 interface WithdrawTableInterface {
     data: any
     setIsOpenWithdrawModal?: (value: { selectedRow: any }) => void
+    setIsOpenCancelWithdrawModal?: (value: { selectedRow: any }) => void
     columns?: any
     cardHeader?: ReactNode
 }
 
 const WithdrawTable = ({ 
     data, 
-    setIsOpenWithdrawModal, 
+    setIsOpenWithdrawModal,
+    setIsOpenCancelWithdrawModal, 
     columns, 
     cardHeader 
 }: WithdrawTableInterface) => {
@@ -137,7 +139,7 @@ const WithdrawTable = ({
                                     />
                                 </th>
                             }
-                            {setIsOpenWithdrawModal && <td />}
+                            {setIsOpenCancelWithdrawModal && <td />}
                         </tr>
                     </thead>
                     <tbody>
@@ -215,7 +217,7 @@ const WithdrawTable = ({
                                         <div>{i.operator}</div>
                                     </td>
                                 }
-                                {setIsOpenWithdrawModal && <td>
+                                {(setIsOpenWithdrawModal && setIsOpenCancelWithdrawModal) &&  <td>
                                     {i.status === 'request' ? 
                                         <><Button
                                             onClick={() => setIsOpenWithdrawModal({ selectedRow: i})}
@@ -224,7 +226,7 @@ const WithdrawTable = ({
                                         >
                                             {t('withdraw')}
                                         </Button> / <Button
-                                            onClick={() => setIsOpenWithdrawModal({ selectedRow: i})}
+                                            onClick={() => setIsOpenCancelWithdrawModal({ selectedRow: i})}
                                             className='p-0'
                                             isLight
                                         >

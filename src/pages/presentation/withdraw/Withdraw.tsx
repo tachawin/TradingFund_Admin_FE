@@ -20,12 +20,13 @@ import Dropdown, {
 } from '../../../components/bootstrap/Dropdown'
 import Checks  from '../../../components/bootstrap/forms/Checks'
 import { useTranslation } from 'react-i18next'
-import WithdrawModal from './WithdrawModal'
+import WithdrawCancelModal from './WithdrawCancelModal'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import banks from 'common/data/dummyBankData'
 import WithdrawTable from './WithdrawTable'
 import { CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
+import WithdrawModal from './WithdrawModal'
 
 interface WithdrawFilterInterface {
 	searchInput: string
@@ -59,7 +60,8 @@ const Withdraw = () => {
 
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
-    const [isOpenWithdrawModal, setIsOpenWithdrawModal] = useState<WithdrawModalProperties>()
+    const [isOpenCancelWithdrawModal, setIsOpenCancelWithdrawModal] = useState<WithdrawModalProperties>()
+	const [isOpenWithdrawModal, setIsOpenWithdrawModal] = useState<WithdrawModalProperties>()
     const [withdrawTableState, setWithdrawTableState] = useState(WITHDRAW_TABLE_STATE.REQUEST)
 
 	const formik = useFormik<WithdrawFilterInterface>({
@@ -285,8 +287,9 @@ const Withdraw = () => {
                             data={withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST ? 
 								data.filter((i: any) => i.status === 'request') : 
 								data.filter((i: any) => i.status !== 'request')
-							} 
-                            setIsOpenWithdrawModal={withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST ? setIsOpenWithdrawModal : undefined}
+							}
+							setIsOpenWithdrawModal={withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST ? setIsOpenWithdrawModal : undefined} 
+                            setIsOpenCancelWithdrawModal={withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST ? setIsOpenCancelWithdrawModal : undefined}
                             columns={{ 
 								status: withdrawTableState === WITHDRAW_TABLE_STATE.HISTORY, 
 								mobileNumber: true, 
@@ -300,6 +303,7 @@ const Withdraw = () => {
 					</div>
 				</div>
 			</Page>
+			{isOpenCancelWithdrawModal && <WithdrawCancelModal setIsOpen={setIsOpenCancelWithdrawModal} isOpen={Boolean(isOpenCancelWithdrawModal)} properties={isOpenCancelWithdrawModal} />}
 			{isOpenWithdrawModal && <WithdrawModal setIsOpen={setIsOpenWithdrawModal} isOpen={Boolean(isOpenWithdrawModal)} properties={isOpenWithdrawModal} />}
 		</PageWrapper>
 	)
