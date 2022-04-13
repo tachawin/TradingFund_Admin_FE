@@ -20,7 +20,7 @@ import Dropdown, {
 } from '../../../components/bootstrap/Dropdown'
 import Checks  from '../../../components/bootstrap/forms/Checks'
 import { useTranslation } from 'react-i18next'
-// import CreditModal from './CreditModal'
+import CreditModal from './CreditModal'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import banks from 'common/data/dummyBankData'
@@ -282,7 +282,7 @@ const Credit = () => {
 					</div>
 				</div>
 			</Page>
-			{/* {isOpenCreditModal && <CreditModal setIsOpen={setIsOpenCreditModal} isOpen={Boolean(isOpenCreditModal)} properties={isOpenCreditModal} />} */}
+			{isOpenCreditModal && <CreditModal setIsOpen={setIsOpenCreditModal} isOpen={Boolean(isOpenCreditModal)} properties={isOpenCreditModal} />}
 		</PageWrapper>
 	)
 }

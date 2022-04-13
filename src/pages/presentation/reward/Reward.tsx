@@ -20,7 +20,7 @@ import Dropdown, {
 } from '../../../components/bootstrap/Dropdown'
 import Checks  from '../../../components/bootstrap/forms/Checks'
 import { useTranslation } from 'react-i18next'
-// import RewardModal from './RewardModal'
+import RewardModal from './RewardModal'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import banks from 'common/data/dummyBankData'
@@ -250,7 +250,7 @@ const Reward = () => {
 					</div>
 				</div>
 			</Page>
-			{/* {isOpenRewardModal && <RewardModal setIsOpen={setIsOpenRewardModal} isOpen={Boolean(isOpenRewardModal)} properties={isOpenRewardModal} />} */}
+			{isOpenRewardModal && <RewardModal setIsOpen={setIsOpenRewardModal} isOpen={Boolean(isOpenRewardModal)} properties={isOpenRewardModal} />}
 		</PageWrapper>
 	)
 }

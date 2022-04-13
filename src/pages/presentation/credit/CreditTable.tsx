@@ -143,13 +143,13 @@ const CreditTable = ({
                                 {setIsOpenCreditModal && <td>
                                     {i.status === 'request' ? 
                                         <><Button
-                                            onClick={() => setIsOpenCreditModal({ type: "refund", selectedRow: i})}
+                                            onClick={() => setIsOpenCreditModal({ type: "approve", selectedRow: i})}
                                             className='p-0'
                                             isLight
                                         >
                                             {t('approve')}
                                         </Button> / <Button
-                                            onClick={() => setIsOpenCreditModal({ type: "select-payer", selectedRow: i})}
+                                            onClick={() => setIsOpenCreditModal({ type: "reject", selectedRow: i})}
                                             className='p-0'
                                             isLight
                                         >
