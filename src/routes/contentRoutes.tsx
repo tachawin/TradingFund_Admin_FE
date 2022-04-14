@@ -3,8 +3,6 @@ import { dashboardMenu, pages } from '../menu'
 
 const LANDING = {
 	DASHBOARD: lazy(() => import('../pages/presentation/dashboard/Dashboard')),
-	DASHBOARD_BOOKING: lazy(() => import('../pages/dashboard/DashboardBookingPage')),
-	SUMMARY: lazy(() => import('../pages/SummaryPage')),
 	ADMIN: lazy(() => import('../pages/presentation/admin/Admin')),
 	REPORT: lazy(() => import('../pages/presentation/report/Report')),
 	DEPOSIT: lazy(() => import('../pages/presentation/deposit/Deposit')),
@@ -33,11 +31,6 @@ const presentation = [
 	{
 		path: dashboardMenu.admin.path,
 		element: <LANDING.ADMIN />,
-		exact: true,
-	},
-	{
-		path: dashboardMenu.summary.path,
-		element: <LANDING.SUMMARY />,
 		exact: true,
 	},
 
