@@ -414,7 +414,12 @@ const Customer = () => {
 					</div>
 				</div>
 			</Page>
-			<CustomerAddModal setIsOpen={setIsOpenCustomerModal} isOpen={Boolean(isOpenCustomerModal)} type={isOpenCustomerModal} data={selectedRowData} />
+			{ isOpenCustomerModal && <CustomerAddModal 
+				setIsOpen={setIsOpenCustomerModal} 
+				isOpen={Boolean(isOpenCustomerModal)} 
+				type={isOpenCustomerModal} 
+				data={selectedRowData} 
+			/>}
 		</PageWrapper>
 	)
 }

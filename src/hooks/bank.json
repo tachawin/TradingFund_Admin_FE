@@ -1,0 +1,182 @@
+{
+    "bbl": {
+        "id": 0,
+        "official_name": "BANGKOK BANK PUBLIC COMPANY LTD.",
+        "nice_name": "Bangkok Bank",
+        "thai_name": "ธนาคารกรุงเทพ"
+    },
+    "kbank": {
+        "id": 1,
+        "official_name": "KASIKORNBANK PUBLIC COMPANY LTD.",
+        "nice_name": "Kasikornbank",
+        "thai_name": "ธนาคารกสิกรไทย"
+    },
+    "rbs": {
+        "id": 2,
+        "official_name": "THE ROYAL BANK OF SCOTLAND PLC",
+        "nice_name": "Royal Bank of Scotland",
+        "thai_name": "รอยัล แบงก์ ออฟ สกอตแลนด์"
+    },
+    "ktb": {
+        "id": 3,
+        "official_name": "KRUNG THAI BANK PUBLIC COMPANY LTD.",
+        "nice_name": "Krungthai Bank",
+        "thai_name": "ธนาคารกรุงไทย"
+    },
+    "jpm": {
+        "id": 4,
+        "official_name": "JPMORGAN CHASE BANK, NATIONAL ASSOCIATION",
+        "nice_name": "J.P. Morgan",
+        "thai_name": "เจพีมอร์แกนเชส"
+    },
+    "mufg": {
+        "id": 5,
+        "official_name": "THE BANK OF TOKYO-MITSUBISHI UFJ, LTD.",
+        "nice_name": "Bank of Tokyo-Mitsubishi UFJ",
+        "thai_name": "ธนาคารโตเกียว-มิตซูบิชิ ยูเอฟเจ"
+    },
+    "ttb": {
+        "id": 6,
+        "official_name": "TMBTHANACHART BANK PUBLIC COMPANY LTD.",
+        "nice_name": "TMBThanachart Bank",
+        "thai_name": "ธนาคารทหารไทยธนชาต"
+    },
+    "scb": {
+        "id": 7,
+        "official_name": "SIAM COMMERCIAL BANK PUBLIC COMPANY LTD.",
+        "nice_name": "Siam Commercial Bank",
+        "thai_name": "ธนาคารไทยพาณิชย์"
+    },
+    "citi": {
+        "id": 8,
+        "official_name": "CITIBANK, N.A.",
+        "nice_name": "Citibank",
+        "thai_name": "ซิตี้แบงก์"
+    },
+    "smbc": {
+        "id": 9,
+        "official_name": "SUMITOMO MITSUI BANKING CORPORATION",
+        "nice_name": "Sumitomo Mitsui Banking Corporation",
+        "thai_name": "ซูมิโตโม มิตซุย แบงกิ้ง คอร์ปอเรชั่น"
+    },
+    "sc": {
+        "id": 10,
+        "official_name": "STANDARD CHARTERED BANK (THAI) PUBLIC COMPANY LIMITED",
+        "nice_name": "Standard Chartered (Thai)",
+        "thai_name": "ธนาคารสแตนดาร์ดชาร์เตอร์ด"
+    },
+    "cimb": {
+        "id": 11,
+        "official_name": "CIMB THAI BANK PUPBLIC COMPANY LTD.",
+        "nice_name": "CIMB Thai Bank",
+        "thai_name": "ธนาคาร ซีไอเอ็มบี ไทย"
+    },
+    "uob": {
+        "id": 12,
+        "official_name": "UNITED OVERSEAS BANK (THAI) PUBLIC COMPANY LIMITED",
+        "nice_name": "United Overseas Bank (Thai)",
+        "thai_name": "ธนาคารยูโอบี"
+    },
+    "bay": {
+        "id": 13,
+        "official_name": "BANK OF AYUDHYA PUBLIC COMPANY LTD.",
+        "nice_name": "Bank of Ayudhya (Krungsri)",
+        "thai_name": "ธนาคารกรุงศรีอยุธยา"
+    },
+    "mega": {
+        "id": 14,
+        "official_name": "MEGA INTERNATIONAL COMMERCIAL BANK PUBLIC COMPANY LIMITED",
+        "nice_name": "Mega International Commercial Bank",
+        "thai_name": "ธนาคาร เมกะ สากลพาณิชย์ จํากัด"
+    },
+    "boa": {
+        "id": 15,
+        "official_name": "BANK OF AMERICA, NATIONAL ASSOCIATION",
+        "nice_name": "Bank of America",
+        "thai_name": "แบงค์ออฟอเมริกา"
+    },
+    "cacib": {
+        "id": 16,
+        "official_name": "CREDIT AGRICOLE CORPORATE AND INVESTMENT BANK",
+        "nice_name": "Crédit Agricole",
+        "thai_name": "ธนาคารเครดิตอากริโคล"
+    },
+    "gsb": {
+        "id": 17,
+        "official_name": "THE GOVERNMENT SAVINGS BANK",
+        "nice_name": "Government Savings Bank",
+        "thai_name": "ธนาคารออมสิน"
+    },
+    "hsbc": {
+        "id": 18,
+        "official_name": "THE HONGKONG AND SHANGHAI BANKING CORPORATION LTD.",
+        "nice_name": "Hongkong and Shanghai Banking Corporation",
+        "thai_name": "ธนาคารเอชเอสบีซี ประเทศไทย"
+    },
+    "db": {
+        "id": 19,
+        "official_name": "DEUTSCHE BANK AG.",
+        "nice_name": "Deutsche Bank",
+        "thai_name": "ธนาคารดอยซ์แบงก์"
+    },
+    "ghb": {
+        "id": 20,
+        "official_name": "THE GOVERNMENT HOUSING BANK",
+        "nice_name": "Government Housing Bank",
+        "thai_name": "ธนาคารอาคารสงเคราะห์"
+    },
+    "baac": {
+        "id": 21,
+        "official_name": "BANK FOR AGRICULTURE AND AGRICULTURAL COOPERATIVES",
+        "nice_name": "Bank for Agriculture and Agricultural Cooperatives",
+        "thai_name": "ธนาคารเพื่อการเกษตรและสหกรณ์การเกษตร"
+    },
+    "mb": {
+        "id": 22,
+        "official_name": "MIZUHO BANK, LTD.",
+        "nice_name": "Mizuho Bank",
+        "thai_name": "ธนาคารมิซูโฮ จํากัด"
+    },
+    "bnp": {
+        "id": 23,
+        "official_name": "BNP PARIBAS",
+        "nice_name": "BNP Paribas",
+        "thai_name": "ธนาคารบีเอ็นพี พารีบาส์"
+    },
+    "ibank": {
+        "id": 25,
+        "official_name": "ISLAMIC BANK OF THAILAND",
+        "nice_name": "Islamic Bank of Thailand",
+        "thai_name": "ธนาคารอิสลามแห่งประเทศไทย"
+    },
+    "tisco": {
+        "id": 26,
+        "official_name": "TISCO BANK PUBLIC COMPANY LIMITED",
+        "nice_name": "Tisco Bank",
+        "thai_name": "ธนาคารทิสโก้"
+    },
+    "kk": {
+        "id": 27,
+        "official_name": "KIATNAKIN BANK PUBLIC COMPANY LIMITED",
+        "nice_name": "Kiatnakin Bank",
+        "thai_name": "ธนาคารเกียรตินาคิน"
+    },
+    "icbc": {
+        "id": 28,
+        "official_name": "INDUSTRIAL AND COMMERCIAL BANK OF CHINA (THAI) PUBLIC COMPANY LIMITED",
+        "nice_name": "Industrial and Commercial Bank of China (Thai)",
+        "thai_name": "ธนาคารไอซีบีซี (ไทย)"
+    },
+    "tcrb": {
+        "id": 29,
+        "official_name": "THE THAI CREDIT RETAIL BANK PUBLIC COMPANY LIMITED",
+        "nice_name": "Thai Credit Retail Bank",
+        "thai_name": "ธนาคารไทยเครดิต"
+    },
+    "lhb": {
+        "id": 30,
+        "official_name": "LAND AND HOUSES BANK PUBLIC COMPANY LIMITED",
+        "nice_name": "Land and Houses Bank",
+        "thai_name": "ธนาคารแลนด์ แอนด์ เฮ้าส์"
+    }
+}

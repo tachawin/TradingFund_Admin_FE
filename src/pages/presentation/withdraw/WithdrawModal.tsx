@@ -17,6 +17,7 @@ import * as Yup from 'yup'
 import Button, { ButtonGroup } from 'components/bootstrap/Button'
 import PlaceholderImage from 'components/extras/PlaceholderImage'
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown'
+import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 
 interface WithdrawModalProperties {
 	selectedRow: any
@@ -184,38 +185,34 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                                 />
                             </FormGroup>
                             <FormGroup id='bankName' label={t('form.bank.name')}>
-                                <Input 
-                                    onChange={handleChange} 
-                                    value={values.bankName} 
-                                    placeholder={t("form.bank.name.placeholder")} 
-                                    isValid={isValid}
-                                    isTouched={touched.bankName && errors.bankName}
-                                    invalidFeedback={errors.bankName}
+                                <CommonBanksDropdown
                                     disabled
+                                    selectedBankName={values.bankName} 
+                                    setSelectedBankName={(bank: string) => setFieldValue('bankName', bank)} 
                                 />
                             </FormGroup>
                             <FormGroup id='payerBank' label={t('form.payer.bank')}>
-                            <Dropdown className='w-100'>
-                                <DropdownToggle 
-                                    className='w-100'
-                                    isLight color='dark' isOpen={Boolean(isOpenPayerBankDropdown)} setIsOpen={setIsOpenPayerBankDropdown}>
-                                    <span>
-                                        {values.payerBank.label.toLocaleUpperCase()}
-                                    </span>
-                                </DropdownToggle>
-                                <DropdownMenu isAlignmentEnd isOpen={Boolean(isOpenPayerBankDropdown)} setIsOpen={setIsOpenPayerBankDropdown}>
-                                    {banks.map((bank: Bank) =>
-                                        <DropdownItem>
-                                            <Button
-                                                color='link'
-                                                isActive={bank.id === values.payerBank.id}
-                                                onClick={() => setFieldValue('payerBank', bank)}>
-                                                {bank.label.toLocaleUpperCase()}
-                                            </Button>
-                                        </DropdownItem>
-                                    )}
-                                </DropdownMenu>
-                            </Dropdown>
+                                <Dropdown className='w-100'>
+                                    <DropdownToggle 
+                                        className='w-100'
+                                        isLight color='dark' isOpen={Boolean(isOpenPayerBankDropdown)} setIsOpen={setIsOpenPayerBankDropdown}>
+                                        <span>
+                                            {values.payerBank.label.toLocaleUpperCase()}
+                                        </span>
+                                    </DropdownToggle>
+                                    <DropdownMenu isOpen={Boolean(isOpenPayerBankDropdown)} setIsOpen={setIsOpenPayerBankDropdown}>
+                                        {banks.map((bank: Bank) =>
+                                            <DropdownItem>
+                                                <Button
+                                                    color='link'
+                                                    isActive={bank.id === values.payerBank.id}
+                                                    onClick={() => setFieldValue('payerBank', bank)}>
+                                                    {bank.label.toLocaleUpperCase()}
+                                                </Button>
+                                            </DropdownItem>
+                                        )}
+                                    </DropdownMenu>
+                                </Dropdown>
                             </FormGroup>
                             <Button color='info' className='w-auto mx-3' onClick={handleSubmit}>
                                 {t('withdraw:withdraw.manual')}

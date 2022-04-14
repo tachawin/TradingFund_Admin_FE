@@ -1,19 +1,6 @@
 {
     "search.deposit.transaction": "ค้นหาธุรกรรมการฝากเงิน",
     "cancel": "ถูกดึงเครดิต",
-    "deposit": "ฝากเงิน",
-    "edit": "แก้ไข",
-    "save": "บันทึก",
-
-    "form.time": "เวลาที่โอน",
-    "form.date": "วันที่โอน",
-    "form.payer.bank.account.number": "โอนจาก",
-    "form.recipient.bank.account.number": "เข้าบัญชี",
-    "form.recipient.bank.account.number.placeholder": "กรุณาเลือกบัญชีบริษัทที่ลูกค้าโอนเข้า",
-    "form.amount": "จำนวนเงิน",
-    "form.mobile.number": "เบอร์โทรศัพท์",
-    "form.notes": "หมายเหตุ",
-    "form.notes.refund.reason.placeholder": "กรุณาใส่เหตุผลดึงเครดิต",
 
     "save.deposit.successfully": "บันทึกรายการโอนสำเร็จ",
     "save.deposit.from.mobile.number.successfully": "บันทึกรายการโอนจาก {{mobileNumber}} สำเร็จ",

@@ -16,6 +16,7 @@ interface DropdownToggleInterface {
 	isLight?: boolean
 	icon?: string
 	className?: any
+	disabled?: boolean
 }
 
 const useEventOutside = (ref: any, onClickOutSide: any) => {
@@ -37,7 +38,17 @@ const useEventOutside = (ref: any, onClickOutSide: any) => {
 	}, [ref]);
 }  
 
-export const DropdownToggle = ({ children, icon, isOpen = false, setIsOpen, hasIcon = true, index, color, isLight, className }: DropdownToggleInterface) => {
+export const DropdownToggle = ({ 
+	children, 
+	icon, 
+	isOpen = false, 
+	setIsOpen, 
+	hasIcon = true, 
+	index, color, 
+	isLight, 
+	className,
+	disabled = false
+}: DropdownToggleInterface) => {
 	const dropdownButtonRef = useRef(null)
 
 	const setButtonRef = useCallback((node, ref) => {
@@ -54,11 +65,9 @@ export const DropdownToggle = ({ children, icon, isOpen = false, setIsOpen, hasI
 			className={classNames({
 				'dropdown-toggle': hasIcon,
 				'dropdown-toggle-split': children?.props?.isButtonGroup,
-				// Only presentation
-				show: isOpen,
 				...className
- 			}, 
-			)}
+ 			})}
+			isDisable={disabled}
 		>
 			{children}
 		</Button>
@@ -74,7 +83,8 @@ interface DropdownMenuInterface extends DetailedHTMLProps<HTMLAttributes<HTMLULi
 	size?: string,
 	direction?: string,
 	isCloseAfterLeave?: boolean,
-	children: any
+	children: any,
+	height?: string
 }
 
 export const DropdownMenu = ({
@@ -87,6 +97,7 @@ export const DropdownMenu = ({
 	size,
 	direction,
 	isCloseAfterLeave = true,
+	height,
 	...props
 }: DropdownMenuInterface) => {
 	const dropdownListRef = useRef(null)
@@ -135,7 +146,7 @@ export const DropdownMenu = ({
 						role='presentation'
 						ref={(node) => setListRef(node, ref)}
 						data-placement={placement}
-						style={{ right: `${xAxis === 'end' ? 0 : 'unset'}` }}
+						style={{ right: `${xAxis === 'end' ? 0 : 'unset'}`, height }}
 						className={classNames(
 							'dropdown-menu',
 							// For Bootstrap

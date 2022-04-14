@@ -12,6 +12,7 @@ import FormGroup from '../../../components/bootstrap/forms/FormGroup'
 import Input from '../../../components/bootstrap/forms/Input'
 import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
+import Checks from 'components/bootstrap/forms/Checks'
 
 interface AdminEditModalInterface {
 	id?: string | number
@@ -30,7 +31,8 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, type, data }: AdminEditModalInt
 			password: data?.password || '',
             name: data?.name || '',
             mobileNumber: data?.mobileNumber || '',
-            role: data?.role || 'Admin'
+            role: data?.role || 'Admin',
+            status: data?.status || true
 		},
 		onSubmit: (values) => {
             // EDIT
@@ -45,19 +47,13 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, type, data }: AdminEditModalInt
 		},
 	})
 
-    const { values, setFieldValue } = formik
+    const { values, setFieldValue, initialValues, setValues, resetForm, handleChange, handleSubmit } = formik
 
     useEffect(() => {
         if (type === 'edit') {
-            formik.setValues({
-                username: data?.username || '',
-                password: data?.password || '',
-                name: data?.name || '',
-                mobileNumber: data?.mobileNumber || '',
-                role: data?.role || 'Admin'
-            })
+            setValues(initialValues)
         } else {
-            formik.resetForm()
+            resetForm()
         }
     }, [type])
 
@@ -69,20 +65,20 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, type, data }: AdminEditModalInt
             <ModalBody className='px-4'>
                 <div className='row g-4'>
                     <FormGroup id='username' label={t('form.username')}>
-                        <Input onChange={formik.handleChange} value={formik.values.username} />
+                        <Input onChange={handleChange} value={values.username} />
                     </FormGroup>
                     <FormGroup id='password' label={t('form.password')}>
                         <Input 
                             type='password'
-                            onChange={formik.handleChange} 
-                            value={formik.values.password} 
+                            onChange={handleChange} 
+                            value={values.password} 
                         />
                     </FormGroup>
                     <FormGroup id='name' label={t('form.name')}>
-                        <Input onChange={formik.handleChange} value={formik.values.name} />
+                        <Input onChange={handleChange} value={values.name} />
                     </FormGroup>
                     <FormGroup id='mobile-number' label={t('form.mobile.number')}>
-                        <Input onChange={formik.handleChange} value={formik.values.mobileNumber} />
+                        <Input onChange={handleChange} value={values.mobileNumber} />
                     </FormGroup>
                     <FormGroup id='role' label={t('form.role')}>
                         <div className='row row-cols-2 g-3'>
@@ -108,10 +104,20 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, type, data }: AdminEditModalInt
                             </div>
                         </div>
                     </FormGroup>
+                    <FormGroup id='status' label={t('form.status')}>
+                        <Checks
+                            id='status'
+                            type='switch'
+                            label={values.status ? t('active') : t('inactive')}
+                            onChange={handleChange}
+                            checked={values.status}
+                            ariaLabel='Available status'
+                        />
+                    </FormGroup>
                 </div>
             </ModalBody>
             <ModalFooter className='px-4 pb-4'>
-                <Button className='w-100' color='info' onClick={formik.handleSubmit}>
+                <Button className='w-100' color='info' onClick={handleSubmit}>
                     {t('save')}
                 </Button>
             </ModalFooter>

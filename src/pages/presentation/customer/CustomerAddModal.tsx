@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useFormik } from 'formik'
 import Modal, {
 	ModalBody,
@@ -11,9 +11,19 @@ import Icon from '../../../components/icon/Icon'
 import FormGroup from '../../../components/bootstrap/forms/FormGroup'
 import Input from '../../../components/bootstrap/forms/Input'
 import { useTranslation } from 'react-i18next'
-import Wizard, { WizardItem } from 'components/Wizard'
 import * as Yup from 'yup'
 import Button from 'components/bootstrap/Button'
+import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
+
+interface CustomerAddForm {
+    username: string
+    password: string
+    name: string
+    mobileNumber: string
+    bankAccountNumber: string
+    bankAccountName: string
+    bankName: string
+}
 
 interface CustomerAddModalInterface {
 	id?: string | number
@@ -35,7 +45,7 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
         bankName: Yup.string().uppercase().required('โปรดระบุบัญชีธนาคาร'),
 	})
 
-	const formik = useFormik({
+	const formik = useFormik<CustomerAddForm>({
 		initialValues: {
 			username: data?.username || '',
 			password: data?.password || '',
@@ -43,7 +53,7 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
             mobileNumber: data?.mobileNumber || '',
             bankAccountNumber: data?.bankAccountNumber || '',
             bankAccountName: data?.bankAccountName || '',
-            bankName: data?.bankName || ''
+            bankName: data?.bankName || 'scb'
 		},
         validationSchema: CustomerAddScheme,
 		onSubmit: (values) => {
@@ -61,7 +71,7 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
 		},
 	})
 
-    const { errors, touched, values, setValues, initialValues, resetForm, handleSubmit, handleChange, validateForm, isValid } = formik
+    const { errors, touched, values, setValues, initialValues, resetForm, handleSubmit, handleChange, setFieldValue, isValid } = formik
 
     useEffect(() => {
         if (type === 'edit') {
@@ -80,6 +90,10 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
                 <div className='row'>
                     <div className='col'>
                         <div className='row g-4'>
+                            <h5>
+                                <Icon icon='Person' className='ms-1' color='info' />{' '}
+                                {t('profile')}
+                            </h5>
                             <FormGroup id='username' label={t('form.username')}>
                                 <Input 
                                     onChange={handleChange} 
@@ -115,6 +129,10 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
                     </div>
                     <div className='col'>
                         <div className='row g-4'>
+                            <h5>
+                                <Icon icon='Bank' className='ms-1' color='info' />{' '}
+                                {t('bank.account')}
+                            </h5>
                             <FormGroup id='bankAccountNumber' label={t('form.bank.account.number')}>
                                 <Input 
                                     onChange={handleChange} 
@@ -134,13 +152,9 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
                                 />
                             </FormGroup>
                             <FormGroup id='bankName' label={t('form.bank.name')}>
-                                <Input 
-                                    onChange={handleChange} 
-                                    value={values.bankName} 
-                                    placeholder={t("form.bank.name.placeholder")} 
-                                    isValid={isValid}
-                                    isTouched={touched.bankName && errors.bankName}
-                                    invalidFeedback={errors.bankName}
+                                <CommonBanksDropdown 
+                                    selectedBankName={values.bankName} 
+                                    setSelectedBankName={(bank: string) => setFieldValue('bankName', bank)} 
                                 />
                             </FormGroup>
                         </div>

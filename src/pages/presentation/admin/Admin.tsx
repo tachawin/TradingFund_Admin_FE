@@ -304,7 +304,7 @@ const Admin = () => {
 									<tbody>
 										{dataPagination(items, currentPage, perPage).map((i: any, index: number) => (
 											<tr key={i.id}>
-                                                <td>
+                                                <td className='text-center'>
                                                     <div>{index + 1}</div>
 												</td>
                                                 <td>

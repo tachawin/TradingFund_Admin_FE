@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import banks from 'common/data/dummyBankData'
 import * as Yup from 'yup'
+import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 
 interface DepositModalProperties {
 	type: string
@@ -30,7 +31,7 @@ interface DepositModalInterface {
 }
 
 const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterface) => {
-    const { t } = useTranslation('deposit')
+    const { t } = useTranslation(['common', 'deposit'])
     const { type, selectedRow: data } = properties
 
     const AddDepositSchema = Yup.object().shape({
@@ -87,8 +88,8 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
                 showNotification(
                     <span className='d-flex align-items-center'>
                         <Icon icon='Info' size='lg' className='me-1' />
-                        <span>{type === 'add' ? t('save.deposit.successfully') : t('edit.successfully')}</span>
-                    </span>, t('save.deposit.from.mobile.number.successfully', { mobileNumber: values.mobileNumber })
+                        <span>{type === 'add' ? t('deposit:save.deposit.successfully') : t('deposit:edit.successfully')}</span>
+                    </span>, t('deposit:save.deposit.from.mobile.number.successfully', { mobileNumber: values.mobileNumber })
                 )
     
             }
@@ -97,15 +98,7 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
 		},
 	})
 
-    const { values, handleChange, resetForm, initialValues, isValid, touched, errors } = formik
-
-    useEffect(() => {
-        if (type === 'edit') {
-            formik.setValues(initialValues)
-        } else {
-            resetForm()
-        }
-    }, [type])
+    const { values, handleChange, resetForm, initialValues, isValid, touched, errors, setFieldValue } = formik
 
     return (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>
@@ -165,7 +158,7 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
                                 <Input 
                                     onChange={handleChange} 
                                     value={values.payerBankAccountNumber} 
-                                    disabled={type === 'edit'}
+                                    disabled={type !== 'add'}
                                     isValid={isValid}
                                     isTouched={touched.payerBankAccountNumber && errors.payerBankAccountNumber}
                                     invalidFeedback={errors.payerBankAccountNumber}
