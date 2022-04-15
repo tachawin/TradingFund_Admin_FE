@@ -49,7 +49,7 @@ const CommonBanksDropdown = ({ selectedBankName, setSelectedBankName, disabled =
             >
                 {banks && Object.keys(banks).map((bank: string) => { 
                     const Icon = bankIcons[bank].icon
-                    return <DropdownItem>
+                    return <DropdownItem key={bank}>
                         <Button
                             color='link'
                             isActive={bank === selectedBankName}

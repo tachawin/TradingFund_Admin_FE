@@ -83,10 +83,10 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
     const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const uploadedFile = e.target.files[0]
-            const formData = new FormData();
-            formData.append('file', uploadedFile);
+            const formData = new FormData()
+            formData.append('file', uploadedFile)
     
-            setFieldValue('slipImage', uploadedFile.name)
+            setFieldValue('slipImage', URL.createObjectURL(uploadedFile))
         }
     }
 
@@ -109,36 +109,27 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                                             <img
                                                 src={values.slipImage}
                                                 alt=''
-                                                width={160}
-                                                height={200}
+                                                width={220}
+                                                height={300}
+                                                style={{ minHeight: 300, minWidth: 220, objectFit: 'contain' }}
                                                 className='mx-auto d-block img-fluid mb-3'
                                             />
                                         ) : (
                                             <PlaceholderImage
-                                                width={160}
-                                                height={200}
+                                                width={220}
+                                                height={300}
                                                 className='mx-auto d-block img-fluid mb-3 rounded'
                                             />
                                         )}
                                     </div>
                                     <div className='col-12'>
                                         <div className='row g-4'>
-                                                <Input
-                                                    accept="image/*"
-                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleUploadImage(e)}
-                                                    type='file' 
-                                                    autoComplete='photo' 
-                                                />
-                                            <div className='col-12'>
-                                                <Button
-                                                    color='dark'
-                                                    isLight
-                                                    icon='Delete'
-                                                    className='w-100'
-                                                    onClick={() => setFieldValue('slipImage', null)}>
-                                                    {t('delete.image')}
-                                                </Button>
-                                            </div>
+                                            <Input
+                                                accept="image/*"
+                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleUploadImage(e)}
+                                                type='file' 
+                                                autoComplete='photo' 
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -154,14 +145,14 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                                     isLight={withdrawModalState !== WITHDRAW_MODAL_STATE.SYSTEM}
                                     onClick={() => setWithdrawModalState(WITHDRAW_MODAL_STATE.SYSTEM)}
                                 >
-                                    {t('withdraw:system')}
+                                    {t('withdraw:withdraw.system')}
                                 </Button>
                                 <Button
                                     color={withdrawModalState === WITHDRAW_MODAL_STATE.MANUAL ? 'success' : 'dark'}
                                     isLight={withdrawModalState !== WITHDRAW_MODAL_STATE.MANUAL}
                                     onClick={() => setWithdrawModalState(WITHDRAW_MODAL_STATE.MANUAL)}
                                 >
-                                    {t('withdraw:manual')}
+                                    {t('withdraw:withdraw.manual')}
                                 </Button>
                             </ButtonGroup>
                             <FormGroup id='bankAccountNumber' label={t('form.bank.account.number')}>
@@ -191,7 +182,7 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                                     setSelectedBankName={(bank: string) => setFieldValue('bankName', bank)} 
                                 />
                             </FormGroup>
-                            <FormGroup id='payerBank' label={t('form.payer.bank')}>
+                            <FormGroup id='payerBank' label={t('form.withdraw.bank')}>
                                 <Dropdown className='w-100'>
                                     <DropdownToggle 
                                         className='w-100'
@@ -202,7 +193,7 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                                     </DropdownToggle>
                                     <DropdownMenu isOpen={Boolean(isOpenPayerBankDropdown)} setIsOpen={setIsOpenPayerBankDropdown}>
                                         {banks.map((bank: Bank) =>
-                                            <DropdownItem>
+                                            <DropdownItem key={bank.id}>
                                                 <Button
                                                     color='link'
                                                     isActive={bank.id === values.payerBank.id}

@@ -82,6 +82,9 @@
     "form.recipient.bank.account.number.placeholder": "กรุณาเลือกบัญชีบริษัทที่ลูกค้าโอนเข้า",
     "form.notes": "หมายเหตุ",
     "form.notes.refund.reason.placeholder": "กรุณาใส่เหตุผลดึงเครดิต",
+    "form.withdraw.bank": "บัญชีที่ใช้ถอนเงิน",
+    "form.slip.image": "อัปโหลดสลิป",
+    "delete.image": "ลบรูป",
 
 
     "features": "ฟีเจอร์",
