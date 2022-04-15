@@ -27,6 +27,7 @@ import banks from 'common/data/dummyBankData'
 import WithdrawTable from './WithdrawTable'
 import { CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 import WithdrawModal from './WithdrawModal'
+import BankBalanceCard from './BankBalanceCard'
 
 interface WithdrawFilterInterface {
 	searchInput: string
@@ -256,7 +257,8 @@ const Withdraw = () => {
 			</SubHeader>
 			<Page>
 				<div className='row h-100'>
-					<div className='col-12'>
+					<BankBalanceCard />
+					<div className='col-9'>
 						<WithdrawTable
                             cardHeader={
                                 <CardHeader>
@@ -291,6 +293,7 @@ const Withdraw = () => {
 							setIsOpenWithdrawModal={withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST ? setIsOpenWithdrawModal : undefined} 
                             setIsOpenCancelWithdrawModal={withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST ? setIsOpenCancelWithdrawModal : undefined}
                             columns={{ 
+								id: false,
 								status: withdrawTableState === WITHDRAW_TABLE_STATE.HISTORY, 
 								mobileNumber: true, 
 								notes: withdrawTableState === WITHDRAW_TABLE_STATE.HISTORY, 

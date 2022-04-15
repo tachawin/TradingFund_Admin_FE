@@ -44,11 +44,11 @@ const WithdrawTable = ({
                 <table className='table table-modern table-hover'>
                     <thead>
                         <tr>
-                            <th 
+                            {columns?.id && <th 
                                 onClick={() => requestSort('no')}
                                 className='cursor-pointer text-decoration-underline text-center'>
                                 {t('column.no')}
-                            </th>
+                            </th>}
                             <th
                                 onClick={() => requestSort('timestamp')}
                                 className='cursor-pointer text-decoration-underline'>
@@ -145,9 +145,9 @@ const WithdrawTable = ({
                     <tbody>
                         {dataPagination(items, currentPage, perPage).map((i: any, index: number) => (
                             <tr key={i.id}>
-                                <td className='text-center'>
+                                {columns?.id && <td className='text-center'>
                                     <div>{index + 1}</div>
-                                </td>
+                                </td>}
                                 <td>
                                     <div>{i.date.format('ll')}</div>
                                     <div>
@@ -173,7 +173,7 @@ const WithdrawTable = ({
                                                 <div className='fs-6 fw-bold'>
                                                     *{i.payerBankAccountNumber}
                                                 </div>
-                                                <div className='text-muted'>
+                                                <div className='text-muted text-nowrap'>
                                                     <Icon icon='Label' />{' '}
                                                     <small>{i.payerBankName.toUpperCase()}</small>
                                                 </div>
@@ -187,7 +187,7 @@ const WithdrawTable = ({
                                             <div className='fs-6 fw-bold'>
                                                 *{i.recipientBankAccountNumber}
                                             </div>
-                                            <div className='text-muted'>
+                                            <div className='text-muted text-nowrap'>
                                                 <Icon icon='Label' />{' '}
                                                 <small>{i.recipientBankName.toUpperCase()}</small>
                                             </div>

@@ -43,6 +43,8 @@
     "cashback.bonus": "โบนัสยอดเสีย",
     "invitation.bonus": "โบนัสชวนเพื่อน",
     "profile": "ข้อมูลส่วนตัว",
+    "bank.balance": "ยอดเงินคงเหลือ",
+    "today.withdraw": "ยอดถอนวันนี้",
 
     "filter.status": "สถานะ",
     "active": "เปิดใช้งานอยู่",
