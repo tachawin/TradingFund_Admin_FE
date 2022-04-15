@@ -100,6 +100,13 @@ export const dashboardMenu = {
 		icon: 'sticky_note_2',
 		subMenu: null,
 	},
+	bank: {
+		id: 'bank',
+		text: 'Bank',
+		path: 'bank',
+		icon: 'sticky_note_2',
+		subMenu: null,
+	},
 };
 
 export const pages = {
@@ -162,6 +169,12 @@ export const pages = {
 		text: 'credit',
 		path: 'credit',
 		icon: 'credit',
+	},
+	bank: {
+		id: 'bank',
+		text: 'bank',
+		path: 'bank',
+		icon: 'bank',
 	},
 }
 
