@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ChangeEvent } from 'react'
 import Modal, {
 	ModalBody,
 	ModalFooter,
@@ -13,8 +13,8 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import FormGroup from 'components/bootstrap/forms/FormGroup'
 import Input from 'components/bootstrap/forms/Input'
-import banks from 'common/data/dummyBankData'
-import moment from 'moment'
+import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
+import Checks from 'components/bootstrap/forms/Checks'
 
 interface BankModalProperties {
 	type: string
@@ -28,34 +28,39 @@ interface BankModalInterface {
     properties: BankModalProperties
 }
 
+interface BankFormInterface {
+    bankAccountNumber: string
+    bankAccountName: string
+    bankName: string
+    paymentType: string[]
+    isActive: boolean
+}
+
+
 const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) => {
     const { t } = useTranslation(['common', 'bank'])
     const { type, selectedRow: data } = properties
 
     const BankFormSchema = Yup.object().shape({
-        mobileNumber: Yup.string().required('โปรดใส่เบอร์โทรลูกค้า'),
-        amount: Yup.string().required('โปรดใส่จำนวนเงิน'),
-        payerBankAccountNumber: Yup.string().required('โปรดใส่หมายเลขบัญชีลูกค้า'),
-        recipientBankAccountNumber: Yup.string().required('โปรดใส่หมายเลขบัญชีบริษัท'),
+        bankAccountNumber: Yup.string().required('โปรดใส่หมายเลขบัญชี'),
+        bankAccountName: Yup.string().required('โปรดใส่ชื่อบัญชี'),
+        paymentType: Yup.array().min(1, 'กรุณาเลือกประเภทธุรกรรม')
 	})
 	
-	const formik = useFormik({
+	const formik = useFormik<BankFormInterface>({
 		initialValues: {
-            date: moment().format('YYYY-MM-DD'),
-			time: '10:30',
-            mobileNumber: data?.mobileNumber || '',
-            amount: data?.amount || '',
-            payerBankAccountNumber: data?.payerBankAccountNumber || '',
-            recipientBankAccountNumber: data?.recipientBankAccountNumber || '',
-            notes: data?.notes || '',
+            bankAccountNumber: data?.number || '',
+            bankAccountName: data?.bankAccountName || '',
+            bankName: data?.bankName || 'scb',
+            paymentType: data?.paymentType || [],
+            isActive: true
 		},
         validationSchema: BankFormSchema,
 		onSubmit: (values) => {
-            // EDIT
             console.log(values)
 
             if (type === 'add') {
-                // REFUND
+                // ADD
                 showNotification(
                     <span className='d-flex align-items-center'>
                         <Icon icon='Info' size='lg' className='me-1' />
@@ -64,6 +69,7 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
                     t('reward:added.bank.successfully', { mobileNumber: data?.mobileNumber }),
                 )
             } else {
+                // EDIT
                 showNotification(
                     <span className='d-flex align-items-center'>
                         <Icon icon='Info' size='lg' className='me-1' />
@@ -78,103 +84,99 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
 		},
 	})
 
-    const { values, handleChange, resetForm, initialValues, isValid, touched, errors, setFieldValue } = formik
+    const { values, handleChange, handleSubmit, isValid, touched, errors, setFieldValue } = formik
 
+    const handleOnChangePaymentType = (event: ChangeEvent<HTMLInputElement>) => {
+		let paymentType = event.target.name
+		let indexInPaymentType = parseInt(event.target.value)
+		let isSelected = event.target.checked
+		let newPaymentTypeValue = values.paymentType
+
+		if (isSelected) {
+			newPaymentTypeValue.push(paymentType)
+		} else {
+			newPaymentTypeValue.splice(indexInPaymentType, 1)
+		}
+		setFieldValue('bank', newPaymentTypeValue)
+	}
+
+    const PAYMENT_TYPE = [
+        {
+            id: 0,
+            name: t('deposit')
+        },
+        {
+            id: 0,
+            name: t('withdraw')
+        }
+    ]
+    
 
     return (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>
             <ModalHeader setIsOpen={setIsOpen} className='p-4'>
-                <ModalTitle id={id}>{type === 'approve' ? t('reward:approve.request') : t('reward:reject.request')}</ModalTitle>
+                <ModalTitle id={id}>{type === 'add' ? t('bank:add.bank') : t('bank:edit.bank')}</ModalTitle>
             </ModalHeader>
             <ModalBody className='px-4'>
                 <div className='row g-4'>
-                    {
-                        type !== 'refund' && <>
-                            <div className='col-6'>
-                                <FormGroup id='date' label={t('form.date')} isFloating>
-                                    <Input
-                                        placeholder={t('form.date')}
-                                        onChange={handleChange}
-                                        value={values.date}
-                                        type='date'
-                                        disabled={type !== 'add'}
-                                    />
-                                </FormGroup>
-                            </div>
-                            <div className='col-6'>
-                                <FormGroup id='time' label={t('form.time')} isFloating>
-                                    <Input
-                                        placeholder={t('form.time')}
-                                        onChange={handleChange}
-                                        value={values.time}
-                                        type='time'
-                                        disabled={type !== 'add'}
-                                    />
-                                </FormGroup>
-                            </div>
-                            <FormGroup id='mobileNumber' label={t('form.mobile.number')}>
-                                <Input 
-                                    onChange={handleChange} 
-                                    value={values.mobileNumber}
-                                    disabled={!['add', 'select-payer'].includes(type)}
-                                    isValid={isValid}
-                                    isTouched={touched.mobileNumber && errors.mobileNumber}
-                                    invalidFeedback={errors.mobileNumber}
-                                />
-                            </FormGroup>
-                            <FormGroup id='amount' label={t('form.amount')}>
-                                <Input 
-                                    type='number' 
-                                    onChange={handleChange} 
-                                    value={values.amount}
-                                    disabled={type !== 'add'}
-                                    isValid={isValid}
-                                    isTouched={touched.amount && errors.amount}
-                                    invalidFeedback={errors.amount}
-                                />
-                            </FormGroup>
-                            <FormGroup id='payerBankAccountNumber' label={t('form.payer.bank.account.number')}>
-                                <Input 
-                                    onChange={handleChange} 
-                                    value={values.payerBankAccountNumber} 
-                                    disabled={type !== 'add'}
-                                    isValid={isValid}
-                                    isTouched={touched.payerBankAccountNumber && errors.payerBankAccountNumber}
-                                    invalidFeedback={errors.payerBankAccountNumber}
-                                />
-                            </FormGroup>
-                            <FormGroup id='recipientBankAccountNumber' label={t('form.recipient.bank.account.number')}>
-                                <Input
-                                    name='recipientBankAccountNumber'
-                                    ariaLabel={t('form.recipient.bank.account.number')}
-                                    placeholder={t('form.recipient.bank.account.number.placeholder')}
-                                    list={banks.map(
-                                        (bank) => `${bank.label} *${bank.number}`,
-                                    )}
-                                    onChange={formik.handleChange}
-                                    value={values.recipientBankAccountNumber}
-                                    disabled={type !== 'add'}
-                                    isValid={isValid}
-                                    isTouched={touched.recipientBankAccountNumber && errors.recipientBankAccountNumber}
-                                    invalidFeedback={errors.recipientBankAccountNumber}
-                                />
-                            </FormGroup>
-                        </>
-                    }
-                    <FormGroup id='notes' label={t('form.notes')}>
+                    <FormGroup id='bankAccountNumber' label={t('form.bank.account.number')}>
                         <Input 
                             onChange={handleChange} 
-                            value={values.notes} 
-                            placeholder={type === 'refund' ? t("form.notes.refund.reason.placeholder") : ''}
+                            value={values.bankAccountNumber} 
                             isValid={isValid}
-                            isTouched={touched.notes && errors.notes}
-                            invalidFeedback={errors.notes}
+                            isTouched={touched.bankAccountNumber && errors.bankAccountNumber}
+                            invalidFeedback={errors.bankAccountNumber}
+                        />
+                    </FormGroup>
+                    <FormGroup id='bankAccountName' label={t('form.bank.account.name')}>
+                        <Input 
+                            onChange={handleChange} 
+                            value={values.bankAccountName}
+                            isValid={isValid}
+                            isTouched={touched.bankAccountName && errors.bankAccountName}
+                            invalidFeedback={errors.bankAccountName}
+                        />
+                    </FormGroup>
+                    <FormGroup id='bankName' label={t('form.bank.name')}>
+                        <CommonBanksDropdown 
+                            selectedBankName={values.bankName} 
+                            setSelectedBankName={(bank: string) => setFieldValue('bankName', bank)} 
+                        />
+                    </FormGroup>
+                    <FormGroup 
+                        id='paymentType' 
+                        label={t('form.payment.type')} 
+                        errorText={touched.paymentType ? <div className='text-danger'>{errors.paymentType}</div> : ''}
+                    >
+                        <div>
+                            {PAYMENT_TYPE.map((paymentType: any) => {
+                            let indexInPaymentTypeFilter = values.paymentType.indexOf(paymentType.name)
+                            return <Checks
+                                    key={paymentType.name}
+                                    label={paymentType.name}
+                                    name={paymentType.name}
+                                    value={indexInPaymentTypeFilter}
+                                    onChange={handleOnChangePaymentType}
+                                    checked={indexInPaymentTypeFilter > -1}
+                                    ariaLabel={paymentType.name}
+                                />
+                            }
+                        )}</div>
+                    </FormGroup>
+                    <FormGroup id='isActive' label={t('form.status')}>
+                        <Checks
+                            id='status'
+                            type='switch'
+                            label={values.isActive ? t('active') : t('inactive')}
+                            onChange={handleChange}
+                            checked={values.isActive}
+                            ariaLabel='Available status'
                         />
                     </FormGroup>
                 </div>
             </ModalBody>
             <ModalFooter className='px-4 pb-4'>
-                <Button className='w-100' color='info' onClick={formik.handleSubmit}>
+                <Button className='w-100' color='info' onClick={handleSubmit}>
                     {t('save')}
                 </Button>
             </ModalFooter>

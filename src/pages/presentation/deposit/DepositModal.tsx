@@ -109,79 +109,77 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
             </ModalHeader>
             <ModalBody className='px-4'>
                 <div className='row g-4'>
-                    {
-                        type !== 'refund' && <>
-                            <div className='col-6'>
-                                <FormGroup id='date' label={t('form.date')} isFloating>
-                                    <Input
-                                        placeholder={t('form.date')}
-                                        onChange={handleChange}
-                                        value={values.date}
-                                        type='date'
-                                        disabled={type !== 'add'}
-                                    />
-                                </FormGroup>
-                            </div>
-                            <div className='col-6'>
-                                <FormGroup id='time' label={t('form.time')} isFloating>
-                                    <Input
-                                        placeholder={t('form.time')}
-                                        onChange={handleChange}
-                                        value={values.time}
-                                        type='time'
-                                        disabled={type !== 'add'}
-                                    />
-                                </FormGroup>
-                            </div>
-                            <FormGroup id='mobileNumber' label={t('form.mobile.number')}>
-                                <Input 
-                                    onChange={handleChange} 
-                                    value={values.mobileNumber}
-                                    disabled={!['add', 'select-payer'].includes(type)}
-                                    isValid={isValid}
-                                    isTouched={touched.mobileNumber && errors.mobileNumber}
-                                    invalidFeedback={errors.mobileNumber}
-                                />
-                            </FormGroup>
-                            <FormGroup id='amount' label={t('form.amount')}>
-                                <Input 
-                                    type='number' 
-                                    onChange={handleChange} 
-                                    value={values.amount}
-                                    disabled={type !== 'add'}
-                                    isValid={isValid}
-                                    isTouched={touched.amount && errors.amount}
-                                    invalidFeedback={errors.amount}
-                                />
-                            </FormGroup>
-                            <FormGroup id='payerBankAccountNumber' label={t('form.payer.bank.account.number')}>
-                                <Input 
-                                    onChange={handleChange} 
-                                    value={values.payerBankAccountNumber} 
-                                    disabled={type !== 'add'}
-                                    isValid={isValid}
-                                    isTouched={touched.payerBankAccountNumber && errors.payerBankAccountNumber}
-                                    invalidFeedback={errors.payerBankAccountNumber}
-                                />
-                            </FormGroup>
-                            <FormGroup id='recipientBankAccountNumber' label={t('form.recipient.bank.account.number')}>
+                    {type !== 'refund' && <>
+                        <div className='col-6'>
+                            <FormGroup id='date' label={t('form.date')} isFloating>
                                 <Input
-                                    name='recipientBankAccountNumber'
-                                    ariaLabel={t('form.recipient.bank.account.number')}
-                                    placeholder={t('form.recipient.bank.account.number.placeholder')}
-                                    list={banks.map(
-                                        (bank) => `${bank.label} *${bank.number}`,
-                                    )}
-                                    onChange={formik.handleChange}
-                                    value={values.recipientBankAccountNumber}
+                                    placeholder={t('form.date')}
+                                    onChange={handleChange}
+                                    value={values.date}
+                                    type='date'
                                     disabled={type !== 'add'}
-                                    isValid={isValid}
-                                    isTouched={touched.recipientBankAccountNumber && errors.recipientBankAccountNumber}
-                                    invalidFeedback={errors.recipientBankAccountNumber}
                                 />
                             </FormGroup>
-                        </>
-                    }
+                        </div>
+                        <div className='col-6'>
+                            <FormGroup id='time' label={t('form.time')} isFloating>
+                                <Input
+                                    placeholder={t('form.time')}
+                                    onChange={handleChange}
+                                    value={values.time}
+                                    type='time'
+                                    disabled={type !== 'add'}
+                                />
+                            </FormGroup>
+                        </div>
+                        <FormGroup id='mobileNumber' label={t('form.mobile.number')}>
+                            <Input 
+                                onChange={handleChange} 
+                                value={values.mobileNumber}
+                                disabled={!['add', 'select-payer'].includes(type)}
+                                isValid={isValid}
+                                isTouched={touched.mobileNumber && errors.mobileNumber}
+                                invalidFeedback={errors.mobileNumber}
+                            />
+                        </FormGroup>
+                        <FormGroup id='amount' label={t('form.amount')}>
+                            <Input 
+                                type='number' 
+                                onChange={handleChange} 
+                                value={values.amount}
+                                disabled={type !== 'add'}
+                                isValid={isValid}
+                                isTouched={touched.amount && errors.amount}
+                                invalidFeedback={errors.amount}
+                            />
+                        </FormGroup>
+                        <FormGroup id='payerBankAccountNumber' label={t('form.payer.bank.account.number')}>
+                            <Input 
+                                onChange={handleChange} 
+                                value={values.payerBankAccountNumber} 
+                                disabled={type !== 'add'}
+                                isValid={isValid}
+                                isTouched={touched.payerBankAccountNumber && errors.payerBankAccountNumber}
+                                invalidFeedback={errors.payerBankAccountNumber}
+                            />
+                        </FormGroup>
+                        <FormGroup id='recipientBankAccountNumber' label={t('form.recipient.bank.account.number')}>
+                            <Input
+                                name='recipientBankAccountNumber'
+                                ariaLabel={t('form.recipient.bank.account.number')}
+                                placeholder={t('form.recipient.bank.account.number.placeholder')}
+                                list={banks.map(
+                                    (bank) => `${bank.label} *${bank.number}`,
+                                )}
+                                onChange={formik.handleChange}
+                                value={values.recipientBankAccountNumber}
+                                disabled={type !== 'add'}
+                                isValid={isValid}
+                                isTouched={touched.recipientBankAccountNumber && errors.recipientBankAccountNumber}
+                                invalidFeedback={errors.recipientBankAccountNumber}
+                            />
+                        </FormGroup>
+                    </>}
                     <FormGroup id='notes' label={t('form.notes')}>
                         <Input 
                             onChange={handleChange} 

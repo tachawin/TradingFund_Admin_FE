@@ -12,7 +12,6 @@ interface CommonBanksDropdownInterface {
 
 const CommonBanksDropdown = ({ selectedBankName, setSelectedBankName, disabled = false }: CommonBanksDropdownInterface) => {
     const { banks } = useBanks()
-    console.log(selectedBankName)
 
     const [isOpenBankDropdown, setIsOpenBankDropdown] = useState(false)
     const BANK_PLACEHOLDER = 'เลือกชื่อธนาคาร'

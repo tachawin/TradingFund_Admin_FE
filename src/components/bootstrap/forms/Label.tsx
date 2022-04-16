@@ -12,6 +12,7 @@ interface LabelInterface {
 	title?: string,
 	ariaLabelledby?: string,
 	ariaLabel?: string,
+	errorText?: any
 }
 
 const Label = ({
@@ -24,6 +25,7 @@ const Label = ({
 	title,
 	ariaLabelledby,
 	ariaLabel,
+	errorText,
 	...props
 }: LabelInterface) => {
 	return (
@@ -44,6 +46,7 @@ const Label = ({
 			// eslint-disable-next-line react/jsx-props-no-spreading
 			{...props}>
 			{children}
+			{errorText}
 		</label>
 	);
 };

@@ -4,14 +4,15 @@ import debounce from 'lodash/debounce'
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper'
 import SubHeader, {
 	SubHeaderLeft,
-	SubHeaderRight
+	SubHeaderRight,
+	SubheaderSeparator
 } from '../../../layout/SubHeader/SubHeader'
 import Page from '../../../layout/Page/Page'
-import { demoPages, pages } from '../../../menu'
+import { pages } from '../../../menu'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
 import data from '../../../common/data/dummyBankData'
-import Button, { ButtonGroup } from '../../../components/bootstrap/Button'
+import Button from '../../../components/bootstrap/Button'
 import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import Dropdown, {
@@ -44,11 +45,6 @@ interface BankFilterInterface {
 interface BankModalProperties {
 	type: string
 	selectedRow: any
-}
-
-enum BANK_TABLE_STATE {
-	REQUEST = 'request',
-	HISTORY = 'history'
 }
 
 const Bank = () => {
@@ -205,6 +201,15 @@ const Bank = () => {
 							}
 						]} 
 					/>
+					<SubheaderSeparator />
+					<Button
+						icon='PiggyBank'
+						color='primary'
+						isLight
+						onClick={() => setIsOpenBankModal({ type: "add", selectedRow: null})}
+					>
+						{t('bank:add.bank')}
+					</Button>
 				</SubHeaderRight>
 			</SubHeader>
 			<Page>

@@ -25,16 +25,6 @@ const BankTable = ({
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
 
-    const getStatusText = (status: string): ReactNode => {
-        if (status === 'success') {
-            return <div className='fw-bold text-success'>{t('success')}</div>
-        } else if (status === 'not-found') {
-            return <div className='fw-bold text-warning'>{t('not.found')}</div>
-        } else {
-            return <div className='fw-bold text-danger'>{t('cancel')}</div>
-        }
-    }
-
     return (
         <Card stretch>
             {cardHeader}

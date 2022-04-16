@@ -88,9 +88,9 @@
     "form.notes": "หมายเหตุ",
     "form.notes.refund.reason.placeholder": "กรุณาใส่เหตุผลดึงเครดิต",
     "form.withdraw.bank": "บัญชีที่ใช้ถอนเงิน",
+    "form.payment.type": "ประเภทธุรกรรม",
     "form.slip.image": "อัปโหลดสลิป",
     "delete.image": "ลบรูป",
-
 
     "features": "ฟีเจอร์",
     "access": "อ่าน",

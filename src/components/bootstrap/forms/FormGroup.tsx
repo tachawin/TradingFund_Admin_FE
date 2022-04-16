@@ -19,6 +19,7 @@ interface FormGroupInterface {
 	formText?: any,
 	children: any
 	name?: string
+	errorText?: any
 }
 
 const FormGroup = ({
@@ -34,6 +35,7 @@ const FormGroup = ({
 	isColForLabel = false,
 	isHiddenLabel = false,
 	formText,
+	errorText,
 	...props
 }: FormGroupInterface) => {
 	const _label = (
@@ -42,6 +44,7 @@ const FormGroup = ({
 			htmlFor={id}
 			isHidden={isHiddenLabel}
 			isColForLabel={isColForLabel}
+			errorText={errorText}
 			size={size}>
 			{label}
 		</Label>
