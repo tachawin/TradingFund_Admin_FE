@@ -92,6 +92,11 @@
     "form.withdraw.bank": "บัญชีที่ใช้ถอนเงิน",
     "form.payment.type": "ประเภทธุรกรรม",
     "form.slip.image": "อัปโหลดสลิป",
+    "form.image": "อัปโหลดสลิป",
+    "form.product.name": "ชื่อสินค้า",
+    "form.description": "คำอธิบาย",
+    "form.quantity": "จำนวน",
+    "form.points.to.redeem": "จำนวนแต้มที่ใช้แลก",
     "delete.image": "ลบรูป",
 
     "features": "ฟีเจอร์",

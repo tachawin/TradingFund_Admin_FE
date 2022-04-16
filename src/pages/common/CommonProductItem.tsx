@@ -39,6 +39,11 @@ const CommonProductItem = ({
 	const { t } = useTranslation(['common', 'product'])
 	const [isOpenDropdown, setIsOpenDropdown] = useState<boolean>(false)
 
+	const handleEdit = () => {
+		setIsOpenDropdown(false)
+		editAction()
+	}
+
 	return (
 		<Card>
 			<CardHeader>
@@ -70,7 +75,7 @@ const CommonProductItem = ({
 							isAlignmentEnd
 						>
 							<DropdownItem>
-								<Button icon='Edit' onClick={() => editAction()}>
+								<Button icon='Edit' onClick={handleEdit}>
 								{t('edit')}
 								</Button>
 							</DropdownItem>

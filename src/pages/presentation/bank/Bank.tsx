@@ -9,20 +9,14 @@ import SubHeader, {
 } from '../../../layout/SubHeader/SubHeader'
 import Page from '../../../layout/Page/Page'
 import { pages } from '../../../menu'
-import moment from 'moment'
 import { DateRange } from 'react-date-range'
 import data from '../../../common/data/dummyBankData'
 import Button from '../../../components/bootstrap/Button'
 import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
-import Dropdown, {
-	DropdownMenu,
-	DropdownToggle,
-} from '../../../components/bootstrap/Dropdown'
 import Checks  from '../../../components/bootstrap/forms/Checks'
 import { useTranslation } from 'react-i18next'
 import BankModal from './BankModal'
-import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import BankTable from './BankTable'
 import { CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
@@ -74,19 +68,7 @@ const Bank = () => {
 		handleSubmit,
 	} = formik
 
-	const datePicker = (selectedDate: any, field: string) => (
-		<DateRange
-			onChange={(item) => setFieldValue(field, [item.selection])}
-			showPreview
-			moveRangeOnFirstSelection={false}
-			retainEndDateOnFirstSelection={false}
-			ranges={selectedDate}
-			direction='horizontal'
-			rangeColors={['#6c5dd3']}
-		/>
-	)
-
-	  // eslint-disable-next-line react-hooks/exhaustive-deps
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debounceSearchChange = useCallback(
 		debounce((value: string) => {
 			// Send search filter

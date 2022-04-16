@@ -4,7 +4,8 @@ import debounce from 'lodash/debounce'
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper'
 import SubHeader, {
 	SubHeaderLeft,
-	SubHeaderRight
+	SubHeaderRight,
+    SubheaderSeparator
 } from '../../../layout/SubHeader/SubHeader'
 import Page from '../../../layout/Page/Page'
 import { pages } from '../../../menu'
@@ -17,6 +18,7 @@ import ProductModal from './ProductModal'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import CommonGridProductItem from 'pages/common/CommonProductItem'
+import Button from 'components/bootstrap/Button'
 
 interface ProductFilterInterface {
 	searchInput: string
@@ -165,6 +167,15 @@ const Product = () => {
 							}
 						]} 
 					/>
+                    <SubheaderSeparator />
+                        <Button
+                            icon='PlusLg'
+                            color='primary'
+                            isLight
+                            onClick={() => setIsOpenProductModal({ type: "add", selectedRow: null})}
+                        >
+						{t('product:add.product')}
+					</Button>
 				</SubHeaderRight>
 			</SubHeader>
 			<Page container='fluid'>
@@ -179,7 +190,7 @@ const Product = () => {
 								id={item.id}
 								name={item.name}
                                 description={item.description}
-                                remaining={item.remaining}
+                                remaining={item.quantity}
                                 points={item.points}
 								img={item.image}
 								editAction={() => setIsOpenProductModal({ type: 'edit', selectedRow: item })}

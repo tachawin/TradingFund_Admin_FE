@@ -3,6 +3,11 @@
     "redeem.points": "{{points}} แต้ม",
     "remaining": "จำนวนที่เหลือ",
 
+    "add.product": "เพิ่มสินค้า",
+    "edit.product": "แก้ไขสินค้า",
     "all.products": "สินค้าทั้งหมด",
-    "no.items": "{{item}} ชิ้น"
+    "no.items": "{{item}} ชิ้น",
+
+    "save.product.successfully": "บันทึกสินค้าสำเร็จ",
+    "save.product.name.successfully": "บันทึกสินค้า {{name}} สำเร็จ"
 }

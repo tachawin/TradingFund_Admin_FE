@@ -5,7 +5,7 @@ const data = [
 		name: 'Beveled Cone',
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pharetra, purus sed ultricies mollis, felis tellus tempus ipsum, sed bibendum elit urna aliquam justo. Ut eu facilisis eros. Nullam maximus ut enim id accumsan. Vestibulum rutrum purus posuere, ullamcorper purus sed, convallis neque. Praesent at dui id odio convallis eleifend ut volutpat nisl. Mauris fringilla lorem aliquam rutrum feugiat. Quisque felis diam, posuere non mauris quis, blandit luctus nibh. Etiam eleifend arcu ipsum, condimentum elementum eros finibus in.',
 		points: 3000123123,
-		remaining: 21321,
+		quantity: 21321,
 		category: '3D Shapes',
 		series: [
 			{
@@ -24,7 +24,7 @@ const data = [
 		name: 'Cloud Ball',
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pharetra, purus sed ultricies mollis, felis tellus tempus ipsum, sed bibendum elit urna aliquam justo. Ut eu facilisis eros. Nullam maximus ut enim id accumsan. Vestibulum rutrum purus posuere, ullamcorper purus sed, convallis neque. Praesent at dui id odio convallis eleifend ut volutpat nisl. Mauris fringilla lorem aliquam rutrum feugiat. Quisque felis diam, posuere non mauris quis, blandit luctus nibh. Etiam eleifend arcu ipsum, condimentum elementum eros finibus in.',
 		points: 20,
-		remaining: 10,
+		quantity: 10,
 		category: '3D Shapes',
 		series: [
 			{
@@ -43,7 +43,7 @@ const data = [
 		name: 'Quadrilateral',
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pharetra, purus sed ultricies mollis, felis tellus tempus ipsum, sed bibendum elit urna aliquam justo. Ut eu facilisis eros. Nullam maximus ut enim id accumsan. Vestibulum rutrum purus posuere, ullamcorper purus sed, convallis neque. Praesent at dui id odio convallis eleifend ut volutpat nisl. Mauris fringilla lorem aliquam rutrum feugiat. Quisque felis diam, posuere non mauris quis, blandit luctus nibh. Etiam eleifend arcu ipsum, condimentum elementum eros finibus in.',
 		points: 200,
-		remaining: 999,
+		quantity: 999,
 		category: '3D Shapes',
 		series: [
 			{
@@ -62,7 +62,7 @@ const data = [
 		name: 'Bendy Rectangle',
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pharetra, purus sed ultricies mollis, felis tellus tempus ipsum, sed bibendum elit urna aliquam justo. Ut eu facilisis eros. Nullam maximus ut enim id accumsan. Vestibulum rutrum purus posuere, ullamcorper purus sed, convallis neque. Praesent at dui id odio convallis eleifend ut volutpat nisl. Mauris fringilla lorem aliquam rutrum feugiat. Quisque felis diam, posuere non mauris quis, blandit luctus nibh. Etiam eleifend arcu ipsum, condimentum elementum eros finibus in.',
 		points: 78008,
-		remaining: 100,
+		quantity: 100,
 		category: '3D Shapes',
 		series: [
 			{
@@ -81,7 +81,7 @@ const data = [
 		name: 'Bendy Rectangle',
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pharetra, purus sed ultricies mollis, felis tellus tempus ipsum, sed bibendum elit urna aliquam justo. Ut eu facilisis eros. Nullam maximus ut enim id accumsan. Vestibulum rutrum purus posuere, ullamcorper purus sed, convallis neque. Praesent at dui id odio convallis eleifend ut volutpat nisl. Mauris fringilla lorem aliquam rutrum feugiat. Quisque felis diam, posuere non mauris quis, blandit luctus nibh. Etiam eleifend arcu ipsum, condimentum elementum eros finibus in.',
 		points: 123123,
-		remaining: 20,
+		quantity: 20,
 		category: '3D Shapes',
 		series: [
 			{
@@ -100,7 +100,7 @@ const data = [
 		name: 'Bendy Rectangle',
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pharetra, purus sed ultricies mollis, felis tellus tempus ipsum, sed bibendum elit urna aliquam justo. Ut eu facilisis eros. Nullam maximus ut enim id accumsan. Vestibulum rutrum purus posuere, ullamcorper purus sed, convallis neque. Praesent at dui id odio convallis eleifend ut volutpat nisl. Mauris fringilla lorem aliquam rutrum feugiat. Quisque felis diam, posuere non mauris quis, blandit luctus nibh. Etiam eleifend arcu ipsum, condimentum elementum eros finibus in.',
 		points: 3000123123,
-		remaining: 21321,
+		quantity: 21321,
 		category: '3D Shapes',
 		series: [
 			{
@@ -119,7 +119,7 @@ const data = [
 		name: 'Octahedron',
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pharetra, purus sed ultricies mollis, felis tellus tempus ipsum, sed bibendum elit urna aliquam justo. Ut eu facilisis eros. Nullam maximus ut enim id accumsan. Vestibulum rutrum purus posuere, ullamcorper purus sed, convallis neque. Praesent at dui id odio convallis eleifend ut volutpat nisl. Mauris fringilla lorem aliquam rutrum feugiat. Quisque felis diam, posuere non mauris quis, blandit luctus nibh. Etiam eleifend arcu ipsum, condimentum elementum eros finibus in.',
 		points: 3000123123,
-		remaining: 21321,
+		quantity: 21321,
 		category: '3D Shapes',
 		series: [
 			{
@@ -138,7 +138,7 @@ const data = [
 		name: 'Triangle',
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pharetra, purus sed ultricies mollis, felis tellus tempus ipsum, sed bibendum elit urna aliquam justo. Ut eu facilisis eros. Nullam maximus ut enim id accumsan. Vestibulum rutrum purus posuere, ullamcorper purus sed, convallis neque. Praesent at dui id odio convallis eleifend ut volutpat nisl. Mauris fringilla lorem aliquam rutrum feugiat. Quisque felis diam, posuere non mauris quis, blandit luctus nibh. Etiam eleifend arcu ipsum, condimentum elementum eros finibus in.',
 		points: 3000123123,
-		remaining: 21321,
+		quantity: 21321,
 		category: '3D Shapes',
 		series: [
 			{
@@ -157,7 +157,7 @@ const data = [
 		name: 'SquiglyGlobe',
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pharetra, purus sed ultricies mollis, felis tellus tempus ipsum, sed bibendum elit urna aliquam justo. Ut eu facilisis eros. Nullam maximus ut enim id accumsan. Vestibulum rutrum purus posuere, ullamcorper purus sed, convallis neque. Praesent at dui id odio convallis eleifend ut volutpat nisl. Mauris fringilla lorem aliquam rutrum feugiat. Quisque felis diam, posuere non mauris quis, blandit luctus nibh. Etiam eleifend arcu ipsum, condimentum elementum eros finibus in.',
 		points: 3000123123,
-		remaining: 21321,
+		quantity: 21321,
 		category: '3D Shapes',
 		series: [
 			{
@@ -176,7 +176,7 @@ const data = [
 		name: 'Dodecagon',
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pharetra, purus sed ultricies mollis, felis tellus tempus ipsum, sed bibendum elit urna aliquam justo. Ut eu facilisis eros. Nullam maximus ut enim id accumsan. Vestibulum rutrum purus posuere, ullamcorper purus sed, convallis neque. Praesent at dui id odio convallis eleifend ut volutpat nisl. Mauris fringilla lorem aliquam rutrum feugiat. Quisque felis diam, posuere non mauris quis, blandit luctus nibh. Etiam eleifend arcu ipsum, condimentum elementum eros finibus in.',
 		points: 3000123123,
-		remaining: 21321,
+		quantity: 21321,
 		category: '3D Shapes',
 		series: [
 			{
@@ -195,7 +195,7 @@ const data = [
 		name: 'Beveled Cube',
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pharetra, purus sed ultricies mollis, felis tellus tempus ipsum, sed bibendum elit urna aliquam justo. Ut eu facilisis eros. Nullam maximus ut enim id accumsan. Vestibulum rutrum purus posuere, ullamcorper purus sed, convallis neque. Praesent at dui id odio convallis eleifend ut volutpat nisl. Mauris fringilla lorem aliquam rutrum feugiat. Quisque felis diam, posuere non mauris quis, blandit luctus nibh. Etiam eleifend arcu ipsum, condimentum elementum eros finibus in.',
 		points: 3000123123,
-		remaining: 21321,
+		quantity: 21321,
 		category: '3D Shapes',
 		series: [
 			{
@@ -214,7 +214,7 @@ const data = [
 		name: 'Cylinder',
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pharetra, purus sed ultricies mollis, felis tellus tempus ipsum, sed bibendum elit urna aliquam justo. Ut eu facilisis eros. Nullam maximus ut enim id accumsan. Vestibulum rutrum purus posuere, ullamcorper purus sed, convallis neque. Praesent at dui id odio convallis eleifend ut volutpat nisl. Mauris fringilla lorem aliquam rutrum feugiat. Quisque felis diam, posuere non mauris quis, blandit luctus nibh. Etiam eleifend arcu ipsum, condimentum elementum eros finibus in.',
 		points: 3000123123,
-		remaining: 21321,
+		quantity: 21321,
 		category: '3D Shapes',
 		series: [
 			{

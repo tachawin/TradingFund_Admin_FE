@@ -97,7 +97,7 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                 <ModalTitle id={id}>{t('withdraw:new.withdraw')}</ModalTitle>
             </ModalHeader>
             <ModalBody className='px-4 pb-4'>
-                <div className='row align-items-center'>
+                <div className='row align-items-start'>
                     {withdrawModalState === WITHDRAW_MODAL_STATE.MANUAL &&
                         <div className='col'>
                             <div className='row g-4'>
@@ -205,7 +205,7 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                                 </Dropdown>
                             </FormGroup>
                             <Button color='info' className='w-auto mx-3' onClick={handleSubmit}>
-                                {t('withdraw:withdraw.manual')}
+                                {t('save')}
                             </Button>
                         </div>
                     </div>
