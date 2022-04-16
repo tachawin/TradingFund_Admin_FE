@@ -1,7 +1,6 @@
 import Card, {
 	CardActions,
 	CardBody,
-	CardFooter,
 	CardHeader,
 	CardLabel,
 	CardSubTitle,
@@ -14,8 +13,6 @@ import Dropdown, {
 	DropdownToggle,
 } from '../../components/bootstrap/Dropdown'
 import Badge from '../../components/bootstrap/Badge'
-import showNotification from '../../components/extras/showNotification'
-import Icon from '../../components/icon/Icon'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -39,7 +36,7 @@ const CommonProductItem = ({
 	editAction,
 	deleteAction,
 }: CommonProductItemInterface) => {
-	const { t } = useTranslation('common')
+	const { t } = useTranslation(['common', 'product'])
 	const [isOpenDropdown, setIsOpenDropdown] = useState<boolean>(false)
 
 	return (
@@ -51,8 +48,8 @@ const CommonProductItem = ({
 					</CardTitle>
 					<CardSubTitle>
 						{points && (
-							<Badge color='success' isLight rounded={3} className='fs-6 fw-normal'>
-								{t('redeem.points', { points })}
+							<Badge color='success' isLight rounded={3} className='fs-6 fw-bold'>
+								{t('product:redeem.points', { points: points.toLocaleString() })}
 							</Badge>
 						)}
 					</CardSubTitle>
@@ -74,12 +71,12 @@ const CommonProductItem = ({
 						>
 							<DropdownItem>
 								<Button icon='Edit' onClick={() => editAction()}>
-									Edit
+								{t('edit')}
 								</Button>
 							</DropdownItem>
 							<DropdownItem>
 								<Button icon='Delete' onClick={() => deleteAction()}>
-									Delete
+									{t('delete')}
 								</Button>
 							</DropdownItem>
 						</DropdownMenu>
@@ -94,10 +91,10 @@ const CommonProductItem = ({
 					height={128}
 					className='mx-auto d-block img-fluid mb-3'
 				/>
-				<div>{description}</div>
-				<div className='row align-items-center'>
-					<div className='col fw-bold'>{t('remaining')}</div>
-					<div className='col fw-bold text-end'>{remaining}</div>
+				<div className='card-description'>{description}</div>
+				<div className='row align-items-center mt-2'>
+					<div className='col fw-bold'>{t('product:remaining')}</div>
+					<div className='col fw-bold text-end'>{remaining.toLocaleString()}</div>
 				</div>
 			</CardBody>
 		</Card>

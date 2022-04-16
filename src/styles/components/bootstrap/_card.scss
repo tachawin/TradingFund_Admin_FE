@@ -239,3 +239,11 @@ $border-radius-child: #{$card-border-radius - $card-border-width};
 	margin-left: auto;
 }
 // stylelint-enable font-weight-notation
+
+.card-description {
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

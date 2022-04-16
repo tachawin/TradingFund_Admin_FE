@@ -8,17 +8,10 @@ import SubHeader, {
 } from '../../../layout/SubHeader/SubHeader'
 import Page from '../../../layout/Page/Page'
 import { pages } from '../../../menu'
-import moment from 'moment'
 import { DateRange } from 'react-date-range'
-import productData from '../../../common/data/dummyProductData'
-import Button, { ButtonGroup } from '../../../components/bootstrap/Button'
+import data from '../../../common/data/dummyProductData'
 import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
-import Dropdown, {
-	DropdownMenu,
-	DropdownToggle,
-} from '../../../components/bootstrap/Dropdown'
-import Checks  from '../../../components/bootstrap/forms/Checks'
 import { useTranslation } from 'react-i18next'
 import ProductModal from './ProductModal'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
@@ -27,17 +20,14 @@ import CommonGridProductItem from 'pages/common/CommonProductItem'
 
 interface ProductFilterInterface {
 	searchInput: string
-    isApproved: boolean
-    isRejected: boolean
 	points: {
 		min: string
 		max: string
 	},
-	timestamp: {
-		startDate: Date
-		endDate: Date
-		key: string
-	}[]
+    remaining: {
+		min: string
+		max: string
+	}
 }
 
 interface ProductModalProperties {
@@ -51,9 +41,7 @@ interface ProductDeleteModalProperties {
 
 const Product = () => {
     const { t } = useTranslation(['common', 'product'])
-    const [data, setData] = useState(productData);
 
-	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
     const [isOpenProductModal, setIsOpenProductModal] = useState<ProductModalProperties>()
 	const [isOpenDeleteProductModal, setIsOpenDeleteProductModal] = useState<ProductDeleteModalProperties>()
@@ -61,19 +49,14 @@ const Product = () => {
 	const formik = useFormik<ProductFilterInterface>({
 		initialValues: {
 			searchInput: '',
-            isApproved: false,
-            isRejected: false,
             points: {
                 min: '',
                 max: ''
             },
-			timestamp: [
-				{
-					startDate: moment().startOf('week').add('-1', 'week').toDate(),
-					endDate: moment().endOf('week').toDate(),
-					key: 'selection',
-				},
-			]
+            remaining: {
+                min: '',
+                max: ''
+            }
 		},
 		onSubmit: (values) => {
 			console.log('submit filter')
@@ -85,25 +68,12 @@ const Product = () => {
 
 	const { 
 		values,
-		setFieldValue,
 		handleChange,
 		resetForm,
 		handleSubmit
 	} = formik
 
-	const datePicker = (selectedDate: any, field: string) => (
-		<DateRange
-			onChange={(item) => setFieldValue(field, [item.selection])}
-			showPreview
-			moveRangeOnFirstSelection={false}
-			retainEndDateOnFirstSelection={false}
-			ranges={selectedDate}
-			direction='horizontal'
-			rangeColors={['#6c5dd3']}
-		/>
-	)
-
-	  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
 	const debounceSearchChange = useCallback(
 		debounce((value: string) => {
 			// Send search filter
@@ -146,40 +116,6 @@ const Product = () => {
 						onSubmit={handleSubmit}
 						filters={[
 							{
-								label: t('filter.status'),
-								children: <div>
-                                    <Checks
-                                        id='isApproved'
-                                        label={t('approve')}
-                                        onChange={handleChange}
-                                        checked={values.isApproved}
-                                        ariaLabel={t('success')}
-                                    />
-                                    <Checks
-                                        id='isRejected'
-                                        label={t('reject')}
-                                        onChange={handleChange}
-                                        checked={values.isRejected}
-                                        ariaLabel={t('not.found')}
-                                    />
-                                </div>
-							},
-                            {
-								label: t('filter.timestamp'),
-								children: <Dropdown >
-									<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										<span data-tour='date-range'>
-											{`${moment(values.timestamp[0].startDate).format('MMM Do YY')} - ${moment(
-												values.timestamp[0].endDate,
-											).format('MMM Do YY')}`}
-										</span>
-									</DropdownToggle>
-									<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										{datePicker(values.timestamp, 'timestamp')}
-									</DropdownMenu>
-								</Dropdown>
-							},
-							{
 								label: t('filter.points'),
 								children: <div>
 									<InputGroup>
@@ -202,13 +138,40 @@ const Product = () => {
 										/>
 									</InputGroup>
 								</div>
+							},
+                            {
+								label: t('filter.remaining'),
+								children: <div>
+									<InputGroup>
+										<Input
+											id='remaining.min'
+											ariaLabel='Minimum remaining'
+											placeholder={t('filter.min')}
+											onChange={handleChange}
+											value={values.remaining.min}
+											type='number'
+										/>
+										<InputGroupText>{t('filter.to')}</InputGroupText>
+										<Input
+											id='remaining.max'
+											ariaLabel='Maximum remaining'
+											placeholder={t('filter.max')}
+											onChange={handleChange}
+											value={values.remaining.max}
+											type='number'
+										/>
+									</InputGroup>
+								</div>
 							}
 						]} 
 					/>
 				</SubHeaderRight>
 			</SubHeader>
 			<Page container='fluid'>
-                <div className='display-6 fw-bold py-3'>{t('all.products')} <span className='display-6'>({t('no.items', { item: 20 })})</span></div>
+                <div className='display-6 fw-bold py-3'>
+                    {t('product:all.products')}{' '}
+                    <span className='fs-5 fw-normal'>({t('product:no.items', { item: data.length.toLocaleString() })})</span>
+                </div>
                 <div className='row'>
 					{data.map((item) => (
 						<div key={item.id} className='col-xxl-3 col-xl-4 col-md-6'>

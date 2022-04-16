@@ -64,6 +64,7 @@
     "filter.reset": "ล้าง",
     "filter.points": "จำนวนแต้ม",
     "filter.credit": "จำนวนเครดิต",
+    "filter.remaining": "จำนวนคงเหลือ",
     "filter.min": "ขั้นต่ำ",
     "filter.to": "ถึง",
     "filter.max": "สูงสุด",
