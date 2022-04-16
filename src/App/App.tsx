@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useLayoutEffect, useRef } from 'react'
+import React, { useContext, useLayoutEffect, useRef } from 'react'
 import { ThemeProvider } from 'react-jss'
 import { ReactNotifications } from 'react-notifications-component'
 import { useFullscreen } from 'react-use'
@@ -7,23 +7,15 @@ import { ToastProvider } from 'react-toast-notifications'
 import { TourProvider } from '@reactour/tour'
 import { ThemeContext } from '../contexts/themeContext'
 
-import Aside from '../layout/Aside/Aside'
 import Wrapper from '../layout/Wrapper/Wrapper'
 import Portal from '../layout/Portal/Portal'
-import { dashboardMenu, demoPages, layoutMenu, pages } from '../menu'
+import { demoPages, layoutMenu, pages } from '../menu'
 import { Toast, ToastContainer } from '../components/bootstrap/Toasts'
-import useDarkMode from '../hooks/useDarkMode'
 import COLORS from '../common/data/enumColors'
 import steps, { styles } from '../steps'
-import Navigation from 'layout/Navigation/Navigation'
 
 const App = () => {
-	/**
-	 * Dark Mode
-	 */
-	const { themeStatus, darkModeStatus } = useDarkMode()
 	const theme = {
-		theme: themeStatus,
 		primary: COLORS.PRIMARY.code,
 		secondary: COLORS.SECONDARY.code,
 		success: COLORS.SUCCESS.code,
@@ -33,15 +25,6 @@ const App = () => {
 		dark: COLORS.DARK.code,
 		light: COLORS.LIGHT.code,
 	}
-
-	useEffect(() => {
-		if (darkModeStatus) {
-			document.documentElement.setAttribute('theme', 'dark')
-		}
-		return () => {
-			document.documentElement.removeAttribute('theme')
-		}
-	}, [darkModeStatus])
 
 	/**
 	 * Full Screen

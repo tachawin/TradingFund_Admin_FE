@@ -1,5 +1,5 @@
-import { useEffect, cloneElement, DetailedHTMLProps, forwardRef, HTMLAttributes, useCallback, useRef, useState } from 'react'
-import { Manager, Popper, Reference } from 'react-popper'
+import { useEffect, cloneElement, DetailedHTMLProps, forwardRef, HTMLAttributes, useCallback, useRef } from 'react'
+import { Manager, Popper } from 'react-popper'
 import classNames from 'classnames'
 // import useEventOutside from '@omtanke/react-use-event-outside'
 import useDarkMode from '../../hooks/useDarkMode'
@@ -35,6 +35,8 @@ const useEventOutside = (ref: any, onClickOutSide: any) => {
 			// Unbind the event listener on clean up
 			document.removeEventListener("mousedown", handleClickOutside, true);
 		};
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [ref]);
 }  
 
@@ -49,12 +51,6 @@ export const DropdownToggle = ({
 	className,
 	disabled = false
 }: DropdownToggleInterface) => {
-	const dropdownButtonRef = useRef(null)
-
-	const setButtonRef = useCallback((node, ref) => {
-		dropdownButtonRef.current = node
-		return ref(node)
-	}, [])
 
 	return (
 		<Button

@@ -129,6 +129,7 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, type, data }: AdminEditModalInt
         } else {
             resetForm()
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [type])
 
     return (

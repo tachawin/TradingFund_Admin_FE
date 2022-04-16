@@ -1,20 +1,18 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import moment from 'moment';
 import 'moment/locale/th'
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper';
 import SubHeader, {
 	SubHeaderLeft
 } from '../../../layout/SubHeader/SubHeader';
 import Page from '../../../layout/Page/Page';
-import { demoPages, pages } from '../../../menu';
+import { pages } from '../../../menu';
 import data from '../../../common/data/dummyCustomerData';
 import depositData from '../../../common/data/dummySalesData';
 import rewardData from '../../../common/data/dummyRewardData';
 import creditData from '../../../common/data/dummyCreditData';
 import Button from '../../../components/bootstrap/Button';
 import Card, {
-	CardActions,
 	CardBody,
 	CardHeader,
 	CardLabel,

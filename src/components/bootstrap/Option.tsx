@@ -1,5 +1,4 @@
-import { ReactNode } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 
 interface OptionsInterface {
 	list: any[]

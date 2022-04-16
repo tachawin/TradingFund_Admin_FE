@@ -1,11 +1,9 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { useNavigate } from 'react-router-dom'
 import classNames from 'classnames'
-import { pages } from 'menu'
 
-import { Form, FormikProvider, useFormik } from 'formik'
+import { useFormik } from 'formik'
 import { UserAuth } from 'common/types/user'
 import { login, LoginResponse } from 'common/apis/auth'
 import * as Yup from 'yup'
@@ -28,7 +26,6 @@ enum LoginState {
 
 const Login = () => {
 	const { t } = useTranslation('login')
-	const navigate = useNavigate()
 	const [loginState, setLoginState] = useState(LoginState.Login)
 	const [otpRefCode, setOTPRefCode] = useState('')
 	const [isLoading, setIsLoading] = useState(false)

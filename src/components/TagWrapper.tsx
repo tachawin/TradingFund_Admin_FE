@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode } from 'react';
+import { forwardRef } from 'react';
 
 interface TagWrapperInterface {
 	id?: any

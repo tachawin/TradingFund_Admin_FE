@@ -7,7 +7,7 @@ import SubHeader, {
 	SubHeaderRight
 } from '../../../layout/SubHeader/SubHeader'
 import Page from '../../../layout/Page/Page'
-import { demoPages, pages } from '../../../menu'
+import { pages } from '../../../menu'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
 import data from '../../../common/data/dummyRewardData'
@@ -23,7 +23,6 @@ import { useTranslation } from 'react-i18next'
 import RewardModal from './RewardModal'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
-import banks from 'common/data/dummyBankData'
 import RewardTable from './RewardTable'
 import { CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 

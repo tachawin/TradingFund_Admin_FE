@@ -1,4 +1,3 @@
-import { getBanks } from 'common/apis/bank'
 import { useState, useEffect } from 'react'
 import dummyBanks from './bank.json'
 

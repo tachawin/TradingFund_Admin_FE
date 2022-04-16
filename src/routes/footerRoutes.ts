@@ -1,4 +1,3 @@
-import React from 'react'
 import { pages } from '../menu'
 
 const footers = [

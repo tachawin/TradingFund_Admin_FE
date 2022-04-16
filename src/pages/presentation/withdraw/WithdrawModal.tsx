@@ -1,8 +1,7 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useFormik } from 'formik'
 import Modal, {
 	ModalBody,
-	ModalFooter,
 	ModalHeader,
 	ModalTitle,
 } from '../../../components/bootstrap/Modal'
@@ -89,7 +88,7 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
         }
     }
 
-    const { errors, touched, values, setFieldValue, handleSubmit, handleChange, validateForm, isValid } = formik
+    const { errors, touched, values, setFieldValue, handleSubmit, handleChange, isValid } = formik
 
     return (
         <Modal style={{ maxWidth: '600px' }} isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>

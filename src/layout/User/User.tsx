@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import USERS from '../../common/data/userDummyData';
 import { demoPages } from '../../menu';
@@ -8,16 +7,12 @@ import { DropdownItem, DropdownMenu } from '../../components/bootstrap/Dropdown'
 import Button from '../../components/bootstrap/Button';
 import useDarkMode from '../../hooks/useDarkMode';
 import Icon from '../../components/icon/Icon';
-import useNavigationItemHandle from '../../hooks/useNavigationItemHandle';
 
 const User = () => {
 	const navigate = useNavigate();
-	const handleItem = useNavigationItemHandle();
 	const { darkModeStatus, setDarkModeStatus } = useDarkMode();
 
 	const [collapseStatus, setCollapseStatus] = useState(false);
-
-	const { t } = useTranslation(['translation', 'menu']);
 
 	return (
 		<>

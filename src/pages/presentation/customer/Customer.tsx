@@ -21,17 +21,12 @@ import Button from '../../../components/bootstrap/Button'
 import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import Dropdown, {
-	DropdownItem,
 	DropdownMenu,
 	DropdownToggle,
 } from '../../../components/bootstrap/Dropdown'
 import Checks  from '../../../components/bootstrap/forms/Checks'
 import useSortableData from '../../../hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-// import CustomerFilter from './CustomerFilter'
-// import CustomerEditModal from './CustomerEditModal'
-// import CustomerDeleteModal from './CustomerDeleteModal'
-// import CustomerPermissionModal from './CustomerPermissionModal'
 import { useNavigate } from 'react-router-dom'
 import banks from 'common/data/dummyBankData'
 import CustomerAddModal from './CustomerAddModal'
@@ -82,7 +77,6 @@ const Customer = () => {
 	const [isOpenUpdatedAtDatePicker, setIsOpenUpdatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
 	const [isOpenCustomerModal, setIsOpenCustomerModal] = useState<"add" | "edit">()
-	const [selectedRowData, setSelectedRowData] = useState<any>()
 
 	const formik = useFormik<DepositFilterInterface>({
 		initialValues: {
@@ -418,7 +412,6 @@ const Customer = () => {
 				setIsOpen={setIsOpenCustomerModal} 
 				isOpen={Boolean(isOpenCustomerModal)} 
 				type={isOpenCustomerModal} 
-				data={selectedRowData} 
 			/>}
 		</PageWrapper>
 	)

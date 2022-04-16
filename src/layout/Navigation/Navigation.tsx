@@ -1,7 +1,6 @@
 import React, { useContext, forwardRef, useState, useRef, useCallback, DetailedHTMLProps, HTMLAttributes } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
-import { useWindowSize } from 'react-use';
 import { NavHashLink } from 'react-router-hash-link';
 import { Manager, Popper, Reference } from 'react-popper';
 import { useTranslation } from 'react-i18next';
@@ -69,8 +68,7 @@ export const Item = ({
 	...props
 }: ItemInterface) => {
 	const { darkModeStatus } = useDarkMode();
-	const { width } = useWindowSize();
-	const { setAsideStatus, setLeftMenuStatus, setRightMenuStatus } = useContext(ThemeContext);
+	const { setLeftMenuStatus, setRightMenuStatus } = useContext(ThemeContext);
 
 	
 	const _active = props.activeItem === id;
@@ -162,13 +160,6 @@ export const Item = ({
 	const dropdownButtonHandleClick = () => {
 		setDropdownStatus(!dropdownStatus);
 	};
-
-	// Clicking outside to close
-	const closeMenu = useCallback(() => {
-		setDropdownStatus(false);
-	}, []);
-	// useEventOutside(dropdownRef, 'mousedown', closeMenu);
-	// useEventOutside(dropdownRef, 'touchstart', closeMenu);
 
 	if (children) {
 		// submenu && in header

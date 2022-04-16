@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useFormik } from 'formik'
 import Modal, {
 	ModalBody,
@@ -10,11 +10,9 @@ import Icon from '../../../components/icon/Icon'
 import FormGroup from '../../../components/bootstrap/forms/FormGroup'
 import Input from '../../../components/bootstrap/forms/Input'
 import { useTranslation } from 'react-i18next'
-import banks, { Bank } from '../../../common/data/dummyBankData'
 import * as Yup from 'yup'
 import Button from 'components/bootstrap/Button'
 import PlaceholderImage from 'components/extras/PlaceholderImage'
-import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown'
 
 interface ProductModalProperties {
     type: string

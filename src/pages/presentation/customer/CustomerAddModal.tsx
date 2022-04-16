@@ -79,6 +79,7 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
         } else {
             resetForm()
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [type])
 
     return (

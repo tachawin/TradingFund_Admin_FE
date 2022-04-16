@@ -1,6 +1,5 @@
 import Card, { CardBody, CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 import banks, { Bank } from '../../../common/data/dummyBankData'
-import { t } from 'i18next'
 import bankIcons from 'common/banks'
 import { useTranslation } from 'react-i18next'
 

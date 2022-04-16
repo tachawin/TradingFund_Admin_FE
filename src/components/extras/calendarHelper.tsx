@@ -78,12 +78,12 @@ export const CalendarTodayButton = ({ setDate, date, unitType, viewMode }: Calen
 	);
 };
 
-interface CalendarViewModeButtons {
+interface CalendarViewModeButtonsInterface {
 	viewMode: string,
 	setViewMode: any,
 };
 
-export const CalendarViewModeButtons = ({ viewMode, setViewMode }: CalendarViewModeButtons) => {
+export const CalendarViewModeButtons = ({ viewMode, setViewMode }: CalendarViewModeButtonsInterface) => {
 	return (
 		<Dropdown>
 			<DropdownToggle>

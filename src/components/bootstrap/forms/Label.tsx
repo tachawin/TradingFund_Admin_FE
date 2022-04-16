@@ -1,5 +1,4 @@
-import { ReactNode } from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactNode } from 'react';
 import classNames from 'classnames';
 
 interface LabelInterface {

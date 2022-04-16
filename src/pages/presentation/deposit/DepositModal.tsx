@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useFormik } from 'formik'
 import Modal, {
 	ModalBody,
@@ -15,7 +15,6 @@ import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import banks from 'common/data/dummyBankData'
 import * as Yup from 'yup'
-import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 
 interface DepositModalProperties {
 	type: string
@@ -98,7 +97,7 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
 		},
 	})
 
-    const { values, handleChange, resetForm, initialValues, isValid, touched, errors, setFieldValue } = formik
+    const { values, handleChange, isValid, touched, errors } = formik
 
     return (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>

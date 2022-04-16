@@ -1,5 +1,4 @@
 import { forwardRef, ReactNode } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Option, { Options } from '../Option';
 import Validation from './Validation';

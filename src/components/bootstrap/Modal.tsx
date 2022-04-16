@@ -1,5 +1,4 @@
 import { forwardRef, MouseEvent, ReactNode, useLayoutEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
 import Portal from '../../layout/Portal/Portal';

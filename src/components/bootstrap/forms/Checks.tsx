@@ -1,5 +1,4 @@
 import { ChangeEventHandler, Children, cloneElement, forwardRef, ReactNode } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Validation from './Validation';
 

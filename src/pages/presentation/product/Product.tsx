@@ -9,7 +9,6 @@ import SubHeader, {
 } from '../../../layout/SubHeader/SubHeader'
 import Page from '../../../layout/Page/Page'
 import { pages } from '../../../menu'
-import { DateRange } from 'react-date-range'
 import data from '../../../common/data/dummyProductData'
 import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'

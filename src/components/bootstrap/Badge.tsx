@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import useDarkMode from '../../hooks/useDarkMode';
 

@@ -16,17 +16,16 @@ export const dataPagination = (data: any, currentPage: number, perPage: number) 
 		(i: any, index: number) => index + 1 > (currentPage - 1) * perPage && index + 1 <= currentPage * perPage,
 	);
 
-interface PaginationButtons {
+interface PaginationButtonsInterface {
 	setCurrentPage: any,
 	currentPage: number,
 	perPage: number,
 	setPerPage: any,
-	// eslint-disable-next-line react/forbid-prop-types
 	data: any[],
 	label?: string,
 }
 
-const PaginationButtons = ({ setCurrentPage, currentPage, perPage, setPerPage, data, label = 'items' }: PaginationButtons) => {
+const PaginationButtons = ({ setCurrentPage, currentPage, perPage, setPerPage, data, label = 'items' }: PaginationButtonsInterface) => {
 	const totalItems = data.length;
 	const totalPage = Math.ceil(totalItems / perPage);
 

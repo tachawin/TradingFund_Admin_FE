@@ -23,7 +23,6 @@ import { useTranslation } from 'react-i18next'
 import CreditModal from './CreditModal'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
-import banks from 'common/data/dummyBankData'
 import CreditTable from './CreditTable'
 import { CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 

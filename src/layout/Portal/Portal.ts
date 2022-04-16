@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { ThemeContext } from '../../contexts/themeContext';
 
 interface PortalInterface {

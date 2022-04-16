@@ -64,14 +64,14 @@ export const PaginationItem = forwardRef<HTMLLIElement, PaginationItemInterface>
 	},
 );
 
-interface Pagination {
+interface PaginationInterface {
 	ariaLabel?: string,
 	children: any,
 	className?: string,
 	size?: string
 }
 
-const Pagination = forwardRef<HTMLElement, Pagination>(({ ariaLabel, className, children, size, ...props }, ref) => {
+const Pagination = forwardRef<HTMLElement, PaginationInterface>(({ ariaLabel, className, children, size, ...props }, ref) => {
 	return (
 		// eslint-disable-next-line react/jsx-props-no-spreading
 		<nav ref={ref} aria-label={ariaLabel} className={className} {...props}>

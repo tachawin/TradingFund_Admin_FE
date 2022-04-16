@@ -1,5 +1,4 @@
-import { cloneElement, ReactNode } from 'react';
-import PropTypes from 'prop-types';
+import { cloneElement } from 'react';
 import classNames from 'classnames';
 import TagWrapper from '../../TagWrapper';
 import Label from './Label';
