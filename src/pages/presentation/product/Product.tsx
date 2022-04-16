@@ -19,6 +19,7 @@ import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGrou
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import CommonGridProductItem from 'pages/common/CommonProductItem'
 import Button from 'components/bootstrap/Button'
+import ProductDeleteModal from './ProductDeleteModal'
 
 interface ProductFilterInterface {
 	searchInput: string
@@ -201,6 +202,7 @@ const Product = () => {
 				</div>
 			</Page>
 			{isOpenProductModal && <ProductModal setIsOpen={setIsOpenProductModal} isOpen={Boolean(isOpenProductModal)} properties={isOpenProductModal} />}
+            {isOpenDeleteProductModal && <ProductDeleteModal setIsOpen={setIsOpenDeleteProductModal} isOpen={Boolean(isOpenDeleteProductModal)} properties={isOpenDeleteProductModal} />}
 		</PageWrapper>
 	)
 }

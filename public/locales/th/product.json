@@ -5,9 +5,14 @@
 
     "add.product": "เพิ่มสินค้า",
     "edit.product": "แก้ไขสินค้า",
+    "delete.product": "ลบสินค้า {{productName}}",
     "all.products": "สินค้าทั้งหมด",
     "no.items": "{{item}} ชิ้น",
 
     "save.product.successfully": "บันทึกสินค้าสำเร็จ",
-    "save.product.name.successfully": "บันทึกสินค้า {{name}} สำเร็จ"
+    "save.product.name.successfully": "บันทึกสินค้า {{name}} สำเร็จ",
+
+    "form.delete.confirmation": "ต้องการลบสินค้าใช่หรือไม่ ?",
+    "delete.successfully": "ลบสินค้าสำเร็จ",
+    "delete.product.successfully": "ลบสินค้า {{productName}} สำเร็จ"
 }

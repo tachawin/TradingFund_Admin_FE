@@ -44,6 +44,11 @@ const CommonProductItem = ({
 		editAction()
 	}
 
+	const handleDelete = () => {
+		setIsOpenDropdown(false)
+		deleteAction()
+	}
+
 	return (
 		<Card>
 			<CardHeader>
@@ -80,7 +85,7 @@ const CommonProductItem = ({
 								</Button>
 							</DropdownItem>
 							<DropdownItem>
-								<Button icon='Delete' onClick={() => deleteAction()}>
+								<Button icon='Delete' onClick={handleDelete}>
 									{t('delete')}
 								</Button>
 							</DropdownItem>
