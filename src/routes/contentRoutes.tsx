@@ -17,7 +17,6 @@ const LANDING = {
 
 const AUTH = {
 	LOGIN: lazy(() => import('../pages/presentation/auth/Login')),
-	OTP: lazy(() => import('../pages/presentation/auth/OTP')),
 	PAGE_404: lazy(() => import('../pages/presentation/auth/Page404')),
 }
 
@@ -42,11 +41,6 @@ const presentation = [
 	{
 		path: pages.login.path,
 		element: <AUTH.LOGIN />,
-		exact: true,
-	},
-	{
-		path: pages.otp.path,
-		element: <AUTH.OTP />,
 		exact: true,
 	},
 

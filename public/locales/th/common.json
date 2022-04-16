@@ -73,7 +73,8 @@
 
     "form.username": "ชื่อผู้ใช้",
     "form.password": "รหัสผ่าน",
-    "form.name": "ชื่อ",
+    "form.confirm.password": "ยืนยันรหัสผ่าน",
+    "form.name": "ชื่อ - นามสกุล",
     "form.time": "เวลาที่โอน",
     "form.date": "วันที่โอน",
     "form.bank.account.number": "หมายเลขบัญชี",

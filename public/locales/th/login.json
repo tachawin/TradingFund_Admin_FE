@@ -1,10 +1,14 @@
 {
 	"welcome": "ยินดีต้อนรับ",
     "sign.in.to.continue": "เข้าสู่ระบบเพื่อเริ่ม",
-    "your.email.or.username": "อีเมลหรือชื่อผู้ใช้ของคุณ",
+    "username": "ชื่อผู้ใช้",
     "password": "รหัสผ่าน",
     "continue": "ต่อไป",
     "verification": "ยืนยันตัวตน",
     "you.will.get.otp": "คุณจะได้รับรหัส 6 หลักผ่าน SMS",
-    "otp": "รหัส 6 หลัก"
+    "ref.code": "รหัสอ้างอิง {{refCode}}",
+    "otp": "รหัส 6 หลัก",
+    "login.failed": "เข้าสู่ระบบไม่สำเร็จ",
+    "otp.failed": "รหัส OTP ไม่ถูกต้อง",
+    "please.try.again": "กรุณาลองใหม่อีกครั้ง"
 }

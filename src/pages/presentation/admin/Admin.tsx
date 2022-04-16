@@ -28,7 +28,7 @@ import Dropdown, {
 import Checks  from '../../../components/bootstrap/forms/Checks'
 import useSortableData from '../../../hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import AdminEditModal from './AdminEditModal'
+import AdminEditModal, { AdminModalType } from './AdminEditModal'
 import AdminDeleteModal from './AdminDeleteModal'
 import AdminPermissionModal from './AdminPermissionModal'
 import CommonTableFilter from 'components/common/CommonTableFilter'
@@ -60,7 +60,7 @@ const Admin = () => {
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [isOpenUpdatedAtDatePicker, setIsOpenUpdatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
-	const [isOpenAdminModal, setIsOpenAdminModal] = useState<"add" | "edit">()
+	const [isOpenAdminModal, setIsOpenAdminModal] = useState<AdminModalType>()
 	const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
 	const [isOpenPermissionModal, setIsOpenPermissionModal] = useState(false)
 	const [selectedRowData, setSelectedRowData] = useState<any>()
@@ -68,7 +68,7 @@ const Admin = () => {
 	const ADMIN_ROW_ACTIONS: AdminRowAction[] = [
 		{
 			icon: 'Edit',
-			onClick: () => setIsOpenAdminModal('edit'),
+			onClick: () => setIsOpenAdminModal(AdminModalType.Edit),
 			title: t('edit')
 		},
 		{
@@ -228,7 +228,7 @@ const Admin = () => {
 						icon='PersonAdd'
 						color='primary'
 						isLight
-						onClick={() => setIsOpenAdminModal('add')}
+						onClick={() => setIsOpenAdminModal(AdminModalType.Add)}
 					>
 						{t('admin:new.admin')}
 					</Button>
@@ -355,7 +355,7 @@ const Admin = () => {
 															</> : <>
 																<span className='badge border border-2 border-light rounded-circle bg-l25-dark p-2 me-2'>
 																	<span className='visually-hidden'>
-																		Inacctive status
+																		Inactive status
 																	</span>
 																</span>
 																<span>{t('inactive')}</span>
@@ -406,7 +406,7 @@ const Admin = () => {
 					</div>
 				</div>
 			</Page>
-			<AdminEditModal setIsOpen={setIsOpenAdminModal} isOpen={Boolean(isOpenAdminModal)} type={isOpenAdminModal} data={selectedRowData} />
+			{isOpenAdminModal && <AdminEditModal setIsOpen={setIsOpenAdminModal} isOpen={Boolean(isOpenAdminModal)} type={isOpenAdminModal} data={selectedRowData} />}
 			<AdminPermissionModal setIsOpen={setIsOpenPermissionModal} isOpen={Boolean(isOpenPermissionModal)} id={selectedRowData?.id} name={selectedRowData?.name} permissions={mockPermission} />
 			<AdminDeleteModal setIsOpen={setIsOpenDeleteModal} isOpen={Boolean(isOpenDeleteModal)} data={selectedRowData} />
 		</PageWrapper>

@@ -8,10 +8,12 @@
     "delete.admin": "ลบแอดมิน {{adminName}}",
 
     "form.delete.confirmation": "ยืนยันที่จะลบแอดมินหรือไม่ ?",
-    "edit.successfully": "แก้ไขสำเร็จ",
+    "save.successfully": "บันทึกสำเร็จ",
+    "save.failed": "บันทึกไม่สำเร็จ",
     "delete.successfully": "ลบสำเร็จ",
-    "edit.admin.successfully": "ทำการแก้ไข {{adminName}} สำเร็จ",
-    "delete.admin.successfully": "ทำการลบ {{adminName}} สำเร็จ",
+    "save.admin.successfully": "บันทึกแอดมิน {{adminName}} สำเร็จ",
+    "save.admin.failed": "บันทึกแอดมิน {{adminName}} ไม่สำเร็จ",
+    "delete.admin.successfully": "ลบ {{adminName}} สำเร็จ",
 
     "admin": "Admin",
     "super.admin": "Super Admin"
