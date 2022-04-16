@@ -107,6 +107,13 @@ export const dashboardMenu = {
 		icon: 'sticky_note_2',
 		subMenu: null,
 	},
+	product: {
+		id: 'product',
+		text: 'Product',
+		path: 'product',
+		icon: 'sticky_note_2',
+		subMenu: null,
+	},
 };
 
 export const pages = {
@@ -175,6 +182,12 @@ export const pages = {
 		text: 'bank',
 		path: 'bank',
 		icon: 'bank',
+	},
+	product: {
+		id: 'product',
+		text: 'product',
+		path: 'product',
+		icon: 'product',
 	},
 }
 

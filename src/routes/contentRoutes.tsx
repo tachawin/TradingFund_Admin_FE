@@ -12,6 +12,7 @@ const LANDING = {
 	REWARD: lazy(() => import('../pages/presentation/reward/Reward')),
 	CREDIT: lazy(() => import('../pages/presentation/credit/Credit')),
 	BANK: lazy(() => import('../pages/presentation/bank/Bank')),
+	PRODUCT: lazy(() => import('../pages/presentation/product/Product')),
 }
 
 const AUTH = {
@@ -96,6 +97,11 @@ const presentation = [
 	{
 		path: pages.bank.path,
 		element: <LANDING.BANK />,
+		exact: true,
+	},
+	{
+		path: pages.product.path,
+		element: <LANDING.PRODUCT />,
 		exact: true,
 	}
 ]
