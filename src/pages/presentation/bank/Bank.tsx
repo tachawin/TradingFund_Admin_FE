@@ -26,20 +26,13 @@ import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGrou
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import BankTable from './BankTable'
 import { CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
+import BankDeleteModal from './BankDeleteModal'
 
 interface BankFilterInterface {
 	searchInput: string
-    isApproved: boolean
-    isRejected: boolean
-	points: {
-		min: string
-		max: string
-	},
-	timestamp: {
-		startDate: Date
-		endDate: Date
-		key: string
-	}[]
+    paymentType: string[]
+	isActive: boolean
+	bank: string[]
 }
 
 interface BankModalProperties {
@@ -47,29 +40,23 @@ interface BankModalProperties {
 	selectedRow: any
 }
 
+interface BankDeleteModalProperties {
+	selectedRow: any
+}
+
 const Bank = () => {
     const { t } = useTranslation(['common', 'bank'])
 
-	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
     const [isOpenBankModal, setIsOpenBankModal] = useState<BankModalProperties>()
+	const [isOpenDeleteBankModal, setIsOpenDeleteBankModal] = useState<BankDeleteModalProperties>()
 
 	const formik = useFormik<BankFilterInterface>({
 		initialValues: {
 			searchInput: '',
-            isApproved: false,
-            isRejected: false,
-            points: {
-                min: '',
-                max: ''
-            },
-			timestamp: [
-				{
-					startDate: moment().startOf('week').add('-1', 'week').toDate(),
-					endDate: moment().endOf('week').toDate(),
-					key: 'selection',
-				},
-			]
+			paymentType: [],
+            isActive: false,
+			bank: []
 		},
 		onSubmit: (values) => {
 			console.log('submit filter')
@@ -84,7 +71,7 @@ const Bank = () => {
 		setFieldValue,
 		handleChange,
 		resetForm,
-		handleSubmit
+		handleSubmit,
 	} = formik
 
 	const datePicker = (selectedDate: any, field: string) => (
@@ -116,6 +103,31 @@ const Bank = () => {
 		}
 	}
 
+	const handleOnChangeMultipleSelector = (event: ChangeEvent<HTMLInputElement>, field: string) => {
+		let selectedValue = event.target.name
+		let index = parseInt(event.target.value)
+		let isSelected = event.target.checked
+		let newValue = values[field as keyof BankFilterInterface] as string[]
+
+		if (isSelected) {
+			newValue.push(selectedValue)
+		} else {
+			newValue.splice(index, 1)
+		}
+		setFieldValue(field, newValue)
+	}
+
+	const PAYMENT_TYPE = [
+        {
+            id: 0,
+            name: t('deposit')
+        },
+        {
+            id: 0,
+            name: t('withdraw')
+        }
+    ]
+
 	return (
 		<PageWrapper title={pages.bank.text}>
 			<SubHeader>
@@ -142,63 +154,52 @@ const Bank = () => {
 						onSubmit={handleSubmit}
 						filters={[
 							{
-								label: t('filter.status'),
+								label: t('filter.payment.type'),
 								children: <div>
-                                    <Checks
-                                        id='isApproved'
-                                        label={t('approve')}
-                                        onChange={handleChange}
-                                        checked={values.isApproved}
-                                        ariaLabel={t('success')}
-                                    />
-                                    <Checks
-                                        id='isRejected'
-                                        label={t('reject')}
-                                        onChange={handleChange}
-                                        checked={values.isRejected}
-                                        ariaLabel={t('not.found')}
-                                    />
-                                </div>
-							},
-                            {
-								label: t('filter.timestamp'),
-								children: <Dropdown >
-									<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										<span data-tour='date-range'>
-											{`${moment(values.timestamp[0].startDate).format('MMM Do YY')} - ${moment(
-												values.timestamp[0].endDate,
-											).format('MMM Do YY')}`}
-										</span>
-									</DropdownToggle>
-									<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										{datePicker(values.timestamp, 'timestamp')}
-									</DropdownMenu>
-								</Dropdown>
+									{PAYMENT_TYPE.map((paymentType: any) => {
+										let index = values.paymentType.indexOf(paymentType.name)
+										return <Checks
+												key={paymentType.id}
+												label={paymentType.name}
+												name={paymentType.name}
+												value={index}
+												onChange={(e) => handleOnChangeMultipleSelector(e, 'paymentType')}
+												checked={index > -1}
+												ariaLabel={paymentType.name}
+											/>
+										}
+									)}
+								</div>
 							},
 							{
-								label: t('filter.points'),
+								label: t('filter.bank'),
 								children: <div>
-									<InputGroup>
-										<Input
-											id='points.min'
-											ariaLabel='Minimum points'
-											placeholder={t('filter.min')}
-											onChange={handleChange}
-											value={values.points.min}
-											type='number'
-										/>
-										<InputGroupText>{t('filter.to')}</InputGroupText>
-										<Input
-											id='points.max'
-											ariaLabel='Maximum points'
-											placeholder={t('filter.max')}
-											onChange={handleChange}
-											value={values.points.max}
-											type='number'
-										/>
-									</InputGroup>
+									{data.map((bank: any) => {
+										let indexInBankFilter = values.bank.indexOf(bank.label)
+										return <Checks
+												key={bank.id}
+												label={bank.label}
+												name={bank.label}
+												value={indexInBankFilter}
+												onChange={(e) => handleOnChangeMultipleSelector(e, 'bank')}
+												checked={indexInBankFilter > -1}
+												ariaLabel={bank.label}
+											/>
+										}
+									)}
 								</div>
-							}
+							},
+							{
+								label: t('filter.status'),
+								children: <Checks
+									id='isActive'
+									type='switch'
+									label={values.isActive ? t('active') : t('inactive')}
+									onChange={handleChange}
+									checked={values.isActive}
+									ariaLabel='Available status'
+								/>
+							},
 						]} 
 					/>
 					<SubheaderSeparator />
@@ -225,12 +226,14 @@ const Bank = () => {
                             }
                             data={data} 
                             setIsOpenBankModal={setIsOpenBankModal}
+							setIsOpenDeleteBankModal={setIsOpenDeleteBankModal}
                             columns={{ mobileNumber: true, notes: true }} 
                         />
 					</div>
 				</div>
 			</Page>
 			{isOpenBankModal && <BankModal setIsOpen={setIsOpenBankModal} isOpen={Boolean(isOpenBankModal)} properties={isOpenBankModal} />}
+			{isOpenDeleteBankModal && <BankDeleteModal setIsOpen={setIsOpenDeleteBankModal} isOpen={Boolean(isOpenDeleteBankModal)} properties={isOpenDeleteBankModal} />}
 		</PageWrapper>
 	)
 }

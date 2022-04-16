@@ -110,7 +110,6 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
             name: t('withdraw')
         }
     ]
-    
 
     return (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>

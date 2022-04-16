@@ -9,6 +9,7 @@ import Button from 'components/bootstrap/Button'
 interface BankTableInterface {
     data: any
     setIsOpenBankModal?: (value: { type: string, selectedRow: any }) => void
+    setIsOpenDeleteBankModal?: (value: { selectedRow: any }) => void
     columns?: any
     cardHeader?: ReactNode
 }
@@ -16,6 +17,7 @@ interface BankTableInterface {
 const BankTable = ({ 
     data, 
     setIsOpenBankModal, 
+    setIsOpenDeleteBankModal,
     columns, 
     cardHeader 
 }: BankTableInterface) => {
@@ -145,7 +147,7 @@ const BankTable = ({
                                         }
                                     </div>
                                 </td>
-                                {setIsOpenBankModal && <td>
+                                {(setIsOpenBankModal && setIsOpenDeleteBankModal) && <td>
                                     <Button
                                         onClick={() => setIsOpenBankModal({ type: "edit", selectedRow: i})}
                                         className='p-0'
@@ -153,7 +155,7 @@ const BankTable = ({
                                     >
                                         {t('edit')}
                                     </Button> / <Button
-                                        onClick={() => setIsOpenBankModal({ type: "delete", selectedRow: i})}
+                                        onClick={() => setIsOpenDeleteBankModal({ selectedRow: i })}
                                         className='p-0'
                                         isLight
                                     >

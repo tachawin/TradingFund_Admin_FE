@@ -67,6 +67,7 @@
     "filter.min": "ขั้นต่ำ",
     "filter.to": "ถึง",
     "filter.max": "สูงสุด",
+    "filter.payment.type": "ประเภทธุรกรรม",
     "filter": "กรอง",
 
     "form.username": "ชื่อผู้ใช้",

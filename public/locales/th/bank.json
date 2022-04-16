@@ -1,6 +1,10 @@
 {
     "add.bank": "เพิ่มธนาคาร",
     "edit.bank": "แก้ไขธนาคาร",
+    "delete.bank": "ลบธนาคาร {{bankName}}",
 
-    "search.bank": "ค้นหาธนาคาร"
+    "form.delete.confirmation": "ต้องการลบธนาคารใช่หรือไม่",
+    "search.bank": "ค้นหาธนาคาร",
+    "delete.successfully": "ลบธนาคารสำเร็จ",
+    "delete.bank.successfully": "ลบธนาคาร {{bankName}} สำเร็จ"
 }
