@@ -4,10 +4,10 @@ import Modal, {
 	ModalFooter,
 	ModalHeader,
 	ModalTitle,
-} from '../../../components/bootstrap/Modal'
-import showNotification from '../../../components/extras/showNotification'
-import Icon from '../../../components/icon/Icon'
-import Button from '../../../components/bootstrap/Button'
+} from 'components/bootstrap/Modal'
+import showNotification from 'components/extras/showNotification'
+import Icon from 'components/icon/Icon'
+import Button from 'components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 
 interface AdminEditModalInterface {

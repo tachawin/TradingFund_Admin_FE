@@ -1,7 +1,8 @@
-import { CardFooter, CardFooterLeft, CardFooterRight } from './bootstrap/Card';
-import Pagination, { PaginationItem } from './bootstrap/Pagination';
-import Select from './bootstrap/forms/Select';
-import Option from './bootstrap/Option';
+import { CardFooter, CardFooterLeft, CardFooterRight } from './bootstrap/Card'
+import Pagination, { PaginationItem } from './bootstrap/Pagination'
+import Select from './bootstrap/forms/Select'
+import Option from './bootstrap/Option'
+import { useTranslation } from 'react-i18next'
 
 export const PER_COUNT = {
 	3: 3,
@@ -9,12 +10,12 @@ export const PER_COUNT = {
 	10: 10,
 	25: 25,
 	50: 50,
-};
+}
 
 export const dataPagination = (data: any, currentPage: number, perPage: number) =>
 	data.filter(
 		(i: any, index: number) => index + 1 > (currentPage - 1) * perPage && index + 1 <= currentPage * perPage,
-	);
+	)
 
 interface PaginationButtonsInterface {
 	setCurrentPage: any,
@@ -26,56 +27,57 @@ interface PaginationButtonsInterface {
 }
 
 const PaginationButtons = ({ setCurrentPage, currentPage, perPage, setPerPage, data, label = 'items' }: PaginationButtonsInterface) => {
-	const totalItems = data.length;
-	const totalPage = Math.ceil(totalItems / perPage);
+	const { t } = useTranslation('common')
+	const totalItems = data.length
+	const totalPage = Math.ceil(totalItems / perPage)
 
 	const pagination = () => {
-		let items = [];
+		let items = []
 
-		let i = currentPage - 1;
+		let i = currentPage - 1
 		while (i >= currentPage - 1 && i > 0) {
 			items.push(
 				<PaginationItem key={i} onClick={() => setCurrentPage(currentPage - 1)}>
 					{i}
 				</PaginationItem>,
-			);
+			)
 
-			i -= 1;
+			i -= 1
 		}
 
-		items = items.reverse();
+		items = items.reverse()
 
 		items.push(
 			<PaginationItem key={currentPage} isActive onClick={() => setCurrentPage(currentPage)}>
 				{currentPage}
 			</PaginationItem>,
-		);
+		)
 
-		i = currentPage + 1;
+		i = currentPage + 1
 		while (i <= currentPage + 1 && i <= totalPage) {
 			items.push(
 				<PaginationItem key={i} onClick={() => setCurrentPage(currentPage + 1)}>
 					{i}
 				</PaginationItem>,
-			);
+			)
 
-			i += 1;
+			i += 1
 		}
 
-		return items;
-	};
+		return items
+	}
 
 	const getInfo = () => {
-		const start = perPage * (currentPage - 1) + 1;
+		const start = perPage * (currentPage - 1) + 1
 
-		const end = perPage * currentPage;
+		const end = perPage * currentPage
 
 		return (
 			<span className='pagination__desc'>
-				Showing {start} to {end > totalItems ? totalItems : end} of {totalItems} {label}
+				{t('table.showing')} {start} {t('table.to')} {end > totalItems ? totalItems : end} {t('table.of')} {totalItems} {label}
 			</span>
-		);
-	};
+		)
+	}
 
 	return (
 		<CardFooter>
@@ -124,8 +126,8 @@ const PaginationButtons = ({ setCurrentPage, currentPage, perPage, setPerPage, d
 					size='sm'
 					ariaLabel='Per'
 					onChange={(e: any) => {
-						setPerPage(parseInt(e.target.value, 10));
-						setCurrentPage(1);
+						setPerPage(parseInt(e.target.value, 10))
+						setCurrentPage(1)
 					}}
 					value={perPage.toString()}>
 					{Object.keys(PER_COUNT).map((i) => (
@@ -136,7 +138,7 @@ const PaginationButtons = ({ setCurrentPage, currentPage, perPage, setPerPage, d
 				</Select>
 			</CardFooterRight>
 		</CardFooter>
-	);
-};
+	)
+}
 
-export default PaginationButtons;
+export default PaginationButtons

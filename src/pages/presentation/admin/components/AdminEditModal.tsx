@@ -5,34 +5,40 @@ import Modal, {
 	ModalFooter,
 	ModalHeader,
 	ModalTitle,
-} from '../../../components/bootstrap/Modal'
-import showNotification from '../../../components/extras/showNotification'
-import Icon from '../../../components/icon/Icon'
-import FormGroup from '../../../components/bootstrap/forms/FormGroup'
-import Input from '../../../components/bootstrap/forms/Input'
-import Button from '../../../components/bootstrap/Button'
+} from 'components/bootstrap/Modal'
+import showNotification from 'components/extras/showNotification'
+import Icon from 'components/icon/Icon'
+import FormGroup from 'components/bootstrap/forms/FormGroup'
+import Input from 'components/bootstrap/forms/Input'
+import Button from 'components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import Checks from 'components/bootstrap/forms/Checks'
 import { AdminInterface, AdminRole, createAdmin } from 'common/apis/admin'
 import * as Yup from 'yup'
 import { Status } from 'pages/common/CommonEnums'
 import Spinner from 'components/bootstrap/Spinner'
+import regEx from 'common/utils/commonRegEx'
 
 export enum AdminModalType {
     Add = 'add',
     Edit = 'edit'
 }
 
+interface AdminModalProperties {
+    type?: AdminModalType
+    selectedRow?: any
+}
+
 interface AdminEditModalInterface {
 	id?: string | number
 	isOpen?: boolean
 	setIsOpen: any
-    type: AdminModalType
-    data?: any
+    properties: AdminModalProperties
 }
 
-const AdminEditModal = ({ id, isOpen, setIsOpen, type, data }: AdminEditModalInterface) => {
+const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInterface) => {
     const { t } = useTranslation(['common', 'admin'])
+    const { selectedRow: data, type } = properties
     const [isLoading, setIsLoading] = useState(false)
 
     const adminSchema = Yup.object().shape({
@@ -40,7 +46,7 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, type, data }: AdminEditModalInt
 		password: Yup.string().required('โปรดใส่รหัสผ่าน').test('length', 'รหัสผ่านต้องยาวกว่า 6 อักษร', val => (val?.length ?? 0) > 5),
         confirmPassword: Yup.string().oneOf([Yup.ref('password')], 'รหัสผ่านต้องตรงกัน').required('กรุณายินยันรหัสผ่าน'),
         name: Yup.string().required('กรุณาใส่ชื่อ นามสกุล'),
-        mobileNumber: Yup.string().matches(/(\+66|0)(\d{1,2}\-?\d{3}\-?\d{3,4})/, 'กรุณาใส่เบอร์โทรศัพท์ให้ถูกต้อง').required('กรุณาใส่เบอร์โทรศัพท์')
+        mobileNumber: Yup.string().matches(regEx.mobileNumber, 'กรุณาใส่เบอร์โทรศัพท์ให้ถูกต้อง').required('กรุณาใส่เบอร์โทรศัพท์')
 	})
 
 	const formik = useFormik({

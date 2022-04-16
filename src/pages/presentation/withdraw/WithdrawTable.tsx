@@ -21,7 +21,7 @@ const WithdrawTable = ({
     columns, 
     cardHeader 
 }: WithdrawTableInterface) => {
-    const { t } = useTranslation('common')
+    const { t } = useTranslation(['common', 'withdraw'])
 
     const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
@@ -241,7 +241,7 @@ const WithdrawTable = ({
             </CardBody>
             <PaginationButtons
                 data={data}
-                label='customers'
+                label={t('withdraw:withdraw.request')}
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
                 perPage={perPage}

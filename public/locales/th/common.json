@@ -11,6 +11,7 @@
     "reject": "ยกเลิก",
     "select.payer": "เลือกลูกค้า",
     "back": "ย้อนกลับ",
+    "admin": "แอดมิน",
 
     "column.no": "เลขที่",
     "column.username": "ชื่อผู้ใช้",
@@ -36,6 +37,9 @@
     "column.address": "ที่อยู่จัดส่ง",
     "column.operator": "ผู้ดำเนินการ",
     "column.notes": "หมายเหตุ",
+    "table.showing": "แสดง",
+    "table.to": "ถึง",
+    "table.of": "จากทั้งหมด",
 
     "wallet": "กระเป๋าเงิน",
     "bank.account": "บัญชีธนาคาร",

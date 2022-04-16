@@ -1,4 +1,4 @@
-import { ChangeEvent, MouseEvent, useCallback, useState } from 'react'
+import { ChangeEvent, useCallback, useState } from 'react'
 import { useFormik } from 'formik'
 import debounce from 'lodash/debounce'
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper'
@@ -9,29 +9,24 @@ import SubHeader, {
 } from '../../../layout/SubHeader/SubHeader'
 import Page from '../../../layout/Page/Page'
 import { demoPages } from '../../../menu'
-import Card, { CardBody } from '../../../components/bootstrap/Card'
+import { CardHeader, CardLabel, CardTitle } from '../../../components/bootstrap/Card'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
 import data from '../../../common/data/dummyAdminData'
-import PaginationButtons, {
-	dataPagination,
-	PER_COUNT,
-} from '../../../components/PaginationButtons'
 import Button from '../../../components/bootstrap/Button'
 import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import Dropdown, {
-	DropdownItem,
 	DropdownMenu,
 	DropdownToggle,
 } from '../../../components/bootstrap/Dropdown'
 import Checks  from '../../../components/bootstrap/forms/Checks'
-import useSortableData from '../../../hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import AdminEditModal, { AdminModalType } from './AdminEditModal'
-import AdminDeleteModal from './AdminDeleteModal'
-import AdminPermissionModal from './AdminPermissionModal'
+import AdminEditModal, { AdminModalType } from './components/AdminEditModal'
+import AdminDeleteModal from './components/AdminDeleteModal'
+import AdminPermissionModal from './components/AdminPermissionModal'
 import CommonTableFilter from 'components/common/CommonTableFilter'
+import AdminTable from './components/AdminTable'
 
 const mockPermission = { 
     report: '0011',
@@ -45,43 +40,20 @@ const mockPermission = {
     product: '1100'
 }
 
-interface AdminRowAction {
-	icon: string,
-	onClick: (value?: number) => void,
-	title: string
+interface AdminModalProperties {
+	type?: AdminModalType
+	selectedRow?: any
 }
 
 const Admin = () => {
     const { t } = useTranslation(['common', 'admin'])
 
-	const [currentPage, setCurrentPage] = useState(1)
-	const [perPage, setPerPage] = useState(PER_COUNT['10'])
-    const [isOpenDropdown, setIsOpenDropdown] = useState<number | null>(null)
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [isOpenUpdatedAtDatePicker, setIsOpenUpdatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
-	const [isOpenAdminModal, setIsOpenAdminModal] = useState<AdminModalType>()
-	const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false)
-	const [isOpenPermissionModal, setIsOpenPermissionModal] = useState(false)
-	const [selectedRowData, setSelectedRowData] = useState<any>()
-
-	const ADMIN_ROW_ACTIONS: AdminRowAction[] = [
-		{
-			icon: 'Edit',
-			onClick: () => setIsOpenAdminModal(AdminModalType.Edit),
-			title: t('edit')
-		},
-		{
-			icon: 'Visibility',
-			onClick: () => setIsOpenPermissionModal(true),
-			title: t('admin:grant.permission')
-		},
-		{
-			icon: 'Delete',
-			onClick: () => setIsOpenDeleteModal(true),
-			title: t('delete')
-		}
-	]
+	const [isOpenAdminModal, setIsOpenAdminModal] = useState<AdminModalProperties>()
+	const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<AdminModalProperties>()
+	const [isOpenPermissionModal, setIsOpenPermissionModal] = useState<AdminModalProperties>()
 
 	const formik = useFormik({
 		initialValues: {
@@ -109,8 +81,6 @@ const Admin = () => {
 			// Send Filter
 		},
 	})
-
-	const { items, requestSort, getClassNamesFor } = useSortableData(data)
 
 	const { 
 		values,
@@ -147,12 +117,6 @@ const Admin = () => {
 			setSearchInput(value)
 			debounceSearchChange(value)
 		}
-	}
-
-	const handleOnDropdownClick = (onClick: (value?: number) => void, data: any) => {
-		setIsOpenDropdown(null)
-		setSelectedRowData(data)
-		onClick()
 	}
 
 	return (
@@ -228,7 +192,7 @@ const Admin = () => {
 						icon='PersonAdd'
 						color='primary'
 						isLight
-						onClick={() => setIsOpenAdminModal(AdminModalType.Add)}
+						onClick={() => setIsOpenAdminModal({ type: AdminModalType.Add })}
 					>
 						{t('admin:new.admin')}
 					</Button>
@@ -237,178 +201,25 @@ const Admin = () => {
 			<Page>
 				<div className='row h-100'>
 					<div className='col-12'>
-						<Card stretch>
-							<CardBody isScrollable className='table-responsive'>
-								<table className='table table-modern table-hover'>
-									<thead>
-										<tr>
-                                            <th 
-												onClick={() => requestSort('no')}
-												className='cursor-pointer text-decoration-underline text-center'>
-												{t('column.no')}
-											</th>
-                                            <th
-												onClick={() => requestSort('username')}
-												className='cursor-pointer text-decoration-underline'>
-												{t('column.username')}{' '}
-												<Icon
-													size='lg'
-													className={getClassNamesFor('username')}
-													icon='FilterList'
-												/>
-											</th>
-											<th
-												onClick={() => requestSort('name')}
-												className='cursor-pointer text-decoration-underline'>
-												{t('column.name')}{' '}
-												<Icon
-													size='lg'
-													className={getClassNamesFor('name')}
-													icon='FilterList'
-												/>
-											</th>
-											<th>{t('column.mobile.number')}</th>
-											<th
-												onClick={() => requestSort('updatedAt')}
-												className='cursor-pointer text-decoration-underline'>
-												{t('column.updated.at')}{' '}
-												<Icon
-													size='lg'
-													className={getClassNamesFor('updatedAt')}
-													icon='FilterList'
-												/>
-											</th>
-											<th
-												onClick={() => requestSort('createdAt')}
-												className='cursor-pointer text-decoration-underline'>
-												{t('column.created.at')}{' '}
-												<Icon
-													size='lg'
-													className={getClassNamesFor('createdAt')}
-													icon='FilterList'
-												/>
-											</th>
-                                            <th
-												onClick={() => requestSort('status')}
-												className='cursor-pointer text-decoration-underline'>
-												{t('column.status')}{' '}
-												<Icon
-													size='lg'
-													className={getClassNamesFor('status')}
-													icon='FilterList'
-												/>
-											</th>
-											<td />
-										</tr>
-									</thead>
-									<tbody>
-										{dataPagination(items, currentPage, perPage).map((i: any, index: number) => (
-											<tr key={i.id}>
-                                                <td className='text-center'>
-                                                    <div>{index + 1}</div>
-												</td>
-                                                <td>
-                                                    <div>{i.username}</div>
-												</td>
-												<td>
-													<div className='d-flex align-items-center'>
-														<div className='flex-grow-1'>
-															<div className='fs-6 fw-bold'>
-																{i.name}
-															</div>
-															<div className='text-muted'>
-																<Icon icon='Label' />{' '}
-																<small>{i.role}</small>
-															</div>
-														</div>
-													</div>
-												</td>
-                                                <td>
-                                                    <div>{i.mobileNumber}</div>
-												</td>
-												<td>
-													<div>{i.membershipDate.format('ll')}</div>
-													<div>
-														<small className='text-muted'>
-															{i.membershipDate.fromNow()}
-														</small>
-													</div>
-												</td>
-                                                <td>
-													<div>{i.membershipDate.format('ll')}</div>
-													<div>
-														<small className='text-muted'>
-															{i.membershipDate.fromNow()}
-														</small>
-													</div>
-												</td>
-                                                <td>
-													<div className='d-flex align-items-center'>
-														{ i.status === 1 ?
-															<>
-																<span className='badge border border-2 border-light rounded-circle bg-success p-2 me-2'>
-																	<span className='visually-hidden'>
-																		Active status
-																	</span>
-																</span>
-																<span>{t('active')}</span>
-															</> : <>
-																<span className='badge border border-2 border-light rounded-circle bg-l25-dark p-2 me-2'>
-																	<span className='visually-hidden'>
-																		Inactive status
-																	</span>
-																</span>
-																<span>{t('inactive')}</span>
-															</>
-														}
-													</div>
-												</td>
-												<td>
-													<Dropdown>
-														<DropdownToggle 
-                                                            hasIcon={false} 
-                                                            isOpen={Boolean(isOpenDropdown)} 
-                                                            setIsOpen={setIsOpenDropdown}
-                                                            index={index}
-															icon='MoreHoriz'
-															color='dark'
-															isLight
-                                                        />
-														<DropdownMenu isAlignmentEnd isOpen={isOpenDropdown === index} setIsOpen={setIsOpenDropdown}>
-															{ADMIN_ROW_ACTIONS.map((action: AdminRowAction, index: number) => 
-																<DropdownItem key={index}>
-																	<Button
-																		icon={action.icon}
-																		onClick={(e: MouseEvent<HTMLButtonElement>) => handleOnDropdownClick(action.onClick, i)}
-																	>
-																		{action.title}
-																	</Button>
-																</DropdownItem>
-															)}
-															
-														</DropdownMenu>
-													</Dropdown>
-												</td>
-											</tr>
-										))}
-									</tbody>
-								</table>
-							</CardBody>
-							<PaginationButtons
-								data={data}
-								label='customers'
-								setCurrentPage={setCurrentPage}
-								currentPage={currentPage}
-								perPage={perPage}
-								setPerPage={setPerPage}
-							/>
-						</Card>
+						<AdminTable 
+							cardHeader={
+                                <CardHeader>
+                                    <CardLabel>
+                                        <CardTitle>{t('admin')}</CardTitle>
+                                    </CardLabel>
+                                </CardHeader>
+                            }
+                            data={data} 
+                            setIsOpenAdminModal={setIsOpenAdminModal}
+							setIsOpenDeleteModal={setIsOpenDeleteModal}
+							setIsOpenPermissionModal={setIsOpenPermissionModal}
+						/>
 					</div>
 				</div>
 			</Page>
-			{isOpenAdminModal && <AdminEditModal setIsOpen={setIsOpenAdminModal} isOpen={Boolean(isOpenAdminModal)} type={isOpenAdminModal} data={selectedRowData} />}
-			<AdminPermissionModal setIsOpen={setIsOpenPermissionModal} isOpen={Boolean(isOpenPermissionModal)} id={selectedRowData?.id} name={selectedRowData?.name} permissions={mockPermission} />
-			<AdminDeleteModal setIsOpen={setIsOpenDeleteModal} isOpen={Boolean(isOpenDeleteModal)} data={selectedRowData} />
+			{isOpenAdminModal && <AdminEditModal setIsOpen={setIsOpenAdminModal} isOpen={Boolean(isOpenAdminModal)} properties={isOpenAdminModal} />}
+			<AdminPermissionModal setIsOpen={setIsOpenPermissionModal} isOpen={Boolean(isOpenPermissionModal)} id={isOpenPermissionModal?.selectedRow.id} name={isOpenPermissionModal?.selectedRow.name} permissions={mockPermission} />
+			<AdminDeleteModal setIsOpen={setIsOpenDeleteModal} isOpen={Boolean(isOpenDeleteModal)} data={isOpenDeleteModal?.selectedRow} />
 		</PageWrapper>
 	)
 }
