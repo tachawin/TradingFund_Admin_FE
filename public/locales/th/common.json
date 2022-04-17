@@ -37,6 +37,8 @@
     "column.address": "ที่อยู่จัดส่ง",
     "column.operator": "ผู้ดำเนินการ",
     "column.notes": "หมายเหตุ",
+    "column.level.name": "ชื่อขั้น",
+    "column.minimum.deposit": "ยอดฝากขั้นต่ำ",
     "table.showing": "แสดง",
     "table.to": "ถึง",
     "table.of": "จากทั้งหมด",
@@ -73,6 +75,7 @@
     "filter.to": "ถึง",
     "filter.max": "สูงสุด",
     "filter.payment.type": "ประเภทธุรกรรม",
+    "filter.minimum.deposit": "ยอดฝากขั้นต่ำ",
     "filter": "กรอง",
 
     "form.username": "ชื่อผู้ใช้",
@@ -102,6 +105,8 @@
     "form.description": "คำอธิบาย",
     "form.quantity": "จำนวน",
     "form.points.to.redeem": "จำนวนแต้มที่ใช้แลก",
+    "form.level.name": "ชื่อขั้น",
+    "form.minimum.deposit": "ยอดฝากขั้นต่ำ",
     "delete.image": "ลบรูป",
 
     "features": "ฟีเจอร์",
