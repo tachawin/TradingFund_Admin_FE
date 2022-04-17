@@ -10,8 +10,9 @@ import { useTranslation } from 'react-i18next'
 import Button from 'components/bootstrap/Button'
 import Product, { ProductModalProperties } from '../product/Product'
 import Bank, { BankModalProperties, BankSubHeader } from '../bank/Bank'
-import Level, { LevelModalProperties, LevelSubHeader } from '../level/Level'
+import Level, { LevelModalProperties } from '../level/Level'
 import ProductSubHeader from '../product/ProductSubHeader'
+import LevelSubHeader from '../level/LevelSubHeader'
 
 enum SettingPanel {
     Product = 'product',

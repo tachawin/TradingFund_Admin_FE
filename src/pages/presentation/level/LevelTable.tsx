@@ -9,7 +9,7 @@ import Button from 'components/bootstrap/Button'
 interface LevelTableInterface {
     data: any
     setIsOpenLevelModal?: (value: { type: string, selectedRow: any }) => void
-    setIsOpenDeleteLevelModal?: (value: { selectedRow: any }) => void
+    setIsOpenDeleteLevelModal?: (value: { type: string, selectedRow: any }) => void
     columns?: any
     cardHeader?: ReactNode
 }
@@ -26,7 +26,6 @@ const LevelTable = ({
     data, 
     setIsOpenLevelModal, 
     setIsOpenDeleteLevelModal,
-    columns, 
     cardHeader 
 }: LevelTableInterface) => {
     const { t } = useTranslation('common')
@@ -132,7 +131,7 @@ const LevelTable = ({
                                     >
                                         {t('edit')}
                                     </Button> / <Button
-                                        onClick={() => setIsOpenDeleteLevelModal({ selectedRow: i })}
+                                        onClick={() => setIsOpenDeleteLevelModal({ type: "delete", selectedRow: i })}
                                         className='p-0'
                                         isLight
                                     >

@@ -13,18 +13,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import FormGroup from 'components/bootstrap/forms/FormGroup'
 import Input from 'components/bootstrap/forms/Input'
-
-interface LevelModalProperties {
-	type: string
-	selectedRow: any
-}
-
-interface LevelModalInterface {
-	id?: string | number
-	isOpen?: boolean
-	setIsOpen: any
-    properties: LevelModalProperties
-}
+import { LevelModalInterface } from './Level'
 
 interface LevelFormInterface {
     levelName: string

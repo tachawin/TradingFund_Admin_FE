@@ -9,17 +9,7 @@ import showNotification from '../../../components/extras/showNotification'
 import Icon from '../../../components/icon/Icon'
 import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
-
-interface LevelModalProperties {
-	selectedRow: any
-}
-
-interface LevelModalInterface {
-	id?: string | number
-	isOpen?: boolean
-	setIsOpen: any
-    properties: LevelModalProperties
-}
+import { LevelModalInterface } from './Level'
 
 const LevelDeleteModal = ({ id, isOpen, setIsOpen, properties }: LevelModalInterface) => {
     const { t } = useTranslation(['common', 'level'])
