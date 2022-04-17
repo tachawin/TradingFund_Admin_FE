@@ -13,12 +13,14 @@ import { sendOTP } from 'common/apis/auth'
 import Spinner from 'components/bootstrap/Spinner'
 import showNotification from 'components/extras/showNotification'
 import Icon from 'components/icon/Icon'
+import { didLogin } from 'common/utils/auth'
 
 interface OTPInterface {
+	adminId: string
 	refCode: string
 }
 
-const OTP = ({ refCode }: OTPInterface) => {
+const OTP = ({ adminId, refCode }: OTPInterface) => {
 	const { t } = useTranslation('login')
 	const navigate = useNavigate()
 	const [isLoading, setIsLoading] = useState(false)
@@ -35,10 +37,12 @@ const OTP = ({ refCode }: OTPInterface) => {
 		onSubmit: (values, { setSubmitting, resetForm }) => {
 			const { otp } = values
 			setIsLoading(true)
-			sendOTP(otp)
-				.then((res: any) => {
-					navigate('/')
+			sendOTP({ adminId, refCode, otpConfirm: otp })
+				.then((res) => {
+					const { accessToken, refreshToken } = res.data
+					didLogin(accessToken, refreshToken)
 					resetForm()
+					navigate('/')
 				})
 				.catch((err) => {
 					showNotification(

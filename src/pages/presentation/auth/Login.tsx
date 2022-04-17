@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import classNames from 'classnames'
@@ -18,6 +18,9 @@ import OTP from './OTP'
 import Spinner from 'components/bootstrap/Spinner'
 import showNotification from 'components/extras/showNotification'
 import Icon from 'components/icon/Icon'
+import { getAccessToken } from 'common/utils/auth'
+import { useNavigate } from 'react-router-dom'
+import { pages } from 'menu'
 
 enum LoginState {
 	Login = 'login',
@@ -26,9 +29,16 @@ enum LoginState {
 
 const Login = () => {
 	const { t } = useTranslation('login')
+	const navigate = useNavigate()
 	const [loginState, setLoginState] = useState(LoginState.Login)
-	const [otpRefCode, setOTPRefCode] = useState('')
+	const [otp, setOTP] = useState({ adminId: '', refCode: '' })
 	const [isLoading, setIsLoading] = useState(false)
+
+	useEffect(() => {
+		if (getAccessToken()) {
+			navigate('/')
+		}
+	}, [])
 
 	const LoginSchema = Yup.object().shape({
 		username: Yup.string().required('โปรดใส่ชื่อผู้ใช้'),
@@ -48,7 +58,7 @@ const Login = () => {
 				.then((response) => {
 					const { data }: { data: LoginResponse } = response
 					setLoginState(LoginState.OTP)
-					setOTPRefCode(data.refCode)
+					setOTP(data)
 					resetForm()
 				})
 				.catch((err) => {
@@ -74,7 +84,8 @@ const Login = () => {
 
 	return (
 		<PageWrapper
-			title='Login'
+			id={pages.login.id}
+			title={pages.login.text}
 			className={classNames({ 'bg-info': true })}>
 			<Page className='p-0 align-items-center'>
 				<div className='col-xl-4 col-lg-6 col-md-8 shadow-3d-container row h-100 align-items-center justify-content-center'>
@@ -120,7 +131,7 @@ const Login = () => {
 								>
 									{isLoading ? <Spinner size={16} /> : t('continue')}
 								</Button>
-							</> : <OTP refCode={otpRefCode} />}
+							</> : <OTP adminId={otp.adminId} refCode={otp.refCode} />}
 						</CardBody>
 					</Card>
 				</div>

@@ -5,6 +5,15 @@ export interface LoginResponse {
     refCode: string
 }
 
+export interface OTPRequest extends LoginResponse {
+    otpConfirm: string
+}
+
+export interface OTPResponse {
+    accessToken: string
+    refreshToken: string
+}
+
 export const login = (username: string, password: string) => 
     axios({
         method: 'post',
@@ -16,12 +25,9 @@ export const login = (username: string, password: string) =>
     })
 
 
-export const sendOTP = (otp: string) => 
+export const sendOTP = (data: OTPRequest) => 
     axios({
         method: 'post',
-        url: `/login`,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        data: {
-            otp
-        },
+        url: `/auth/admin/2fa/verify/otp`,
+        data
     })

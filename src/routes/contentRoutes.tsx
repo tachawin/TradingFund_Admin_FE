@@ -41,6 +41,7 @@ const presentation = [
 	{
 		path: pages.login.path,
 		element: <AUTH.LOGIN />,
+		public: true,
 		exact: true,
 	},
 

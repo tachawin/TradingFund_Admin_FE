@@ -1,18 +1,24 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import classNames from 'classnames';
-import USERS from '../../common/data/userDummyData';
-import { demoPages } from '../../menu';
-import { DropdownItem, DropdownMenu } from '../../components/bootstrap/Dropdown';
-import Button from '../../components/bootstrap/Button';
-import useDarkMode from '../../hooks/useDarkMode';
-import Icon from '../../components/icon/Icon';
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import classNames from 'classnames'
+import USERS from '../../common/data/userDummyData'
+import { pages } from '../../menu'
+import { DropdownItem, DropdownMenu } from '../../components/bootstrap/Dropdown'
+import Button from '../../components/bootstrap/Button'
+import Icon from '../../components/icon/Icon'
+import { useTranslation } from 'react-i18next'
+import { didLogout } from 'common/utils/auth'
 
 const User = () => {
-	const navigate = useNavigate();
-	const { darkModeStatus, setDarkModeStatus } = useDarkMode();
+	const { t } = useTranslation('common')
+	const navigate = useNavigate()
 
-	const [collapseStatus, setCollapseStatus] = useState(false);
+	const [collapseStatus, setCollapseStatus] = useState(false)
+	
+	const logout = () => {
+		didLogout()
+		navigate(`/${pages.login.path}`)
+	}
 
 	return (
 		<>
@@ -37,29 +43,18 @@ const User = () => {
 					<div className='user-sub-title'>{USERS[1].position}</div>
 				</div>
 			</div>
-			<DropdownMenu>
+			<DropdownMenu isOpen={collapseStatus} setIsOpen={setCollapseStatus}>
 				<DropdownItem>
 					<Button
 						icon='AccountBox'
-						onClick={() =>
-							navigate(
-								`../${demoPages.appointment.subMenu.employeeID.path}/${USERS[1].id}`,
-							)
-						}>
-						Profile
-					</Button>
-				</DropdownItem>
-				<DropdownItem>
-					<Button
-						icon={darkModeStatus ? 'DarkMode' : 'LightMode'}
-						onClick={() => setDarkModeStatus(!darkModeStatus)}
-						aria-label='Toggle fullscreen'>
-						{darkModeStatus ? 'Dark Mode' : 'Light Mode'}
+						onClick={logout}
+					>
+						{t('logout')}
 					</Button>
 				</DropdownItem>
 			</DropdownMenu>
 		</>
-	);
-};
+	)
+}
 
-export default User;
+export default User
