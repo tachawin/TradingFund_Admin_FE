@@ -9,17 +9,7 @@ import showNotification from '../../../components/extras/showNotification'
 import Icon from '../../../components/icon/Icon'
 import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
-
-interface BankModalProperties {
-	selectedRow: any
-}
-
-interface BankModalInterface {
-	id?: string | number
-	isOpen?: boolean
-	setIsOpen: any
-    properties: BankModalProperties
-}
+import { BankModalInterface } from './Bank'
 
 const BankDeleteModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) => {
     const { t } = useTranslation(['common', 'bank'])

@@ -15,18 +15,7 @@ import FormGroup from 'components/bootstrap/forms/FormGroup'
 import Input from 'components/bootstrap/forms/Input'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 import Checks from 'components/bootstrap/forms/Checks'
-
-interface BankModalProperties {
-	type: string
-	selectedRow: any
-}
-
-interface BankModalInterface {
-	id?: string | number
-	isOpen?: boolean
-	setIsOpen: any
-    properties: BankModalProperties
-}
+import { BankModalInterface } from './Bank'
 
 interface BankFormInterface {
     bankAccountNumber: string
@@ -35,7 +24,6 @@ interface BankFormInterface {
     paymentType: string[]
     isActive: boolean
 }
-
 
 const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) => {
     const { t } = useTranslation(['common', 'bank'])

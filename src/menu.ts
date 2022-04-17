@@ -86,48 +86,7 @@ export const dashboardMenu = {
 		path: 'credit',
 		icon: 'emoji_transportation',
 		subMenu: null,
-	},
-	crmDashboard: {
-		id: 'crmDashboard',
-		text: 'CRM Dashboard',
-		path: 'crm/dashboard',
-		icon: 'RecentActors',
-	},
-	summary: {
-		id: 'summary',
-		text: 'Summary',
-		path: 'summary',
-		icon: 'sticky_note_2',
-		subMenu: null,
-	},
-	bank: {
-		id: 'bank',
-		text: 'Bank',
-		path: 'bank',
-		icon: 'sticky_note_2',
-		subMenu: null,
-	},
-	product: {
-		id: 'product',
-		text: 'Product',
-		path: 'product',
-		icon: 'sticky_note_2',
-		subMenu: null,
-	},
-	level: {
-		id: 'level',
-		text: 'Level',
-		path: 'level',
-		icon: 'sticky_note_2',
-		subMenu: null,
-	},
-	settings: {
-		id: 'settings',
-		text: 'Settings',
-		path: 'settings',
-		icon: 'sticky_note_2',
-		subMenu: null,
-	},
+	}
 };
 
 export const pages = {

@@ -9,7 +9,7 @@ import Button from 'components/bootstrap/Button'
 interface BankTableInterface {
     data: any
     setIsOpenBankModal?: (value: { type: string, selectedRow: any }) => void
-    setIsOpenDeleteBankModal?: (value: { selectedRow: any }) => void
+    setIsOpenDeleteBankModal?: (value: { type: string, selectedRow: any }) => void
     columns?: any
     cardHeader?: ReactNode
 }
@@ -155,7 +155,7 @@ const BankTable = ({
                                     >
                                         {t('edit')}
                                     </Button> / <Button
-                                        onClick={() => setIsOpenDeleteBankModal({ selectedRow: i })}
+                                        onClick={() => setIsOpenDeleteBankModal({ type: "delete", selectedRow: i })}
                                         className='p-0'
                                         isLight
                                     >
