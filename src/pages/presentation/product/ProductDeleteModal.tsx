@@ -9,17 +9,7 @@ import showNotification from '../../../components/extras/showNotification'
 import Icon from '../../../components/icon/Icon'
 import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
-
-interface ProductModalProperties {
-	selectedRow: any
-}
-
-interface ProductModalInterface {
-	id?: string | number
-	isOpen?: boolean
-	setIsOpen: any
-    properties: ProductModalProperties
-}
+import { ProductModalInterface } from './Product'
 
 const ProductDeleteModal = ({ id, isOpen, setIsOpen, properties }: ProductModalInterface) => {
     const { t } = useTranslation(['common', 'product'])

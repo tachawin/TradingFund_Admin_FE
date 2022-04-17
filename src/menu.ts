@@ -121,6 +121,13 @@ export const dashboardMenu = {
 		icon: 'sticky_note_2',
 		subMenu: null,
 	},
+	settings: {
+		id: 'settings',
+		text: 'Settings',
+		path: 'settings',
+		icon: 'sticky_note_2',
+		subMenu: null,
+	},
 };
 
 export const pages = {
@@ -201,6 +208,12 @@ export const pages = {
 		text: 'level',
 		path: 'level',
 		icon: 'level',
+	},
+	settings: {
+		id: 'settings',
+		text: 'settings',
+		path: 'settings',
+		icon: 'settings',
 	},
 }
 

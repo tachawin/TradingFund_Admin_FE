@@ -13,11 +13,7 @@ import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
 import Button from 'components/bootstrap/Button'
 import PlaceholderImage from 'components/extras/PlaceholderImage'
-
-interface ProductModalProperties {
-    type: string
-	selectedRow: any
-}
+import { ProductModalInterface } from './Product'
 
 interface ProductForm {
     image: string
@@ -25,13 +21,6 @@ interface ProductForm {
     description: string
     quantity: number
     pointsToRedeem: number
-}
-
-interface ProductModalInterface {
-	id?: string | number
-	isOpen?: boolean
-	setIsOpen: any
-    properties: ProductModalProperties
 }
 
 const ProductModal = ({ id, isOpen, setIsOpen, properties }: ProductModalInterface) => {

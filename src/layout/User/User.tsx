@@ -64,6 +64,14 @@ const User = () => {
 						{t('logout')}
 					</Button>
 				</DropdownItem>
+				<DropdownItem>
+					<Button
+						icon='AccountBox'
+						onClick={() => navigate('/settings')}
+					>
+						{t('settings')}
+					</Button>
+				</DropdownItem>
 			</DropdownMenu>
 		</>
 	)

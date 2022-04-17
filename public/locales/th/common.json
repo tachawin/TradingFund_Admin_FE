@@ -12,6 +12,7 @@
     "select.payer": "เลือกลูกค้า",
     "back": "ย้อนกลับ",
     "admin": "แอดมิน",
+    "level": "ขั้นลูกค้า",
 
     "column.no": "เลขที่",
     "column.username": "ชื่อผู้ใช้",

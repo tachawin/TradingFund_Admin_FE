@@ -28,7 +28,7 @@ interface BankFilterInterface {
 	bank: string[]
 }
 
-interface BankModalProperties {
+export interface BankModalProperties {
 	type: string
 	selectedRow: any
 }
@@ -37,12 +37,26 @@ interface BankDeleteModalProperties {
 	selectedRow: any
 }
 
-const Bank = () => {
-    const { t } = useTranslation(['common', 'bank'])
+interface BankProps {
+	isOpenBankModal?: BankModalProperties
+	setIsOpenBankModal: (properties: BankModalProperties) => void
+}
+
+export const BankSubHeader = ({ setIsOpenBankModal }: BankProps) => {
+	const { t } = useTranslation(['common', 'bank'])
+
+	const PAYMENT_TYPE = [
+        {
+            id: 0,
+            name: t('deposit')
+        },
+        {
+            id: 0,
+            name: t('withdraw')
+        }
+    ]
 
 	const [searchInput, setSearchInput] = useState('')
-    const [isOpenBankModal, setIsOpenBankModal] = useState<BankModalProperties>()
-	const [isOpenDeleteBankModal, setIsOpenDeleteBankModal] = useState<BankDeleteModalProperties>()
 
 	const formik = useFormik<BankFilterInterface>({
 		initialValues: {
@@ -98,125 +112,114 @@ const Bank = () => {
 		setFieldValue(field, newValue)
 	}
 
-	const PAYMENT_TYPE = [
-        {
-            id: 0,
-            name: t('deposit')
-        },
-        {
-            id: 0,
-            name: t('withdraw')
-        }
-    ]
-
-	return (
-		<PageWrapper title={pages.bank.text}>
-			<SubHeader>
-				<SubHeaderLeft>
-					<label
-						className='border-0 bg-transparent cursor-pointer me-0'
-						htmlFor='searchInput'>
-						<Icon icon='Search' size='2x' color='primary' />
-					</label>
-					<Input
-						id='searchInput'
-						type='search'
-						className='border-0 shadow-none bg-transparent'
-						placeholder={t('bank:search.bank') + '...'}
-						onChange={handleSearchChange}
-						value={searchInput}
-					/>
-				</SubHeaderLeft>
-				<SubHeaderRight>
-					<CommonTableFilter
-						resetLabel={t('filter.reset')}
-						onReset={resetForm}
-						submitLabel={t('filter')}
-						onSubmit={handleSubmit}
-						filters={[
-							{
-								label: t('filter.payment.type'),
-								children: <div>
-									{PAYMENT_TYPE.map((paymentType: any) => {
-										let index = values.paymentType.indexOf(paymentType.name)
-										return <Checks
-												key={paymentType.id}
-												label={paymentType.name}
-												name={paymentType.name}
-												value={index}
-												onChange={(e) => handleOnChangeMultipleSelector(e, 'paymentType')}
-												checked={index > -1}
-												ariaLabel={paymentType.name}
-											/>
-										}
-									)}
-								</div>
-							},
-							{
-								label: t('filter.bank'),
-								children: <div>
-									{data.map((bank: any) => {
-										let indexInBankFilter = values.bank.indexOf(bank.label)
-										return <Checks
-												key={bank.id}
-												label={bank.label}
-												name={bank.label}
-												value={indexInBankFilter}
-												onChange={(e) => handleOnChangeMultipleSelector(e, 'bank')}
-												checked={indexInBankFilter > -1}
-												ariaLabel={bank.label}
-											/>
-										}
-									)}
-								</div>
-							},
-							{
-								label: t('filter.status'),
-								children: <Checks
-									id='isActive'
-									type='switch'
-									label={values.isActive ? t('active') : t('inactive')}
-									onChange={handleChange}
-									checked={values.isActive}
-									ariaLabel='Available status'
+	return (<>
+		<label
+			className='border-0 bg-transparent cursor-pointer me-0'
+			htmlFor='searchInput'>
+			<Icon icon='Search' size='2x' color='primary' />
+		</label>
+		<Input
+			id='searchInput'
+			type='search'
+			className='border-0 shadow-none bg-transparent'
+			placeholder={t('bank:search.bank') + '...'}
+			onChange={handleSearchChange}
+			value={searchInput}
+		/>
+		<CommonTableFilter
+			resetLabel={t('filter.reset')}
+			onReset={resetForm}
+			submitLabel={t('filter')}
+			onSubmit={handleSubmit}
+			filters={[
+				{
+					label: t('filter.payment.type'),
+					children: <div>
+						{PAYMENT_TYPE.map((paymentType: any) => {
+							let index = values.paymentType.indexOf(paymentType.name)
+							return <Checks
+									key={paymentType.id}
+									label={paymentType.name}
+									name={paymentType.name}
+									value={index}
+									onChange={(e) => handleOnChangeMultipleSelector(e, 'paymentType')}
+									checked={index > -1}
+									ariaLabel={paymentType.name}
 								/>
-							},
-						]} 
-					/>
-					<SubheaderSeparator />
-					<Button
-						icon='PiggyBank'
-						color='primary'
-						isLight
-						onClick={() => setIsOpenBankModal({ type: "add", selectedRow: null})}
-					>
-						{t('bank:add.bank')}
-					</Button>
-				</SubHeaderRight>
-			</SubHeader>
-			<Page>
-				<div className='row h-100'>
-					<div className='col-12'>
-						<BankTable
-                            cardHeader={
-                                <CardHeader>
-                                    <CardLabel>
-                                        <CardTitle>{t('bank')}</CardTitle>
-                                    </CardLabel>
-                                </CardHeader>
-                            }
-                            data={data} 
-                            setIsOpenBankModal={setIsOpenBankModal}
-							setIsOpenDeleteBankModal={setIsOpenDeleteBankModal}
-                            columns={{ mobileNumber: true, notes: true }} 
-                        />
+							}
+						)}
 					</div>
-				</div>
-			</Page>
-			{isOpenBankModal && <BankModal setIsOpen={setIsOpenBankModal} isOpen={Boolean(isOpenBankModal)} properties={isOpenBankModal} />}
-			{isOpenDeleteBankModal && <BankDeleteModal setIsOpen={setIsOpenDeleteBankModal} isOpen={Boolean(isOpenDeleteBankModal)} properties={isOpenDeleteBankModal} />}
-		</PageWrapper>
-	)
+				},
+				{
+					label: t('filter.bank'),
+					children: <div>
+						{data.map((bank: any) => {
+							let indexInBankFilter = values.bank.indexOf(bank.label)
+							return <Checks
+									key={bank.id}
+									label={bank.label}
+									name={bank.label}
+									value={indexInBankFilter}
+									onChange={(e) => handleOnChangeMultipleSelector(e, 'bank')}
+									checked={indexInBankFilter > -1}
+									ariaLabel={bank.label}
+								/>
+							}
+						)}
+					</div>
+				},
+				{
+					label: t('filter.status'),
+					children: <Checks
+						id='isActive'
+						type='switch'
+						label={values.isActive ? t('active') : t('inactive')}
+						onChange={handleChange}
+						checked={values.isActive}
+						ariaLabel='Available status'
+					/>
+				},
+			]} 
+		/>
+		<SubheaderSeparator />
+		<Button
+			className='text-nowrap'
+			icon='PiggyBank'
+			color='primary'
+			isLight
+			onClick={() => setIsOpenBankModal({ type: "add", selectedRow: null})}
+		>
+			{t('bank:add.bank')}
+		</Button>
+	</>)
+}
+
+const Bank = ({ isOpenBankModal, setIsOpenBankModal }: BankProps) => {
+    const { t } = useTranslation(['common', 'bank'])
+
+	const [isOpenDeleteBankModal, setIsOpenDeleteBankModal] = useState<BankDeleteModalProperties>()
+
+	return (<>
+		<div className='row h-100'>
+			<div className='col-12'>
+				<BankTable
+					cardHeader={
+						<CardHeader>
+							<CardLabel>
+								<CardTitle>{t('bank')}</CardTitle>
+							</CardLabel>
+						</CardHeader>
+					}
+					data={data} 
+					setIsOpenBankModal={setIsOpenBankModal}
+					setIsOpenDeleteBankModal={setIsOpenDeleteBankModal}
+					columns={{ mobileNumber: true, notes: true }} 
+				/>
+			</div>
+		</div>
+		{isOpenBankModal && <BankModal setIsOpen={setIsOpenBankModal} isOpen={Boolean(isOpenBankModal)} properties={isOpenBankModal} />}
+		{isOpenDeleteBankModal && <BankDeleteModal setIsOpen={setIsOpenDeleteBankModal} isOpen={Boolean(isOpenDeleteBankModal)} properties={isOpenDeleteBankModal} />}
+	</>)
 }
 
 export default Bank
