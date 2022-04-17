@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import debounce from 'lodash/debounce'
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper'
@@ -12,7 +12,6 @@ import { demoPages } from '../../../menu'
 import { CardHeader, CardLabel, CardTitle } from '../../../components/bootstrap/Card'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
-import data from '../../../common/data/dummyAdminData'
 import Button from '../../../components/bootstrap/Button'
 import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
@@ -27,6 +26,10 @@ import AdminDeleteModal from './components/AdminDeleteModal'
 import AdminPermissionModal from './components/AdminPermissionModal'
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import AdminTable from './components/AdminTable'
+import { AdminInterface, getAdminList } from 'common/apis/admin'
+import Spinner from 'components/bootstrap/Spinner'
+import CommonTableNotFound from 'pages/common/CommonTableNotFound'
+import showNotification from 'components/extras/showNotification'
 
 const mockPermission = { 
     report: '0011',
@@ -48,12 +51,33 @@ interface AdminModalProperties {
 const Admin = () => {
     const { t } = useTranslation(['common', 'admin'])
 
+	const [data, setData] = useState<AdminInterface[]>()
+	const [isLoading, setIsLoading] = useState(true)
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [isOpenUpdatedAtDatePicker, setIsOpenUpdatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
 	const [isOpenAdminModal, setIsOpenAdminModal] = useState<AdminModalProperties>()
 	const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<AdminModalProperties>()
 	const [isOpenPermissionModal, setIsOpenPermissionModal] = useState<AdminModalProperties>()
+
+	useEffect(() => {
+		getAdminList((adminList: AdminInterface[]) => {
+			setData(adminList)
+			setIsLoading(false)
+		}, (error: any) => {
+			const { response } = error
+			console.log(response.data)
+			setIsLoading(false)
+			showNotification(
+				<span className='d-flex align-items-center'>
+					<Icon icon='Info' size='lg' className='me-1' />
+					<span>{t('get.admin.failed')}</span>
+				</span>,
+				t('please.refresh.again'),
+			)
+		})
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	const formik = useFormik({
 		initialValues: {
@@ -200,20 +224,22 @@ const Admin = () => {
 			</SubHeader>
 			<Page>
 				<div className='row h-100'>
-					<div className='col-12'>
-						<AdminTable 
-							cardHeader={
-                                <CardHeader>
-                                    <CardLabel>
-                                        <CardTitle>{t('admin')}</CardTitle>
-                                    </CardLabel>
-                                </CardHeader>
-                            }
-                            data={data} 
-                            setIsOpenAdminModal={setIsOpenAdminModal}
-							setIsOpenDeleteModal={setIsOpenDeleteModal}
-							setIsOpenPermissionModal={setIsOpenPermissionModal}
-						/>
+					<div className={`col-12 ${(isLoading || !data) ? 'd-flex align-items-center justify-content-center' : 'px-4'}`}>
+						{isLoading ? <Spinner color='info' isGrow size={60} /> 
+							: data ? <AdminTable 
+								cardHeader={
+									<CardHeader>
+										<CardLabel>
+											<CardTitle>{t('admin')}</CardTitle>
+										</CardLabel>
+									</CardHeader>
+								}
+								data={data} 
+								setIsOpenAdminModal={setIsOpenAdminModal}
+								setIsOpenDeleteModal={setIsOpenDeleteModal}
+								setIsOpenPermissionModal={setIsOpenPermissionModal}
+							/> : <CommonTableNotFound />
+						}
 					</div>
 				</div>
 			</Page>

@@ -11,9 +11,11 @@
     "save.successfully": "บันทึกสำเร็จ",
     "save.failed": "บันทึกไม่สำเร็จ",
     "delete.successfully": "ลบสำเร็จ",
+    "delete.failed": "ลบไม่สำเร็จ",
     "save.admin.successfully": "บันทึกแอดมิน {{adminName}} สำเร็จ",
     "save.admin.failed": "บันทึกแอดมิน {{adminName}} ไม่สำเร็จ",
     "delete.admin.successfully": "ลบ {{adminName}} สำเร็จ",
+    "delete.admin.failed": "ลบ {{adminName}} ไม่สำเร็จ",
 
     "admin": "Admin",
     "super.admin": "Super Admin"

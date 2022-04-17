@@ -26,7 +26,7 @@ export enum AdminModalType {
 
 interface AdminModalProperties {
     type?: AdminModalType
-    selectedRow?: any
+    selectedRow?: AdminInterface
 }
 
 interface AdminEditModalInterface {
@@ -42,7 +42,7 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
     const [isLoading, setIsLoading] = useState(false)
 
     const adminSchema = Yup.object().shape({
-		username: Yup.string().required('โปรดใส่ชื่อผู้ใช้'),
+		username: Yup.string().matches(regEx.username, 'ชื่อผู้ใช้สามารถประกอบด้วยตัวอักษร ตัวเลขและสัญลักษณ์ขีดล่าง (_)').required('โปรดใส่ชื่อผู้ใช้'),
 		password: Yup.string().required('โปรดใส่รหัสผ่าน').test('length', 'รหัสผ่านต้องยาวกว่า 6 อักษร', val => (val?.length ?? 0) > 5),
         confirmPassword: Yup.string().oneOf([Yup.ref('password')], 'รหัสผ่านต้องตรงกัน').required('กรุณายินยันรหัสผ่าน'),
         name: Yup.string().required('กรุณาใส่ชื่อ นามสกุล'),
@@ -146,7 +146,8 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
             <ModalBody className='px-4'>
                 <div className='row g-4'>
                     <FormGroup id='username' label={t('form.username')}>
-                        <Input 
+                        <Input
+                            placeholder='ชื่อผู้ใช้ภาษาอังกฤษ'
                             onChange={handleChange} 
                             value={values.username}
                             isValid={isValid}
@@ -225,7 +226,7 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
                                 type='switch'
                                 label={values.status === Status.Active ? t('active') : t('inactive')}
                                 onChange={handleChange}
-                                checked={values.status}
+                                checked={values.status === Status.Active}
                                 ariaLabel='status'
                             />
                         </FormGroup>

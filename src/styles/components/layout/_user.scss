@@ -34,12 +34,6 @@
 }
 
 .user-avatar {
-	@include margin-right(map-deep-get($avatar, avatar, space));
-
-	@include aside-close {
-		@include margin-right(0);
-	}
-
 	img {
 		width: map-deep-get($avatar, avatar, size);
 		height: map-deep-get($avatar, avatar, size);

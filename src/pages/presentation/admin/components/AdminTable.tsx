@@ -1,4 +1,4 @@
-import React, { MouseEvent, ReactNode, useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
@@ -7,12 +7,15 @@ import PaginationButtons, { dataPagination, PER_COUNT } from 'components/Paginat
 import Button from 'components/bootstrap/Button'
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown'
 import { AdminModalType } from './AdminEditModal'
+import { AdminInterface, AdminRole } from 'common/apis/admin'
+import moment from 'moment'
+import { Status } from 'pages/common/CommonEnums'
 
 interface AdminTableInterface {
-    data: any
-    setIsOpenAdminModal?: (value: { type: AdminModalType, selectedRow: any }) => void
-    setIsOpenDeleteModal?: (value: { selectedRow: any }) => void
-    setIsOpenPermissionModal?: (value: { selectedRow: any }) => void
+    data: AdminInterface[]
+    setIsOpenAdminModal?: (value: { type: AdminModalType, selectedRow: AdminInterface }) => void
+    setIsOpenDeleteModal?: (value: { selectedRow: AdminInterface }) => void
+    setIsOpenPermissionModal?: (value: { selectedRow: AdminInterface }) => void
     columns?: any
     cardHeader?: ReactNode
 }
@@ -40,7 +43,7 @@ const AdminTable = ({
     const ADMIN_ROW_ACTIONS: AdminRowAction[] = [
 		{
 			icon: 'Edit',
-			onClick: (row: any) => setIsOpenAdminModal && setIsOpenAdminModal({ 
+			onClick: (row: AdminInterface) => setIsOpenAdminModal && setIsOpenAdminModal({ 
                 type: AdminModalType.Edit, 
                 selectedRow: row
             }),
@@ -48,18 +51,18 @@ const AdminTable = ({
 		},
 		{
 			icon: 'Visibility',
-			onClick: (row: any) => setIsOpenPermissionModal && setIsOpenPermissionModal({ selectedRow: row }),
+			onClick: (row: AdminInterface) => setIsOpenPermissionModal && setIsOpenPermissionModal({ selectedRow: row }),
 			title: t('admin:grant.permission')
 		},
 		{
 			icon: 'Delete',
-			onClick: (row: any) => setIsOpenDeleteModal && setIsOpenDeleteModal({ selectedRow: row }),
+			onClick: (row: AdminInterface) => setIsOpenDeleteModal && setIsOpenDeleteModal({ selectedRow: row }),
 			title: t('delete')
 		}
 	]
 
 
-	const handleOnDropdownClick = (onClick: any, data: any) => {
+	const handleOnDropdownClick = (onClick: any, data: AdminInterface) => {
 		setIsOpenDropdown(null)
 		onClick(data)
 	}
@@ -131,49 +134,51 @@ const AdminTable = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {dataPagination(items, currentPage, perPage).map((i: any, index: number) => (
-                            <tr key={i.id}>
+                        {dataPagination(items, currentPage, perPage).map((admin: AdminInterface, index: number) => (
+                            <tr key={admin.adminId}>
                                 <td className='text-center'>
                                     <div>{index + 1}</div>
                                 </td>
                                 <td>
-                                    <div>{i.username}</div>
+                                    <div>{admin.username}</div>
                                 </td>
                                 <td>
                                     <div className='d-flex align-items-center'>
                                         <div className='flex-grow-1'>
                                             <div className='fs-6 fw-bold'>
-                                                {i.name}
+                                                {admin.name}
                                             </div>
                                             <div className='text-muted'>
                                                 <Icon icon='Label' />{' '}
-                                                <small>{i.role}</small>
+                                                <small>
+                                                    {admin.role === AdminRole.SuperAdmin ? t('admin:super.admin') : t('admin:admin') }
+                                                </small>
                                             </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <div>{i.mobileNumber}</div>
+                                    <div>{admin.mobileNumber}</div>
                                 </td>
                                 <td>
-                                    <div>{i.membershipDate.format('ll')}</div>
+                                    <div>{moment(admin.updatedAt).format('ll')}</div>
                                     <div>
                                         <small className='text-muted'>
-                                            {i.membershipDate.fromNow()}
+                                            {moment(admin.updatedAt).fromNow()}
                                         </small>
                                     </div>
                                 </td>
                                 <td>
-                                    <div>{i.membershipDate.format('ll')}</div>
+                                    <div>{moment(admin.createdAt).format('ll')}</div>
                                     <div>
                                         <small className='text-muted'>
-                                            {i.membershipDate.fromNow()}
+                                            {moment(admin.createdAt).fromNow()}
                                         </small>
                                     </div>
                                 </td>
                                 <td>
                                     <div className='d-flex align-items-center'>
-                                        { i.status === 1 ?
+                                        { admin.status === Status.Active ?
                                             <>
                                                 <span className='badge border border-2 border-light rounded-circle bg-success p-2 me-2'>
                                                     <span className='visually-hidden'>
@@ -208,7 +213,7 @@ const AdminTable = ({
                                                 <DropdownItem key={index}>
                                                     <Button
                                                         icon={action.icon}
-                                                        onClick={(e: MouseEvent<HTMLButtonElement>) => handleOnDropdownClick(action.onClick, i)}
+                                                        onClick={() => handleOnDropdownClick(action.onClick, admin)}
                                                     >
                                                         {action.title}
                                                     </Button>

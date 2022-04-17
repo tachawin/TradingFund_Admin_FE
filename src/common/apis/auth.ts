@@ -24,10 +24,33 @@ export const login = (username: string, password: string) =>
         },
     })
 
+export const logout = () => 
+    axios({
+        method: 'post',
+        url: '/auth/admin/logout'
+    })
+
 
 export const sendOTP = (data: OTPRequest) => 
     axios({
         method: 'post',
-        url: `/auth/admin/2fa/verify/otp`,
+        url: '/auth/admin/2fa/verify/otp',
         data
     })
+
+export const renewToken = async () => {
+    try {
+        const res = await axios({
+            method: 'post',
+            url: '/auth/admin/2fa/token/refresh',
+        })
+        console.log(res)
+        // const { access_token } = res.data
+        // localStorage.setItem("access_token", access_token)
+        // return access_token
+    } catch (error: any) {
+        console.log(error.response)
+        // await logout()
+        return false
+    }
+}

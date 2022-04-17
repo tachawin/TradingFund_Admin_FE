@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Modal, {
 	ModalBody,
 	ModalFooter,
@@ -9,28 +9,44 @@ import showNotification from 'components/extras/showNotification'
 import Icon from 'components/icon/Icon'
 import Button from 'components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
+import { AdminInterface, deleteAdmin } from 'common/apis/admin'
+import Spinner from 'components/bootstrap/Spinner'
 
 interface AdminEditModalInterface {
 	id?: string | number
 	isOpen?: boolean
 	setIsOpen: any
-    data?: any
+    data?: AdminInterface
 }
 
 const AdminDeleteModal = ({ id, isOpen, setIsOpen, data }: AdminEditModalInterface) => {
     const { t } = useTranslation(['common', 'admin'])
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleDelete = () => {
-        setIsOpen(false)
-        // DELETE
-
-        showNotification(
-            <span className='d-flex align-items-center'>
-                <Icon icon='Info' size='lg' className='me-1' />
-                <span>{t('admin:delete.successfully')}</span>
-            </span>,
-            t('admin:delete.admin.successfully', { adminName: data?.name }),
-        )
+        if (data?.adminId) {
+            setIsLoading(true)
+            deleteAdmin(
+                data.adminId, 
+                () => {
+                    setIsOpen(false)
+                    setIsLoading(false)
+                },
+                (error: any) => {
+                    const { response } = error
+                    console.log(response.data)
+                    showNotification(
+                        <span className='d-flex align-items-center'>
+                            <Icon icon='Info' size='lg' className='me-1' />
+                            <span>{t('admin:delete.failed')}</span>
+                        </span>,
+                        t('admin:delete.admin.failed', { adminName: data?.name }),
+                    )
+                    setIsOpen(false)
+                    setIsLoading(false)
+                }
+            )
+        }
     }
 
     return (
@@ -46,7 +62,7 @@ const AdminDeleteModal = ({ id, isOpen, setIsOpen, data }: AdminEditModalInterfa
                     {t('cancel')}
                 </Button>
                 <Button isOutline className='w-50'color='info' onClick={handleDelete}>
-                    {t('delete')}
+                    {isLoading ? <Spinner size={16} /> : t('delete') }
                 </Button>
             </ModalFooter>
         </Modal>
