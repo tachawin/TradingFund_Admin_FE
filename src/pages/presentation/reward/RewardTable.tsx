@@ -151,13 +151,13 @@ const RewardTable = ({
                                     </td>
                                 }
                                 {setIsOpenRewardModal && <td>
-                                    {i.status === 'request' ? 
+                                    {i.status === 'request' || i.status === 'sending' ? 
                                         <><Button
                                             onClick={() => setIsOpenRewardModal({ type: "approve", selectedRow: i})}
                                             className='p-0'
                                             isLight
                                         >
-                                            {t('approve')}
+                                            {t('edit.status')}
                                         </Button> / <Button
                                             onClick={() => setIsOpenRewardModal({ type: "reject", selectedRow: i})}
                                             className='p-0'

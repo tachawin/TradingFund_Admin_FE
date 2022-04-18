@@ -7,14 +7,18 @@
     "request": "คำขอ",
     "history": "ประวัติ",
 
-    "approve.request": "ยืนยันคำขอ",
+    "sending.reward": "แก้ไขสถานะเป็นรอจัดส่ง",
+    "success.reward": "แก้ไขสถานะเป็นจัดส่งสำเร็จ",
     "reject.request": "ยกเลิกคำขอ",
 
     "form.approve.request.confirmation": "ต้องการยืนยันคำขอเพื่อแลก {{product}} ใช่หรือไม่",
     "form.reject.request.confirmation": "ต้องการยกเลิกคำขอเพื่อแลก {{product}} ใช่หรือไม่",
+    "form.sending.request.confirmation": "ต้องการเปลี่ยนสถานะคำขอเพื่อแลก {{product}} เป็นรอจัดส่งใช่หรือไม่",
 
     "approve.successfully": "ยืนยันคำขอแลกรางวัลสำเร็จ",
     "approve.request.successfully": "ยืนยันคำขอแลกรางวัลของ {{mobileNumber}} สำเร็จ",
+    "sending.successfully": "เปลี่ยนสถานะเป็นกำลังจัดส่งสำเร็จ",
+    "sending.reward.successfully": "เปลี่ยนสถานะของ {{mobileNumber}} สำเร็จ",
     "reject.successfully": "ยกเลิกคำขอแลกรางวัลสำเร็จ",
     "reject.request.successfully": "ยกเลิกคำขอแลกรางวัลของ {{mobileNumber}} สำเร็จ"
 }

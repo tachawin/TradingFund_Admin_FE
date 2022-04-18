@@ -6,6 +6,7 @@
     "view": "รายละเอียด",
     "success": "สำเร็จ",
     "not.found": "ไม่พบ",
+    "edit.status": "แก้ไขสถานะ",
     "refund": "ดึงเครดิต",
     "approve": "ยืนยัน",
     "reject": "ยกเลิก",
@@ -123,5 +124,8 @@
     "reward": "แลกรางวัล",
     "credit": "แลกเครดิต",
     "chat": "แชทสนทนา",
-    "product": "รายการสินค้า"
+    "product": "รายการสินค้า",
+
+    "form.tracking.number": "เลขติดตามพัสดุ",
+    "form.tracking.number.placeholder": "กรุณาใส่เลขพัสดุ"
 }

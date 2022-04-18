@@ -61,7 +61,7 @@ const data = [
 		id: 4,
 		name: '3D Animation',
 		type: 'deposit',
-		status: 'success',
+		status: 'sending',
 		payerBankAccountNumber: '1124',
 		payerBankName: 'scb',
 		recipientBankAccountNumber: '8923',

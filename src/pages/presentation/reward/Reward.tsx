@@ -240,11 +240,11 @@ const Reward = () => {
                                 </CardHeader>
                             }
                             data={rewardTableState === REWARD_TABLE_STATE.REQUEST ? 
-								data.filter((i: any) => i.status === 'request') : 
+								data.filter((i: any) => i.status === 'request' || i.status === 'sending') : 
 								data.filter((i: any) => i.status !== 'request')
 							} 
                             setIsOpenRewardModal={rewardTableState === REWARD_TABLE_STATE.REQUEST ? setIsOpenRewardModal : undefined}
-                            columns={{ mobileNumber: true, notes: true, status: rewardTableState === REWARD_TABLE_STATE.HISTORY, operator: rewardTableState === REWARD_TABLE_STATE.HISTORY }} 
+                            columns={{ mobileNumber: true, notes: true, status: true, operator: rewardTableState === REWARD_TABLE_STATE.HISTORY }} 
                         />
 					</div>
 				</div>
