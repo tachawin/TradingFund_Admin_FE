@@ -5,11 +5,13 @@ import { useTranslation } from 'react-i18next'
 import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
+import { WithdrawModalType } from './WithdrawModal'
+import banks from 'common/data/dummyBankData'
 
 interface WithdrawTableInterface {
     data: any
-    setIsOpenWithdrawModal?: (value: { selectedRow: any }) => void
-    setIsOpenCancelWithdrawModal?: (value: { selectedRow: any }) => void
+    setIsOpenWithdrawModal?: (value: { type: WithdrawModalType, bank?: string, selectedRow: any }) => void
+    setIsOpenCancelWithdrawModal?: (value: { type: WithdrawModalType, selectedRow: any }) => void
     columns?: any
     cardHeader?: ReactNode
 }
@@ -218,21 +220,30 @@ const WithdrawTable = ({
                                     </td>
                                 }
                                 {(setIsOpenWithdrawModal && setIsOpenCancelWithdrawModal) &&  <td>
-                                    {i.status === 'request' ? 
-                                        <><Button
-                                            onClick={() => setIsOpenWithdrawModal({ selectedRow: i})}
+                                    {i.status === 'request' ? <>
+                                        {banks.map((bank) => 
+                                            <Button
+                                                onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.System, bank: bank.name, selectedRow: i})}
+                                                className='p-0'
+                                                isLight
+                                            >
+                                                {bank.label.toLocaleUpperCase()} / 
+                                            </Button> 
+                                        )}
+                                        <Button
+                                            onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.Manual, selectedRow: i})}
                                             className='p-0'
                                             isLight
                                         >
-                                            {t('withdraw')}
+                                            {t('manual')}
                                         </Button> / <Button
-                                            onClick={() => setIsOpenCancelWithdrawModal({ selectedRow: i})}
+                                            onClick={() => setIsOpenCancelWithdrawModal({ type: WithdrawModalType.Delete, selectedRow: i})}
                                             className='p-0'
                                             isLight
                                         >
                                             {t('reject')}
-                                        </Button></> : <></>
-                                    }
+                                        </Button>
+                                    </> : <></>}
                                 </td>}
                             </tr>
                         ))}

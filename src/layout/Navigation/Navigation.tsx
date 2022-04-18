@@ -1,12 +1,12 @@
-import React, { useContext, forwardRef, useState, useRef, useCallback, DetailedHTMLProps, HTMLAttributes } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
-import classNames from 'classnames';
-import { NavHashLink } from 'react-router-hash-link';
-import { Manager, Popper, Reference } from 'react-popper';
-import { useTranslation } from 'react-i18next';
-import Icon from '../../components/icon/Icon';
-import { ThemeContext } from '../../contexts/themeContext';
-import useDarkMode from '../../hooks/useDarkMode';
+import React, { useContext, forwardRef, useState, useRef, useCallback, DetailedHTMLProps, HTMLAttributes } from 'react'
+import { NavLink, useLocation } from 'react-router-dom'
+import classNames from 'classnames'
+import { NavHashLink } from 'react-router-hash-link'
+import { Manager, Popper, Reference } from 'react-popper'
+import { useTranslation } from 'react-i18next'
+import Icon from '../../components/icon/Icon'
+import { ThemeContext } from '../../contexts/themeContext'
+import useDarkMode from '../../hooks/useDarkMode'
 
 interface ListInterface extends DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement> {
 	ariaLabelledby?: string,
@@ -33,9 +33,9 @@ export const List = forwardRef<any, ListInterface>(
 			>
 				{children}
 			</ul>
-		);
+		)
 	},
-);
+)
 
 interface ItemInterface {
 	children: any,
@@ -67,35 +67,35 @@ export const Item = ({
 	hide = false,
 	...props
 }: ItemInterface) => {
-	const { darkModeStatus } = useDarkMode();
-	const { setLeftMenuStatus, setRightMenuStatus } = useContext(ThemeContext);
+	const { darkModeStatus } = useDarkMode()
+	const { setLeftMenuStatus, setRightMenuStatus } = useContext(ThemeContext)
 
 	
-	const _active = props.activeItem === id;
+	const _active = props.activeItem === id
 
 	const handleClick = () => {
-		_active ? props.setActiveItem(null) : props.setActiveItem(id);
-	};
+		_active ? props.setActiveItem(null) : props.setActiveItem(id)
+	}
 
 	const linkHandleClick = () => {
-		setLeftMenuStatus(false);
-		setRightMenuStatus(false);
-	};
+		setLeftMenuStatus(false)
+		setRightMenuStatus(false)
+	}
 
-	const _anchorLinkPattern = /^#/i;
-	const location = useLocation();
+	const _anchorLinkPattern = /^#/i
+	const location = useLocation()
 
 	// For aside menu
-	const here = to !== '/' && location.pathname.includes(to);
+	const here = to !== '/' && location.pathname.includes(to)
 	// For top menu
-	const match = to !== '/' && location.pathname === to;
+	const match = to !== '/' && location.pathname === to
 
-	const { t } = useTranslation('menu');
+	const { t } = useTranslation('menu')
 
 	const _LinkClass = classNames('navigation-link', 'navigation-link-pill', {
 		collapsed: !!children && !isHorizontal,
 		active: isHorizontal ? match : here,
-	});
+	})
 
 	const _Inner = (
 		<>
@@ -122,7 +122,7 @@ export const Item = ({
 				</span>
 			)}
 		</>
-	);
+	)
 
 	const _withoutChild =
 		!children &&
@@ -138,28 +138,28 @@ export const Item = ({
 				onClick={linkHandleClick}>
 				{_Inner}
 			</NavLink>
-		));
+		))
 
 	// Dropdown
-	const dropdownRef = useRef(null);
+	const dropdownRef = useRef(null)
 
-	const dropdownButtonRef = useRef(null);
+	const dropdownButtonRef = useRef(null)
 	const setButtonRef = useCallback((node, ref) => {
-		dropdownButtonRef.current = node;
-		return ref(node);
-	}, []);
+		dropdownButtonRef.current = node
+		return ref(node)
+	}, [])
 
-	const dropdownListRef = useRef(null);
+	const dropdownListRef = useRef(null)
 	const setListRef = useCallback((node, ref) => {
-		dropdownListRef.current = node;
-		return ref(node);
-	}, []);
+		dropdownListRef.current = node
+		return ref(node)
+	}, [])
 
-	const [dropdownStatus, setDropdownStatus] = useState(false);
+	const [dropdownStatus, setDropdownStatus] = useState(false)
 
 	const dropdownButtonHandleClick = () => {
-		setDropdownStatus(!dropdownStatus);
-	};
+		setDropdownStatus(!dropdownStatus)
+	}
 
 	if (children) {
 		// submenu && in header
@@ -224,7 +224,7 @@ export const Item = ({
 						)}
 					</li>
 				</Manager>
-			);
+			)
 		}
 		// submenu && in aside
 		return (
@@ -243,19 +243,19 @@ export const Item = ({
 					{_Inner}
 				</span>
 			</li>
-		);
+		)
 	}
 	// without submenu
-	return <li className='navigation-item'>{_withoutChild}</li>;
-};
+	return <li className='navigation-item'>{_withoutChild}</li>
+}
 
 interface NavigationLineInterface {
 	className?: string
 }
 
 export const NavigationLine = ({ className }: NavigationLineInterface) => {
-	return <hr className={classNames('navigation-line', className)} />;
-};
+	return <hr className={classNames('navigation-line', className)} />
+}
 
 interface NavigationTitleInterface {
 	className?: string
@@ -270,8 +270,8 @@ export const NavigationTitle = ({ className, children, ...props }: NavigationTit
 				{children}
 			</span>
 		</li>
-	);
-};
+	)
+}
 
 interface NavigationInterface extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
 	horizontal?: boolean,
@@ -280,9 +280,9 @@ interface NavigationInterface extends DetailedHTMLProps<HTMLAttributes<HTMLEleme
 }
 
 const Navigation = forwardRef<any, NavigationInterface>(({ menu, horizontal = false, id, className, ...props }, ref) => {
-	const [activeItem, setActiveItem] = useState<any>(null);
+	const [activeItem, setActiveItem] = useState<any>(null)
 
-	const { t } = useTranslation('menu');
+	const { t } = useTranslation('menu')
 
 	function fillMenu(data: any, parentId: string | number, rootId: string | number, isHorizontal: boolean, isMore?: boolean) {
 		return Object.values(data).map((item: any) =>
@@ -309,7 +309,7 @@ const Navigation = forwardRef<any, NavigationInterface>(({ menu, horizontal = fa
 					<NavigationTitle key={item.id}>{t(item.text)}</NavigationTitle>
 				)
 			),
-		);
+		)
 	}
 
 	return (
@@ -329,7 +329,7 @@ const Navigation = forwardRef<any, NavigationInterface>(({ menu, horizontal = fa
 				)}
 			</List>
 		</nav>
-	);
-});
+	)
+})
 
-export default Navigation;
+export default Navigation

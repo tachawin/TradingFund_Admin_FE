@@ -26,7 +26,7 @@ import CommonTableFilter from 'components/common/CommonTableFilter'
 import banks from 'common/data/dummyBankData'
 import WithdrawTable from './WithdrawTable'
 import { CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
-import WithdrawModal from './WithdrawModal'
+import WithdrawModal, { WithdrawModalType } from './WithdrawModal'
 import BankBalanceCard from './BankBalanceCard'
 
 interface WithdrawFilterInterface {
@@ -48,6 +48,7 @@ interface WithdrawFilterInterface {
 }
 
 interface WithdrawModalProperties {
+	type: WithdrawModalType
 	selectedRow: any
 }
 
@@ -256,9 +257,9 @@ const Withdraw = () => {
 				</SubHeaderRight>
 			</SubHeader>
 			<Page>
-				<div className='row h-100'>
+				<div className='col h-100 px-3'>
 					<BankBalanceCard />
-					<div className='col-9'>
+					<div className='col'>
 						<WithdrawTable
                             cardHeader={
                                 <CardHeader>

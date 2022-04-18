@@ -12,5 +12,7 @@
     "reject.request.successfully": "ยกเลิกคำขอถอนเงินของ {{mobileNumber}} สำเร็จ",
 
     "withdraw.system": "ถอนผ่านระบบ",
-    "withdraw.manual": "ถอนด้วยตนเอง"
+    "withdraw.manual": "ถอนด้วยตนเอง",
+
+    "new.withdraw": "สร้างรายการถอนเงินใหม่"
 }

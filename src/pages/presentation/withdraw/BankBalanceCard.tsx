@@ -7,17 +7,17 @@ const BankBalanceCard = () => {
     const { t } = useTranslation('common')
 
     return (
-        <Card stretch className='col-3'>
+        <Card stretch className='col-3 w-100 h-auto'>
             <CardHeader>
                 <CardLabel>
                     <CardTitle>{t('bank.balance')}</CardTitle>
                 </CardLabel>
             </CardHeader>
-            <CardBody isScrollable>
-                <div className='row g-3'>
+            <CardBody>
+                <div className='row g-5'>
                     {banks.map((bank: Bank) => {
                         let BankIcon = bankIcons[bank.name].icon
-                        return (<div className='col-12'>
+                        return (<div className='col mt-4'>
                             <div className='row'>
                                 <div className='col d-flex align-items-center'>
                                     <div className='flex-shrink-0'>

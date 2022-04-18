@@ -17,10 +17,6 @@ import PlaceholderImage from 'components/extras/PlaceholderImage'
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 
-interface WithdrawModalProperties {
-	selectedRow: any
-}
-
 interface WithdrawForm {
     slipImage: string
     bankAccountNumber: string
@@ -36,16 +32,23 @@ interface WithdrawModalInterface {
     properties: WithdrawModalProperties
 }
 
-enum WITHDRAW_MODAL_STATE {
-    MANUAL = 'manual',
-    SYSTEM = 'system'
+export enum WithdrawModalType {
+    Manual = 'manual',
+    System = 'system',
+    Delete = 'delete'
+}
+
+interface WithdrawModalProperties {
+    type: WithdrawModalType
+    bank?: string
+	selectedRow: any
 }
 
 const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInterface) => {
     const { t } = useTranslation(['common', 'withdraw'])
-    const [withdrawModalState, setWithdrawModalState] = useState(WITHDRAW_MODAL_STATE.SYSTEM)
+    const { type, bank, selectedRow: data } = properties
+    const [withdrawModalState, setWithdrawModalState] = useState(type)
     const [isOpenPayerBankDropdown, setIsOpenPayerBankDropdown] = useState(false)
-    const { selectedRow: data } = properties
 
     const WithdrawSchema = Yup.object().shape({
 		slipImage: Yup.string().required('กรุณาอัปโหลดภาพ'),
@@ -97,7 +100,7 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
             </ModalHeader>
             <ModalBody className='px-4 pb-4'>
                 <div className='row align-items-start'>
-                    {withdrawModalState === WITHDRAW_MODAL_STATE.MANUAL &&
+                    {withdrawModalState === WithdrawModalType.Manual &&
                         <div className='col'>
                             <div className='row g-4'>
                             <FormGroup id='slipImage' label={t('form.slip.image')}>
@@ -139,16 +142,16 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                         <div className='row g-4 justify-content-end'>
                             <ButtonGroup>
                                 <Button
-                                    color={withdrawModalState === WITHDRAW_MODAL_STATE.SYSTEM ? 'success' : 'dark'}
-                                    isLight={withdrawModalState !== WITHDRAW_MODAL_STATE.SYSTEM}
-                                    onClick={() => setWithdrawModalState(WITHDRAW_MODAL_STATE.SYSTEM)}
+                                    color={withdrawModalState === WithdrawModalType.System ? 'success' : 'dark'}
+                                    isLight={withdrawModalState !== WithdrawModalType.System}
+                                    onClick={() => setWithdrawModalState(WithdrawModalType.System)}
                                 >
                                     {t('withdraw:withdraw.system')}
                                 </Button>
                                 <Button
-                                    color={withdrawModalState === WITHDRAW_MODAL_STATE.MANUAL ? 'success' : 'dark'}
-                                    isLight={withdrawModalState !== WITHDRAW_MODAL_STATE.MANUAL}
-                                    onClick={() => setWithdrawModalState(WITHDRAW_MODAL_STATE.MANUAL)}
+                                    color={withdrawModalState === WithdrawModalType.Manual ? 'success' : 'dark'}
+                                    isLight={withdrawModalState !== WithdrawModalType.Manual}
+                                    onClick={() => setWithdrawModalState(WithdrawModalType.Manual)}
                                 >
                                     {t('withdraw:withdraw.manual')}
                                 </Button>
@@ -181,27 +184,34 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                                 />
                             </FormGroup>
                             <FormGroup id='payerBank' label={t('form.withdraw.bank')}>
-                                <Dropdown className='w-100'>
-                                    <DropdownToggle 
-                                        className='w-100'
-                                        isLight color='dark' isOpen={Boolean(isOpenPayerBankDropdown)} setIsOpen={setIsOpenPayerBankDropdown}>
-                                        <span>
-                                            {values.payerBank.label.toLocaleUpperCase()}
-                                        </span>
-                                    </DropdownToggle>
-                                    <DropdownMenu isOpen={Boolean(isOpenPayerBankDropdown)} setIsOpen={setIsOpenPayerBankDropdown}>
-                                        {banks.map((bank: Bank) =>
-                                            <DropdownItem key={bank.id}>
-                                                <Button
-                                                    color='link'
-                                                    isActive={bank.id === values.payerBank.id}
-                                                    onClick={() => setFieldValue('payerBank', bank)}>
-                                                    {bank.label.toLocaleUpperCase()}
-                                                </Button>
-                                            </DropdownItem>
-                                        )}
-                                    </DropdownMenu>
-                                </Dropdown>
+                                {type === WithdrawModalType.System ? 
+                                    <CommonBanksDropdown
+                                        disabled
+                                        selectedBankName={bank ?? 'scb'} 
+                                        setSelectedBankName={(bank: string) => setFieldValue('bankName', bank)} 
+                                    /> :
+                                    <Dropdown className='w-100'>
+                                        <DropdownToggle 
+                                            className='w-100'
+                                            isLight color='dark' isOpen={Boolean(isOpenPayerBankDropdown)} setIsOpen={setIsOpenPayerBankDropdown}>
+                                            <span>
+                                                {values.payerBank.label.toLocaleUpperCase()}
+                                            </span>
+                                        </DropdownToggle>
+                                        <DropdownMenu isOpen={Boolean(isOpenPayerBankDropdown)} setIsOpen={setIsOpenPayerBankDropdown}>
+                                            {banks.map((bank: Bank) =>
+                                                <DropdownItem key={bank.id}>
+                                                    <Button
+                                                        color='link'
+                                                        isActive={bank.id === values.payerBank.id}
+                                                        onClick={() => setFieldValue('payerBank', bank)}>
+                                                        {bank.label.toLocaleUpperCase()}
+                                                    </Button>
+                                                </DropdownItem>
+                                            )}
+                                        </DropdownMenu>
+                                    </Dropdown>
+                                }
                             </FormGroup>
                             <Button color='info' className='w-auto mx-3' onClick={handleSubmit}>
                                 {t('save')}
