@@ -1,3 +1,4 @@
+import { getAccessToken } from 'common/utils/auth'
 import { Status } from 'pages/common/CommonEnums'
 import axios, { authorizationHandler } from './axios'
 
@@ -41,13 +42,14 @@ export const getAdminList = async (
         try {
 			const res = await axios({
                 method: 'get',
-                url: '/admin/list'
-            })
-            next(res.data)
-		} catch (error: any) {
-            handleError(error)
-		}
-    })
+            url: '/admin/list',
+            headers: { Authorization: `Bearer ${getAccessToken()}` },
+        })
+        next(res.data)
+    } catch (error: any) {
+        handleError(error)
+    }
+})
 
 export const deleteAdmin = async (
     adminId: string,

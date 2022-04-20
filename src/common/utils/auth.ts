@@ -8,9 +8,9 @@ const setRefreshToken = (token: string) => {
 
 const getAccessToken = () => localStorage.getItem('accessToken')
 
+
 const didLogin = (accessToken: string, refreshToken: string) => {
     setAccessToken(accessToken)
-    setRefreshToken(refreshToken)
 }
 
 const didLogout = () => {

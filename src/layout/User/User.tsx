@@ -18,18 +18,21 @@ const User = () => {
 	const [collapseStatus, setCollapseStatus] = useState(false)
 	
 	const handleLogout = () => {
-		logout().then(() => {
-			didLogout()
-			navigate(`/${pages.login.path}`)
-		}).catch(() => {
-			showNotification(
-				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
-					<span>{t('logout.failed')}</span>
-				</span>,
-				t('please.try.again'),
-			)
-		}).finally(() => setCollapseStatus(false))
+		setCollapseStatus(false)
+		didLogout()
+		navigate(`/${pages.login.path}`)
+		// logout().then(() => {
+		// 	didLogout()
+		// 	navigate(`/${pages.login.path}`)
+		// }).catch(() => {
+		// 	showNotification(
+		// 		<span className='d-flex align-items-center'>
+		// 			<Icon icon='Info' size='lg' className='me-1' />
+		// 			<span>{t('logout.failed')}</span>
+		// 		</span>,
+		// 		t('please.try.again'),
+		// 	)
+		// }).finally(() => setCollapseStatus(false))
 	}
 
 	return (

@@ -6,14 +6,20 @@ import { Views } from 'react-big-calendar'
 import Dropdown, { DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown'
 import Icon from 'components/icon/Icon'
 import { useTranslation } from 'react-i18next'
+import { th } from 'date-fns/locale'
 
 interface MetricInterface {
-    title: string
-    dayTotal: number
-    nightTotal: number
+    type: MetricBoardType
+    deposit: number
+    withdraw: number
 }
 
-const MetricBoard = ({ title, dayTotal, nightTotal }: MetricInterface) => {
+export enum MetricBoardType {
+    Day = 'day',
+    Night = 'night'
+}
+
+const MetricBoard = ({ type, deposit, withdraw }: MetricInterface) => {
     const { t } = useTranslation('dashboard')
     const [date, setDate] = useState<Date>(new Date())
     const [isOpenCalendar, setIsOpenCalendar] = useState(false)
@@ -24,49 +30,63 @@ const MetricBoard = ({ title, dayTotal, nightTotal }: MetricInterface) => {
     }
 
     return (
-        <Card>
-			<CardHeader>
-				<CardLabel>
-                    <div className="d-flex col align-items-center">
-                        <Icon icon='Money' size='2x' color='primary' />
-                        <CardTitle className="mx-2">{title}</CardTitle>
+        <Card className='col'>
+			<CardHeader className='pb-2'>
+                <CardLabel>
+                    <div className="d-flex row g-2 align-items-center">
+                        {type === MetricBoardType.Day ? <>
+                            <Icon className='col' icon='Sunrise' size='2x' color='primary' />
+                            <CardTitle className="col mx-2 text-nowrap">00:00 - 12:00</CardTitle></>
+                            : 
+                            <><Icon className='col' icon='SunsetFill' size='2x' color='primary' />
+                            <CardTitle className="col mx-2 text-nowrap">12:01 - 23:59</CardTitle></>
+                        }
                     </div>
-				</CardLabel>
+                </CardLabel>
 				<CardActions>
                     <Dropdown>
-                        <DropdownToggle color='dark' isLight hasIcon={false} isOpen={isOpenCalendar} setIsOpen={setIsOpenCalendar}>
+                        <DropdownToggle color='primary' isLight hasIcon={false} isOpen={isOpenCalendar} setIsOpen={setIsOpenCalendar}>
                             <span>{getLabel(date, Views.DAY)}</span>
                         </DropdownToggle>
-                        <DropdownMenu isAlignmentEnd isOpen={isOpenCalendar} setIsOpen={setIsOpenCalendar}>
+                        <DropdownMenu className='p-0' isAlignmentEnd isOpen={isOpenCalendar} setIsOpen={setIsOpenCalendar}>
                             <DatePicker
 								onChange={onDateChange}
 								date={date}
 								color={process.env.REACT_APP_PRIMARY_COLOR}
+                                locale={th}
 							/>
                         </DropdownMenu>
                     </Dropdown>
 				</CardActions>
 			</CardHeader>
 			<CardBody className='row g-4 py-0'>
-                <div className='col-xl-6'>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="mb-0">{t('day.time')}</CardTitle>
-                            <div className="mb-0">00:00 - 12:00</div>
-                        </CardHeader>
-                        <CardBody className="pt-0">
-                            <h2 className="fw-bolder text-center">{dayTotal.toLocaleString()}</h2>
+                <div className='col'>
+                    <Card style={{ minWidth: 136 }}>
+                        <CardLabel className='p-3'>
+                            <div className="d-flex row g-2 align-items-center">
+                                <Icon className='col text-nowrap' icon='AttachMoney' size='2x' color='success' />
+                                <span className='col align-self-center text-nowrap'>{t('deposit')}</span>
+                            </div>
+                        </CardLabel>
+                        <CardBody className="pt-0 align-self-center">
+                            <span color='success' className='fs-3 fw-bold text-success'>
+                                {deposit.toLocaleString()}
+							</span>
                         </CardBody>
                     </Card>
                 </div>
-                <div className='col-xl-6'>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="mb-0">{t('night.time')}</CardTitle>
-                            <div className="mb-0">12:01 - 23:59</div>
-                        </CardHeader>
-                        <CardBody className="pt-0">
-                            <h2 className="fw-bolder text-center">{nightTotal.toLocaleString()}</h2>
+                <div className='col'>
+                    <Card style={{ minWidth: 136 }}>
+                        <CardLabel className='p-3'>
+                            <div className="d-flex row g-2 align-items-center">
+                                <Icon className='col' icon='MoneyOff' size='2x' color='danger' />
+                                <span className='col align-self-center text-nowrap'>{t('withdraw')}</span>
+                            </div>
+                        </CardLabel>
+                        <CardBody className="pt-0 align-self-center">
+                            <span color='success' className='fs-3 fw-bold text-danger'>
+                                {withdraw.toLocaleString()}
+							</span>
                         </CardBody>
                     </Card>
                 </div>

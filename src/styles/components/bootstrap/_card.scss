@@ -15,6 +15,7 @@ $border-radius-child: #{$card-border-radius - $card-border-width};
 	@include margin-bottom($grid-gutter-width);
 
 	border: $card-border-width solid var(--#{$variable-prefix}card-border-color);
+	border-radius: 8px;
 	background-color: var(--#{$variable-prefix}card-bg);
 	box-shadow: $card-box-shadow;
 	@include dark-mode {

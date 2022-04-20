@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getAccessToken } from 'common/utils/auth'
+import { didLogout, getAccessToken } from 'common/utils/auth'
 import { renewToken } from './auth'
 
 // ----------------------------------------------------------------------
@@ -11,27 +11,15 @@ declare const process: {
 }
 
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API,
-  headers: { Authorization: `Bearer ${getAccessToken()}` },
-  withCredentials: true
+  baseURL: process.env.REACT_APP_API
 })
 
 export const authorizationHandler = async (fetcher: any) => {
 	try {
-		const response = await fetcher()
-		return response
+		await fetcher()
 	} catch (error: any) {
 		if (error.response?.status === 401) {
-			const isNotReLogin = await renewToken()
-			console.log(isNotReLogin)
-			if (isNotReLogin){
-				try {
-					const response = await fetcher()
-					return response	
-				} catch (error: any) {
-					console.log(error.response)
-				}
-			} 
+			didLogout()
 		} else {
 			console.log('error')
 			return error
