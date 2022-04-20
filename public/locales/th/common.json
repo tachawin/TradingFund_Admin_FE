@@ -109,6 +109,7 @@
     "form.quantity": "จำนวน",
     "form.points.to.redeem": "จำนวนแต้มที่ใช้แลก",
     "form.level.name": "ชื่อขั้น",
+    "form.level.color": "สีขัั้น",
     "form.minimum.deposit": "ยอดฝากขั้นต่ำ",
     "delete.image": "ลบรูป",
 

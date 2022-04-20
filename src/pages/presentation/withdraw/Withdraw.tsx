@@ -259,7 +259,7 @@ const Withdraw = () => {
 			<Page>
 				<div className='col h-100 px-3'>
 					<BankBalanceCard />
-					<div className='col'>
+					<div className='h-100'>
 						<WithdrawTable
                             cardHeader={
                                 <CardHeader>

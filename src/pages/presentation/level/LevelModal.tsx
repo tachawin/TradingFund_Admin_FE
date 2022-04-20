@@ -14,10 +14,12 @@ import * as Yup from 'yup'
 import FormGroup from 'components/bootstrap/forms/FormGroup'
 import Input from 'components/bootstrap/forms/Input'
 import { LevelModalInterface } from './Level'
+import { HuePicker, SliderPicker } from 'react-color'
 
 interface LevelFormInterface {
     levelName: string
     minimumDeposit: number
+    color: string
 }
 
 
@@ -28,12 +30,14 @@ const LevelModal = ({ id, isOpen, setIsOpen, properties }: LevelModalInterface) 
     const LevelFormSchema = Yup.object().shape({
         levelName: Yup.string().required('โปรดใส่ชื่อขั้น'),
         minimumDeposit: Yup.number().required('โปรดใส่ยอดฝากขั้นต่ำ'),
+        color: Yup.string().required('โปรดเลือกสีขั้น'),
 	})
 	
 	const formik = useFormik<LevelFormInterface>({
 		initialValues: {
             levelName: data?.levelName || '',
-            minimumDeposit: data?.minimumDeposit || ''
+            minimumDeposit: data?.minimumDeposit || '',
+            color: data?.color || '#ff0000'
 		},
         validationSchema: LevelFormSchema,
 		onSubmit: (values) => {
@@ -63,7 +67,7 @@ const LevelModal = ({ id, isOpen, setIsOpen, properties }: LevelModalInterface) 
 		},
 	})
 
-    const { values, handleChange, handleSubmit, isValid, touched, errors } = formik
+    const { values, handleChange, handleSubmit, setFieldValue, isValid, touched, errors } = formik
 
     return (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>
@@ -90,6 +94,20 @@ const LevelModal = ({ id, isOpen, setIsOpen, properties }: LevelModalInterface) 
                             isTouched={touched.minimumDeposit && errors.minimumDeposit}
                             invalidFeedback={errors.minimumDeposit}
                         />
+                    </FormGroup>
+                    <FormGroup id='color' label={t('form.level.color')}>
+                        <div className='d-flex gap-3 align-items-center'>
+                            <Input
+                                className='w-25'
+                                value={values.color}
+                                isValid={isValid}
+                                isTouched={touched.color && errors.color}
+                                invalidFeedback={errors.color}
+                                disabled
+                            />
+                            <div style={{ backgroundColor: values.color, width: 60, height: 20, borderRadius: 4 }}></div>
+                            <HuePicker color={values.color} onChangeComplete={(color) => setFieldValue('color', color.hex)} />
+                        </div>
                     </FormGroup>
                 </div>
             </ModalBody>
