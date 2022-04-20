@@ -48,6 +48,7 @@ interface RewardModalProperties {
 
 enum REWARD_TABLE_STATE {
 	REQUEST = 'request',
+	WAITLIST = 'waitlist',
 	HISTORY = 'history'
 }
 
@@ -229,6 +230,13 @@ const Reward = () => {
                                         >
                                             {t('reward:request')}
                                         </Button>
+										<Button
+                                            color={rewardTableState === REWARD_TABLE_STATE.WAITLIST ? 'success' : 'dark'}
+                                            isLight={rewardTableState !== REWARD_TABLE_STATE.WAITLIST}
+                                            onClick={() => setRewardTableState(REWARD_TABLE_STATE.WAITLIST)}
+                                        >
+                                            {t('reward:waitlist')}
+                                        </Button>
                                         <Button
                                             color={rewardTableState === REWARD_TABLE_STATE.HISTORY ? 'success' : 'dark'}
                                             isLight={rewardTableState !== REWARD_TABLE_STATE.HISTORY}
@@ -239,11 +247,11 @@ const Reward = () => {
                                     </ButtonGroup>
                                 </CardHeader>
                             }
-                            data={rewardTableState === REWARD_TABLE_STATE.REQUEST ? 
-								data.filter((i: any) => i.status === 'request' || i.status === 'sending') : 
+                            data={rewardTableState !== REWARD_TABLE_STATE.HISTORY ? 
+								data.filter((i: any) => rewardTableState === REWARD_TABLE_STATE.REQUEST ?  i.status === 'request' : i.status === 'sending') : 
 								data.filter((i: any) => i.status !== 'request')
 							} 
-                            setIsOpenRewardModal={rewardTableState === REWARD_TABLE_STATE.REQUEST ? setIsOpenRewardModal : undefined}
+                            setIsOpenRewardModal={rewardTableState !== REWARD_TABLE_STATE.HISTORY ? setIsOpenRewardModal : undefined}
                             columns={{ mobileNumber: true, notes: true, status: true, operator: rewardTableState === REWARD_TABLE_STATE.HISTORY }} 
                         />
 					</div>
