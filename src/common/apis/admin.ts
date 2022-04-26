@@ -11,6 +11,8 @@ export enum AdminRole {
     SuperAdmin = 'super_admin'
 }
 
+export const ROLES = [AdminRole.Admin, AdminRole.SuperAdmin]
+
 interface AdminBaseInterface {
     username: string
     name: string
@@ -42,9 +44,11 @@ export const getAdminList = async (
         try {
 			const res = await axios({
                 method: 'get',
-            url: '/admin/list',
-            headers: { Authorization: `Bearer ${getAccessToken()}` },
-        })
+                url: '/admin/list',
+                headers: {
+                    Authorization: `Bearer ${getAccessToken()}`,
+                },
+            })
         next(res.data)
     } catch (error: any) {
         handleError(error)

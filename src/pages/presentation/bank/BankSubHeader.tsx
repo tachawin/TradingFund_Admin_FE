@@ -163,7 +163,7 @@ const BankSubHeader = ({ setIsOpenBankModal }: BankProps) => {
 			icon='PiggyBank'
 			color='primary'
 			isLight
-			onClick={() => setIsOpenBankModal({ type: "add", selectedRow: null})}
+			onClick={() => setIsOpenBankModal({ type: "add", selectedRow: undefined})}
 		>
 			{t('bank:add.bank')}
 		</Button>

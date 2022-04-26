@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 import classNames from 'classnames';
 import TagWrapper from '../TagWrapper';
+import Button from './Button';
 
 interface ListGroupItemInterface {
 	children: any,
@@ -9,15 +10,15 @@ interface ListGroupItemInterface {
 	color?: string,
 	isActive?: boolean,
 	isDisable?: boolean,
-	href?: string
+	href?: string,
+	onClick?: any
 }
 
 export const ListGroupItem = forwardRef<any, ListGroupItemInterface>(
-	({ tag = "li", children, className, color, isActive = false, isDisable = false, ...props }, ref) => {
+	({ tag = "li", children, className, color, isActive = false, isDisable = false, onClick, ...props }, ref) => {
 		return (
-			<TagWrapper
+			<Button
 				ref={ref}
-				tag={tag}
 				className={classNames(
 					'list-group-item',
 					{
@@ -29,9 +30,11 @@ export const ListGroupItem = forwardRef<any, ListGroupItemInterface>(
 					className,
 				)}
 				// eslint-disable-next-line react/jsx-props-no-spreading
-				{...props}>
+				{...props}
+				onClick={onClick}
+			>
 				{children}
-			</TagWrapper>
+			</Button>
 		);
 	},
 );

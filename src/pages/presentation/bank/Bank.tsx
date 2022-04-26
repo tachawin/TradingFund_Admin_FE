@@ -1,29 +1,15 @@
-import { ChangeEvent, useCallback, useState } from 'react'
-import { useFormik } from 'formik'
-import debounce from 'lodash/debounce'
-import PageWrapper from '../../../layout/PageWrapper/PageWrapper'
-import SubHeader, {
-	SubHeaderLeft,
-	SubHeaderRight,
-	SubheaderSeparator
-} from '../../../layout/SubHeader/SubHeader'
-import Page from '../../../layout/Page/Page'
-import { pages } from '../../../menu'
+import { useState } from 'react'
 import data from '../../../common/data/dummyBankData'
-import Button from '../../../components/bootstrap/Button'
-import Icon from '../../../components/icon/Icon'
-import Input from '../../../components/bootstrap/forms/Input'
-import Checks  from '../../../components/bootstrap/forms/Checks'
 import { useTranslation } from 'react-i18next'
 import BankModal from './BankModal'
-import CommonTableFilter from 'components/common/CommonTableFilter'
 import BankTable from './BankTable'
 import { CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 import BankDeleteModal from './BankDeleteModal'
+import { CompanyBankInterface } from 'common/apis/companyBank'
 
 export interface BankModalProperties {
 	type: string
-	selectedRow: any
+	selectedRow?: CompanyBankInterface
 }
 
 export interface BankModalInterface {

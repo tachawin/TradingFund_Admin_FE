@@ -26,7 +26,7 @@ import AdminDeleteModal from './components/AdminDeleteModal'
 import AdminPermissionModal from './components/AdminPermissionModal'
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import AdminTable from './components/AdminTable'
-import { AdminInterface, getAdminList } from 'common/apis/admin'
+import { AdminInterface, getAdminList, ROLES } from 'common/apis/admin'
 import Spinner from 'components/bootstrap/Spinner'
 import CommonTableNotFound from 'pages/common/CommonTableNotFound'
 import showNotification from 'components/extras/showNotification'
@@ -46,6 +46,22 @@ const mockPermission = {
 interface AdminModalProperties {
 	type?: AdminModalType
 	selectedRow?: any
+}
+
+interface AdminFilterInterface {
+	searchInput: string
+	available: boolean
+	roles: string[]
+	createdAtDate: {
+		startDate: Date
+		endDate: Date
+		key: string
+	}[]
+    updatedAtDate: {
+		startDate: Date
+		endDate: Date
+		key: string
+	}[]
 }
 
 const Admin = () => {
@@ -79,10 +95,11 @@ const Admin = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
-	const formik = useFormik({
+	const formik = useFormik<AdminFilterInterface>({
 		initialValues: {
 			searchInput: '',
 			available: false,
+			roles: [],
 			createdAtDate: [
 				{
 					startDate: moment().startOf('week').add('-1', 'week').toDate(),
@@ -141,6 +158,20 @@ const Admin = () => {
 			setSearchInput(value)
 			debounceSearchChange(value)
 		}
+	}
+
+	const handleOnChangeMultipleSelector = (event: ChangeEvent<HTMLInputElement>, field: string) => {
+		let selectedValue = event.target.name
+		let index = parseInt(event.target.value)
+		let isSelected = event.target.checked
+		let newValue = values[field as keyof AdminFilterInterface] as string[]
+
+		if (isSelected) {
+			newValue.push(selectedValue)
+		} else {
+			newValue.splice(index, 1)
+		}
+		setFieldValue(field, newValue)
 	}
 
 	return (
@@ -208,7 +239,25 @@ const Admin = () => {
 										{datePicker(values.updatedAtDate, 'updatedAtDate')}
 									</DropdownMenu>
 								</Dropdown>
-							}
+							},
+							{
+								label: t('filter.role'),
+								children: <div>
+									{ROLES.map((role: string) => {
+										let indexInRoleFilter = values.roles.indexOf(role)
+										return <Checks
+												key={role}
+												label={role}
+												name={role}
+												value={indexInRoleFilter}
+												onChange={(e) => handleOnChangeMultipleSelector(e, 'roles')}
+												checked={indexInRoleFilter > -1}
+												ariaLabel={role}
+											/>
+										}
+									)}
+								</div>
+							},
 						]} 
 					/>
 					<SubheaderSeparator />

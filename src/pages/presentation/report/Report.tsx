@@ -30,6 +30,8 @@ import { useTranslation } from 'react-i18next'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import banks from 'common/data/dummyBankData'
+import ListGroup, { ListGroupItem } from 'components/bootstrap/ListGroup'
+import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 
 interface ReportFilterInterface {
 	searchInput: string
@@ -227,21 +229,10 @@ const Report = () => {
 							},
 							{
 								label: t('filter.bank'),
-								children: <div>
-									{banks.map((bank: any) => {
-										let indexInBankFilter = values.bank.indexOf(bank.label)
-										return <Checks
-												key={bank.id}
-												label={bank.label}
-												name={bank.label}
-												value={indexInBankFilter}
-												onChange={handleOnChangeBankFilter}
-												checked={indexInBankFilter > -1}
-												ariaLabel={bank.label}
-											/>
-										}
-									)}
-								</div>
+								children: <CommonBanksDropdown 
+											selectedBankName={'scb'} 
+											setSelectedBankName={(bank: string) => setFieldValue('bank', bank)} 
+										/>
 							},
 						]} 
 					/>

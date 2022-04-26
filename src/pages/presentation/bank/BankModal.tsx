@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import Modal, {
 	ModalBody,
 	ModalFooter,
@@ -16,56 +16,99 @@ import Input from 'components/bootstrap/forms/Input'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 import Checks from 'components/bootstrap/forms/Checks'
 import { BankModalInterface } from './Bank'
+import { CompanyBankBaseInterface, CompanyBankStatus, CompanyBankType, createCompanyBank, updateCompanyBank } from 'common/apis/companyBank'
+import Spinner from 'components/bootstrap/Spinner'
 
 interface BankFormInterface {
     bankAccountNumber: string
     bankAccountName: string
     bankName: string
-    paymentType: string[]
-    isActive: boolean
+    balance: string | number
+    type: CompanyBankType[]
+    status: boolean
 }
 
 const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) => {
     const { t } = useTranslation(['common', 'bank'])
     const { type, selectedRow: data } = properties
+    const [isLoading, setIsLoading] = useState(false)
 
     const BankFormSchema = Yup.object().shape({
-        bankAccountNumber: Yup.string().required('โปรดใส่หมายเลขบัญชี'),
-        bankAccountName: Yup.string().required('โปรดใส่ชื่อบัญชี'),
-        paymentType: Yup.array().min(1, 'กรุณาเลือกประเภทธุรกรรม')
+        bankAccountNumber: Yup.string().required('กรุณาใส่หมายเลขบัญชี'),
+        bankAccountName: Yup.string().required('กรุณาใส่ชื่อบัญชี'),
+        balance: Yup.number().required('กรุณาใส่ยอดเงินคงเหลือ'),
+        type: Yup.array().min(1, 'กรุณาเลือกประเภทธุรกรรม'),
 	})
 	
 	const formik = useFormik<BankFormInterface>({
 		initialValues: {
-            bankAccountNumber: data?.number || '',
+            bankAccountNumber: data?.bankAccountNumber || '',
             bankAccountName: data?.bankAccountName || '',
             bankName: data?.bankName || 'scb',
-            paymentType: data?.paymentType || [],
-            isActive: true
+            balance: data?.balance || '',
+            type: data?.type ? (data?.type === CompanyBankType.DepositAndWithdraw ? [CompanyBankType.Deposit, CompanyBankType.Withdraw] : [data?.type]) : [],
+            status: data?.status === CompanyBankStatus.Active || true
 		},
         validationSchema: BankFormSchema,
 		onSubmit: (values) => {
-            console.log(values)
-
+            setIsLoading(true)
+            let typeInString = values.type.length > 1 ? CompanyBankType.DepositAndWithdraw : values.type[0]
+            let statusInString = values.status ? CompanyBankStatus.Active : CompanyBankStatus.Inactive
+            let requestBody: CompanyBankBaseInterface = {
+                ...values,
+                balance: values.balance as number,
+                type: typeInString,
+                status: statusInString
+            }
             if (type === 'add') {
-                // ADD
-                showNotification(
-                    <span className='d-flex align-items-center'>
-                        <Icon icon='Info' size='lg' className='me-1' />
-                        <span>{t('bank:added.successfully')}</span>
-                    </span>,
-                    t('reward:added.bank.successfully', { mobileNumber: data?.mobileNumber }),
-                )
+                createCompanyBank(requestBody).then(() => {
+                    showNotification(
+                        <span className='d-flex align-items-center'>
+                            <Icon icon='Info' size='lg' className='me-1' />
+                            <span>{t('bank:added.successfully')}</span>
+                        </span>,
+                        t('bank:added.bank.successfully', { bankName: values.bankName.toUpperCase() }),
+                    )
+                }).catch((err) => {
+                    const { response } = err
+                    const message = response?.data
+                    console.log(message)
+                    showNotification(
+                        <span className='d-flex align-items-center'>
+                            <Icon icon='Info' size='lg' className='me-1' />
+                            <span>{t('bank:save.failed')}</span>
+                        </span>,
+                        t('bank:save.bank.failed', { bankName: values.bankName.toUpperCase() }),
+                    )
+                }).finally(() => {
+                    setIsLoading(false)
+                    setIsOpen(false)
+                })
             } else {
-                // EDIT
-                showNotification(
-                    <span className='d-flex align-items-center'>
-                        <Icon icon='Info' size='lg' className='me-1' />
-                        <span>{t('bank:edit.successfully')}</span>
-                    </span>,
-                    t('bank:edit.bank.successfully', { mobileNumber: data?.mobileNumber }),
-                )
-    
+                data?.bankId && updateCompanyBank(data.bankId, requestBody, () => {
+                    showNotification(
+                        <span className='d-flex align-items-center'>
+                            <Icon icon='Info' size='lg' className='me-1' />
+                            <span>{t('bank:edit.successfully')}</span>
+                        </span>,
+                        t('bank:edit.bank.successfully', { bankName: values.bankName.toUpperCase() }),
+                    )
+                    setIsLoading(false)
+                    setIsOpen(false)
+                }, (err) => {
+                    const { response } = err
+                    const message = response?.data
+                    console.log(message)
+                    showNotification(
+                        <span className='d-flex align-items-center'>
+                            <Icon icon='Info' size='lg' className='me-1' />
+                            <span>{t('bank:save.failed')}</span>
+                        </span>,
+                        t('bank:save.bank.failed', { bankName: values.bankName.toUpperCase() }),
+                    )
+                    setIsLoading(false)
+                    setIsOpen(false)
+                })
             }
 			
             setIsOpen(false)
@@ -78,26 +121,15 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
 		let paymentType = event.target.name
 		let indexInPaymentType = parseInt(event.target.value)
 		let isSelected = event.target.checked
-		let newPaymentTypeValue = values.paymentType
+		let newPaymentTypeValue = values.type
 
 		if (isSelected) {
-			newPaymentTypeValue.push(paymentType)
+			newPaymentTypeValue.push(paymentType as CompanyBankType)
 		} else {
 			newPaymentTypeValue.splice(indexInPaymentType, 1)
 		}
 		setFieldValue('bank', newPaymentTypeValue)
 	}
-
-    const PAYMENT_TYPE = [
-        {
-            id: 0,
-            name: t('deposit')
-        },
-        {
-            id: 0,
-            name: t('withdraw')
-        }
-    ]
 
     return (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>
@@ -130,33 +162,43 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
                             setSelectedBankName={(bank: string) => setFieldValue('bankName', bank)} 
                         />
                     </FormGroup>
+                    <FormGroup id='balance' label={t('form.bank.balance')}>
+                        <Input
+                            type='number'
+                            onChange={handleChange} 
+                            value={values.balance}
+                            isValid={isValid}
+                            isTouched={touched.balance && errors.balance}
+                            invalidFeedback={errors.balance}
+                        />
+                    </FormGroup>
                     <FormGroup 
-                        id='paymentType' 
+                        id='type' 
                         label={t('form.payment.type')} 
-                        errorText={touched.paymentType ? <div className='text-danger'>{errors.paymentType}</div> : ''}
+                        errorText={touched.type ? <div className='text-danger'>{errors.type}</div> : ''}
                     >
                         <div>
-                            {PAYMENT_TYPE.map((paymentType: any) => {
-                            let indexInPaymentTypeFilter = values.paymentType.indexOf(paymentType.name)
+                            {[CompanyBankType.Deposit, CompanyBankType.Withdraw].map((type: CompanyBankType) => {
+                            let indexInTypeFilter = values.type.indexOf(type)
                             return <Checks
-                                    key={paymentType.name}
-                                    label={paymentType.name}
-                                    name={paymentType.name}
-                                    value={indexInPaymentTypeFilter}
+                                    key={type}
+                                    label={type === CompanyBankType.Deposit ? t('deposit') : t('withdraw')}
+                                    name={type}
+                                    value={indexInTypeFilter}
                                     onChange={handleOnChangePaymentType}
-                                    checked={indexInPaymentTypeFilter > -1}
-                                    ariaLabel={paymentType.name}
+                                    checked={indexInTypeFilter > -1}
+                                    ariaLabel={type}
                                 />
                             }
                         )}</div>
                     </FormGroup>
-                    <FormGroup id='isActive' label={t('form.status')}>
+                    <FormGroup id='status' label={t('form.status')}>
                         <Checks
                             id='status'
                             type='switch'
-                            label={values.isActive ? t('active') : t('inactive')}
+                            label={values.status ? t('active') : t('inactive')}
                             onChange={handleChange}
-                            checked={values.isActive}
+                            checked={values.status}
                             ariaLabel='Available status'
                         />
                     </FormGroup>
@@ -164,7 +206,7 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
             </ModalBody>
             <ModalFooter className='px-4 pb-4'>
                 <Button className='w-100' color='info' onClick={handleSubmit}>
-                    {t('save')}
+                    {isLoading ? <Spinner size={16} /> : t('save')}
                 </Button>
             </ModalFooter>
         </Modal>

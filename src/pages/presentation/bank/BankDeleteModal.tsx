@@ -24,14 +24,14 @@ const BankDeleteModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterfa
                 <Icon icon='Info' size='lg' className='me-1' />
                 <span>{t('bank:delete.successfully')}</span>
             </span>,
-            t('bank:delete.bank.successfully', { bankName: data?.name }),
+            t('bank:delete.bank.successfully', { bankName: data?.bankName }),
         )
     }
 
     return (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>
             <ModalHeader setIsOpen={setIsOpen} className='p-4'>
-                <ModalTitle id={id}>{t('bank:delete.bank', { bankName: data?.name })}</ModalTitle>
+                <ModalTitle id={id}>{t('bank:delete.bank', { bankName: data?.bankName })}</ModalTitle>
             </ModalHeader>
             <ModalBody className='px-4'>
                 {t('bank:form.delete.confirmation')}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, Fragment } from 'react'
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper'
 import SubHeader, {
 	SubHeaderLeft,
@@ -51,7 +51,7 @@ const Settings = () => {
 	return (
 		<PageWrapper title={pages.settings.text}>
 			{SETTING_PANELS.map((page) => 
-				page.id === panel && <>
+				page.id === panel && <Fragment key={page.id}>
 					<SubHeader>
 						<SubHeaderLeft>
 							<Button
@@ -86,7 +86,7 @@ const Settings = () => {
 					<Page container={page.container}>
 						{page.body}
 					</Page>
-				</>
+				</Fragment>
 			)}
 		</PageWrapper>
 	)
