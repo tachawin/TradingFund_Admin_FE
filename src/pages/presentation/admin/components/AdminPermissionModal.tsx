@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import Modal, {
 	ModalBody,
 	ModalFooter,
@@ -10,13 +10,15 @@ import Icon from 'components/icon/Icon'
 import Button from 'components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import Checks from 'components/bootstrap/forms/Checks'
+import { updatePermission } from 'common/apis/admin'
+import Spinner from 'components/bootstrap/Spinner'
 
 interface Permission {
     [key: string]: string
 }
 
 interface AdminPermissionModalInterface {
-	id?: string | number
+	id?: string
     name?: string
 	permissions: Permission
     isOpen?: boolean
@@ -26,6 +28,11 @@ interface AdminPermissionModalInterface {
 const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: AdminPermissionModalInterface) => {
     const { t } = useTranslation(['common', 'admin'])
     const [permissionsValue, setPermissionValue] = useState(permissions)
+    const [isLoading, setIsLoading] = useState(false)
+
+    useEffect(() => {
+        setPermissionValue(permissions)
+    }, [permissions])
 
     const featureTitle: Permission = {
         report: t("report"),
@@ -37,6 +44,8 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
         credit: t("credit"),
         chat: t("chat"),
         product: t("product"),
+        adminManage: t('admin'),
+        level: t('level'),
     }
 
     const onSelectCheckbox = (event: ChangeEvent<HTMLInputElement>) => {
@@ -49,15 +58,31 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
     }
 
     const onSubmit = () => {
-        // UPDATE PERMISSION
-        setIsOpen(false)
-        showNotification(
-            <span className='d-flex align-items-center'>
-                <Icon icon='Info' size='lg' className='me-1' />
-                <span>{t('admin:edit.successfully')}</span>
-            </span>,
-            t('admin:edit.admin.successfully', { adminName: name }),
-        )
+        id && updatePermission(id, permissionsValue).then((response) => {
+            console.log(response.data)
+
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <Icon icon='Info' size='lg' className='me-1' />
+                    <span>{t('admin:save.successfully')}</span>
+                </span>,
+                t('admin:save.admin.successfully', { adminName: name }),
+            )
+        }).catch((err) => {
+            const { response } = err
+            const message = response?.data
+            console.log(message)
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <Icon icon='Info' size='lg' className='me-1' />
+                    <span>{t('admin:save.failed')}</span>
+                </span>,
+                t('admin:save.admin.failed', { adminName: name }),
+            )
+        }).finally(() => {
+            setIsLoading(false)
+            setIsOpen(false)
+        })
     }
 
     return (
@@ -77,7 +102,7 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
                         </tr>
                     </thead>
                     <tbody>
-                        {Object.entries(permissionsValue).map((permission: any, index: number) => {
+                        {permissionsValue && Object.entries(permissionsValue).map((permission: any, index: number) => {
                             const featureName = permission[0]
                             const permissionCode = permission[1]
                             const readAccess = permissionCode[0]
@@ -131,7 +156,7 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
             </ModalBody>
             <ModalFooter className='pb-4 pt-0'>
                 <Button color='info' onClick={onSubmit}>
-                    {t('save')}
+                    {isLoading ? <Spinner size={16} /> : t('save')}
                 </Button>
             </ModalFooter>
         </Modal>

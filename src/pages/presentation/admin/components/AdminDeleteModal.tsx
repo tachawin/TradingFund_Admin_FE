@@ -51,7 +51,7 @@ const AdminDeleteModal = ({ id, isOpen, setIsOpen, data }: AdminEditModalInterfa
 
     return (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>
-            <ModalHeader setIsOpen={setIsOpen} className='p-4'>
+            <ModalHeader setIsOpen={setIsOpen} className='p-4 pb-2'>
                 <ModalTitle id={id}>{t('admin:delete.admin', { adminName: data?.name })}</ModalTitle>
             </ModalHeader>
             <ModalBody className='px-4'>

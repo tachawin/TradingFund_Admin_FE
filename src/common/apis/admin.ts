@@ -10,15 +10,20 @@ export enum AdminRole {
     Admin = 'admin',
     SuperAdmin = 'super_admin'
 }
-
 export const ROLES = [AdminRole.Admin, AdminRole.SuperAdmin]
+
+export enum AdminStatus {
+    Active = 'active',
+    Inactive = 'inactive'
+}
+export const STATUS = [AdminStatus.Active, AdminStatus.Inactive]
 
 interface AdminBaseInterface {
     username: string
     name: string
     mobileNumber: string
     role: AdminRole
-    status: Status
+    status: AdminStatus
     features?: PermissionInterface
 }
 
@@ -33,10 +38,28 @@ export const createAdmin = (data: AdminInterface) =>
     axios({
         method: 'post',
         url: '/admin/register',
+        headers: { Authorization: `Bearer ${getAccessToken()}` },
+        data
+    })
+
+export const updateAdmin = (adminId: string, data: AdminInterface) => 
+    axios({
+        method: 'patch',
+        url: `/admin/update/${adminId}`,
+        headers: { Authorization: `Bearer ${getAccessToken()}` },
+        data
+    })
+
+export const updatePermission = (adminId: string, data: PermissionInterface) => 
+    axios({
+        method: 'patch',
+        url: `/admin/update/${adminId}`,
+        headers: { Authorization: `Bearer ${getAccessToken()}` },
         data
     })
 
 export const getAdminList = async (
+    query: string,
     next: (adminList: AdminInterface[]) => void,
     handleError: (error: any) => void
 ) =>
@@ -44,15 +67,13 @@ export const getAdminList = async (
         try {
 			const res = await axios({
                 method: 'get',
-                url: '/admin/list',
-                headers: {
-                    Authorization: `Bearer ${getAccessToken()}`,
-                },
+                url: `/admin/list${query}`,
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
             })
-        next(res.data)
-    } catch (error: any) {
-        handleError(error)
-    }
+            next(res.data)
+        } catch (error: any) {
+            handleError(error)
+        }
 })
 
 export const deleteAdmin = async (
@@ -63,8 +84,9 @@ export const deleteAdmin = async (
     await authorizationHandler(async () => {
         try {
 			await axios({
-                method: 'get',
-                url: '/admin/delete/hard',
+                method: 'delete',
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
+                url: '/admin/delete/soft',
                 data: { adminId }
             })
             next()

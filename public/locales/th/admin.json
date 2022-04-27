@@ -18,5 +18,11 @@
     "delete.admin.failed": "ลบ {{adminName}} ไม่สำเร็จ",
 
     "admin": "Admin",
-    "super.admin": "Super Admin"
+    "super.admin": "Super Admin",
+
+    "form.username.placeholder": "เป็นภาษาอังกฤษ ไม่มีเว้นวรรค",
+    "form.password.placeholder": "ความยาวอย่างน้อย 6 ตัวอักษร",
+
+    "profile": "ข้อมูลส่วนตัว",
+    "password": "รหัสผ่าน"
 }

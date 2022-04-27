@@ -7,9 +7,8 @@ import PaginationButtons, { dataPagination, PER_COUNT } from 'components/Paginat
 import Button from 'components/bootstrap/Button'
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown'
 import { AdminModalType } from './AdminEditModal'
-import { AdminInterface, AdminRole } from 'common/apis/admin'
+import { AdminInterface, AdminRole, AdminStatus } from 'common/apis/admin'
 import moment from 'moment'
-import { Status } from 'pages/common/CommonEnums'
 
 interface AdminTableInterface {
     data: AdminInterface[]
@@ -178,7 +177,7 @@ const AdminTable = ({
                                 </td>
                                 <td>
                                     <div className='d-flex align-items-center'>
-                                        { admin.status === Status.Active ?
+                                        { admin.status === AdminStatus.Active ?
                                             <>
                                                 <span className='badge border border-2 border-light rounded-circle bg-success p-2 me-2'>
                                                     <span className='visually-hidden'>
