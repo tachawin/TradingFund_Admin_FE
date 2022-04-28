@@ -1,10 +1,12 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useState, useEffect } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
 import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
+import { CompanyBankInterface, CompanyBankStatus } from 'common/apis/companyBank'
+import moment from 'moment'
 
 interface BankTableInterface {
     data: any
@@ -93,8 +95,8 @@ const BankTable = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {dataPagination(items, currentPage, perPage).map((i: any, index: number) => (
-                            <tr key={i.id}>
+                        {dataPagination(items, currentPage, perPage).map((bank: CompanyBankInterface, index: number) => (
+                            <tr key={bank.bankId}>
                                 <td className='text-center'>
                                     <div>{index + 1}</div>
                                 </td>
@@ -102,33 +104,33 @@ const BankTable = ({
                                     <div className='d-flex align-items-center'>
                                         <div className='flex-grow-1'>
                                             <div className='fs-6 fw-bold'>
-                                                *{i.number}
+                                                *{bank.bankAccountNumber.slice(-4)}
                                             </div>
                                             <div className='text-muted'>
                                                 <Icon icon='Label' />{' '}
-                                                <small>{i.name.toUpperCase()}</small>
+                                                <small>{bank.bankName.toUpperCase()}</small>
                                             </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <div>{i.bankAccountName}</div>
+                                    <div>{bank.bankAccountName}</div>
                                 </td>
                                 <td>
-                                    <div>{i.paymentType}</div>
+                                    <div>{bank.type}</div>
                                 </td>
 
                                 <td>
-                                    <div>{i.createdAtDate.format('ll')}</div>
+                                    <div>{moment(bank.createdAt)?.format('ll')}</div>
                                     <div>
                                         <small className='text-muted'>
-                                            {i.createdAtDate.fromNow()}
+                                            {moment(bank.createdAt)?.fromNow()}
                                         </small>
                                     </div>
                                 </td>
                                 <td>
                                     <div className='d-flex align-items-center'>
-                                        { i.status === 1 ?
+                                        { bank.status === CompanyBankStatus.Active ?
                                             <>
                                                 <span className='badge border border-2 border-light rounded-circle bg-success p-2 me-2'>
                                                     <span className='visually-hidden'>
@@ -149,13 +151,13 @@ const BankTable = ({
                                 </td>
                                 {(setIsOpenBankModal && setIsOpenDeleteBankModal) && <td>
                                     <Button
-                                        onClick={() => setIsOpenBankModal({ type: "edit", selectedRow: i})}
+                                        onClick={() => setIsOpenBankModal({ type: "edit", selectedRow: bank })}
                                         className='p-0'
                                         isLight
                                     >
                                         {t('edit')}
                                     </Button> / <Button
-                                        onClick={() => setIsOpenDeleteBankModal({ type: "delete", selectedRow: i })}
+                                        onClick={() => setIsOpenDeleteBankModal({ type: "delete", selectedRow: bank })}
                                         className='p-0'
                                         isLight
                                     >
