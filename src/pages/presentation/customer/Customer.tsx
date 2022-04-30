@@ -28,9 +28,9 @@ import Checks  from '../../../components/bootstrap/forms/Checks'
 import useSortableData from '../../../hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import banks from 'common/data/dummyBankData'
 import CustomerAddModal from './CustomerAddModal'
 import CommonTableFilter from 'components/common/CommonTableFilter'
+import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 
 interface DepositFilterInterface {
 	searchInput: string
@@ -144,20 +144,6 @@ const Customer = () => {
 		}
 	}
 
-    const handleOnChangeBankFilter = (event: ChangeEvent<HTMLInputElement>) => {
-		let bank = event.target.name
-		let indexInBankFilter = parseInt(event.target.value)
-		let isSelected = event.target.checked
-		let newBankFilterValue = values.bank
-
-		if (isSelected) {
-			newBankFilterValue.push(bank)
-		} else {
-			newBankFilterValue.splice(indexInBankFilter, 1)
-		}
-		setFieldValue('bank', newBankFilterValue )
-	}
-
 	const handleOnChangeLevelFilter = (event: ChangeEvent<HTMLInputElement>) => {
 		let bank = event.target.name
 		let indexInLevelFilter = parseInt(event.target.value)
@@ -246,19 +232,11 @@ const Customer = () => {
 							{
 								label: t('filter.bank'),
 								children: <div>
-									{banks.map((bank: any) => {
-										let indexInBankFilter = values.bank.indexOf(bank.label)
-										return <Checks
-												key={bank.id}
-												label={bank.label}
-												name={bank.label}
-												value={indexInBankFilter}
-												onChange={handleOnChangeBankFilter}
-												checked={indexInBankFilter > -1}
-												ariaLabel={bank.label}
-											/>
-										}
-									)}
+                                    <CommonBanksDropdown
+                                        multipleSelect
+                                        selectedBankName={values.bank} 
+                                        setSelectedBankName={(bank: string | string[]) => setFieldValue('bank', bank)} 
+                                    />
 								</div>
 							},
 						]} 

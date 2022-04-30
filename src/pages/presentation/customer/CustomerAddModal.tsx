@@ -155,7 +155,7 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
                             <FormGroup id='bankName' label={t('form.bank.name')}>
                                 <CommonBanksDropdown 
                                     selectedBankName={values.bankName} 
-                                    setSelectedBankName={(bank: string) => setFieldValue('bankName', bank)} 
+                                    setSelectedBankName={(bank: string | string[]) => setFieldValue('bankName', bank)} 
                                 />
                             </FormGroup>
                         </div>

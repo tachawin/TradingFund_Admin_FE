@@ -1,5 +1,3 @@
-import { CompanyBankInterface } from '../../common/apis/companyBank'
-
 export const STORE_COMPANY_BANK_QUERY = 'STORE_COMPANY_BANK_QUERY'
 
 export interface InitialState {
