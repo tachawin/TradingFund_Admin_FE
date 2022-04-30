@@ -2,17 +2,10 @@ import axios from 'axios'
 import { didLogout, getAccessToken } from 'common/utils/auth'
 import { renewToken } from './auth'
 
-// ----------------------------------------------------------------------
-
-// declare const process: {
-//   env: {
-//     REACT_APP_API: string
-//   }
-// }
+const REACT_APP_BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:8080';
 
 const axiosInstance = axios.create({
-//   baseURL: process.env.REACT_APP_API
-	baseURL: 'http://localhost:8080'
+	baseURL: REACT_APP_BASE_URL
 })
 
 export const authorizationHandler = async (fetcher: any) => {
