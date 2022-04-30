@@ -31,11 +31,13 @@ import { useNavigate } from 'react-router-dom'
 import CustomerAddModal from './CustomerAddModal'
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
+import CommonLevelsDropdown from 'pages/common/CommonLevelsDropdown'
+import { LevelInterface } from 'common/apis/level'
 
 interface DepositFilterInterface {
 	searchInput: string
 	bank: string[]
-	level: string[]
+	level: LevelInterface | LevelInterface[]
 	createdAtDate: {
 		startDate: Date
 		endDate: Date
@@ -47,25 +49,6 @@ interface DepositFilterInterface {
 		key: string
 	}[]
 }
-
-const levels = [
-	{
-		id: 0,
-		name: 'Platinum'
-	},
-	{
-		id: 1,
-		name: 'Gold'
-	},
-	{
-		id: 2,
-		name: 'Silver'
-	},
-	{
-		id: 3,
-		name: 'Bronze'
-	}
-]
 
 const Customer = () => {
     const { t } = useTranslation(['common', 'customer'])
@@ -144,20 +127,6 @@ const Customer = () => {
 		}
 	}
 
-	const handleOnChangeLevelFilter = (event: ChangeEvent<HTMLInputElement>) => {
-		let bank = event.target.name
-		let indexInLevelFilter = parseInt(event.target.value)
-		let isSelected = event.target.checked
-		let newLevelFilterValue = values.level
-
-		if (isSelected) {
-			newLevelFilterValue.push(bank)
-		} else {
-			newLevelFilterValue.splice(indexInLevelFilter, 1)
-		}
-		setFieldValue('bank', newLevelFilterValue )
-	}
-
 	return (
 		<PageWrapper title={demoPages.crm.subMenu.customersList.text}>
 			<SubHeader>
@@ -185,19 +154,11 @@ const Customer = () => {
 						filters={[
 							{
 								label: t('filter.level'),
-								children: levels.map((level: any) => {
-									let indexInLevelFilter = values.level.indexOf(level.name)
-									return <Checks
-											key={level.id}
-											label={level.name}
-											name={level.name}
-											value={indexInLevelFilter}
-											onChange={handleOnChangeLevelFilter}
-											checked={indexInLevelFilter > -1}
-											ariaLabel={level.name}
-										/>
-									}
-								)
+								children: <CommonLevelsDropdown 
+									multipleSelect
+									selectedLevel={values.level} 
+									setSelectedLevel={(level: LevelInterface | LevelInterface[]) => setFieldValue('level', level)} 
+								/>
 							},
 							{
 								label: t('filter.created.at'),
