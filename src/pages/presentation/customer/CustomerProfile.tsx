@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import 'moment/locale/th'
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper';
@@ -19,26 +19,43 @@ import Card, {
 	CardTitle,
 } from '../../../components/bootstrap/Card';
 import Icon from '../../../components/icon/Icon';
-import useDarkMode from '../../../hooks/useDarkMode';
 import { useTranslation } from 'react-i18next';
 import DepositTable from '../deposit/DepositTable';
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown';
 import WithdrawTable from '../withdraw/WithdrawTable';
 import RewardTable from '../reward/RewardTable';
 import CreditTable from '../credit/CreditTable';
+import { CustomerInterface, getCustomer } from 'common/apis/customer';
+import showNotification from 'components/extras/showNotification';
+import moment from 'moment';
 
 const CustomerProfile = () => {
     const { t } = useTranslation(['common', 'customer'])
-	const { darkModeStatus } = useDarkMode();
 
-	const { id } = useParams();
-	const itemData = data.filter((item: any) => item.id.toString() === id);
-	const item = itemData[0];
+	const { id } = useParams()
+	const [customer, setCustomer] = useState<CustomerInterface>()
+	const [isLoading, setIsLoading] = useState(false)
 
 	const [transactionState, setTransactionState] = useState('deposit')
     const [isOpenTransactionDropdown, setIsOpenTransactionDropdown] = useState(false)
 
-	const getLevelColor = () => item.level === 'Gold' ? 'warning' : item.level === 'Silver' ? 'light' : item.level === 'Platinum' ? 'primary' : 'danger' 
+	useEffect(() => {
+		setIsLoading(true)
+		id && getCustomer(id, (customer: CustomerInterface) => {
+			setCustomer(customer)
+		}, (error: any) => {
+			const { response } = error
+			console.log(response.data)
+			showNotification(
+				<span className='d-flex align-items-center'>
+					<Icon icon='Info' size='lg' className='me-1' />
+					<span>{t('get.admin.failed')}</span>
+				</span>,
+				t('please.refresh.again'),
+			)
+		}).finally(() => setIsLoading(false))
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	const transactionHeader = () => 
 		<CardHeader>
@@ -106,10 +123,10 @@ const CustomerProfile = () => {
 			</SubHeader>
 			<Page className='p-3'>
 				<div className='pt-3 pb-5 d-flex align-items-center'>
-					<span className='display-4 fw-bold me-3'>{item.name}</span>
-					<span className={`border border-${getLevelColor()} border-2 text-${getLevelColor()} fw-bold px-3 py-2 rounded`}>
-						<Icon icon='StarFill' color={getLevelColor()} />
-						{' ' + item.level}
+					<span className='display-4 fw-bold me-3'>{customer?.name}</span>
+					<span className={`border border-${customer?.level?.color} border-2 text-${customer?.level?.color} fw-bold px-3 py-2 rounded`}>
+						<Icon icon='StarFill' color={customer?.level?.color} />
+						{' ' + customer?.level?.levelName}
 					</span>
 				</div>
 				<div className='row'>
@@ -135,7 +152,7 @@ const CustomerProfile = () => {
 													</div>
 													<div className='flex-grow-1 ms-3'>
 														<div className='fw-bold fs-5 mb-0'>
-															{item.mobileNumber}
+															{customer?.mobileNumber}
 														</div>
 														<div className='text-muted'>
 															{t('column.mobile.number')}
@@ -154,7 +171,7 @@ const CustomerProfile = () => {
 													</div>
 													<div className='flex-grow-1 ms-3'>
 														<div className='fw-bold fs-5 mb-0'>
-															{item.bankName.toLocaleUpperCase()}
+															{customer?.bankName.toLocaleUpperCase()}
 														</div>
 														<div className='text-muted'>
 															{t('column.bank.account')}
@@ -162,10 +179,10 @@ const CustomerProfile = () => {
 													</div>
                                                     <div className='flex-grow-1 ms-3'>
 														<div className='fw-bold fs-5 mb-0'>
-															{item.bankAccountNumber}
+															{customer?.bankAccountNumber}
 														</div>
 														<div className='text-muted'>
-                                                            {item.bankAccountName}
+                                                            {customer?.bankAccountName}
 														</div>
 													</div>
 												</div>
@@ -181,10 +198,10 @@ const CustomerProfile = () => {
 													</div>
 													<div className='flex-grow-1 ms-3'>
 														<div className='fw-bold fs-5 mb-0'>
-                                                            {t('last.active.at', { date: item.membershipDate.fromNow() })}
+                                                            {t('last.active.at', { date: moment(customer?.lastLoginAt).fromNow() })}
 														</div>
 														<div className='text-muted'>
-															{t('has.joined.at', { date: item.membershipDate.format('ll') })}
+															{t('has.joined.at', { date: moment(customer?.createdAt).format('ll') })}
 														</div>
 													</div>
 												</div>
@@ -204,14 +221,12 @@ const CustomerProfile = () => {
 								<div className='row g-4 align-items-center'>
 									<div className='col-xl-6'>
 										<div
-											className={`d-flex align-items-center bg-l${
-												darkModeStatus ? 'o25' : '10'
-											}-warning rounded-2 p-3`}>
+											className={`d-flex align-items-center bg-l10-warning rounded-2 p-3`}>
 											<div className='flex-shrink-0'>
 												<Icon icon='Cash' size='3x' color='warning' />
 											</div>
 											<div className='flex-grow-1 ms-3'>
-												<div className='fw-bold fs-3 mb-0'>135</div>
+												<div className='fw-bold fs-3 mb-0'>{customer?.credit}</div>
 												<div className='text-muted mt-n2 truncate-line-1'>
 													{t('balance')}
 												</div>
@@ -220,15 +235,13 @@ const CustomerProfile = () => {
 									</div>
 									<div className='col-xl-6'>
 										<div
-											className={`d-flex align-items-center bg-l${
-												darkModeStatus ? 'o25' : '10'
-											}-info rounded-2 p-3`}>
+											className={`d-flex align-items-center bg-l10-info rounded-2 p-3`}>
 											<div className='flex-shrink-0'>
 												<Icon icon='Star' size='3x' color='info' />
 											</div>
 											<div className='flex-grow-1 ms-3'>
 												<div className='fw-bold fs-3 mb-0'>
-													{1260}
+													{customer?.point}
 												</div>
 												<div className='text-muted mt-n2 truncate-line-1'>
                                                     {t('points')}
@@ -238,14 +251,12 @@ const CustomerProfile = () => {
 									</div>
 									<div className='col-xl-6'>
 										<div
-											className={`d-flex align-items-center bg-l${
-												darkModeStatus ? 'o25' : '10'
-											}-primary rounded-2 p-3`}>
+											className={`d-flex align-items-center bg-l10-primary rounded-2 p-3`}>
 											<div className='flex-shrink-0'>
 												<Icon icon='CashCoin' size='3x' color='primary' />
 											</div>
 											<div className='flex-grow-1 ms-3'>
-												<div className='fw-bold fs-3 mb-0'>4.96</div>
+												<div className='fw-bold fs-3 mb-0'>{customer?.cashbackBonus}</div>
 												<div className='text-muted mt-n2 truncate-line-1'>
                                                     {t('cashback.bonus')}
 												</div>
@@ -254,14 +265,12 @@ const CustomerProfile = () => {
 									</div>
 									<div className='col-xl-6'>
 										<div
-											className={`d-flex align-items-center bg-l${
-												darkModeStatus ? 'o25' : '10'
-											}-success rounded-2 p-3`}>
+											className={`d-flex align-items-center bg-l10-success rounded-2 p-3`}>
 											<div className='flex-shrink-0'>
 												<Icon icon='People' size='3x' color='success' />
 											</div>
 											<div className='flex-grow-1 ms-3'>
-												<div className='fw-bold fs-3 mb-0'>30</div>
+												<div className='fw-bold fs-3 mb-0'>{customer?.referralBonus}</div>
 												<div className='text-muted mt-n2'>{t('invitation.bonus')}</div>
 											</div>
 										</div>

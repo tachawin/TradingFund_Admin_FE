@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useFormik } from 'formik'
 import Modal, {
 	ModalBody,
@@ -14,12 +14,16 @@ import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
 import Button from 'components/bootstrap/Button'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
+import { createCustomer } from '../../../common/apis/customer'
+import Spinner from 'components/bootstrap/Spinner'
+import { useDispatch } from 'react-redux'
+import { addCustomer } from '../../../redux/customer/action'
+import 'moment/locale/th'
 
 interface CustomerAddForm {
-    username: string
+    mobileNumber: string
     password: string
     name: string
-    mobileNumber: string
     bankAccountNumber: string
     bankAccountName: string
     bankName: string
@@ -35,9 +39,10 @@ interface CustomerAddModalInterface {
 
 const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModalInterface) => {
     const { t } = useTranslation(['common', 'customer'])
+    const dispatch = useDispatch()
+    const [isLoading, setIsLoading] = useState(false)
 
     const CustomerAddScheme = Yup.object().shape({
-		username: Yup.string().required('โปรดใส่ชื่อผู้ใช้'),
 		password: Yup.string().required('โปรดใส่รหัสผ่าน'),
         mobileNumber: Yup.string().required('โปรดใส่เบอร์โทร'),
         bankAccountNumber: Yup.string().required('โปรดใส่เลขบัญชี'),
@@ -47,27 +52,40 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
 
 	const formik = useFormik<CustomerAddForm>({
 		initialValues: {
-			username: data?.username || '',
+            mobileNumber: data?.mobileNumber || '',
 			password: data?.password || '',
             name: data?.name || '',
-            mobileNumber: data?.mobileNumber || '',
             bankAccountNumber: data?.bankAccountNumber || '',
             bankAccountName: data?.bankAccountName || '',
             bankName: data?.bankName || 'scb'
 		},
         validationSchema: CustomerAddScheme,
 		onSubmit: (values) => {
-            // EDIT
-            console.log(values)
-
-			setIsOpen(false)
-			showNotification(
-				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
-					<span>{t('customer:edit.successfully')}</span>
-				</span>,
-				t('customer:edit.customer.successfully', { customerName: values.name || values.username }),
-			)
+            setIsLoading(true)
+            createCustomer(values).then((response) => {    
+                dispatch(addCustomer(response.data))
+                showNotification(
+                    <span className='d-flex align-items-center'>
+                        <Icon icon='Info' size='lg' className='me-1' />
+                        <span>{t('customer:save.successfully')}</span>
+                    </span>,
+                    t('customer:save.customer.successfully', { adminName: values.name }),
+                )
+            }).catch((err) => {
+                const { response } = err
+                const message = response?.data
+                console.log(message)
+                showNotification(
+                    <span className='d-flex align-items-center'>
+                        <Icon icon='Info' size='lg' className='me-1' />
+                        <span>{t('customer:save.failed')}</span>
+                    </span>,
+                    t('customer:save.customer.failed', { adminName: values.name }),
+                )
+            }).finally(() => {
+                setIsLoading(false)
+                setIsOpen(false)
+            })
 		},
 	})
 
@@ -95,13 +113,13 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
                                 <Icon icon='Person' className='ms-1' color='info' />{' '}
                                 {t('profile')}
                             </h5>
-                            <FormGroup id='username' label={t('form.username')}>
+                            <FormGroup id='mobileNumber' label={t('form.mobile.number')}>
                                 <Input 
                                     onChange={handleChange} 
-                                    value={values.username} 
+                                    value={values.mobileNumber} 
                                     isValid={isValid}
-                                    isTouched={touched.username && errors.username}
-                                    invalidFeedback={errors.username}
+                                    isTouched={touched.mobileNumber && errors.mobileNumber}
+                                    invalidFeedback={errors.mobileNumber}
                                 />
                             </FormGroup>
                             <FormGroup id='password' label={t('form.password')}>
@@ -116,15 +134,6 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
                             </FormGroup>
                             <FormGroup id='name' label={t('form.name')}>
                                 <Input onChange={handleChange} value={values.name} />
-                            </FormGroup>
-                            <FormGroup id='mobileNumber' label={t('form.mobile.number')}>
-                                <Input 
-                                    onChange={handleChange} 
-                                    value={values.mobileNumber} 
-                                    isValid={isValid}
-                                    isTouched={touched.mobileNumber && errors.mobileNumber}
-                                    invalidFeedback={errors.mobileNumber}
-                                />
                             </FormGroup>
                         </div>
                     </div>
@@ -164,7 +173,7 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
             </ModalBody>
             <ModalFooter className='px-4 pb-4'>
                 <Button className='w-100' color='info' onClick={handleSubmit}>
-                    {t('save')}
+                    {isLoading ? <Spinner size={16} /> : t('save')}
                 </Button>
             </ModalFooter>
         </Modal>

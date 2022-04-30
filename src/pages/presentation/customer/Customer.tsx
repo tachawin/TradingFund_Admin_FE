@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import debounce from 'lodash/debounce'
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper'
@@ -12,7 +12,6 @@ import { demoPages } from '../../../menu'
 import Card, { CardBody } from '../../../components/bootstrap/Card'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
-import data from '../../../common/data/dummyCustomerData'
 import PaginationButtons, {
 	dataPagination,
 	PER_COUNT,
@@ -24,7 +23,6 @@ import Dropdown, {
 	DropdownMenu,
 	DropdownToggle,
 } from '../../../components/bootstrap/Dropdown'
-import Checks  from '../../../components/bootstrap/forms/Checks'
 import useSortableData from '../../../hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
@@ -33,17 +31,24 @@ import CommonTableFilter from 'components/common/CommonTableFilter'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 import CommonLevelsDropdown from 'pages/common/CommonLevelsDropdown'
 import { LevelInterface } from 'common/apis/level'
+import { CustomerInterface, getCustomerList } from 'common/apis/customer'
+import showNotification from 'components/extras/showNotification'
+import Spinner from 'components/bootstrap/Spinner'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectCustomers } from 'redux/customer/selector'
+import { storeCustomerQuery, storeCustomers } from '../../../redux/customer/action'
+import { selectCustomerQuery } from '../../../redux/customer/selector'
 
 interface DepositFilterInterface {
 	searchInput: string
 	bank: string[]
-	level: LevelInterface | LevelInterface[]
+	level: LevelInterface[]
 	createdAtDate: {
 		startDate: Date
 		endDate: Date
 		key: string
 	}[]
-    updatedAtDate: {
+    lastLoginAtDate: {
 		startDate: Date
 		endDate: Date
 		key: string
@@ -53,6 +58,10 @@ interface DepositFilterInterface {
 const Customer = () => {
     const { t } = useTranslation(['common', 'customer'])
     const navigate = useNavigate()
+	const dispatch = useDispatch()
+
+	const customers = useSelector(selectCustomers)
+	const customerQueryList = useSelector(selectCustomerQuery)
 
 	const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
@@ -60,6 +69,7 @@ const Customer = () => {
 	const [isOpenUpdatedAtDatePicker, setIsOpenUpdatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
 	const [isOpenCustomerModal, setIsOpenCustomerModal] = useState<"add" | "edit">()
+	const [isLoading, setIsLoading] = useState(false)
 
 	const formik = useFormik<DepositFilterInterface>({
 		initialValues: {
@@ -73,7 +83,7 @@ const Customer = () => {
 					key: 'selection',
 				},
 			],
-			updatedAtDate: [
+			lastLoginAtDate: [
 				{
 					startDate: moment().startOf('week').add('-1', 'week').toDate(),
 					endDate: moment().endOf('week').toDate(),
@@ -82,14 +92,20 @@ const Customer = () => {
 			]
 		},
 		onSubmit: (values) => {
-			console.log('submit filter')
-			console.log(values)
+			dispatch(storeCustomerQuery({
+				...customerQueryList,
+				bank: values.bank.length > 0 ? `bank=${values.bank.join(',')}` : '',
+				level: values.level.length > 0 ? `level=${values.level.join(',')}` : '',
+				startCreated: `startCreated=${moment(values.createdAtDate[0].startDate).format('YYYY-MM-DD')}`,
+				endCreated: `endCreated=${moment(values.createdAtDate[0].endDate).format('YYYY-MM-DD')}`,
+				startLastLogin: `startLastLogin=${moment(values.lastLoginAtDate[0].startDate).format('YYYY-MM-DD')}`,
+				endLastLogin: `endLastLogin=${moment(values.lastLoginAtDate[0].endDate).format('YYYY-MM-DD')}`
 
-			// Send Filter
+			}))
 		},
 	})
 
-	const { items, requestSort, getClassNamesFor } = useSortableData(data)
+	const { items, requestSort, getClassNamesFor } = useSortableData(customers)
 
 	const { 
 		values,
@@ -113,19 +129,37 @@ const Customer = () => {
 	  // eslint-disable-next-line react-hooks/exhaustive-deps
 	const debounceSearchChange = useCallback(
 		debounce((value: string) => {
-			// Send search filter
-			console.log(value)
+			dispatch(storeCustomerQuery({ ...customerQueryList, keyword: `keyword=${value}` }))
 		}, 1000), []
 	  )
 
 	const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
 		let value = event.target.value
 
-		if (value) {
-			setSearchInput(value)
-			debounceSearchChange(value)
-		}
+		setSearchInput(value)
+		debounceSearchChange(value)
 	}
+
+	useEffect(() => {
+		let queryString = Object.values(customerQueryList).filter(Boolean).join('&')
+		let query = queryString ? `?${queryString}` : ''
+		setIsLoading(true)
+		getCustomerList(query, (customerList: CustomerInterface[]) => {
+			console.log(customerList)
+			dispatch(storeCustomers(customerList))
+		}, (error: any) => {
+			const { response } = error
+			console.log(response.data)
+			showNotification(
+				<span className='d-flex align-items-center'>
+					<Icon icon='Info' size='lg' className='me-1' />
+					<span>{t('get.admin.failed')}</span>
+				</span>,
+				t('please.refresh.again'),
+			)
+		}).finally(() => setIsLoading(false))
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [customerQueryList])
 
 	return (
 		<PageWrapper title={demoPages.crm.subMenu.customersList.text}>
@@ -180,13 +214,13 @@ const Customer = () => {
 								children: <Dropdown>
 									<DropdownToggle hasIcon={false} color='dark' isLight isOpen={Boolean(isOpenUpdatedAtDatePicker)} setIsOpen={setIsOpenUpdatedAtDatePicker}>
 										<span data-tour='date-range'>
-											{`${moment(values.updatedAtDate[0].startDate).format('MMM Do YY')} - ${moment(
-												values.updatedAtDate[0].endDate,
+											{`${moment(values.lastLoginAtDate[0].startDate).format('MMM Do YY')} - ${moment(
+												values.lastLoginAtDate[0].endDate,
 											).format('MMM Do YY')}`}
 										</span>
 									</DropdownToggle>
 									<DropdownMenu isAlignmentEnd isOpen={isOpenUpdatedAtDatePicker} setIsOpen={setIsOpenUpdatedAtDatePicker}>
-										{datePicker(values.updatedAtDate, 'updatedAtDate')}
+										{datePicker(values.lastLoginAtDate, 'lastLoginAtDate')}
 									</DropdownMenu>
 								</Dropdown>
 							},
@@ -215,135 +249,137 @@ const Customer = () => {
 			</SubHeader>
 			<Page>
 				<div className='row h-100'>
-					<div className='col-12'>
-						<Card stretch>
-							<CardBody isScrollable className='table-responsive'>
-								<table className='table table-modern table-hover'>
-									<thead>
-										<tr>
-                                            <th 
-												onClick={() => requestSort('no')}
-												className='cursor-pointer text-decoration-underline text-center'>
-												{t('column.no')}
-											</th>
-											<th
-												onClick={() => requestSort('name')}
-												className='cursor-pointer text-decoration-underline'>
-												{t('column.name')}{' '}
-												<Icon
-													size='lg'
-													className={getClassNamesFor('name')}
-													icon='FilterList'
-												/>
-											</th>
-                                            <th
-												className='cursor-pointer text-decoration-underline'>
-												{t('column.bank.account.number')}{' '}
-												<Icon
-													size='lg'
-													className={getClassNamesFor('bankAccountNumber')}
-													icon='FilterList'
-												/>
-											</th>
-											<th>{t('column.mobile.number')}</th>
-											<th
-												onClick={() => requestSort('createdAt')}
-												className='cursor-pointer text-decoration-underline'>
-												{t('column.created.at')}{' '}
-												<Icon
-													size='lg'
-													className={getClassNamesFor('createdAt')}
-													icon='FilterList'
-												/>
-											</th>
-											<th
-												onClick={() => requestSort('lastActiveAt')}
-												className='cursor-pointer text-decoration-underline'>
-												{t('column.last.active.at')}{' '}
-												<Icon
-													size='lg'
-													className={getClassNamesFor('lastActiveAt')}
-													icon='FilterList'
-												/>
-											</th>
-											<td />
-										</tr>
-									</thead>
-									<tbody>
-										{dataPagination(items, currentPage, perPage).map((i: any, index: number) => (
-											<tr key={i.id}>
-                                                <td className='text-center'>
-                                                    <div>{index + 1}</div>
-												</td>
-												<td>
-													<div className='d-flex align-items-center'>
-														<div className='flex-grow-1'>
-															<div className='fs-6 fw-bold'>
-																{i.name}
-															</div>
-															<div className='text-muted'>
-																<Icon icon='StarFill' color={i.level === 'Gold' ? 'warning' : i.level === 'Silver' ? 'light' : i.level === 'Platinum' ? 'primary' : 'danger' } />{' '}
-																<small>{i.level}</small>
-															</div>
-														</div>
-													</div>
-												</td>
-                                                <td>
-													<div className='d-flex align-items-center'>
-														<div className='flex-grow-1'>
-															<div className='fs-6 fw-bold'>
-																{i.bankAccountNumber}
-															</div>
-															<div className='text-muted'>
-																<Icon icon='Label' />{' '}
-																<small>{i.bankName.toUpperCase()}</small>
-															</div>
-														</div>
-													</div>
-												</td>
-                                                <td>
-                                                    <div>{i.mobileNumber}</div>
-												</td>
-												<td>
-													<div>{i.membershipDate.format('ll')}</div>
-													<div>
-														<small className='text-muted'>
-															{i.membershipDate.fromNow()}
-														</small>
-													</div>
-												</td>
-                                                <td>
-													<div>{i.membershipDate.format('ll')}</div>
-													<div>
-														<small className='text-muted'>
-															{i.membershipDate.fromNow()}
-														</small>
-													</div>
-												</td>
-												<td>
-                                                    <Button
-                                                        icon='Visibility'
-                                                        onClick={() => navigate(`${i.id}`)}
-                                                        color='primary'
-                                                        isLight
-                                                    >
-                                                        {t('view')}
-                                                    </Button>
-												</td>
+					<div className={`col-12 ${(isLoading || !customers) ? 'd-flex align-items-center justify-content-center' : 'px-4'}`}>
+						{isLoading ? <Spinner color='info' isGrow size={60} /> 
+							: <Card stretch>
+								<CardBody isScrollable className='table-responsive'>
+									<table className='table table-modern table-hover'>
+										<thead>
+											<tr>
+												<th 
+													onClick={() => requestSort('no')}
+													className='cursor-pointer text-decoration-underline text-center'>
+													{t('column.no')}
+												</th>
+												<th
+													onClick={() => requestSort('name')}
+													className='cursor-pointer text-decoration-underline'>
+													{t('column.name')}{' '}
+													<Icon
+														size='lg'
+														className={getClassNamesFor('name')}
+														icon='FilterList'
+													/>
+												</th>
+												<th
+													className='cursor-pointer text-decoration-underline'>
+													{t('column.bank.account.number')}{' '}
+													<Icon
+														size='lg'
+														className={getClassNamesFor('bankAccountNumber')}
+														icon='FilterList'
+													/>
+												</th>
+												<th>{t('column.mobile.number')}</th>
+												<th
+													onClick={() => requestSort('createdAt')}
+													className='cursor-pointer text-decoration-underline'>
+													{t('column.created.at')}{' '}
+													<Icon
+														size='lg'
+														className={getClassNamesFor('createdAt')}
+														icon='FilterList'
+													/>
+												</th>
+												<th
+													onClick={() => requestSort('lastActiveAt')}
+													className='cursor-pointer text-decoration-underline'>
+													{t('column.last.active.at')}{' '}
+													<Icon
+														size='lg'
+														className={getClassNamesFor('lastActiveAt')}
+														icon='FilterList'
+													/>
+												</th>
+												<td />
 											</tr>
-										))}
-									</tbody>
-								</table>
-							</CardBody>
-							<PaginationButtons
-								data={data}
-								label='customers'
-								setCurrentPage={setCurrentPage}
-								currentPage={currentPage}
-								perPage={perPage}
-								setPerPage={setPerPage}
-							/>
-						</Card>
+										</thead>
+										<tbody>
+											{dataPagination(items, currentPage, perPage).map((customer: CustomerInterface, index: number) => (
+												<tr key={customer.customerId}>
+													<td className='text-center'>
+														<div>{index + 1}</div>
+													</td>
+													<td>
+														<div className='d-flex align-items-center'>
+															<div className='flex-grow-1'>
+																<div className='fs-6 fw-bold'>
+																	{customer.name}
+																</div>
+																<div className='text-muted'>
+																	<Icon icon='StarFill' style={{ fill: customer.level?.color }} />{' '}
+																	<small>{customer.level?.levelName}</small>
+																</div>
+															</div>
+														</div>
+													</td>
+													<td>
+														<div className='d-flex align-items-center'>
+															<div className='flex-grow-1'>
+																<div className='fs-6 fw-bold'>
+																	{customer.bankAccountNumber}
+																</div>
+																<div className='text-muted'>
+																	<Icon icon='Label' />{' '}
+																	<small>{customer.bankName.toUpperCase()}</small>
+																</div>
+															</div>
+														</div>
+													</td>
+													<td>
+														<div>{customer.mobileNumber}</div>
+													</td>
+													<td>
+														<div>{moment(customer.createdAt).format('ll')}</div>
+														<div>
+															<small className='text-muted'>
+																{moment(customer.createdAt).fromNow()}
+															</small>
+														</div>
+													</td>
+													<td>
+														<div>{moment(customer.lastLoginAt).format('ll')}</div>
+														<div>
+															<small className='text-muted'>
+																{moment(customer.lastLoginAt).fromNow()}
+															</small>
+														</div>
+													</td>
+													<td>
+														<Button
+															icon='Visibility'
+															onClick={() => navigate(`${customer.customerId}`)}
+															color='primary'
+															isLight
+														>
+															{t('view')}
+														</Button>
+													</td>
+												</tr>
+											))}
+										</tbody>
+									</table>
+								</CardBody>
+								<PaginationButtons
+									data={customers}
+									label='customers'
+									setCurrentPage={setCurrentPage}
+									currentPage={currentPage}
+									perPage={perPage}
+									setPerPage={setPerPage}
+								/>
+							</Card>
+						}
 					</div>
 				</div>
 			</Page>
