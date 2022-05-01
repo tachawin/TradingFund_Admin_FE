@@ -247,4 +247,5 @@ $border-radius-child: #{$card-border-radius - $card-border-width};
 	-webkit-box-orient: vertical;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	min-height: 58px;
 }

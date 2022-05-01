@@ -14,15 +14,17 @@ interface CardLabelInterface {
 	icon?: any
 	iconColor?: string
 	pre?: any
+	style?: any
 }
 
 export const CardLabel = forwardRef<HTMLDivElement, CardLabelInterface>(
-	({ tag = 'div', className = null, children = null, icon = null, iconColor = 'primary', pre = null, ...props }, ref) => {
+	({ tag = 'div', className = null, children = null, icon = null, iconColor = 'primary', pre = null, style, ...props }, ref) => {
 		return (
 			<TagWrapper
 				ref={ref}
 				tag={tag}
 				className={classNames('card-label', className)}
+				style={style}
 				// eslint-disable-next-line react/jsx-props-no-spreading
 				{...props}>
 				{pre}
@@ -32,7 +34,7 @@ export const CardLabel = forwardRef<HTMLDivElement, CardLabelInterface>(
 						className={classNames('card-icon', { [`text-${iconColor}`]: iconColor })}
 					/>
 				)}
-				<div className='card-title-wrapper'>{children}</div>
+				<div className='card-title-wrapper w-100'>{children}</div>
 			</TagWrapper>
 		);
 	},

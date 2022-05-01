@@ -9,14 +9,17 @@ import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGrou
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import Button from 'components/bootstrap/Button'
 import { ProductProps } from './Product'
+import { useDispatch, useSelector } from 'react-redux'
+import { storeProductQuery } from 'redux/product/action'
+import { selectProductQuery } from 'redux/product/selector'
 
 interface ProductFilterInterface {
 	searchInput: string
-	points: {
+	point: {
 		min: string
 		max: string
 	},
-    remaining: {
+    quantity: {
 		min: string
 		max: string
 	}
@@ -24,25 +27,31 @@ interface ProductFilterInterface {
 
 const ProductSubHeader = ({ setIsOpenProductModal }: ProductProps) => {
 	const { t } = useTranslation(['common', 'product'])
+	const dispatch = useDispatch()
 	const [searchInput, setSearchInput] = useState('')
+
+	const productQueryList = useSelector(selectProductQuery)
 
 	const formik = useFormik<ProductFilterInterface>({
 		initialValues: {
 			searchInput: '',
-            points: {
+            point: {
                 min: '',
                 max: ''
             },
-            remaining: {
+            quantity: {
                 min: '',
                 max: ''
             }
 		},
 		onSubmit: (values) => {
-			console.log('submit filter')
-			console.log(values)
-
-			// Send Filter
+			dispatch(storeProductQuery({
+				...productQueryList,
+				minPoint: `minPoint=${values.point.min}`,
+				maxPoint: `maxPoint=${values.point.max}`,
+				minQuantity: `minQuantity=${values.quantity.min}`,
+				maxQuantity: `maxQuantity=${values.quantity.max}`,
+			}))
 		},
 	})
 
@@ -56,18 +65,15 @@ const ProductSubHeader = ({ setIsOpenProductModal }: ProductProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
 	const debounceSearchChange = useCallback(
 		debounce((value: string) => {
-			// Send search filter
-			console.log(value)
+			dispatch(storeProductQuery({ ...productQueryList, keyword: `keyword=${value}` }))
 		}, 1000), []
 	  )
 
 	const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
 		let value = event.target.value
 
-		if (value) {
-			setSearchInput(value)
-			debounceSearchChange(value)
-		}
+		setSearchInput(value)
+		debounceSearchChange(value)
 	}
 
 	return (<>
@@ -95,20 +101,20 @@ const ProductSubHeader = ({ setIsOpenProductModal }: ProductProps) => {
 					children: <div>
 						<InputGroup>
 							<Input
-								id='points.min'
-								ariaLabel='Minimum points'
+								id='point.min'
+								ariaLabel='Minimum point'
 								placeholder={t('filter.min')}
 								onChange={handleChange}
-								value={values.points.min}
+								value={values.point.min}
 								type='number'
 							/>
 							<InputGroupText>{t('filter.to')}</InputGroupText>
 							<Input
-								id='points.max'
-								ariaLabel='Maximum points'
+								id='point.max'
+								ariaLabel='Maximum point'
 								placeholder={t('filter.max')}
 								onChange={handleChange}
-								value={values.points.max}
+								value={values.point.max}
 								type='number'
 							/>
 						</InputGroup>
@@ -119,20 +125,20 @@ const ProductSubHeader = ({ setIsOpenProductModal }: ProductProps) => {
 					children: <div>
 						<InputGroup>
 							<Input
-								id='remaining.min'
-								ariaLabel='Minimum remaining'
+								id='quantity.min'
+								ariaLabel='Minimum quantity'
 								placeholder={t('filter.min')}
 								onChange={handleChange}
-								value={values.remaining.min}
+								value={values.quantity.min}
 								type='number'
 							/>
 							<InputGroupText>{t('filter.to')}</InputGroupText>
 							<Input
-								id='remaining.max'
-								ariaLabel='Maximum remaining'
+								id='quantity.max'
+								ariaLabel='Maximum quantity'
 								placeholder={t('filter.max')}
 								onChange={handleChange}
-								value={values.remaining.max}
+								value={values.quantity.max}
 								type='number'
 							/>
 						</InputGroup>
@@ -145,7 +151,7 @@ const ProductSubHeader = ({ setIsOpenProductModal }: ProductProps) => {
 				icon='PlusLg'
 				color='primary'
 				isLight
-				onClick={() => setIsOpenProductModal({ type: "add", selectedRow: null})}
+				onClick={() => setIsOpenProductModal({ type: "add" })}
 				className='text-nowrap'
 			>
 			{t('product:add.product')}
