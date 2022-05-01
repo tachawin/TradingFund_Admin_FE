@@ -15,11 +15,12 @@ import Dropdown, {
 import Badge from '../../components/bootstrap/Badge'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import PlaceholderImage from 'components/extras/PlaceholderImage'
 
 interface CommonProductItemInterface {
-	id: number | string,
+	id?: number | string,
 	name: string,
-	description: string,
+	description?: string,
 	points: number,
 	remaining: number
 	img: string,
@@ -51,9 +52,9 @@ const CommonProductItem = ({
 
 	return (
 		<Card>
-			<CardHeader>
-				<CardLabel>
-					<CardTitle>
+			<CardHeader className='pb-0'>
+				<CardLabel style={{ width: '85%' }}>
+					<CardTitle className='text-nowrap overflow-hidden text-overflow-ellipsis'>
 						{name}{' '}
 					</CardTitle>
 					<CardSubTitle>
@@ -94,13 +95,20 @@ const CommonProductItem = ({
 				</CardActions>
 			</CardHeader>
 			<CardBody>
-				<img
-					src={img}
-					alt=''
-					width={128}
-					height={128}
-					className='mx-auto d-block img-fluid mb-3'
-				/>
+				<div style={{ minWidth: 256, minHeight: 220 }}>{img ? 
+					<img
+						src={img}
+						alt=''
+						width={256}
+						height={220}
+						className='mx-auto d-block img-fluid mb-3'
+					/>
+					: <PlaceholderImage
+						width={256}
+						height={220}
+						className='mx-auto d-block img-fluid mb-3'
+					/>
+				}</div>
 				<div className='card-description'>{description}</div>
 				<div className='row align-items-center mt-2'>
 					<div className='col fw-bold'>{t('product:remaining')}</div>
