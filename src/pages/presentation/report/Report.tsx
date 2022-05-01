@@ -231,7 +231,7 @@ const Report = () => {
 								label: t('filter.bank'),
 								children: <CommonBanksDropdown 
 											selectedBankName={'scb'} 
-											setSelectedBankName={(bank: string) => setFieldValue('bank', bank)} 
+											setSelectedBankName={(bank: string | string[]) => setFieldValue('bank', bank)} 
 										/>
 							},
 						]} 

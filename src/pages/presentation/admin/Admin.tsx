@@ -32,18 +32,6 @@ import CommonTableNotFound from 'pages/common/CommonTableNotFound'
 import showNotification from 'components/extras/showNotification'
 import 'moment/locale/th'
 
-const mockPermission = { 
-    report: '0011',
-    customer: '1001',
-    deposit: '0000',
-    withdraw: '1111',
-    bank: '1111',
-    reward: '1011',
-    credit: '0101',
-    chat: '0001',
-    product: '1100'
-}
-
 interface AdminModalProperties {
 	type?: AdminModalType
 	selectedRow?: any
@@ -138,7 +126,6 @@ const Admin = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debounceSearchChange = useCallback(
 		debounce((value: string) => {
-			// Send search filter
 			setQueryList({ ...queryList, keyword: `keyword=${value}` })
 		}, 1000), []
 	)
@@ -165,8 +152,9 @@ const Admin = () => {
 	}
 
 	useEffect(() => {
-		let queryString = `?${Object.values(queryList).join('&')}`
-		getAdminList(queryString, (adminList: AdminInterface[]) => {
+		let queryString = Object.values(queryList).filter(Boolean).join('&')
+		let query = queryString ? `?${queryString}` : ''
+		getAdminList(query, (adminList: AdminInterface[]) => {
 			console.log(adminList)
 			setData(adminList)
 			setIsLoading(false)

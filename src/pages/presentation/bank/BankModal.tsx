@@ -159,7 +159,7 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
                     <FormGroup id='bankName' label={t('form.bank.name')}>
                         <CommonBanksDropdown 
                             selectedBankName={values.bankName} 
-                            setSelectedBankName={(bank: string) => setFieldValue('bankName', bank)} 
+                            setSelectedBankName={(bank: string | string[]) => setFieldValue('bankName', bank)} 
                         />
                     </FormGroup>
                     <FormGroup id='balance' label={t('form.bank.balance')}>

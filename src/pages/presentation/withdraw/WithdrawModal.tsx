@@ -180,7 +180,7 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                                 <CommonBanksDropdown
                                     disabled
                                     selectedBankName={values.bankName} 
-                                    setSelectedBankName={(bank: string) => setFieldValue('bankName', bank)} 
+                                    setSelectedBankName={(bank: string | string[]) => setFieldValue('bankName', bank)} 
                                 />
                             </FormGroup>
                             <FormGroup id='payerBank' label={t('form.withdraw.bank')}>
@@ -188,7 +188,7 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                                     <CommonBanksDropdown
                                         disabled
                                         selectedBankName={bank ?? 'scb'} 
-                                        setSelectedBankName={(bank: string) => setFieldValue('bankName', bank)} 
+                                        setSelectedBankName={(bank: string | string[]) => setFieldValue('bankName', bank)} 
                                     /> :
                                     <Dropdown className='w-100'>
                                         <DropdownToggle 

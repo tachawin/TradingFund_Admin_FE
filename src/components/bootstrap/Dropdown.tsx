@@ -142,7 +142,7 @@ export const DropdownMenu = ({
 						role='presentation'
 						ref={(node) => setListRef(node, ref)}
 						data-placement={placement}
-						style={{ right: `${xAxis === 'end' ? 0 : 'unset'}`, height }}
+						style={{ right: `${xAxis === 'end' ? 0 : 'unset'}`, maxHeight: height }}
 						className={classNames(
 							'dropdown-menu',
 							// For Bootstrap
