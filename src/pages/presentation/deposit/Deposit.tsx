@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import debounce from 'lodash/debounce'
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper'
@@ -11,7 +11,6 @@ import Page from '../../../layout/Page/Page'
 import { demoPages } from '../../../menu'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
-import data from '../../../common/data/dummySalesData'
 import Button from '../../../components/bootstrap/Button'
 import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
@@ -26,18 +25,23 @@ import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGrou
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import banks from 'common/data/dummyBankData'
 import DepositTable from './DepositTable'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectDepositList, selectDepositQuery } from 'redux/deposit/selector'
+import { getDepositList, STATUS, TransactionInterface, TransactionStatus } from 'common/apis/deposit'
+import { storeDepositList, storeDepositQuery } from 'redux/deposit/action'
+import showNotification from 'components/extras/showNotification'
+import Spinner from 'components/bootstrap/Spinner'
+import CommonTableNotFound from 'pages/common/CommonTableNotFound'
 
 interface DepositFilterInterface {
 	searchInput: string
-	isSuccess: boolean
-	isNotFound: boolean
-    isCancel: boolean
+	status: string[]
+	bank: string[]
 	price: {
 		min: string
 		max: string
 	},
-	bank: string[]
-	timestamp: {
+	createdAt: {
 		startDate: Date
 		endDate: Date
 		key: string
@@ -51,22 +55,48 @@ interface DepositModalProperties {
 
 const Deposit = () => {
     const { t } = useTranslation(['common', 'deposit'])
+	const dispatch = useDispatch()
 
+	const [isLoading, setIsLoading] = useState(false)
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
     const [isOpenDepositModal, setIsOpenDepositModal] = useState<DepositModalProperties>()
 
+	const depositList = useSelector(selectDepositList)
+	const depositQueryList = useSelector(selectDepositQuery)
+
+	useEffect(() => {
+		let queryString = Object.values(depositQueryList).filter(Boolean).join('&')
+		let query = queryString ? `?${queryString}` : ''
+		setIsLoading(true)
+		getDepositList(query, (depositList: TransactionInterface[]) => {
+			console.log(depositList)
+			dispatch(storeDepositList(depositList))
+			setIsLoading(false)
+		}, (error: any) => {
+			const { response } = error
+			console.log(response.data)
+			setIsLoading(false)
+			showNotification(
+				<span className='d-flex align-items-center'>
+					<Icon icon='Info' size='lg' className='me-1' />
+					<span>{t('get.deposit.failed')}</span>
+				</span>,
+				t('please.refresh.again'),
+			)
+		})
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [depositQueryList])
+
 	const formik = useFormik<DepositFilterInterface>({
 		initialValues: {
 			searchInput: '',
-			isSuccess: false,
-            isNotFound: false,
-            isCancel: false,
+			status: [],
             price: {
                 min: '',
                 max: ''
             },
-			timestamp: [
+			createdAt: [
 				{
 					startDate: moment().startOf('week').add('-1', 'week').toDate(),
 					endDate: moment().endOf('week').toDate(),
@@ -76,17 +106,22 @@ const Deposit = () => {
             bank: []
 		},
 		onSubmit: (values) => {
-			console.log('submit filter')
-			console.log(values)
+			dispatch(storeDepositQuery({
+				...depositQueryList,
+				bank: values.bank.length > 0 ? `bank=${values.bank.join(',')}` : '',
+				status: values.status.length > 0 ? `status=${values.status.join(',')}` : '',
+				start: `start=${moment(values.createdAt[0].startDate).format('YYYY-MM-DD')}`,
+				end: `end=${moment(values.createdAt[0].endDate).format('YYYY-MM-DD')}`,
+				min: `min=${values.price.min}`,
+				max: `max=${values.price.max}`
 
-			// Send Filter
+			}))
 		},
 	})
 
 	const { 
 		values,
 		setFieldValue,
-		handleChange,
 		resetForm,
 		handleSubmit
 	} = formik
@@ -106,18 +141,29 @@ const Deposit = () => {
 	  // eslint-disable-next-line react-hooks/exhaustive-deps
 	const debounceSearchChange = useCallback(
 		debounce((value: string) => {
-			// Send search filter
-			console.log(value)
+			dispatch(storeDepositQuery({ ...depositQueryList, keyword: `keyword=${value}` }))
 		}, 1000), []
 	  )
 
 	const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
 		let value = event.target.value
 
-		if (value) {
-			setSearchInput(value)
-			debounceSearchChange(value)
+		setSearchInput(value)
+		debounceSearchChange(value)
+	}
+
+	const handleOnChangeMultipleSelector = (event: ChangeEvent<HTMLInputElement>, field: string) => {
+		let selectedValue = event.target.name
+		let index = parseInt(event.target.value)
+		let isSelected = event.target.checked
+		let newValue = values[field as keyof DepositFilterInterface] as string[]
+
+		if (isSelected) {
+			newValue.push(selectedValue)
+		} else {
+			newValue.splice(index, 1)
 		}
+		setFieldValue(field, newValue)
 	}
 
     const handleOnChangeBankFilter = (event: ChangeEvent<HTMLInputElement>) => {
@@ -162,27 +208,23 @@ const Deposit = () => {
 							{
 								label: t('filter.status'),
 								children: <div>
-                                    <Checks
-                                        id='isSuccess'
-                                        label={t('success')}
-                                        onChange={handleChange}
-                                        checked={values.isSuccess}
-                                        ariaLabel={t('success')}
-                                    />
-                                    <Checks
-                                        id='isNotFound'
-                                        label={t('not.found')}
-                                        onChange={handleChange}
-                                        checked={values.isNotFound}
-                                        ariaLabel={t('not.found')}
-                                    />
-                                    <Checks
-                                        id='isCancel'
-                                        label={t('cancel')}
-                                        onChange={handleChange}
-                                        checked={values.isCancel}
-                                        ariaLabel={t('cancel')}
-                                    />
+									{STATUS.map((status: string) => {
+										let indexInStatusFilter = values.status.indexOf(status)
+										return <Checks
+												key={status}
+												label={
+													status === TransactionStatus.Success ? t('success') 
+														: status ===  TransactionStatus.NotFound ? t('not.found') 
+														: t('cancel')
+												}
+												name={status}
+												value={indexInStatusFilter}
+												onChange={(e) => handleOnChangeMultipleSelector(e, 'status')}
+												checked={indexInStatusFilter > -1}
+												ariaLabel={status}
+											/>
+										}
+									)}
                                 </div>
 							},
 							{
@@ -190,13 +232,13 @@ const Deposit = () => {
 								children: <Dropdown >
 									<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
 										<span data-tour='date-range'>
-											{`${moment(values.timestamp[0].startDate).format('MMM Do YY')} - ${moment(
-												values.timestamp[0].endDate,
+											{`${moment(values.createdAt[0].startDate).format('MMM Do YY')} - ${moment(
+												values.createdAt[0].endDate,
 											).format('MMM Do YY')}`}
 										</span>
 									</DropdownToggle>
 									<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										{datePicker(values.timestamp, 'timestamp')}
+										{datePicker(values.createdAt, 'createdAt')}
 									</DropdownMenu>
 								</Dropdown>
 							},
@@ -257,8 +299,11 @@ const Deposit = () => {
 			</SubHeader>
 			<Page>
 				<div className='row h-100'>
-					<div className='col-12'>
-						<DepositTable data={data} setIsOpenDepositModal={setIsOpenDepositModal} />
+					<div className={`col-12 ${(isLoading || depositList.length === 0) ? 'd-flex align-items-center justify-content-center' : 'px-4'}`}>
+						{isLoading ? <Spinner color='info' isGrow size={60} /> 
+							: depositList.length > 0 ? <DepositTable data={depositList} setIsOpenDepositModal={setIsOpenDepositModal} />
+							: <CommonTableNotFound />
+						}
 					</div>
 				</div>
 			</Page>

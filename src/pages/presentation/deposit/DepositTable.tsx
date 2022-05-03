@@ -5,10 +5,13 @@ import { useTranslation } from 'react-i18next'
 import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
+import { TransactionInterface, TransactionStatus } from 'common/apis/deposit'
+import moment from 'moment'
+import 'moment/locale/th'
 
 interface DepositTableInterface {
-    data: any
-    setIsOpenDepositModal?: (value: { type: string, selectedRow: any }) => void
+    data: TransactionInterface[]
+    setIsOpenDepositModal?: (value: { type: string, selectedRow: TransactionInterface }) => void
     disabledColumns?: string[]
     cardHeader?: ReactNode
 }
@@ -21,7 +24,7 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
 
     const getStatusText = (status: string): ReactNode => {
-        if (status === 'success') {
+        if (status === TransactionStatus.Success) {
             return <div className='fw-bold text-success'>{t('success')}</div>
         } else if (status === 'not-found') {
             return <div className='fw-bold text-warning'>{t('not.found')}</div>
@@ -98,69 +101,69 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                         </tr>
                     </thead>
                     <tbody>
-                        {dataPagination(items, currentPage, perPage).map((i: any, index: number) => (
-                            <tr key={i.id}>
+                        {dataPagination(items, currentPage, perPage).map((transaction: TransactionInterface, index: number) => (
+                            <tr key={transaction.transactionId}>
                                 <td className='text-center'>
                                     <div>{index + 1}</div>
                                 </td>
                                 <td>
-                                    <div>{getStatusText(i.status)}</div>
+                                    <div>{getStatusText(transaction.status)}</div>
                                 </td>
                                 <td>
-                                    <div>{i.date.format('ll')}</div>
+                                    <div>{moment(transaction.createdAt).format('ll')}</div>
                                     <div>
                                         <small className='text-muted'>
-                                            {i.date.fromNow()}
+                                            {moment(transaction.createdAt).fromNow()}
                                         </small>
                                     </div>
                                 </td>
                                 <td>
-                                    <div>*{i.payerBankAccountNumber}</div>
+                                    <div>*{transaction.payerBankAccountNumber}</div>
                                 </td>
                                 <td>
                                     <div className='d-flex align-items-center'>
                                         <div className='flex-grow-1'>
                                             <div className='fs-6 fw-bold'>
-                                                *{i.recipientBankAccountNumber}
+                                                *{transaction.recipientBankAccountNumber}
                                             </div>
                                             <div className='text-muted'>
                                                 <Icon icon='Label' />{' '}
-                                                <small>{i.recipientBankName.toUpperCase()}</small>
+                                                <small>{transaction.recipientBankName.toUpperCase()}</small>
                                             </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <div>{i.amount.toLocaleString()}</div>
+                                    <div>{transaction.amount.toLocaleString()}</div>
                                 </td>
                                 {!disabledColumns?.includes('mobile-number') &&
                                     <td>
-                                        <div>{i.mobileNumber}</div>
+                                        <div>{transaction.mobileNumber}</div>
                                     </td>
                                 }
                                 {!disabledColumns?.includes('notes') &&
                                     <td className='w-25'>
-                                        <div>{i.note}</div>
+                                        <div>{transaction.notes}</div>
                                     </td>
                                 }
                                 {setIsOpenDepositModal && <td>
-                                    {i.status === 'success' ? 
+                                    {transaction.status === TransactionStatus.Success ? 
                                         <><Button
-                                            onClick={() => setIsOpenDepositModal({ type: "refund", selectedRow: i})}
+                                            onClick={() => setIsOpenDepositModal({ type: "refund", selectedRow: transaction})}
                                             className='p-0'
                                             isLight
                                         >
                                             {t('refund')}
                                         </Button> / </>
-                                        : i.status === 'not-found' ? <><Button
-                                            onClick={() => setIsOpenDepositModal({ type: "select-payer", selectedRow: i})}
+                                        : transaction.status === TransactionStatus.NotFound ? <><Button
+                                            onClick={() => setIsOpenDepositModal({ type: "select-payer", selectedRow: transaction})}
                                             className='p-0'
                                             isLight
                                         >
                                             {t('select.payer')}
                                         </Button> / </> : <></>
                                     } <Button
-                                            onClick={() => setIsOpenDepositModal({ type: "edit", selectedRow: i})}
+                                            onClick={() => setIsOpenDepositModal({ type: "edit", selectedRow: transaction})}
                                             className='p-0'
                                             isLight
                                         >

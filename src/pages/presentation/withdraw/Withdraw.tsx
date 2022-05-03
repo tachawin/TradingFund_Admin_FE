@@ -236,6 +236,7 @@ const Withdraw = () => {
 							},
 							{
 								label: t('filter.payer.bank'),
+								disabled: withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST,
 								children: <div>
 									{banks.map((bank: any) => {
 										let indexInBankFilter = values.bank.indexOf(bank.label)

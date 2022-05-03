@@ -280,7 +280,7 @@ const CustomerProfile = () => {
 						</Card>
 					</div>
 					<div className='col-lg-8'>
-						{transactionState === 'deposit' ?
+						{/* {transactionState === 'deposit' ?
 							<DepositTable 
 								cardHeader={transactionHeader()}
 								data={depositData} 
@@ -298,7 +298,7 @@ const CustomerProfile = () => {
 								cardHeader={transactionHeader()}
 								data={creditData} 
 							/>
-						}
+						} */}
 					</div>
 				</div>
 			</Page>
