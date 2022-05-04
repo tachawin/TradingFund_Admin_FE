@@ -8,10 +8,11 @@ import Button from 'components/bootstrap/Button'
 import { TransactionInterface, TransactionStatus } from 'common/apis/deposit'
 import moment from 'moment'
 import 'moment/locale/th'
+import { DepositModalProperties, DepositModalType } from './DepositModal'
 
 interface DepositTableInterface {
     data: TransactionInterface[]
-    setIsOpenDepositModal?: (value: { type: string, selectedRow: TransactionInterface }) => void
+    setIsOpenDepositModal?: (value: DepositModalProperties) => void
     disabledColumns?: string[]
     cardHeader?: ReactNode
 }
@@ -26,7 +27,7 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
     const getStatusText = (status: string): ReactNode => {
         if (status === TransactionStatus.Success) {
             return <div className='fw-bold text-success'>{t('success')}</div>
-        } else if (status === 'not-found') {
+        } else if (status === TransactionStatus.NotFound) {
             return <div className='fw-bold text-warning'>{t('not.found')}</div>
         } else {
             return <div className='fw-bold text-danger'>{t('cancel')}</div>
@@ -149,21 +150,21 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                                 {setIsOpenDepositModal && <td>
                                     {transaction.status === TransactionStatus.Success ? 
                                         <><Button
-                                            onClick={() => setIsOpenDepositModal({ type: "refund", selectedRow: transaction})}
+                                            onClick={() => setIsOpenDepositModal({ type: DepositModalType.Refund, selectedRow: transaction})}
                                             className='p-0'
                                             isLight
                                         >
                                             {t('refund')}
                                         </Button> / </>
                                         : transaction.status === TransactionStatus.NotFound ? <><Button
-                                            onClick={() => setIsOpenDepositModal({ type: "select-payer", selectedRow: transaction})}
+                                            onClick={() => setIsOpenDepositModal({ type: DepositModalType.SelectPayer, selectedRow: transaction})}
                                             className='p-0'
                                             isLight
                                         >
                                             {t('select.payer')}
                                         </Button> / </> : <></>
                                     } <Button
-                                            onClick={() => setIsOpenDepositModal({ type: "edit", selectedRow: transaction})}
+                                            onClick={() => setIsOpenDepositModal({ type: DepositModalType.Edit, selectedRow: transaction})}
                                             className='p-0'
                                             isLight
                                         >

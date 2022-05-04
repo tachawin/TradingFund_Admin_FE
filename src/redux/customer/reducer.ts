@@ -3,7 +3,8 @@ import {
   CustomerActionTypes,
   ADD_CUSTOMER,
   STORE_CUSTOMERS,
-  STORE_CUSTOMER_QUERY
+  STORE_CUSTOMER_QUERY,
+  STORE_CUSTOMER_MOBILE_NUMBER
 } from 'redux/customer/types'
 
 const INITIAL_STATE: InitialState = {
@@ -17,6 +18,7 @@ const INITIAL_STATE: InitialState = {
     startLastLogin: '',
     endLastLogin: '',
   },
+  customerMobileNumber: []
 }
 
 const customerReducer = (state = INITIAL_STATE, action: CustomerActionTypes): InitialState => {
@@ -35,6 +37,11 @@ const customerReducer = (state = INITIAL_STATE, action: CustomerActionTypes): In
       return {
         ...state,
         customerQuery: action.payload
+      }
+    case STORE_CUSTOMER_MOBILE_NUMBER:
+      return {
+        ...state,
+        customerMobileNumber: action.payload
       }
     default:
       return state

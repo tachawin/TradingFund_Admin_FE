@@ -15,6 +15,7 @@ import { storeCompanyBankQuery } from 'redux/companyBank/action'
 import moment from 'moment'
 import { CompanyBankStatus, CompanyBankType, STATUS, TYPE } from 'common/apis/companyBank'
 import { selectCompanyBankQuery } from 'redux/companyBank/selector'
+import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 
 interface BankFilterInterface {
 	searchInput: string
@@ -59,7 +60,7 @@ const BankSubHeader = ({ setIsOpenBankModal }: BankSubHeaderInterface) => {
 				...companyBankQuery,
 				type: values.type.length > 0 ? `type=${values.type.join(',')}` : '',
 				status: values.status.length > 0 ? `status=${values.status.join(',')}` : '',
-				bank: values.bank.length > 0 ? `status=${values.bank.join(',')}` : '',
+				bank: values.bank.length > 0 ? `bank=${values.bank.join(',')}` : '',
 				startCreated: `startCreated=${moment(values.createdAtDate[0].startDate).format('YYYY-MM-DD')}`,
 				endCreated: `endCreated=${moment(values.createdAtDate[0].endDate).format('YYYY-MM-DD')}`,
 			}
@@ -142,21 +143,11 @@ const BankSubHeader = ({ setIsOpenBankModal }: BankSubHeaderInterface) => {
 				},
 				{
 					label: t('filter.bank'),
-					children: <div>
-						{data.map((bank: any) => {
-							let indexInBankFilter = values.bank.indexOf(bank.label)
-							return <Checks
-									key={bank.id}
-									label={bank.label}
-									name={bank.label}
-									value={indexInBankFilter}
-									onChange={(e) => handleOnChangeMultipleSelector(e, 'bank')}
-									checked={indexInBankFilter > -1}
-									ariaLabel={bank.label}
-								/>
-							}
-						)}
-					</div>
+					children: <CommonBanksDropdown 
+						selectedBankName={values.bank}
+						setSelectedBankName={(bank: string | string[]) => setFieldValue('bank', bank)}
+						multipleSelect
+					/>
 				},
 				{
 					label: t('filter.status'),

@@ -20,7 +20,7 @@ import Dropdown, {
 } from '../../../components/bootstrap/Dropdown'
 import Checks  from '../../../components/bootstrap/forms/Checks'
 import { useTranslation } from 'react-i18next'
-import DepositModal from './DepositModal'
+import DepositModal, { DepositModalProperties, DepositModalType } from './DepositModal'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import banks from 'common/data/dummyBankData'
@@ -32,11 +32,13 @@ import { storeDepositList, storeDepositQuery } from 'redux/deposit/action'
 import showNotification from 'components/extras/showNotification'
 import Spinner from 'components/bootstrap/Spinner'
 import CommonTableNotFound from 'pages/common/CommonTableNotFound'
+import CompanyBanksDropdown from 'pages/common/CompanyBanksDropdown'
+import { CompanyBankInterface } from 'common/apis/companyBank'
 
 interface DepositFilterInterface {
 	searchInput: string
 	status: string[]
-	bank: string[]
+	bank: CompanyBankInterface[]
 	price: {
 		min: string
 		max: string
@@ -46,11 +48,6 @@ interface DepositFilterInterface {
 		endDate: Date
 		key: string
 	}[]
-}
-
-interface DepositModalProperties {
-	type: string
-	selectedRow: any
 }
 
 const Deposit = () => {
@@ -108,7 +105,7 @@ const Deposit = () => {
 		onSubmit: (values) => {
 			dispatch(storeDepositQuery({
 				...depositQueryList,
-				bank: values.bank.length > 0 ? `bank=${values.bank.join(',')}` : '',
+				bank: values.bank.length > 0 ? `bank=${values.bank.map((item) => item.bankId).join(',')}` : '',
 				status: values.status.length > 0 ? `status=${values.status.join(',')}` : '',
 				start: `start=${moment(values.createdAt[0].startDate).format('YYYY-MM-DD')}`,
 				end: `end=${moment(values.createdAt[0].endDate).format('YYYY-MM-DD')}`,
@@ -164,20 +161,6 @@ const Deposit = () => {
 			newValue.splice(index, 1)
 		}
 		setFieldValue(field, newValue)
-	}
-
-    const handleOnChangeBankFilter = (event: ChangeEvent<HTMLInputElement>) => {
-		let bank = event.target.name
-		let indexInBankFilter = parseInt(event.target.value)
-		let isSelected = event.target.checked
-		let newBankFilterValue = values.bank
-
-		if (isSelected) {
-			newBankFilterValue.push(bank)
-		} else {
-			newBankFilterValue.splice(indexInBankFilter, 1)
-		}
-		setFieldValue('bank', newBankFilterValue )
 	}
 
 	return (
@@ -268,21 +251,11 @@ const Deposit = () => {
 							},
 							{
 								label: t('filter.bank'),
-								children: <div>
-									{banks.map((bank: any) => {
-										let indexInBankFilter = values.bank.indexOf(bank.label)
-										return <Checks
-												key={bank.id}
-												label={bank.label}
-												name={bank.label}
-												value={indexInBankFilter}
-												onChange={handleOnChangeBankFilter}
-												checked={indexInBankFilter > -1}
-												ariaLabel={bank.label}
-											/>
-										}
-									)}
-								</div>
+								children: <CompanyBanksDropdown
+									selectedBank={values.bank}
+									setSelectedBank={(bank: CompanyBankInterface | CompanyBankInterface[]) => setFieldValue('bank', bank)}
+									multipleSelect
+								/>
 							},
 						]} 
 					/>
@@ -291,7 +264,7 @@ const Deposit = () => {
 						icon='AttachMoney'
 						color='primary'
 						isLight
-						onClick={() => setIsOpenDepositModal({ type: "add", selectedRow: null})}
+						onClick={() => setIsOpenDepositModal({ type: DepositModalType.Add, selectedRow: undefined})}
 					>
 						{t('deposit')}
 					</Button>

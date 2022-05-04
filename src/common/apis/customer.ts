@@ -78,14 +78,14 @@ export const getCustomer = async (
 })
 
 export const getMobileNumberList = async (
-    next: (customer: CustomerInterface) => void,
+    next: (mobileNumber: string[]) => void,
     handleError: (error: any) => void
 ) => 
     await authorizationHandler(async () => {
         try {
             const res = await axios({
                 method: 'get',
-                url: `/mobile_number/list`,
+                url: `/customer/mobile_number/list`,
                 headers: { Authorization: `Bearer ${getAccessToken()}` }
             })
             next(res.data)

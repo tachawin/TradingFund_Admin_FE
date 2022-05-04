@@ -15,12 +15,22 @@ export enum TransactionType {
 }
 export const TYPE = [TransactionType.Withdraw, TransactionType.RequestWithdraw, TransactionType.Deposit]
 
-export interface TransactionUpdateDepositInterface {
+export interface DepositUpdateInterface {
     notes?: string
 }
 
-export interface TransactionUpdateCustomerInterface {
+export interface DepositUpdateCustomerInterface {
     mobileNumber: string
+    notes?: string
+}
+
+export interface DepositCreateInterface {
+    transactionTimestamp: string
+    mobileNumber: string
+    amount: number
+    payerBankAccountNumber: string
+    payerBankName: string
+    companyBankId: string
     notes?: string
 }
 
@@ -42,20 +52,33 @@ export interface TransactionInterface {
     updatedAt?: Date
 }
 
-export const createTransaction = (data: TransactionInterface) => 
+export const requestDeposit = (data: TransactionInterface) => 
     axios({
         method: 'post',
-        url: '/transaction/register',
+        url: '/transaction/deposit/request',
         headers: { Authorization: `Bearer ${getAccessToken()}` },
         data
     })
+ 
 
-export const updateTransaction = (transactionId: string, data: TransactionUpdateDepositInterface) => 
-    axios({
-        method: 'patch',
-        url: `/transaction/update/${transactionId}`,
-        headers: { Authorization: `Bearer ${getAccessToken()}` },
-        data
+export const updateTransaction = async (
+    transactionId: string,
+    data: DepositUpdateInterface,
+    next: () => void,
+    handleError: (error: any) => void
+) =>
+    await authorizationHandler(async () => {
+        try {
+            await axios({
+                method: 'patch',
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
+                url: `/transaction/deposit/note/${transactionId}`,
+                data
+            })
+            next()
+        } catch (error: any) {
+            handleError(error)
+        }
     })
 
 export const getDepositList = async (

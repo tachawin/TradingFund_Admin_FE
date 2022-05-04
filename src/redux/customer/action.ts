@@ -3,7 +3,8 @@ import {
   CustomerActionTypes,
   ADD_CUSTOMER,
   STORE_CUSTOMERS,
-  STORE_CUSTOMER_QUERY
+  STORE_CUSTOMER_QUERY,
+  STORE_CUSTOMER_MOBILE_NUMBER
 } from 'redux/customer/types'
 
 export const addCustomer = (customer: CustomerInterface): CustomerActionTypes => ({
@@ -19,4 +20,9 @@ export const storeCustomers = (customers: CustomerInterface[]): CustomerActionTy
 export const storeCustomerQuery = (customerQuery: { [key: string]: string }): CustomerActionTypes => ({
   type: STORE_CUSTOMER_QUERY,
   payload: customerQuery,
+})
+
+export const storeCustomerMobileNumber = (customerMobileNumber: string[]): CustomerActionTypes => ({
+  type: STORE_CUSTOMER_MOBILE_NUMBER,
+  payload: customerMobileNumber,
 })

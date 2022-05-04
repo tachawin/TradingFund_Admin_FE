@@ -29,8 +29,6 @@ import useSortableData from '../../../hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
-import banks from 'common/data/dummyBankData'
-import ListGroup, { ListGroupItem } from 'components/bootstrap/ListGroup'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 
 interface ReportFilterInterface {
@@ -120,20 +118,6 @@ const Report = () => {
 			setSearchInput(value)
 			debounceSearchChange(value)
 		}
-	}
-
-	const handleOnChangeBankFilter = (event: ChangeEvent<HTMLInputElement>) => {
-		let bank = event.target.name
-		let indexInBankFilter = parseInt(event.target.value)
-		let isSelected = event.target.checked
-		let newBankFilterValue = values.bank
-
-		if (isSelected) {
-			newBankFilterValue.push(bank)
-		} else {
-			newBankFilterValue.splice(indexInBankFilter, 1)
-		}
-		setFieldValue('bank', newBankFilterValue )
 	}
 
 	const handleExportPDF = () => {
@@ -229,10 +213,11 @@ const Report = () => {
 							},
 							{
 								label: t('filter.bank'),
-								children: <CommonBanksDropdown 
-											selectedBankName={'scb'} 
-											setSelectedBankName={(bank: string | string[]) => setFieldValue('bank', bank)} 
-										/>
+								children: <CommonBanksDropdown
+									selectedBankName={values.bank}
+									setSelectedBankName={(bank: string | string[]) => setFieldValue('bank', bank)}
+									multipleSelect
+								/>
 							},
 						]} 
 					/>

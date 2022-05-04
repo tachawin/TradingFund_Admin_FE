@@ -4,22 +4,23 @@ import Button from 'components/bootstrap/Button'
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown'
 import { Check } from 'components/icon/bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectCommonBanksList } from 'redux/bank/selector'
-import { getCommonBanks, CommonBankInterface } from 'common/apis/commonBank'
+import { selectCompanyBankList } from 'redux/companyBank/selector'
+import { getCompanyBankList, CompanyBankInterface } from 'common/apis/companyBank'
 import { storeBank } from 'redux/bank/action'
 import showNotification from 'components/extras/showNotification'
 import Icon from 'components/icon/Icon'
 import { useTranslation } from 'react-i18next'
 import Spinner from 'components/bootstrap/Spinner'
+import { storeCompanyBank } from 'redux/companyBank/action'
 
-interface CommonBanksDropdownInterface {
-    selectedBankName: string | string[]
-    setSelectedBankName: (value: string | string[]) => void
+interface CompanyBanksDropdownInterface {
+    selectedBank: CompanyBankInterface | CompanyBankInterface[] | string
+    setSelectedBank: (value: CompanyBankInterface | CompanyBankInterface[]) => void
     disabled?: boolean
     multipleSelect?: boolean
 }
 
-const CommonBanksDropdown = ({ selectedBankName, setSelectedBankName, disabled = false, multipleSelect = false }: CommonBanksDropdownInterface) => {
+const CompanyBanksDropdown = ({ selectedBank, setSelectedBank, disabled = false, multipleSelect = false }: CompanyBanksDropdownInterface) => {
     const { t } = useTranslation('bank')
     const dispatch = useDispatch()
 
@@ -27,26 +28,26 @@ const CommonBanksDropdown = ({ selectedBankName, setSelectedBankName, disabled =
     const [isLoading, setIsLoading] = useState(false)
     const BANK_PLACEHOLDER = 'เลือกชื่อธนาคาร'
 
-    const BankIcon = bankIcons[selectedBankName as string]?.icon
+    const BankIcon = bankIcons[(selectedBank as CompanyBankInterface).bankName]?.icon
 
-    const commonBankList = useSelector(selectCommonBanksList)
+    const companyBankList = useSelector(selectCompanyBankList)
     
-    const handleOnChangeMultipleBanks = (bank: string) => {
-        let index = selectedBankName.indexOf(bank)
+    const handleOnChangeMultipleBanks = (bank: CompanyBankInterface) => {
+        let index = (selectedBank as CompanyBankInterface[]).indexOf(bank)
         let isBankSelected = index > -1
-        let newValue = selectedBankName as string[]
+        let newValue = selectedBank as CompanyBankInterface[]
 
         if (isBankSelected) {
             newValue.splice(index, 1)
         } else {
             newValue.push(bank)
         }
-        setSelectedBankName(newValue)
+        setSelectedBank(newValue)
 	}
 
     useEffect(() => {
-        getCommonBanks((commonBankList: CommonBankInterface) => {
-            dispatch(storeBank(commonBankList))
+        getCompanyBankList('', (companyBankList: CompanyBankInterface[]) => {
+            dispatch(storeCompanyBank(companyBankList))
         }, (error: any) => {
             const { response } = error
             console.log(response.data)
@@ -75,7 +76,7 @@ const CommonBanksDropdown = ({ selectedBankName, setSelectedBankName, disabled =
                     style={{ maxWidth: '172px' }}
                     className={`${ multipleSelect ? 'm-0' : 'mx-3' } d-block text-nowrap overflow-hidden text-overflow-ellipsis`}
                 >
-                    {(selectedBankName as string[]).map((bank) => bank.toUpperCase()).join(', ') || BANK_PLACEHOLDER}
+                    {(selectedBank as CompanyBankInterface[]).map((bank) => bank.bankName.toUpperCase()).join(', ') || BANK_PLACEHOLDER}
                 </span>
             </DropdownToggle> : <DropdownToggle
                 className={{ 'd-flex': true, 'align-items-center': true, 'w-100': true }}
@@ -85,17 +86,17 @@ const CommonBanksDropdown = ({ selectedBankName, setSelectedBankName, disabled =
                 setIsOpen={setIsOpenBankDropdown}
                 disabled={disabled}
             >
-                {selectedBankName !== BANK_PLACEHOLDER && <>
-                    <span className='p-1' style={{ backgroundColor: bankIcons[selectedBankName as string].color, borderRadius: 3 }}>
+                {(selectedBank !== BANK_PLACEHOLDER && (selectedBank as CompanyBankInterface).bankName) ? <>
+                    <span className='p-1' style={{ backgroundColor: bankIcons[(selectedBank as CompanyBankInterface).bankName].color, borderRadius: 3 }}>
                         <BankIcon height={20} width={20} />
                     </span>
                     <span
                         style={{ maxWidth: '172px' }}
                         className='mx-3 d-block text-nowrap overflow-hidden text-overflow-ellipsis'
                     >
-                        {commonBankList && commonBankList[selectedBankName as string].thaiName}
+                        {(selectedBank as CompanyBankInterface).bankName?.toUpperCase()}{' *'}{(selectedBank as CompanyBankInterface).bankAccountNumber?.slice(-4)}
                     </span>
-                </>}
+                </> : BANK_PLACEHOLDER}
             </DropdownToggle>}
             <DropdownMenu
                 className='overflow-scroll'
@@ -103,19 +104,19 @@ const CommonBanksDropdown = ({ selectedBankName, setSelectedBankName, disabled =
                 isOpen={Boolean(isOpenBankDropdown)} 
                 setIsOpen={setIsOpenBankDropdown}
             >
-                {!isLoading ? commonBankList && Object.keys(commonBankList).map((bank: string) => { 
-                    const Icon = bankIcons[bank].icon
-                    return <DropdownItem key={bank}>
+                {!isLoading ? companyBankList && companyBankList.map((bank: CompanyBankInterface) => { 
+                    const Icon = bankIcons[bank.bankName].icon
+                    return <DropdownItem key={bank.bankId}>
                         <Button
                             color='link'
-                            isActive={!multipleSelect && bank === selectedBankName}
-                            onClick={() => multipleSelect ? handleOnChangeMultipleBanks(bank) : setSelectedBankName(bank)}
+                            isActive={!multipleSelect && bank === selectedBank}
+                            onClick={() => multipleSelect ? handleOnChangeMultipleBanks(bank) : setSelectedBank(bank)}
                         >
-                            <div className='p-1' style={{ backgroundColor: bankIcons[bank].color, borderRadius: 3 }}>
+                            <div className='p-1' style={{ backgroundColor: bankIcons[bank.bankName].color, borderRadius: 3 }}>
                                 <Icon height={20} width={20} />
                             </div>
-                            <span className='mx-3 mw-75'>{commonBankList[bank].thaiName}</span>
-                            {(multipleSelect && selectedBankName.indexOf(bank) > -1) && <Check />}
+                            <span className='mx-3 mw-75'>{bank.bankName?.toUpperCase()}{' *'}{bank.bankAccountNumber?.slice(-4)}</span>
+                            {(multipleSelect && (selectedBank as CompanyBankInterface[]).indexOf(bank) > -1) && <Check />}
                         </Button>
                     </DropdownItem>
                 }) : <div key='loading' className='d-flex justify-content-center'>
@@ -126,4 +127,4 @@ const CommonBanksDropdown = ({ selectedBankName, setSelectedBankName, disabled =
   )
 }
 
-export default CommonBanksDropdown
+export default CompanyBanksDropdown

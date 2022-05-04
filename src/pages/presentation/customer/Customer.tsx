@@ -95,7 +95,7 @@ const Customer = () => {
 			dispatch(storeCustomerQuery({
 				...customerQueryList,
 				bank: values.bank.length > 0 ? `bank=${values.bank.join(',')}` : '',
-				level: values.level.length > 0 ? `level=${values.level.join(',')}` : '',
+				level: values.level.length > 0 ? `level=${values.level.map((item) => item.levelId).join(',')}` : '',
 				startCreated: `startCreated=${moment(values.createdAtDate[0].startDate).format('YYYY-MM-DD')}`,
 				endCreated: `endCreated=${moment(values.createdAtDate[0].endDate).format('YYYY-MM-DD')}`,
 				startLastLogin: `startLastLogin=${moment(values.lastLoginAtDate[0].startDate).format('YYYY-MM-DD')}`,

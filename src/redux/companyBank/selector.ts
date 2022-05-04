@@ -3,6 +3,7 @@ import { createSelector } from 'reselect'
 import { RootState } from 'redux/store'
 import { InitialState } from './types'
 
-const selectBankQuery = (state: RootState) => state.companyBank
+const selectCompanyBank = (state: RootState) => state.companyBank
 
-export const selectCompanyBankQuery = createSelector([selectBankQuery], (companyBank: InitialState) => companyBank.companyBankQuery)
+export const selectCompanyBankList = createSelector([selectCompanyBank], (companyBank: InitialState) => companyBank.companyBank)
+export const selectCompanyBankQuery = createSelector([selectCompanyBank], (companyBank: InitialState) => companyBank.companyBankQuery)

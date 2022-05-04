@@ -15,21 +15,30 @@ import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import banks from 'common/data/dummyBankData'
 import * as Yup from 'yup'
+import { TransactionInterface, DepositUpdateInterface, updateTransaction } from 'common/apis/deposit'
+import CustomerMobileNumberDropdown from 'pages/common/CustomerMobileNumberDropdown'
+import CompanyBanksDropdown from 'pages/common/CompanyBanksDropdown'
+import { CompanyBankInterface } from 'common/apis/companyBank'
 
-interface DepositModalProperties {
-	type: string
-	selectedRow: any
+export enum DepositModalType {
+    Add = 'add',
+    Edit = 'edit',
+    Refund = 'refund',
+    SelectPayer = 'select_payer'
+}
+export interface DepositModalProperties {
+	type: DepositModalType
+	selectedRow?: TransactionInterface
 }
 
 interface DepositModalInterface {
-	id?: string | number
 	isOpen?: boolean
 	setIsOpen: any
     properties: DepositModalProperties
-    data?: any
+    data?: TransactionInterface
 }
 
-const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterface) => {
+const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) => {
     const { t } = useTranslation(['common', 'deposit'])
     const { type, selectedRow: data } = properties
 
@@ -49,15 +58,37 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
 	})
 
     const selectValidationSchema = () => {
-        if (type === 'add') {
+        if (type === DepositModalType.Add) {
             return AddDepositSchema
-        } else if (type === 'refund') {
+        } else if (type === DepositModalType.Refund) {
             return RefundDepositSchema
-        } else if (type === 'select-payer') {
+        } else if (type === DepositModalType.SelectPayer) {
             return SelectPayerDepositSchema
         } else {
             return null
         }
+    }
+
+    const addDeposit = () => {
+        
+    }
+
+    const editDeposit = (id: string, newData: DepositUpdateInterface) => {
+        updateTransaction(id, newData, () => {
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <Icon icon='Info' size='lg' className='me-1' />
+                    <span>{t('deposit:edit.successfully')}</span>
+                </span>, t('deposit:edit.deposit.successfully', { mobileNumber: values.mobileNumber })
+            )
+        }, () => {
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <Icon icon='Info' size='lg' className='me-1' />
+                    <span>{t('deposit:edit.failed')}</span>
+                </span>, t('deposit:edit.deposit.failed', { mobileNumber: values.mobileNumber })
+            )
+        })
     }
 	
 	const formik = useFormik({
@@ -75,7 +106,7 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
             // EDIT
             console.log(values)
 
-            if (type === 'refund') {
+            if (type === DepositModalType.Refund) {
                 // REFUND
                 showNotification(
                     <span className='d-flex align-items-center'>
@@ -83,6 +114,8 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
                         <span>{t('refund.successfully')}</span>
                     </span>, t('refund.deposit.from.mobile.number.successfully', { mobileNumber: data?.mobileNumber })
                 )
+            } else if (type === DepositModalType.Edit) {
+                data?.transactionId && editDeposit(data.transactionId, { notes: values.notes })
             } else {
                 showNotification(
                     <span className='d-flex align-items-center'>
@@ -97,18 +130,18 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
 		},
 	})
 
-    const { values, handleChange, isValid, touched, errors } = formik
+    const { values, handleChange, setFieldValue, isValid, touched, errors } = formik
 
     return (
-        <Modal isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>
+        <Modal isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={data?.transactionId} isCentered>
             <ModalHeader setIsOpen={setIsOpen} className='p-4 pb-0'>
-                <ModalTitle id={id}>
-                    {type === 'add' ? t('deposit') : type === 'refund' ? t('refund') : t('select.payer') }
+                <ModalTitle id={data?.transactionId}>
+                    {type === DepositModalType.Add ? t('deposit') : type === DepositModalType.Refund ? t('refund') : t('select.payer') }
                 </ModalTitle>
             </ModalHeader>
             <ModalBody className='px-4'>
                 <div className='row g-4'>
-                    {type !== 'refund' && <>
+                    {type !== DepositModalType.Refund && <>
                         <div className='col-6'>
                             <FormGroup id='date' label={t('form.date')} isFloating>
                                 <Input
@@ -116,7 +149,7 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
                                     onChange={handleChange}
                                     value={values.date}
                                     type='date'
-                                    disabled={type !== 'add'}
+                                    disabled={type !== DepositModalType.Add}
                                 />
                             </FormGroup>
                         </div>
@@ -127,18 +160,14 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
                                     onChange={handleChange}
                                     value={values.time}
                                     type='time'
-                                    disabled={type !== 'add'}
+                                    disabled={type !== DepositModalType.Add}
                                 />
                             </FormGroup>
                         </div>
                         <FormGroup id='mobileNumber' label={t('form.mobile.number')}>
-                            <Input 
-                                onChange={handleChange} 
-                                value={values.mobileNumber}
-                                disabled={!['add', 'select-payer'].includes(type)}
-                                isValid={isValid}
-                                isTouched={touched.mobileNumber && errors.mobileNumber}
-                                invalidFeedback={errors.mobileNumber}
+                            <CustomerMobileNumberDropdown 
+                                selectedMobileNumber={values.mobileNumber}
+                                setSelectedMobileNumber={(mobileNumber: string | string[]) => setFieldValue('mobileNumber', mobileNumber)}
                             />
                         </FormGroup>
                         <FormGroup id='amount' label={t('form.amount')}>
@@ -146,7 +175,7 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
                                 type='number' 
                                 onChange={handleChange} 
                                 value={values.amount}
-                                disabled={type !== 'add'}
+                                disabled={type !== DepositModalType.Add}
                                 isValid={isValid}
                                 isTouched={touched.amount && errors.amount}
                                 invalidFeedback={errors.amount}
@@ -156,26 +185,17 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
                             <Input 
                                 onChange={handleChange} 
                                 value={values.payerBankAccountNumber} 
-                                disabled={type !== 'add'}
+                                disabled={type !== DepositModalType.Add}
                                 isValid={isValid}
                                 isTouched={touched.payerBankAccountNumber && errors.payerBankAccountNumber}
                                 invalidFeedback={errors.payerBankAccountNumber}
                             />
                         </FormGroup>
                         <FormGroup id='recipientBankAccountNumber' label={t('form.recipient.bank.account.number')}>
-                            <Input
-                                name='recipientBankAccountNumber'
-                                ariaLabel={t('form.recipient.bank.account.number')}
-                                placeholder={t('form.recipient.bank.account.number.placeholder')}
-                                list={banks.map(
-                                    (bank) => `${bank.label} *${bank.number}`,
-                                )}
-                                onChange={formik.handleChange}
-                                value={values.recipientBankAccountNumber}
-                                disabled={type !== 'add'}
-                                isValid={isValid}
-                                isTouched={touched.recipientBankAccountNumber && errors.recipientBankAccountNumber}
-                                invalidFeedback={errors.recipientBankAccountNumber}
+                            <CompanyBanksDropdown
+                                disabled={type !== DepositModalType.Add}
+                                selectedBank={values.recipientBankAccountNumber}
+                                setSelectedBank={(bank: CompanyBankInterface | CompanyBankInterface[]) => setFieldValue('recipientBankAccountNumber', bank)}
                             />
                         </FormGroup>
                     </>}
@@ -183,7 +203,7 @@ const DepositModal = ({ id, isOpen, setIsOpen, properties }: DepositModalInterfa
                         <Input 
                             onChange={handleChange} 
                             value={values.notes} 
-                            placeholder={type === 'refund' ? t("form.notes.refund.reason.placeholder") : ''}
+                            placeholder={type === DepositModalType.Refund ? t("form.notes.refund.reason.placeholder") : ''}
                             isValid={isValid}
                             isTouched={touched.notes && errors.notes}
                             invalidFeedback={errors.notes}
