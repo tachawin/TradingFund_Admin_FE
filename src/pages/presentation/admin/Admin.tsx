@@ -31,6 +31,9 @@ import Spinner from 'components/bootstrap/Spinner'
 import CommonTableNotFound from 'pages/common/CommonTableNotFound'
 import showNotification from 'components/extras/showNotification'
 import 'moment/locale/th'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectAdmins } from 'redux/admin/selector'
+import { storeAdmins } from 'redux/admin/action'
 
 interface AdminModalProperties {
 	type?: AdminModalType
@@ -50,12 +53,15 @@ interface AdminFilterInterface {
 		endDate: Date
 		key: string
 	}[]
+	isCreatedAtDateChanged: boolean
+	isUpdatedAtDateChanged: boolean
 }
 
 const Admin = () => {
     const { t } = useTranslation(['common', 'admin'])
+	const dispatch = useDispatch()
+	const admins = useSelector(selectAdmins)
 
-	const [data, setData] = useState<AdminInterface[]>()
 	const [isLoading, setIsLoading] = useState(true)
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [isOpenUpdatedAtDatePicker, setIsOpenUpdatedAtDatePicker] = useState(false)
@@ -89,17 +95,19 @@ const Admin = () => {
 					endDate: moment().endOf('week').toDate(),
 					key: 'selection',
 				},
-			]
+			],
+			isCreatedAtDateChanged: false,
+			isUpdatedAtDateChanged: false
 		},
 		onSubmit: (values) => {
 			setQueryList({ 
 				...queryList,
 				status: values.status.length > 0 ? `status=${values.status.join(',')}` : '',
 				role: values.roles.length > 0 ? `role=${values.roles.join(',')}` : '',
-				startCreated: `startCreated=${moment(values.createdAtDate[0].startDate).format('YYYY-MM-DD')}`,
-				endCreated: `endCreated=${moment(values.createdAtDate[0].endDate).format('YYYY-MM-DD')}`,
-				startUpdated: `startUpdated=${moment(values.updatedAtDate[0].startDate).format('YYYY-MM-DD')}`,
-				endUpdated: `endUpdated=${moment(values.updatedAtDate[0].endDate).format('YYYY-MM-DD')}`
+				startCreated: values.isCreatedAtDateChanged ? `startCreated=${moment(values.createdAtDate[0].startDate).format('YYYY-MM-DD')}` : '',
+				endCreated: values.isCreatedAtDateChanged ?`endCreated=${moment(values.createdAtDate[0].endDate).format('YYYY-MM-DD')}` : '',
+				startUpdated: values.isUpdatedAtDateChanged ? `startUpdated=${moment(values.updatedAtDate[0].startDate).format('YYYY-MM-DD')}` : '',
+				endUpdated: values.isUpdatedAtDateChanged ? `endUpdated=${moment(values.updatedAtDate[0].endDate).format('YYYY-MM-DD')}` : ''
 			})
 		},
 	})
@@ -108,7 +116,8 @@ const Admin = () => {
 		values,
 		setFieldValue,
 		resetForm,
-		handleSubmit
+		handleSubmit,
+		handleChange
 	} = formik
 
 	const datePicker = (selectedDate: any, field: string) => (
@@ -155,8 +164,7 @@ const Admin = () => {
 		let queryString = Object.values(queryList).filter(Boolean).join('&')
 		let query = queryString ? `?${queryString}` : ''
 		getAdminList(query, (adminList: AdminInterface[]) => {
-			console.log(adminList)
-			setData(adminList)
+			dispatch(storeAdmins(adminList))
 			setIsLoading(false)
 		}, (error: any) => {
 			const { response } = error
@@ -218,33 +226,53 @@ const Admin = () => {
 							},
 							{
 								label: t('filter.created.at'),
-								children: <Dropdown >
-									<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										<span data-tour='date-range'>
-											{`${moment(values.createdAtDate[0].startDate).format('MMM Do YY')} - ${moment(
-												values.createdAtDate[0].endDate,
-											).format('MMM Do YY')}`}
-										</span>
-									</DropdownToggle>
-									<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										{datePicker(values.createdAtDate, 'createdAtDate')}
-									</DropdownMenu>
-								</Dropdown>
+								children: <div>
+									<Checks
+										id='isCreatedAtDateChanged'
+										type='switch'
+										label={t('filter.created.at')}
+										onChange={handleChange}
+										checked={values.isCreatedAtDateChanged}
+										ariaLabel='Filter Created At Date'
+									/>
+									{values.isCreatedAtDateChanged && <Dropdown className='mt-2'>
+										<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
+											<span data-tour='date-range'>
+												{`${moment(values.createdAtDate[0].startDate).format('MMM Do YY')} - ${moment(
+													values.createdAtDate[0].endDate,
+												).format('MMM Do YY')}`}
+											</span>
+										</DropdownToggle>
+										<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
+											{datePicker(values.createdAtDate, 'createdAtDate')}
+										</DropdownMenu>
+									</Dropdown>}
+								</div>
 							},
 							{
 								label: t('filter.updated.at'),
-								children: <Dropdown>
-									<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenUpdatedAtDatePicker)} setIsOpen={setIsOpenUpdatedAtDatePicker}>
-										<span data-tour='date-range'>
-											{`${moment(values.updatedAtDate[0].startDate).format('MMM Do YY')} - ${moment(
-												values.updatedAtDate[0].endDate,
-											).format('MMM Do YY')}`}
-										</span>
-									</DropdownToggle>
-									<DropdownMenu isAlignmentEnd isOpen={isOpenUpdatedAtDatePicker} setIsOpen={setIsOpenUpdatedAtDatePicker}>
-										{datePicker(values.updatedAtDate, 'updatedAtDate')}
-									</DropdownMenu>
-								</Dropdown>
+								children: <div>
+									<Checks
+										id='isUpdatedAtDateChanged'
+										type='switch'
+										label={t('filter.updated.at')}
+										onChange={handleChange}
+										checked={values.isUpdatedAtDateChanged}
+										ariaLabel='Filter Updated At Date'
+									/>
+									{values.isUpdatedAtDateChanged && <Dropdown className='mt-2'>
+										<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenUpdatedAtDatePicker)} setIsOpen={setIsOpenUpdatedAtDatePicker}>
+											<span data-tour='date-range'>
+												{`${moment(values.updatedAtDate[0].startDate).format('MMM Do YY')} - ${moment(
+													values.updatedAtDate[0].endDate,
+												).format('MMM Do YY')}`}
+											</span>
+										</DropdownToggle>
+										<DropdownMenu isAlignmentEnd isOpen={isOpenUpdatedAtDatePicker} setIsOpen={setIsOpenUpdatedAtDatePicker}>
+											{datePicker(values.updatedAtDate, 'updatedAtDate')}
+										</DropdownMenu>
+									</Dropdown>}
+								</div>
 							},
 							{
 								label: t('filter.role'),
@@ -279,9 +307,9 @@ const Admin = () => {
 			</SubHeader>
 			<Page>
 				<div className='row h-100'>
-					<div className={`col-12 ${(isLoading || !data) ? 'd-flex align-items-center justify-content-center' : 'px-4'}`}>
+					<div className={`col-12 ${(isLoading || !admins) ? 'd-flex align-items-center justify-content-center' : 'px-4'}`}>
 						{isLoading ? <Spinner color='info' isGrow size={60} /> 
-							: data ? <AdminTable 
+							: admins ? <AdminTable 
 								cardHeader={
 									<CardHeader>
 										<CardLabel>
@@ -289,7 +317,7 @@ const Admin = () => {
 										</CardLabel>
 									</CardHeader>
 								}
-								data={data} 
+								data={admins} 
 								setIsOpenAdminModal={setIsOpenAdminModal}
 								setIsOpenDeleteModal={setIsOpenDeleteModal}
 								setIsOpenPermissionModal={setIsOpenPermissionModal}

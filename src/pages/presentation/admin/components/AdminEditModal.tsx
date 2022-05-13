@@ -17,6 +17,8 @@ import { AdminStatus, AdminInterface, AdminRole, createAdmin, updateAdmin } from
 import * as Yup from 'yup'
 import Spinner from 'components/bootstrap/Spinner'
 import regEx from 'common/utils/commonRegEx'
+import { useDispatch } from 'react-redux'
+import { addAdmin } from 'redux/admin/action'
 
 export enum AdminModalType {
     Add = 'add',
@@ -42,6 +44,7 @@ interface AdminEditModalInterface {
 
 const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInterface) => {
     const { t } = useTranslation(['common', 'admin'])
+    const dispatch = useDispatch()
     const { selectedRow: data, type } = properties
     const [isLoading, setIsLoading] = useState(false)
     const [adminModalState, setAdminModalState] = useState(AdminModalState.Profile)
@@ -82,7 +85,7 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
             setIsLoading(true)
             let status = values.status ? AdminStatus.Active : AdminStatus.Inactive
             if (type === AdminModalType.Add) {
-                addAdmin({ ...values, status })
+                handleAddAdmin({ ...values, status })
             } else {
                 editAdmin({ ...values, status })
             }
@@ -92,10 +95,10 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
 
     const { values, setFieldValue, initialValues, setValues, resetForm, handleChange, handleSubmit, isValid, touched, errors } = formik
 
-    const addAdmin = (adminData: AdminInterface) => {
+    const handleAddAdmin = (adminData: AdminInterface) => {
         createAdmin(adminData).then((response) => {
             console.log(response.data)
-
+            dispatch(addAdmin(adminData))
             showNotification(
                 <span className='d-flex align-items-center'>
                     <Icon icon='Info' size='lg' className='me-1' />
