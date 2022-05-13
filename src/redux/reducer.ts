@@ -6,6 +6,7 @@ import customerReducer from './customer/reducer'
 import depositReducer from './deposit/reducer'
 import levelReducer from './level/reducer'
 import withdrawReducer from './withdraw/reducer'
+import productReducer from './product/reducer'
 
 const rootReducer = combineReducers({
   admin: adminReducer,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   customer: customerReducer,
   deposit: depositReducer,
   level: levelReducer,
+  product: productReducer,
   withdraw: withdrawReducer
 })
 

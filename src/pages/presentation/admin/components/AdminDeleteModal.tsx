@@ -11,6 +11,8 @@ import Button from 'components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import { AdminInterface, deleteAdmin } from 'common/apis/admin'
 import Spinner from 'components/bootstrap/Spinner'
+import { useDispatch } from 'react-redux'
+import { deleteAdminById } from 'redux/admin/action'
 
 interface AdminEditModalInterface {
 	id?: string | number
@@ -21,6 +23,7 @@ interface AdminEditModalInterface {
 
 const AdminDeleteModal = ({ id, isOpen, setIsOpen, data }: AdminEditModalInterface) => {
     const { t } = useTranslation(['common', 'admin'])
+    const dispatch = useDispatch()
     const [isLoading, setIsLoading] = useState(false)
 
     const handleDelete = () => {
@@ -29,6 +32,7 @@ const AdminDeleteModal = ({ id, isOpen, setIsOpen, data }: AdminEditModalInterfa
             deleteAdmin(
                 data.adminId, 
                 () => {
+                    data.adminId && dispatch(deleteAdminById(data.adminId))
                     setIsOpen(false)
                     setIsLoading(false)
                 },
