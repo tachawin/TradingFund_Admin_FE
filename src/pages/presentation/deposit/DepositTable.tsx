@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
-import { TransactionInterface, TransactionStatus } from 'common/apis/deposit'
+import { TransactionInterface, TransactionStatus } from 'common/apis/transaction'
 import moment from 'moment'
 import 'moment/locale/th'
 import { DepositModalProperties, DepositModalType } from './DepositModal'
@@ -119,13 +119,13 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                                     </div>
                                 </td>
                                 <td>
-                                    <div>*{transaction.payerBankAccountNumber}</div>
+                                    <div>*{transaction.payerBankAccountNumber.slice(-4)}</div>
                                 </td>
                                 <td>
                                     <div className='d-flex align-items-center'>
                                         <div className='flex-grow-1'>
                                             <div className='fs-6 fw-bold'>
-                                                *{transaction.recipientBankAccountNumber}
+                                                *{transaction.recipientBankAccountNumber.slice(-4)}
                                             </div>
                                             <div className='text-muted'>
                                                 <Icon icon='Label' />{' '}
@@ -143,33 +143,35 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                                     </td>
                                 }
                                 {!disabledColumns?.includes('notes') &&
-                                    <td className='w-25'>
+                                    <td>
                                         <div>{transaction.notes}</div>
                                     </td>
                                 }
                                 {setIsOpenDepositModal && <td>
-                                    {transaction.status === TransactionStatus.Success ? 
-                                        <><Button
-                                            onClick={() => setIsOpenDepositModal({ type: DepositModalType.Refund, selectedRow: transaction})}
-                                            className='p-0'
-                                            isLight
-                                        >
-                                            {t('refund')}
-                                        </Button> / </>
-                                        : transaction.status === TransactionStatus.NotFound ? <><Button
-                                            onClick={() => setIsOpenDepositModal({ type: DepositModalType.SelectPayer, selectedRow: transaction})}
-                                            className='p-0'
-                                            isLight
-                                        >
-                                            {t('select.payer')}
-                                        </Button> / </> : <></>
-                                    } <Button
-                                            onClick={() => setIsOpenDepositModal({ type: DepositModalType.Edit, selectedRow: transaction})}
-                                            className='p-0'
-                                            isLight
-                                        >
-                                        {t('edit')}
-                                    </Button>
+                                    <div className='row gap-3 w-100'>
+                                        {transaction.status === TransactionStatus.Success ? 
+                                            <Button
+                                                onClick={() => setIsOpenDepositModal({ type: DepositModalType.Refund, selectedRow: transaction})}
+                                                color='light-dark'
+                                                className='col fit-content'
+                                            >
+                                                {t('refund')}
+                                            </Button>
+                                            : transaction.status === TransactionStatus.NotFound ? <Button
+                                                onClick={() => setIsOpenDepositModal({ type: DepositModalType.SelectPayer, selectedRow: transaction})}
+                                                color='light-dark'
+                                                className='col fit-content'
+                                            >
+                                                {t('select.payer')}
+                                            </Button> : <></>
+                                        } {(transaction.status === TransactionStatus.Success || transaction.status === TransactionStatus.Cancel) && <Button
+                                                onClick={() => setIsOpenDepositModal({ type: DepositModalType.Edit, selectedRow: transaction})}
+                                                color='light-dark'
+                                                className='col fit-content'
+                                            >
+                                            {t('edit')}
+                                        </Button>}
+                                    </div>
                                 </td>}
                             </tr>
                         ))}

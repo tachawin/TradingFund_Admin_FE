@@ -2,16 +2,16 @@ import { getAccessToken } from 'common/utils/auth'
 import axios, { authorizationHandler } from './axios'
 import { TransactionInterface } from './transaction'
 
-export interface DepositUpdateInterface {
+export interface WithdrawUpdateInterface {
     notes?: string
 }
 
-export interface DepositUpdateCustomerInterface {
+export interface WithdrawUpdateCustomerInterface {
     mobileNumber: string
     notes?: string
 }
 
-export interface DepositCreateInterface {
+export interface WithdrawCreateInterface {
     transactionTimestamp: string
     mobileNumber: string
     amount: number
@@ -21,18 +21,18 @@ export interface DepositCreateInterface {
     notes?: string
 }
 
-export const requestDeposit = (data: TransactionInterface) => 
+export const requestWithdraw = (data: TransactionInterface) => 
     axios({
         method: 'post',
-        url: '/transaction/deposit/request',
+        url: '/transaction/withdraw/request',
         headers: { Authorization: `Bearer ${getAccessToken()}` },
         data
     })
  
 
-export const updateDeposit = async (
+export const updateWithdraw = async (
     transactionId: string,
-    data: DepositUpdateInterface,
+    data: WithdrawUpdateInterface,
     next: () => void,
     handleError: (error: any) => void
 ) =>
@@ -41,7 +41,7 @@ export const updateDeposit = async (
             await axios({
                 method: 'patch',
                 headers: { Authorization: `Bearer ${getAccessToken()}` },
-                url: `/transaction/deposit/note/${transactionId}`,
+                url: `/transaction/withdraw/note/${transactionId}`,
                 data
             })
             next()
@@ -50,9 +50,9 @@ export const updateDeposit = async (
         }
     })
 
-export const updateDepositCustomer = async (
+export const updateWithdrawCustomer = async (
     transactionId: string,
-    data: DepositUpdateCustomerInterface,
+    data: WithdrawUpdateCustomerInterface,
     next: () => void,
     handleError: (error: any) => void
 ) =>
@@ -61,7 +61,7 @@ export const updateDepositCustomer = async (
             await axios({
                 method: 'patch',
                 headers: { Authorization: `Bearer ${getAccessToken()}` },
-                url: `/transaction/deposit/pick/customer/${transactionId}`,
+                url: `/transaction/withdraw/pick/customer/${transactionId}`,
                 data
             })
             next()
@@ -70,9 +70,9 @@ export const updateDepositCustomer = async (
         }
     })
 
-export const waiveDeposit = async (
+export const waiveWithdraw = async (
     transactionId: string,
-    data: DepositUpdateInterface,
+    data: WithdrawUpdateInterface,
     next: () => void,
     handleError: (error: any) => void
 ) =>
@@ -81,7 +81,7 @@ export const waiveDeposit = async (
             await axios({
                 method: 'patch',
                 headers: { Authorization: `Bearer ${getAccessToken()}` },
-                url: `/transaction/deposit/waive/${transactionId}`,
+                url: `/transaction/withdraw/waive/${transactionId}`,
                 data
             })
             next()
@@ -90,16 +90,34 @@ export const waiveDeposit = async (
         }
     })
 
-export const getDepositList = async (
+export const getWithdrawRequestList = async (
     query: string,
-    next: (depositList: TransactionInterface[]) => void,
+    next: (withdrawList: TransactionInterface[]) => void,
     handleError: (error: any) => void
 ) =>
     await authorizationHandler(async () => {
         try {
 			const res = await axios({
                 method: 'get',
-                url: `/transaction/deposit/list${query}`,
+                url: `/transaction/withdraw/admin/list/request_withdraw`,
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
+            })
+            next(res.data)
+        } catch (error: any) {
+            handleError(error)
+        }
+})
+
+export const getWithdrawList = async (
+    query: string,
+    next: (withdrawList: TransactionInterface[]) => void,
+    handleError: (error: any) => void
+) =>
+    await authorizationHandler(async () => {
+        try {
+			const res = await axios({
+                method: 'get',
+                url: `/transaction/withdraw/admin/list/withdraw`,
                 headers: { Authorization: `Bearer ${getAccessToken()}` },
             })
             next(res.data)

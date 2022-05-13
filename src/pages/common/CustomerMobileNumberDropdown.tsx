@@ -99,6 +99,8 @@ const CustomerMobileNumberDropdown = ({ selectedMobileNumber, setSelectedMobileN
                 onSelect={() => setIsOpenCustomerDropdown(true)}
                 className='border-0'
                 value={selectedMobileNumber}
+                placeholder={MOBILE_NUMBER_PLACEHOLDER}
+                disabled={disabled}
             />}
             <DropdownMenu
                 className='overflow-scroll'

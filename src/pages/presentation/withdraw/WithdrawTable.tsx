@@ -220,29 +220,29 @@ const WithdrawTable = ({
                                     </td>
                                 }
                                 {(setIsOpenWithdrawModal && setIsOpenCancelWithdrawModal) && <td>
-                                    {i.status === 'request' ? <div className='d-flex justify-content-between align-items-center'>
+                                    {i.status === 'request' ? <div className='row gap-3'>
                                         {banks.map((bank) => 
-                                            <><Button
+                                            <Button
+                                                key={bank.id}
                                                 onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.System, bank: bank.name, selectedRow: i})}
                                                 color='primary'
-                                                isLink
+                                                className='col'
+                                                isLight
                                             >
                                                 {bank.label.toLocaleUpperCase()}
                                             </Button>
-                                            <span className='text-primary'>|</span></>
                                         )}
                                         <Button
                                             onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.Manual, selectedRow: i})}
-                                            color='primary'
-                                            isLink
+                                            className='text-nowrap col'
+                                            color='light-dark'
                                         >
                                             {t('manual')}
                                         </Button>
-                                        <span className='text-primary'>|</span>
                                         <Button
                                             onClick={() => setIsOpenCancelWithdrawModal({ type: WithdrawModalType.Delete, selectedRow: i})}
-                                            color='primary'
-                                            isLink
+                                            color='light-dark'
+                                            className='col'
                                         >
                                             {t('reject')}
                                         </Button>

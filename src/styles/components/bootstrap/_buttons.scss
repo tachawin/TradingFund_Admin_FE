@@ -171,4 +171,8 @@
 	&-hover-shadow {
 		@include shadow-variants-button;
 	}
+
+	&.fit-content {
+		max-width: fit-content;
+	}
 }

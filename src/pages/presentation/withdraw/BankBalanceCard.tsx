@@ -17,7 +17,7 @@ const BankBalanceCard = () => {
                 <div className='row g-5'>
                     {banks.map((bank: Bank) => {
                         let BankIcon = bankIcons[bank.name].icon
-                        return (<div className='col mt-4'>
+                        return (<div className='col mt-4' key={bank.id}>
                             <div className='row'>
                                 <div className='col d-flex align-items-center'>
                                     <div className='flex-shrink-0'>

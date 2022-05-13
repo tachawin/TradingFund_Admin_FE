@@ -1,4 +1,4 @@
-import { TransactionInterface } from 'common/apis/deposit'
+import { TransactionInterface } from 'common/apis/transaction'
 import { DepositActionTypes, STORE_DEPOSIT_LIST, STORE_DEPOSIT_LIST_QUERY } from './types'
 
 export const storeDepositList = (depositList: TransactionInterface[]): DepositActionTypes => ({

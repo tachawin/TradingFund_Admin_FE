@@ -1,4 +1,4 @@
-import { TransactionInterface } from '../../common/apis/deposit'
+import { TransactionInterface } from '../../common/apis/transaction'
 
 export const STORE_DEPOSIT_LIST = 'STORE_DEPOSIT_LIST'
 export const STORE_DEPOSIT_LIST_QUERY = 'STORE_DEPOSIT_LIST_QUERY'

@@ -13,12 +13,12 @@ import Input from '../../../components/bootstrap/forms/Input'
 import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
-import banks from 'common/data/dummyBankData'
 import * as Yup from 'yup'
-import { TransactionInterface, DepositUpdateInterface, updateTransaction } from 'common/apis/deposit'
+import { DepositUpdateInterface, updateDeposit, updateDepositCustomer, DepositUpdateCustomerInterface, waiveDeposit } from 'common/apis/deposit'
 import CustomerMobileNumberDropdown from 'pages/common/CustomerMobileNumberDropdown'
 import CompanyBanksDropdown from 'pages/common/CompanyBanksDropdown'
 import { CompanyBankInterface } from 'common/apis/companyBank'
+import { TransactionInterface } from 'common/apis/transaction'
 
 export enum DepositModalType {
     Add = 'add',
@@ -69,19 +69,57 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
         }
     }
 
-    const addDeposit = () => {
-        
-    }
-
     const editDeposit = (id: string, newData: DepositUpdateInterface) => {
-        updateTransaction(id, newData, () => {
+        updateDeposit(id, newData, () => {
             showNotification(
                 <span className='d-flex align-items-center'>
                     <Icon icon='Info' size='lg' className='me-1' />
                     <span>{t('deposit:edit.successfully')}</span>
                 </span>, t('deposit:edit.deposit.successfully', { mobileNumber: values.mobileNumber })
             )
-        }, () => {
+        }, (error) => {
+            const { response } = error
+            console.log(response)
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <Icon icon='Info' size='lg' className='me-1' />
+                    <span>{t('deposit:edit.failed')}</span>
+                </span>, t('deposit:edit.deposit.failed', { mobileNumber: values.mobileNumber })
+            )
+        })
+    }
+
+    const pickCustomer = (id: string, newData: DepositUpdateCustomerInterface) => {
+        updateDepositCustomer(id, newData, () => {
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <Icon icon='Info' size='lg' className='me-1' />
+                    <span>{t('deposit:edit.successfully')}</span>
+                </span>, t('deposit:edit.deposit.successfully', { mobileNumber: values.mobileNumber })
+            )
+        }, (error) => {
+            const { response } = error
+            console.log(response)
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <Icon icon='Info' size='lg' className='me-1' />
+                    <span>{t('deposit:edit.failed')}</span>
+                </span>, t('deposit:edit.deposit.failed', { mobileNumber: values.mobileNumber })
+            )
+        })
+    }
+
+    const refundDeposit = (id: string, newData: DepositUpdateInterface) => {
+        waiveDeposit(id, newData, () => {
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <Icon icon='Info' size='lg' className='me-1' />
+                    <span>{t('deposit:edit.successfully')}</span>
+                </span>, t('deposit:edit.deposit.successfully', { mobileNumber: values.mobileNumber })
+            )
+        }, (error) => {
+            const { response } = error
+            console.log(response)
             showNotification(
                 <span className='d-flex align-items-center'>
                     <Icon icon='Info' size='lg' className='me-1' />
@@ -99,7 +137,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             amount: data?.amount || '',
             payerBankAccountNumber: data?.payerBankAccountNumber || '',
             recipientBankAccountNumber: data?.recipientBankAccountNumber || '',
-            notes: data?.notes || '',
+            notes: type === DepositModalType.Edit ? data?.notes : '',
 		},
         validationSchema: selectValidationSchema(),
 		onSubmit: (values) => {
@@ -107,15 +145,11 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             console.log(values)
 
             if (type === DepositModalType.Refund) {
-                // REFUND
-                showNotification(
-                    <span className='d-flex align-items-center'>
-                        <Icon icon='Info' size='lg' className='me-1' />
-                        <span>{t('refund.successfully')}</span>
-                    </span>, t('refund.deposit.from.mobile.number.successfully', { mobileNumber: data?.mobileNumber })
-                )
+                data?.transactionId && refundDeposit(data.transactionId, { notes: values.notes })
             } else if (type === DepositModalType.Edit) {
                 data?.transactionId && editDeposit(data.transactionId, { notes: values.notes })
+            } else if (type === DepositModalType.SelectPayer) {
+                data?.transactionId && pickCustomer(data.transactionId, { mobileNumber: values.mobileNumber })
             } else {
                 showNotification(
                     <span className='d-flex align-items-center'>
@@ -165,7 +199,8 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
                             </FormGroup>
                         </div>
                         <FormGroup id='mobileNumber' label={t('form.mobile.number')}>
-                            <CustomerMobileNumberDropdown 
+                            <CustomerMobileNumberDropdown
+                                disabled={type === DepositModalType.Edit}
                                 selectedMobileNumber={values.mobileNumber}
                                 setSelectedMobileNumber={(mobileNumber: string | string[]) => setFieldValue('mobileNumber', mobileNumber)}
                             />

@@ -178,17 +178,17 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                             </FormGroup>
                             <FormGroup id='bankName' label={t('form.bank.name')}>
                                 <CommonBanksDropdown
-                                    disabled
                                     selectedBankName={values.bankName} 
-                                    setSelectedBankName={(bank: string | string[]) => setFieldValue('bankName', bank)} 
+                                    setSelectedBankName={(bank: string | string[]) => setFieldValue('bankName', bank)}
+                                    disabled
                                 />
                             </FormGroup>
                             <FormGroup id='payerBank' label={t('form.withdraw.bank')}>
                                 {type === WithdrawModalType.System ? 
                                     <CommonBanksDropdown
-                                        disabled
                                         selectedBankName={bank ?? 'scb'} 
                                         setSelectedBankName={(bank: string | string[]) => setFieldValue('bankName', bank)} 
+                                        disabled
                                     /> :
                                     <Dropdown className='w-100'>
                                         <DropdownToggle 

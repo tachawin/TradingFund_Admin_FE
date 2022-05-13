@@ -28,6 +28,18 @@ import CreditTable from '../credit/CreditTable';
 import { CustomerInterface, getCustomer } from 'common/apis/customer';
 import showNotification from 'components/extras/showNotification';
 import moment from 'moment';
+import { getDepositList } from 'common/apis/deposit';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectDepositList } from 'redux/deposit/selector';
+import { storeDepositList } from 'redux/deposit/action';
+import { TransactionInterface } from 'common/apis/transaction';
+
+enum TransactionState {
+	Deposit = 'deposit',
+	Withdraw = 'withdraw',
+	Reward = 'reward',
+	Credit = 'credit'
+}
 
 const CustomerProfile = () => {
     const { t } = useTranslation(['common', 'customer'])
@@ -36,8 +48,32 @@ const CustomerProfile = () => {
 	const [customer, setCustomer] = useState<CustomerInterface>()
 	const [isLoading, setIsLoading] = useState(false)
 
-	const [transactionState, setTransactionState] = useState('deposit')
+	const [transactionState, setTransactionState] = useState(TransactionState.Deposit)
     const [isOpenTransactionDropdown, setIsOpenTransactionDropdown] = useState(false)
+
+	const dispatch = useDispatch()
+	const depositList = useSelector(selectDepositList)
+
+	useEffect(() => {
+		setIsLoading(true)
+		depositList.length <= 0 && getDepositList('', (depositList: TransactionInterface[]) => {
+			console.log(depositList)
+			dispatch(storeDepositList(depositList))
+			setIsLoading(false)
+		}, (error: any) => {
+			const { response } = error
+			console.log(response.data)
+			setIsLoading(false)
+			showNotification(
+				<span className='d-flex align-items-center'>
+					<Icon icon='Info' size='lg' className='me-1' />
+					<span>{t('get.deposit.failed')}</span>
+				</span>,
+				t('please.refresh.again'),
+			)
+		})
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [transactionState])
 
 	useEffect(() => {
 		setIsLoading(true)
@@ -74,32 +110,32 @@ const CustomerProfile = () => {
 					<DropdownItem>
 						<Button
 							color='link'
-							isActive={transactionState === 'deposit'}
-							onClick={() => setTransactionState('deposit')}>
+							isActive={transactionState === TransactionState.Deposit}
+							onClick={() => setTransactionState(TransactionState.Deposit)}>
 							{t('deposit')}
 						</Button>
 					</DropdownItem>
 					<DropdownItem>
 						<Button
 							color='link'
-							isActive={transactionState === 'withdraw'}
-							onClick={() => setTransactionState('withdraw')}>
+							isActive={transactionState === TransactionState.Withdraw}
+							onClick={() => setTransactionState(TransactionState.Withdraw)}>
 							{t('withdraw')}
 						</Button>
 					</DropdownItem>
 					<DropdownItem>
 						<Button
 							color='link'
-							isActive={transactionState === 'credit'}
-							onClick={() => setTransactionState('credit')}>
+							isActive={transactionState === TransactionState.Credit}
+							onClick={() => setTransactionState(TransactionState.Credit)}>
 							{t('credit')}
 						</Button>
 					</DropdownItem>
 					<DropdownItem>
 						<Button
 							color='link'
-							isActive={transactionState === 'reward'}
-							onClick={() => setTransactionState('reward')}>
+							isActive={transactionState === TransactionState.Reward}
+							onClick={() => setTransactionState(TransactionState.Reward)}>
 							{t('reward')}
 						</Button>
 					</DropdownItem>
@@ -226,7 +262,7 @@ const CustomerProfile = () => {
 												<Icon icon='Cash' size='3x' color='warning' />
 											</div>
 											<div className='flex-grow-1 ms-3'>
-												<div className='fw-bold fs-3 mb-0'>{customer?.credit}</div>
+												<div className='fw-bold fs-3 mb-0'>{customer?.credit?.toLocaleString()}</div>
 												<div className='text-muted mt-n2 truncate-line-1'>
 													{t('balance')}
 												</div>
@@ -240,8 +276,8 @@ const CustomerProfile = () => {
 												<Icon icon='Star' size='3x' color='info' />
 											</div>
 											<div className='flex-grow-1 ms-3'>
-												<div className='fw-bold fs-3 mb-0'>
-													{customer?.point}
+												<div className='fw-bold fs-3 mb-0 d-block text-nowrap overflow-hidden text-overflow-ellipsis'>
+													{customer?.point?.toLocaleString()}
 												</div>
 												<div className='text-muted mt-n2 truncate-line-1'>
                                                     {t('points')}
@@ -256,7 +292,7 @@ const CustomerProfile = () => {
 												<Icon icon='CashCoin' size='3x' color='primary' />
 											</div>
 											<div className='flex-grow-1 ms-3'>
-												<div className='fw-bold fs-3 mb-0'>{customer?.cashbackBonus}</div>
+												<div className='fw-bold fs-3 mb-0'>{customer?.cashbackBonus?.toLocaleString()}</div>
 												<div className='text-muted mt-n2 truncate-line-1'>
                                                     {t('cashback.bonus')}
 												</div>
@@ -270,7 +306,7 @@ const CustomerProfile = () => {
 												<Icon icon='People' size='3x' color='success' />
 											</div>
 											<div className='flex-grow-1 ms-3'>
-												<div className='fw-bold fs-3 mb-0'>{customer?.referralBonus}</div>
+												<div className='fw-bold fs-3 mb-0'>{customer?.referralBonus?.toLocaleString()}</div>
 												<div className='text-muted mt-n2'>{t('invitation.bonus')}</div>
 											</div>
 										</div>
@@ -280,25 +316,26 @@ const CustomerProfile = () => {
 						</Card>
 					</div>
 					<div className='col-lg-8'>
-						{/* {transactionState === 'deposit' ?
+						{transactionState === 'deposit' ?
 							<DepositTable 
 								cardHeader={transactionHeader()}
-								data={depositData} 
+								data={depositList} 
 								disabledColumns={['mobile-number', 'notes']} 
-							/> : transactionState === 'withdraw' ?
-							<WithdrawTable 
-								cardHeader={transactionHeader()}
-								data={depositData} 
-								columns={{ lastDepositAmount: false, name: false, from: false }}
-							/> : transactionState === 'reward' ?
-							<RewardTable 
-								cardHeader={transactionHeader()}
-								data={rewardData} 
-							/> : <CreditTable 
-								cardHeader={transactionHeader()}
-								data={creditData} 
-							/>
-						} */}
+							/> : <></>
+							// /> : transactionState === 'withdraw' ?
+							// <WithdrawTable 
+							// 	cardHeader={transactionHeader()}
+							// 	data={depositData} 
+							// 	columns={{ lastDepositAmount: false, name: false, from: false }}
+							// /> : transactionState === 'reward' ?
+							// <RewardTable 
+							// 	cardHeader={transactionHeader()}
+							// 	data={rewardData} 
+							// /> : <CreditTable 
+							// 	cardHeader={transactionHeader()}
+							// 	data={creditData} 
+							// />
+						}
 					</div>
 				</div>
 			</Page>

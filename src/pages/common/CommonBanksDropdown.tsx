@@ -93,7 +93,7 @@ const CommonBanksDropdown = ({ selectedBankName, setSelectedBankName, disabled =
                         style={{ maxWidth: '172px' }}
                         className='mx-3 d-block text-nowrap overflow-hidden text-overflow-ellipsis'
                     >
-                        {commonBankList && commonBankList[selectedBankName as string].thaiName}
+                        {commonBankList && commonBankList[selectedBankName as string]?.thaiName}
                     </span>
                 </>}
             </DropdownToggle>}
