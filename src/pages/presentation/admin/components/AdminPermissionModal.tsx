@@ -41,7 +41,8 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
         withdraw: t("withdraw"),
         bank: t("bank"),
         reward: t("reward"),
-        credit: t("credit"),
+        redeem: t("reward"), // CHANGE TO REWARD
+        credit: t("credit"),  
         chat: t("chat"),
         product: t("product"),
         adminManage: t('admin'),
@@ -58,6 +59,8 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
     }
 
     const onSubmit = () => {
+        delete permissionsValue.reward
+        console.log(permissionsValue)
         id && updatePermission(id, permissionsValue).then((response) => {
             console.log(response.data)
 

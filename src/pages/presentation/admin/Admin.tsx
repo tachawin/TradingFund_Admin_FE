@@ -34,6 +34,8 @@ import 'moment/locale/th'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectAdmins } from 'redux/admin/selector'
 import { storeAdmins } from 'redux/admin/action'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
 
 interface AdminModalProperties {
 	type?: AdminModalType
@@ -61,6 +63,7 @@ const Admin = () => {
     const { t } = useTranslation(['common', 'admin'])
 	const dispatch = useDispatch()
 	const admins = useSelector(selectAdmins)
+	const permission = useSelector(selectPermission)
 
 	const [isLoading, setIsLoading] = useState(true)
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
@@ -294,15 +297,17 @@ const Admin = () => {
 							},
 						]} 
 					/>
-					<SubheaderSeparator />
-					<Button
-						icon='PersonAdd'
-						color='primary'
-						isLight
-						onClick={() => setIsOpenAdminModal({ type: AdminModalType.Add })}
-					>
-						{t('admin:new.admin')}
-					</Button>
+					{permission.adminManage[PermissionType.Create] === PermissionValue.Available && <>
+						<SubheaderSeparator />
+						<Button
+							icon='PersonAdd'
+							color='primary'
+							isLight
+							onClick={() => setIsOpenAdminModal({ type: AdminModalType.Add })}
+						>
+							{t('admin:new.admin')}
+						</Button>
+					</>}
 				</SubHeaderRight>
 			</SubHeader>
 			<Page>

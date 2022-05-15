@@ -99,7 +99,7 @@ export const getDepositList = async (
         try {
 			const res = await axios({
                 method: 'get',
-                url: `/transaction/deposit/list${query}`,
+                url: `/transaction/deposit/admin/list${query}`,
                 headers: { Authorization: `Bearer ${getAccessToken()}` },
             })
             next(res.data)

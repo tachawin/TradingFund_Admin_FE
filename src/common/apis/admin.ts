@@ -61,7 +61,7 @@ export const updateAdmin = (adminId: string, data: AdminUpdateInterface) =>
 export const updatePermission = (adminId: string, data: PermissionInterface) => 
     axios({
         method: 'patch',
-        url: `/admin/update/${adminId}`,
+        url: `/admin/permission/${adminId}`,
         headers: { Authorization: `Bearer ${getAccessToken()}` },
         data
     })

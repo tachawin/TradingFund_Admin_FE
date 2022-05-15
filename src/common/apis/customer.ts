@@ -85,7 +85,7 @@ export const getMobileNumberList = async (
         try {
             const res = await axios({
                 method: 'get',
-                url: `/customer/mobile_number/list`,
+                url: `/customer_admin/mobile_number/list`,
                 headers: { Authorization: `Bearer ${getAccessToken()}` }
             })
             next(res.data)
