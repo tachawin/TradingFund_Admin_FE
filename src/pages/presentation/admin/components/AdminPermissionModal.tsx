@@ -12,6 +12,8 @@ import { useTranslation } from 'react-i18next'
 import Checks from 'components/bootstrap/forms/Checks'
 import { updatePermission } from 'common/apis/admin'
 import Spinner from 'components/bootstrap/Spinner'
+import { useDispatch } from 'react-redux'
+import { updateAdminById, updatePermissionById } from 'redux/admin/action'
 
 interface Permission {
     [key: string]: string
@@ -27,6 +29,7 @@ interface AdminPermissionModalInterface {
 
 const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: AdminPermissionModalInterface) => {
     const { t } = useTranslation(['common', 'admin'])
+    const dispatch = useDispatch()
     const [permissionsValue, setPermissionValue] = useState(permissions)
     const [isLoading, setIsLoading] = useState(false)
 
@@ -63,7 +66,7 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
         console.log(permissionsValue)
         id && updatePermission(id, permissionsValue).then((response) => {
             console.log(response.data)
-
+            dispatch(updatePermissionById(id, permissionsValue))
             showNotification(
                 <span className='d-flex align-items-center'>
                     <Icon icon='Info' size='lg' className='me-1' />

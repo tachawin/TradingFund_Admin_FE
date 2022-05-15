@@ -60,7 +60,7 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
                     <Icon icon='Info' size='lg' className='me-1' />
                     <span>{t('product:save.failed')}</span>
                 </span>,
-                t('product:save.product.failed', { adminName: values.name }),
+                t('product:save.product.failed', { productName: values.name }),
             )
         }).finally(() => {
             setIsLoading(false)
@@ -88,7 +88,7 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
                     <Icon icon='Info' size='lg' className='me-1' />
                     <span>{t('product:save.failed')}</span>
                 </span>,
-                t('product:save.product.failed', { adminName: values.name }),
+                t('product:save.product.failed', { productName: values.name }),
             )
         }).finally(() => {
             setIsLoading(false)

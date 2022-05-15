@@ -12,6 +12,8 @@ import { ProductProps } from './Product'
 import { useDispatch, useSelector } from 'react-redux'
 import { storeProductQuery } from 'redux/product/action'
 import { selectProductQuery } from 'redux/product/selector'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
 
 interface ProductFilterInterface {
 	searchInput: string
@@ -28,6 +30,7 @@ interface ProductFilterInterface {
 const ProductSubHeader = ({ setIsOpenProductModal }: ProductProps) => {
 	const { t } = useTranslation(['common', 'product'])
 	const dispatch = useDispatch()
+	const permission = useSelector(selectPermission)
 	const [searchInput, setSearchInput] = useState('')
 
 	const productQueryList = useSelector(selectProductQuery)
@@ -146,16 +149,18 @@ const ProductSubHeader = ({ setIsOpenProductModal }: ProductProps) => {
 				}
 			]} 
 		/>
-		<SubheaderSeparator />
-			<Button
-				icon='PlusLg'
-				color='primary'
-				isLight
-				onClick={() => setIsOpenProductModal({ type: "add" })}
-				className='text-nowrap'
-			>
-			{t('product:add.product')}
-		</Button>
+		{permission.product[PermissionType.Create] === PermissionValue.Available && <>
+			<SubheaderSeparator />
+				<Button
+					icon='PlusLg'
+					color='primary'
+					isLight
+					onClick={() => setIsOpenProductModal({ type: "add" })}
+					className='text-nowrap'
+				>
+				{t('product:add.product')}
+			</Button>
+		</>}
 	</>)
 }
 

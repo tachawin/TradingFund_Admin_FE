@@ -205,7 +205,7 @@ const AdminTable = ({
                                     </div>
                                 </td>
                                 <td>
-                                    {(permission.adminManage[PermissionType.Update] === PermissionValue.Available && permission.adminManage[PermissionType.Delete] === PermissionValue.Available) &&
+                                    {(permission.adminManage[PermissionType.Update] === PermissionValue.Available || permission.adminManage[PermissionType.Delete] === PermissionValue.Available) &&
                                         <Dropdown>
                                             <DropdownToggle 
                                                 hasIcon={false} 

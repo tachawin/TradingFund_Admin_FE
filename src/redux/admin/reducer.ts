@@ -4,9 +4,10 @@ import {
   ADD_ADMIN,
   STORE_ADMINS,
   UPDATE_ADMIN,
-  DELETE_ADMIN
+  DELETE_ADMIN,
+  UPDATE_PERMISSION
 } from 'redux/admin/types'
-import { editItemById, removeItemById } from 'redux/utils'
+import { editFieldById, editItemById, removeItemById,  } from 'redux/utils'
 
 const INITIAL_STATE: InitialState = {
   admins: []
@@ -33,6 +34,11 @@ const adminReducer = (state = INITIAL_STATE, action: AdminActionTypes): InitialS
       return {
         ...state,
         admins: removeItemById(state.admins, action.payload, 'adminId')
+      }
+    case UPDATE_PERMISSION:
+      return {
+        ...state,
+        admins: editFieldById(state.admins, action.id, 'adminId', 'features', action.payload)
       }
     default:
       return state

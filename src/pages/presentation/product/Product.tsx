@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ProductModal from './ProductModal'
-import CommonGridProductItem from 'pages/common/CommonProductItem'
+import CommonGridProductItem from 'pages/presentation/product/ProductItem'
 import ProductDeleteModal from './ProductDeleteModal'
 import Icon from 'components/icon/Icon'
 import { storeProducts } from '../../../redux/product/action'
@@ -12,6 +12,9 @@ import { selectProductQuery } from '../../../redux/product/selector'
 import showNotification from 'components/extras/showNotification'
 import Spinner from 'components/bootstrap/Spinner'
 import CommonTableNotFound from 'pages/common/CommonTableNotFound'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import CommonUnauthorized from 'pages/common/CommonUnauthorized'
 
 export interface ProductModalProperties {
 	type: string
@@ -33,6 +36,8 @@ export interface ProductProps {
 const Product = ({ isOpenProductModal, setIsOpenProductModal }: ProductProps) => {
     const { t } = useTranslation(['common', 'product'])
 	const dispatch = useDispatch()
+	const permission = useSelector(selectPermission)
+
 	const [isOpenDeleteProductModal, setIsOpenDeleteProductModal] = useState<ProductModalProperties>()
 	const [isLoading, setIsLoading] = useState(false)
 
@@ -80,7 +85,7 @@ const Product = ({ isOpenProductModal, setIsOpenProductModal }: ProductProps) =>
 								deleteAction={() => setIsOpenDeleteProductModal({ type: 'delete', selectedRow: product })}
 							/>
 						</div>
-				)) : <CommonTableNotFound />}
+				)) : permission.product[PermissionType.Read] === PermissionValue.Unavailable ? <CommonUnauthorized /> : <CommonTableNotFound />}
 			</div>
 			{isOpenProductModal && <ProductModal setIsOpen={setIsOpenProductModal} isOpen={Boolean(isOpenProductModal)} properties={isOpenProductModal} />}
             {isOpenDeleteProductModal && <ProductDeleteModal setIsOpen={setIsOpenDeleteProductModal} isOpen={Boolean(isOpenDeleteProductModal)} properties={isOpenDeleteProductModal} />}

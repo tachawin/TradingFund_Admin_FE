@@ -4,7 +4,8 @@ import {
   ADD_ADMIN,
   STORE_ADMINS,
   UPDATE_ADMIN,
-  DELETE_ADMIN
+  DELETE_ADMIN,
+  UPDATE_PERMISSION
 } from 'redux/admin/types'
 
 export const addAdmin = (admin: AdminInterface): AdminActionTypes => ({
@@ -21,6 +22,12 @@ export const updateAdminById = (adminId: string, admin: AdminUpdateInterface): A
   type: UPDATE_ADMIN,
   id: adminId,
   payload: admin
+})
+
+export const updatePermissionById = (adminId: string, permission: { [key: string]: string }): AdminActionTypes => ({
+  type: UPDATE_PERMISSION,
+  id: adminId,
+  payload: permission
 })
 
 export const deleteAdminById = (adminId: string): AdminActionTypes => ({

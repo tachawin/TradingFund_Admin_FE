@@ -5,19 +5,22 @@ import Card, {
 	CardLabel,
 	CardSubTitle,
 	CardTitle,
-} from '../../components/bootstrap/Card'
-import Button from '../../components/bootstrap/Button'
+} from 'components/bootstrap/Card'
+import Button from 'components/bootstrap/Button'
 import Dropdown, {
 	DropdownItem,
 	DropdownMenu,
 	DropdownToggle,
-} from '../../components/bootstrap/Dropdown'
-import Badge from '../../components/bootstrap/Badge'
+} from 'components/bootstrap/Dropdown'
+import Badge from 'components/bootstrap/Badge'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import PlaceholderImage from 'components/extras/PlaceholderImage'
+import { useSelector } from 'react-redux'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
 
-interface CommonProductItemInterface {
+interface ProductItemInterface {
 	id?: number | string,
 	name: string,
 	description?: string,
@@ -28,7 +31,7 @@ interface CommonProductItemInterface {
 	deleteAction: any,
 }
 
-const CommonProductItem = ({
+const ProductItem = ({
 	name,
 	img,
 	description,
@@ -36,8 +39,9 @@ const CommonProductItem = ({
 	remaining,
 	editAction,
 	deleteAction,
-}: CommonProductItemInterface) => {
+}: ProductItemInterface) => {
 	const { t } = useTranslation(['common', 'product'])
+	const permission = useSelector(selectPermission)
 	const [isOpenDropdown, setIsOpenDropdown] = useState<boolean>(false)
 
 	const handleEdit = () => {
@@ -66,32 +70,34 @@ const CommonProductItem = ({
 					</CardSubTitle>
 				</CardLabel>
 				<CardActions>
-					<Dropdown>
-						<DropdownToggle 
-							isOpen={Boolean(isOpenDropdown)} 
-							setIsOpen={setIsOpenDropdown}						
-							color='dark'
-							isLight
-							icon='MoreHoriz' 
-							hasIcon={false} 
-						/>
-						<DropdownMenu
-							isOpen={Boolean(isOpenDropdown)} 
-							setIsOpen={setIsOpenDropdown}
-							isAlignmentEnd
-						>
-							<DropdownItem>
-								<Button icon='Edit' onClick={handleEdit}>
-								{t('edit')}
-								</Button>
-							</DropdownItem>
-							<DropdownItem>
-								<Button icon='Delete' onClick={handleDelete}>
-									{t('delete')}
-								</Button>
-							</DropdownItem>
-						</DropdownMenu>
-					</Dropdown>
+					{(permission.product[PermissionType.Update] === PermissionValue.Available || permission.product[PermissionType.Delete] === PermissionValue.Available) && 
+						<Dropdown>
+							<DropdownToggle 
+								isOpen={Boolean(isOpenDropdown)} 
+								setIsOpen={setIsOpenDropdown}						
+								color='dark'
+								isLight
+								icon='MoreHoriz' 
+								hasIcon={false} 
+							/>
+							<DropdownMenu
+								isOpen={Boolean(isOpenDropdown)} 
+								setIsOpen={setIsOpenDropdown}
+								isAlignmentEnd
+							>
+								{permission.product[PermissionType.Update] === PermissionValue.Available && <DropdownItem>
+									<Button icon='Edit' onClick={handleEdit}>
+									{t('edit')}
+									</Button>
+								</DropdownItem>}
+								{permission.product[PermissionType.Delete] === PermissionValue.Available && <DropdownItem>
+									<Button icon='Delete' onClick={handleDelete}>
+										{t('delete')}
+									</Button>
+								</DropdownItem>}
+							</DropdownMenu>
+						</Dropdown>
+					}
 				</CardActions>
 			</CardHeader>
 			<CardBody>
@@ -119,4 +125,4 @@ const CommonProductItem = ({
 	)
 }
 
-export default CommonProductItem
+export default ProductItem

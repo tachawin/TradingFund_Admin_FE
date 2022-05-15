@@ -29,7 +29,27 @@ const editItemById = (
     return newItemArray
 }
 
+const editFieldById = (
+    itemArray: any[] | [],
+    idToEdit: string,
+    idField: string,
+    fieldToEdit: string,
+    newData: any,
+): any[] => {
+    const newItemArray = [...itemArray]
+    let itemIndex = 0
+    newItemArray.forEach((item, index) => {
+        if (item[idField] === idToEdit) {
+            itemIndex = index
+        }
+    })
+    newItemArray[itemIndex][fieldToEdit] = newData
+    newItemArray[itemIndex] = { ...newItemArray[itemIndex], ...newData }
+    return newItemArray
+}
+
 export {
     removeItemById,
-    editItemById
+    editItemById,
+    editFieldById
 }
