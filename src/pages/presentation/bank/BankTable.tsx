@@ -7,6 +7,9 @@ import PaginationButtons, { dataPagination, PER_COUNT } from 'components/Paginat
 import Button from 'components/bootstrap/Button'
 import { CompanyBankInterface, CompanyBankStatus } from 'common/apis/companyBank'
 import moment from 'moment'
+import { useSelector } from 'react-redux'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
 
 interface BankTableInterface {
     data: any
@@ -24,6 +27,7 @@ const BankTable = ({
     cardHeader 
 }: BankTableInterface) => {
     const { t } = useTranslation('common')
+    const permission = useSelector(selectPermission)
 
     const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
@@ -95,7 +99,7 @@ const BankTable = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {dataPagination(items, currentPage, perPage).map((bank: CompanyBankInterface, index: number) => (
+                        {items.length > 0 ? dataPagination(items, currentPage, perPage).map((bank: CompanyBankInterface, index: number) => (
                             <tr key={bank.bankId}>
                                 <td className='text-center'>
                                     <div>{index + 1}</div>
@@ -119,7 +123,6 @@ const BankTable = ({
                                 <td>
                                     <div>{bank.type}</div>
                                 </td>
-
                                 <td>
                                     <div>{moment(bank.createdAt)?.format('ll')}</div>
                                     <div>
@@ -150,22 +153,32 @@ const BankTable = ({
                                     </div>
                                 </td>
                                 {(setIsOpenBankModal && setIsOpenDeleteBankModal) && <td>
-                                    <Button
-                                        onClick={() => setIsOpenBankModal({ type: "edit", selectedRow: bank })}
-                                        className='p-0'
-                                        isLight
-                                    >
-                                        {t('edit')}
-                                    </Button> / <Button
-                                        onClick={() => setIsOpenDeleteBankModal({ type: "delete", selectedRow: bank })}
-                                        className='p-0'
-                                        isLight
-                                    >
-                                        {t('delete')}
-                                    </Button>
+                                    <div className='row gap-3 w-100'>
+                                        {permission.bank[PermissionType.Update] === PermissionValue.Available && <Button
+                                            onClick={() => setIsOpenBankModal({ type: "edit", selectedRow: bank })}
+                                            className='col fit-content'
+                                            color='light-dark'
+                                        >
+                                            {t('edit')}
+                                        </Button>}
+                                        {permission.bank[PermissionType.Delete] === PermissionValue.Available && <Button
+                                            onClick={() => setIsOpenDeleteBankModal({ type: "delete", selectedRow: bank })}
+                                            className='col fit-content'
+                                            color='light-dark'
+                                        >
+                                            {t('delete')}
+                                        </Button>}
+                                    </div>
                                 </td>}
                             </tr>
-                        ))}
+                        )) : permission.bank[PermissionType.Read] === PermissionValue.Unavailable ?
+                        <tr>
+                            <td colSpan={8} className='text-center'>ไม่มีสิทธิ์เข้าถึง</td>
+                        </tr>
+                        : <tr>
+                            <td colSpan={8} className='text-center'>ไม่พบข้อมูล</td>
+                        </tr>
+                    }
                     </tbody>
                 </table>
             </CardBody>

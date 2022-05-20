@@ -9,8 +9,13 @@ import showNotification from 'components/extras/showNotification'
 import Icon from 'components/icon/Icon'
 import Spinner from 'components/bootstrap/Spinner'
 import CommonTableNotFound from 'pages/common/CommonTableNotFound'
-import { useSelector } from 'react-redux'
-import { selectCompanyBankQuery } from 'redux/companyBank/selector'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectCompanyBankList, selectCompanyBankQuery } from 'redux/companyBank/selector'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import CommonUnauthorized from 'pages/common/CommonUnauthorized'
+import { selectCommonBanksList } from 'redux/bank/selector'
+import { storeCompanyBank } from 'redux/companyBank/action'
 
 export interface BankModalProperties {
 	type: string
@@ -32,19 +37,19 @@ export interface BankProps {
 
 const Bank = ({ isOpenBankModal, setIsOpenBankModal }: BankProps) => {
     const { t } = useTranslation(['common', 'bank'])
+	const dispatch = useDispatch()
 
-	const [data, setData] = useState<CompanyBankInterface[]>()
 	const [isLoading, setIsLoading] = useState(true)
 	const [isOpenDeleteBankModal, setIsOpenDeleteBankModal] = useState<BankModalProperties>()
 
+	const data = useSelector(selectCompanyBankList)
 	const queryList = useSelector(selectCompanyBankQuery)
 
 	useEffect(() => {
 		let queryString = Object.values(queryList).filter(Boolean).join('&')
 		let query = queryString ? `?${queryString}` : ''
 		getCompanyBankList(query, (companyBankList: CompanyBankInterface[]) => {
-			console.log(companyBankList)
-			setData(companyBankList)
+			dispatch(storeCompanyBank(companyBankList))
 			setIsLoading(false)
 		}, (error: any) => {
 			const { response } = error
@@ -65,7 +70,7 @@ const Bank = ({ isOpenBankModal, setIsOpenBankModal }: BankProps) => {
 		<div className='row h-100'>
 			<div className={`col-12 ${(isLoading || !data) ? 'd-flex align-items-center justify-content-center' : 'px-4'}`}>
 				{isLoading ? <Spinner color='info' isGrow size={60} />
-					: data ? <BankTable
+					: <BankTable
 						cardHeader={
 							<CardHeader>
 								<CardLabel>
@@ -77,7 +82,7 @@ const Bank = ({ isOpenBankModal, setIsOpenBankModal }: BankProps) => {
 						setIsOpenBankModal={setIsOpenBankModal}
 						setIsOpenDeleteBankModal={setIsOpenDeleteBankModal}
 						columns={{ mobileNumber: true, notes: true }} 
-					/> : <CommonTableNotFound />
+					/>
 				}
 			</div>
 		</div>

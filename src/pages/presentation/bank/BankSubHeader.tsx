@@ -16,6 +16,8 @@ import moment from 'moment'
 import { CompanyBankStatus, CompanyBankType, STATUS, TYPE } from 'common/apis/companyBank'
 import { selectCompanyBankQuery } from 'redux/companyBank/selector'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
 
 interface BankFilterInterface {
 	searchInput: string
@@ -37,6 +39,7 @@ interface BankSubHeaderInterface {
 const BankSubHeader = ({ setIsOpenBankModal }: BankSubHeaderInterface) => {
 	const { t } = useTranslation(['common', 'bank'])
 	const dispatch = useDispatch()
+	const permission = useSelector(selectPermission)
 
 	const [searchInput, setSearchInput] = useState('')
 	const companyBankQuery = useSelector(selectCompanyBankQuery)
@@ -169,16 +172,18 @@ const BankSubHeader = ({ setIsOpenBankModal }: BankSubHeaderInterface) => {
 				},
 			]} 
 		/>
-		<SubheaderSeparator />
-		<Button
-			className='text-nowrap'
-			icon='PiggyBank'
-			color='primary'
-			isLight
-			onClick={() => setIsOpenBankModal({ type: "add", selectedRow: undefined})}
-		>
-			{t('bank:add.bank')}
-		</Button>
+		{permission.bank[PermissionType.Create] === PermissionValue.Available && <>
+			<SubheaderSeparator />
+			<Button
+				className='text-nowrap'
+				icon='PiggyBank'
+				color='primary'
+				isLight
+				onClick={() => setIsOpenBankModal({ type: "add", selectedRow: undefined})}
+			>
+				{t('bank:add.bank')}
+			</Button>
+		</>}
 	</>)
 }
 

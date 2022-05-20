@@ -10,7 +10,7 @@ const INITIAL_STATE: InitialState = {
     customer: '0000',
     deposit: '0000',
     withdraw: '0000',
-    bank: '0000',
+    bank: '0110',
     reward: '0000',
     credit: '0000',
     chat: '0000',

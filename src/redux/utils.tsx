@@ -18,14 +18,15 @@ const editItemById = (
     idField: string,
     newData: any,
 ): any[] => {
-    const newItemArray = [...itemArray]
-    let itemIndex = 0
-    newItemArray.forEach((item, index) => {
+    const fieldsToEdit = Object.keys(newData)
+    const newItemArray = itemArray.map((item) => {
         if (item[idField] === idToEdit) {
-            itemIndex = index
+            fieldsToEdit.forEach((field) => {
+                item[field] = newData[field]
+            })
         }
+        return item
     })
-    newItemArray[itemIndex] = { ...newItemArray[itemIndex], ...newData }
     return newItemArray
 }
 

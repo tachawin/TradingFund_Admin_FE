@@ -3,8 +3,15 @@
     "cancel": "ถูกดึงเครดิต",
 
     "save.deposit.successfully": "บันทึกรายการโอนสำเร็จ",
+    "save.deposit.failed": "บันทึกรายการโอนไม่สำเร็จ",
     "save.deposit.from.mobile.number.successfully": "บันทึกรายการโอนจาก {{mobileNumber}} สำเร็จ",
+    "save.deposit.from.mobile.number.failed": "บันทึกรายการโอนจาก {{mobileNumber}} ไม่สำเร็จ",
 
     "refund.successfully": "ดึงเครดิตสำเร็จ",
-    "refund.deposit.from.mobile.number.successfully": "ดึงเครดิตจาก {{mobileNumber}} สำเร็จ"
+    "refund.deposit.from.mobile.number.successfully": "ดึงเครดิตจาก {{mobileNumber}} สำเร็จ",
+
+    "edit.successfully": "แก้ไขสำเร็จ",
+    "edit.failed": "แก้ไขไม่สำเร็จ",
+    "edit.deposit.successfully": "แก้ไขรายการ {{mobileNumber}} สำเร็จ",
+    "edit.deposit.failed": "แก้ไขรายการ {{mobileNumber}} ไม่สำเร็จ"
 }

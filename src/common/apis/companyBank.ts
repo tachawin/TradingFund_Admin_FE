@@ -75,7 +75,7 @@ export const updateCompanyBank = async (
     await authorizationHandler(async () => {
         try {
 			await axios({
-                method: 'get',
+                method: 'patch',
                 url: `/company_bank/update/${bankId}`,
                 data
             })
@@ -93,7 +93,7 @@ export const deleteCompanyBank = async (
     await authorizationHandler(async () => {
         try {
 			await axios({
-                method: 'get',
+                method: 'delete',
                 url: '/company_bank/delete',
                 data: { bankId }
             })

@@ -46,7 +46,8 @@ export const DropdownToggle = ({
 	isOpen = false, 
 	setIsOpen, 
 	hasIcon = true, 
-	index, color, 
+	index, 
+	color, 
 	isLight, 
 	className,
 	disabled = false

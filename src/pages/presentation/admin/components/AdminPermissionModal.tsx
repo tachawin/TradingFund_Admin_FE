@@ -13,7 +13,7 @@ import Checks from 'components/bootstrap/forms/Checks'
 import { updatePermission } from 'common/apis/admin'
 import Spinner from 'components/bootstrap/Spinner'
 import { useDispatch } from 'react-redux'
-import { updateAdminById, updatePermissionById } from 'redux/admin/action'
+import { updatePermissionById } from 'redux/admin/action'
 
 interface Permission {
     [key: string]: string

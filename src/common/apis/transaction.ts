@@ -22,7 +22,7 @@ export interface TransactionInterface {
     recipientBankAccountNumber: string
     recipientBankName: string
     companyBankId?: string
-    amount: number
+    amount: string
     transactionType: TransactionType
     adminId?: string
     notes?: string

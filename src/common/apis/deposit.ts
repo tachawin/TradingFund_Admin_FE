@@ -4,6 +4,7 @@ import { TransactionInterface } from './transaction'
 
 export interface DepositUpdateInterface {
     notes?: string
+    status?: string
 }
 
 export interface DepositUpdateCustomerInterface {
@@ -12,21 +13,28 @@ export interface DepositUpdateCustomerInterface {
 }
 
 export interface DepositCreateInterface {
-    transactionTimestamp: string
     mobileNumber: string
-    amount: number
-    payerBankAccountNumber: string
-    payerBankName: string
     companyBankId: string
-    notes?: string
+    amount: string
 }
 
-export const requestDeposit = (data: TransactionInterface) => 
-    axios({
-        method: 'post',
-        url: '/transaction/deposit/request',
-        headers: { Authorization: `Bearer ${getAccessToken()}` },
-        data
+export const deposit = async (
+    data: DepositCreateInterface, 
+    next: () => void,
+    handleError: (error: any) => void
+) => 
+    await authorizationHandler(async () => {
+        try {
+            await axios({
+                method: 'post',
+                url: '/transaction/deposit/action',
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
+                data
+            })
+            next()
+        } catch (error: any) {
+            handleError(error)
+        }
     })
  
 

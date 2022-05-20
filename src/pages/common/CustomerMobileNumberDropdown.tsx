@@ -17,14 +17,21 @@ interface CustomerMobileNumberDropdownInterface {
     setSelectedMobileNumber: (value: string | string[]) => void
     disabled?: boolean
     multipleSelect?: boolean
+    isValid?: boolean
+    touched?: boolean
+    error?: string
 }
 
-const CustomerMobileNumberDropdown = ({ selectedMobileNumber, setSelectedMobileNumber, disabled = false, multipleSelect = false }: CustomerMobileNumberDropdownInterface) => {
+const CustomerMobileNumberDropdown = ({ 
+    selectedMobileNumber, setSelectedMobileNumber, disabled = false, multipleSelect = false, isValid, touched, error 
+}: CustomerMobileNumberDropdownInterface) => {
     const { t } = useTranslation('customer')
     const dispatch = useDispatch()
     const mobileNumberList = useSelector(selectCustomerMobileNumber)
     const [isLoading, setIsLoading] = useState(false)
     const [filteredMobileNumber, setFilteredMobileNumber] = useState(mobileNumberList)
+
+    console.log(isValid, touched, error)
 
     useEffect(() => {
         setFilteredMobileNumber(mobileNumberList)
@@ -97,10 +104,13 @@ const CustomerMobileNumberDropdown = ({ selectedMobileNumber, setSelectedMobileN
             : <Input
                 onChange={(e: ChangeEvent<HTMLInputElement>) => filterMobileNumber(e)}
                 onSelect={() => setIsOpenCustomerDropdown(true)}
-                className='border-0'
+                className={error ? '' : 'border-0'}
                 value={selectedMobileNumber}
                 placeholder={MOBILE_NUMBER_PLACEHOLDER}
                 disabled={disabled}
+                isValid={isValid}
+                isTouched={touched && error}
+                invalidFeedback={error}
             />}
             <DropdownMenu
                 className='overflow-scroll'

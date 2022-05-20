@@ -33,10 +33,16 @@ const AdminDeleteModal = ({ id, isOpen, setIsOpen, data }: AdminEditModalInterfa
                 data.adminId, 
                 () => {
                     data.adminId && dispatch(deleteAdminById(data.adminId))
+                    showNotification(
+                        <span className='d-flex align-items-center'>
+                            <Icon icon='Info' size='lg' className='me-1' />
+                            <span>{t('admin:delete.successfully')}</span>
+                        </span>,
+                        t('admin:delete.admin.successfully', { adminName: data?.name }),
+                    )
                     setIsOpen(false)
                     setIsLoading(false)
-                },
-                (error: any) => {
+                }, (error: any) => {
                     const { response } = error
                     console.log(response.data)
                     showNotification(

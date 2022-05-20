@@ -6,21 +6,26 @@ import { Check } from 'components/icon/bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectCompanyBankList } from 'redux/companyBank/selector'
 import { getCompanyBankList, CompanyBankInterface } from 'common/apis/companyBank'
-import { storeBank } from 'redux/bank/action'
 import showNotification from 'components/extras/showNotification'
 import Icon from 'components/icon/Icon'
 import { useTranslation } from 'react-i18next'
 import Spinner from 'components/bootstrap/Spinner'
 import { storeCompanyBank } from 'redux/companyBank/action'
+import classNames from 'classnames'
 
 interface CompanyBanksDropdownInterface {
     selectedBank: CompanyBankInterface | CompanyBankInterface[] | string
     setSelectedBank: (value: CompanyBankInterface | CompanyBankInterface[]) => void
     disabled?: boolean
     multipleSelect?: boolean
+    isValid?: boolean
+    touched?: boolean
+    error?: string
 }
 
-const CompanyBanksDropdown = ({ selectedBank, setSelectedBank, disabled = false, multipleSelect = false }: CompanyBanksDropdownInterface) => {
+const CompanyBanksDropdown = ({ 
+    selectedBank, setSelectedBank, disabled = false, multipleSelect = false, isValid, touched, error
+}: CompanyBanksDropdownInterface) => {
     const { t } = useTranslation('bank')
     const dispatch = useDispatch()
 
@@ -65,7 +70,7 @@ const CompanyBanksDropdown = ({ selectedBank, setSelectedBank, disabled = false,
     return (
         <Dropdown>
             {multipleSelect ? <DropdownToggle
-                className={{ 'd-flex': true, 'align-items-center': true, 'w-100': true }}
+                className={{ 'd-flex': true, 'align-items-center': true, 'w-100': true, 'border-danger': error }}
                 isLight 
                 color='dark' 
                 isOpen={Boolean(isOpenBankDropdown)} 
@@ -79,7 +84,7 @@ const CompanyBanksDropdown = ({ selectedBank, setSelectedBank, disabled = false,
                     {(selectedBank as CompanyBankInterface[]).map((bank) => bank.bankName.toUpperCase()).join(', ') || BANK_PLACEHOLDER}
                 </span>
             </DropdownToggle> : <DropdownToggle
-                className={{ 'd-flex': true, 'align-items-center': true, 'w-100': true }}
+                className={{ 'd-flex': true, 'align-items-center': true, 'w-100': true, 'border-danger': error && touched }}
                 isLight 
                 color='dark' 
                 isOpen={Boolean(isOpenBankDropdown)} 
@@ -123,6 +128,7 @@ const CompanyBanksDropdown = ({ selectedBank, setSelectedBank, disabled = false,
                 <Spinner color='primary' size={16} />
             </div>}
             </DropdownMenu>
+            {(error && touched) && <div className='d-block invalid-feedback'>{error}</div>}
         </Dropdown>
   )
 }

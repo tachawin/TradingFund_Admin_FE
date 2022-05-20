@@ -19,7 +19,7 @@ interface CommonLevelsDropdownInterface {
 }
 
 const CommonLevelsDropdown = ({ selectedLevel, setSelectedLevel, disabled = false, multipleSelect = false }: CommonLevelsDropdownInterface) => {
-    const { t } = useTranslation('bank')
+    const { t } = useTranslation('level')
     const dispatch = useDispatch()
     const levels = useSelector(selectLevels)
     const [isLoading, setIsLoading] = useState(true)

@@ -14,11 +14,13 @@ import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import * as Yup from 'yup'
-import { DepositUpdateInterface, updateDeposit, updateDepositCustomer, DepositUpdateCustomerInterface, waiveDeposit } from 'common/apis/deposit'
+import { DepositUpdateInterface, updateDeposit, updateDepositCustomer, DepositUpdateCustomerInterface, waiveDeposit, deposit, DepositCreateInterface } from 'common/apis/deposit'
 import CustomerMobileNumberDropdown from 'pages/common/CustomerMobileNumberDropdown'
 import CompanyBanksDropdown from 'pages/common/CompanyBanksDropdown'
-import { CompanyBankInterface } from 'common/apis/companyBank'
-import { TransactionInterface } from 'common/apis/transaction'
+import { CompanyBankInterface, CompanyBankStatus, CompanyBankType } from 'common/apis/companyBank'
+import { TransactionInterface, TransactionStatus } from 'common/apis/transaction'
+import { useDispatch } from 'react-redux'
+import { addNewDeposit, updateDepositById } from 'redux/deposit/action'
 
 export enum DepositModalType {
     Add = 'add',
@@ -41,12 +43,17 @@ interface DepositModalInterface {
 const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) => {
     const { t } = useTranslation(['common', 'deposit'])
     const { type, selectedRow: data } = properties
+    const dispatch = useDispatch()
+
+    console.log(data)
 
     const AddDepositSchema = Yup.object().shape({
         mobileNumber: Yup.string().required('โปรดใส่เบอร์โทรลูกค้า'),
         amount: Yup.string().required('โปรดใส่จำนวนเงิน'),
         payerBankAccountNumber: Yup.string().required('โปรดใส่หมายเลขบัญชีลูกค้า'),
-        recipientBankAccountNumber: Yup.string().required('โปรดใส่หมายเลขบัญชีบริษัท'),
+        recipientBank: Yup.object().shape({
+            bankId: Yup.string().required('โปรดเลือกบัญชีบริษัท'),
+        })
 	})
 
     const RefundDepositSchema = Yup.object().shape({
@@ -69,8 +76,35 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
         }
     }
 
+    const addDeposit = (newData: DepositCreateInterface) => {
+        deposit(newData, () => {
+            dispatch(addNewDeposit({
+                payerBankAccountNumber: values.payerBankAccountNumber,
+                recipientBankAccountNumber: values.recipientBank.bankAccountNumber,
+                recipientBankName: values.recipientBank.bankAccountName,
+                ...newData
+            }))
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <Icon icon='Info' size='lg' className='me-1' />
+                    <span>{t('deposit:save.deposit.successfully')}</span>
+                </span>, t('deposit:save.deposit.from.mobile.number.successfully', { mobileNumber: values.mobileNumber })
+            )
+        }, (error) => {
+            const { response } = error
+            console.log(response)
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <Icon icon='Info' size='lg' className='me-1' />
+                    <span>{t('deposit:save.deposit.failed')}</span>
+                </span>, t('deposit:save.deposit.from.mobile.number.failed', { mobileNumber: values.mobileNumber })
+            )
+        })
+    }
+
     const editDeposit = (id: string, newData: DepositUpdateInterface) => {
         updateDeposit(id, newData, () => {
+            dispatch(updateDepositById(id, newData))
             showNotification(
                 <span className='d-flex align-items-center'>
                     <Icon icon='Info' size='lg' className='me-1' />
@@ -91,6 +125,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
 
     const pickCustomer = (id: string, newData: DepositUpdateCustomerInterface) => {
         updateDepositCustomer(id, newData, () => {
+            dispatch(updateDepositById(id, { ...newData, status: TransactionStatus.Success }))
             showNotification(
                 <span className='d-flex align-items-center'>
                     <Icon icon='Info' size='lg' className='me-1' />
@@ -111,6 +146,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
 
     const refundDeposit = (id: string, newData: DepositUpdateInterface) => {
         waiveDeposit(id, newData, () => {
+            dispatch(updateDepositById(id, { ...newData, status: TransactionStatus.Cancel }))
             showNotification(
                 <span className='d-flex align-items-center'>
                     <Icon icon='Info' size='lg' className='me-1' />
@@ -136,28 +172,34 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             mobileNumber: data?.mobileNumber || '',
             amount: data?.amount || '',
             payerBankAccountNumber: data?.payerBankAccountNumber || '',
-            recipientBankAccountNumber: data?.recipientBankAccountNumber || '',
+            recipientBank: {
+                bankId: data?.companyBankId || '',
+                bankAccountNumber: data?.recipientBankAccountNumber || '',
+                bankAccountName: '',
+                bankName: data?.recipientBankName || '',
+                balance: 0,
+                type: CompanyBankType.Deposit,
+                status: CompanyBankStatus.Active
+            },
             notes: type === DepositModalType.Edit ? data?.notes : '',
 		},
         validationSchema: selectValidationSchema(),
 		onSubmit: (values) => {
-            // EDIT
-            console.log(values)
-
             if (type === DepositModalType.Refund) {
                 data?.transactionId && refundDeposit(data.transactionId, { notes: values.notes })
             } else if (type === DepositModalType.Edit) {
                 data?.transactionId && editDeposit(data.transactionId, { notes: values.notes })
             } else if (type === DepositModalType.SelectPayer) {
-                data?.transactionId && pickCustomer(data.transactionId, { mobileNumber: values.mobileNumber })
+                data?.transactionId && pickCustomer(data.transactionId, { 
+                    mobileNumber: values.mobileNumber,
+                    notes: values.notes,
+                })
             } else {
-                showNotification(
-                    <span className='d-flex align-items-center'>
-                        <Icon icon='Info' size='lg' className='me-1' />
-                        <span>{type === 'add' ? t('deposit:save.deposit.successfully') : t('deposit:edit.successfully')}</span>
-                    </span>, t('deposit:save.deposit.from.mobile.number.successfully', { mobileNumber: values.mobileNumber })
-                )
-    
+                values.recipientBank.bankId && addDeposit({
+                    mobileNumber: values.mobileNumber,
+                    companyBankId: values.recipientBank.bankId,
+                    amount: values.amount
+                })
             }
 			
             setIsOpen(false)
@@ -203,6 +245,9 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
                                 disabled={type === DepositModalType.Edit}
                                 selectedMobileNumber={values.mobileNumber}
                                 setSelectedMobileNumber={(mobileNumber: string | string[]) => setFieldValue('mobileNumber', mobileNumber)}
+                                isValid={isValid}
+                                touched={touched.mobileNumber}
+                                error={errors.mobileNumber}
                             />
                         </FormGroup>
                         <FormGroup id='amount' label={t('form.amount')}>
@@ -226,11 +271,14 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
                                 invalidFeedback={errors.payerBankAccountNumber}
                             />
                         </FormGroup>
-                        <FormGroup id='recipientBankAccountNumber' label={t('form.recipient.bank.account.number')}>
+                        <FormGroup id='recipientBank' label={t('form.recipient.bank.account.number')}>
                             <CompanyBanksDropdown
                                 disabled={type !== DepositModalType.Add}
-                                selectedBank={values.recipientBankAccountNumber}
-                                setSelectedBank={(bank: CompanyBankInterface | CompanyBankInterface[]) => setFieldValue('recipientBankAccountNumber', bank)}
+                                selectedBank={values.recipientBank}
+                                setSelectedBank={(bank: CompanyBankInterface | CompanyBankInterface[]) => setFieldValue('recipientBank', bank)}
+                                isValid={isValid}
+                                touched={touched.recipientBank?.bankId}
+                                error={errors.recipientBank?.bankId}
                             />
                         </FormGroup>
                     </>}
