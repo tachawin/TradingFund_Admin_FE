@@ -1,7 +1,8 @@
-import { InitialState, STORE_WITHDRAW_LIST, STORE_WITHDRAW_LIST_QUERY, WithdrawActionTypes } from './types'
+import { InitialState, STORE_WITHDRAW_HISTORY_LIST, STORE_WITHDRAW_LIST_QUERY, STORE_WITHDRAW_REQUEST_LIST, WithdrawActionTypes } from './types'
 
 const INITIAL_STATE: InitialState = {
-  withdrawList: [],
+  withdrawRequestList: [],
+  withdrawHistoryList: [],
   withdrawQuery: {
     keyword: '',
     status: '',
@@ -15,10 +16,15 @@ const INITIAL_STATE: InitialState = {
 
 const withdrawReducer = (state = INITIAL_STATE, action: WithdrawActionTypes): InitialState => {
   switch (action.type) {
-    case STORE_WITHDRAW_LIST:
+    case STORE_WITHDRAW_REQUEST_LIST:
       return {
         ...state,
-        withdrawList: action.payload
+        withdrawRequestList: action.payload
+      }
+    case STORE_WITHDRAW_HISTORY_LIST:
+      return {
+        ...state,
+        withdrawHistoryList: action.payload
       }
     case STORE_WITHDRAW_LIST_QUERY:
       return {

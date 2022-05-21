@@ -11,7 +11,6 @@ import Icon from 'components/icon/Icon'
 import { useTranslation } from 'react-i18next'
 import Spinner from 'components/bootstrap/Spinner'
 import { storeCompanyBank } from 'redux/companyBank/action'
-import classNames from 'classnames'
 
 interface CompanyBanksDropdownInterface {
     selectedBank: CompanyBankInterface | CompanyBankInterface[] | string

@@ -314,7 +314,7 @@ const Admin = () => {
 				<div className='row h-100'>
 					<div className={`col-12 ${(isLoading || !admins) ? 'd-flex align-items-center justify-content-center' : 'px-4'}`}>
 						{isLoading ? <Spinner color='info' isGrow size={60} /> 
-							: admins ? <AdminTable 
+							: <AdminTable 
 								cardHeader={
 									<CardHeader>
 										<CardLabel>
@@ -326,7 +326,7 @@ const Admin = () => {
 								setIsOpenAdminModal={setIsOpenAdminModal}
 								setIsOpenDeleteModal={setIsOpenDeleteModal}
 								setIsOpenPermissionModal={setIsOpenPermissionModal}
-							/> : <CommonTableNotFound />
+							/>
 						}
 					</div>
 				</div>

@@ -8,8 +8,8 @@ const INITIAL_STATE: InitialState = {
   features: {
     report: '0000',
     customer: '0000',
-    deposit: '0000',
-    withdraw: '0000',
+    deposit: '1111',
+    withdraw: '1111',
     bank: '0110',
     reward: '0000',
     credit: '0000',

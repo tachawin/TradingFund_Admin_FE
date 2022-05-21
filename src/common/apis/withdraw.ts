@@ -21,74 +21,74 @@ export interface WithdrawCreateInterface {
     notes?: string
 }
 
-export const requestWithdraw = (data: TransactionInterface) => 
-    axios({
-        method: 'post',
-        url: '/transaction/withdraw/request',
-        headers: { Authorization: `Bearer ${getAccessToken()}` },
-        data
-    })
+// export const requestWithdraw = (data: TransactionInterface) => 
+//     axios({
+//         method: 'post',
+//         url: '/transaction/withdraw/request',
+//         headers: { Authorization: `Bearer ${getAccessToken()}` },
+//         data
+//     })
  
 
-export const updateWithdraw = async (
-    transactionId: string,
-    data: WithdrawUpdateInterface,
-    next: () => void,
-    handleError: (error: any) => void
-) =>
-    await authorizationHandler(async () => {
-        try {
-            await axios({
-                method: 'patch',
-                headers: { Authorization: `Bearer ${getAccessToken()}` },
-                url: `/transaction/withdraw/note/${transactionId}`,
-                data
-            })
-            next()
-        } catch (error: any) {
-            handleError(error)
-        }
-    })
+// export const updateWithdraw = async (
+//     transactionId: string,
+//     data: WithdrawUpdateInterface,
+//     next: () => void,
+//     handleError: (error: any) => void
+// ) =>
+//     await authorizationHandler(async () => {
+//         try {
+//             await axios({
+//                 method: 'patch',
+//                 headers: { Authorization: `Bearer ${getAccessToken()}` },
+//                 url: `/transaction/withdraw/note/${transactionId}`,
+//                 data
+//             })
+//             next()
+//         } catch (error: any) {
+//             handleError(error)
+//         }
+//     })
 
-export const updateWithdrawCustomer = async (
-    transactionId: string,
-    data: WithdrawUpdateCustomerInterface,
-    next: () => void,
-    handleError: (error: any) => void
-) =>
-    await authorizationHandler(async () => {
-        try {
-            await axios({
-                method: 'patch',
-                headers: { Authorization: `Bearer ${getAccessToken()}` },
-                url: `/transaction/withdraw/pick/customer/${transactionId}`,
-                data
-            })
-            next()
-        } catch (error: any) {
-            handleError(error)
-        }
-    })
+// export const updateWithdrawCustomer = async (
+//     transactionId: string,
+//     data: WithdrawUpdateCustomerInterface,
+//     next: () => void,
+//     handleError: (error: any) => void
+// ) =>
+//     await authorizationHandler(async () => {
+//         try {
+//             await axios({
+//                 method: 'patch',
+//                 headers: { Authorization: `Bearer ${getAccessToken()}` },
+//                 url: `/transaction/withdraw/pick/customer/${transactionId}`,
+//                 data
+//             })
+//             next()
+//         } catch (error: any) {
+//             handleError(error)
+//         }
+//     })
 
-export const waiveWithdraw = async (
-    transactionId: string,
-    data: WithdrawUpdateInterface,
-    next: () => void,
-    handleError: (error: any) => void
-) =>
-    await authorizationHandler(async () => {
-        try {
-            await axios({
-                method: 'patch',
-                headers: { Authorization: `Bearer ${getAccessToken()}` },
-                url: `/transaction/withdraw/waive/${transactionId}`,
-                data
-            })
-            next()
-        } catch (error: any) {
-            handleError(error)
-        }
-    })
+// export const waiveWithdraw = async (
+//     transactionId: string,
+//     data: WithdrawUpdateInterface,
+//     next: () => void,
+//     handleError: (error: any) => void
+// ) =>
+//     await authorizationHandler(async () => {
+//         try {
+//             await axios({
+//                 method: 'patch',
+//                 headers: { Authorization: `Bearer ${getAccessToken()}` },
+//                 url: `/transaction/withdraw/waive/${transactionId}`,
+//                 data
+//             })
+//             next()
+//         } catch (error: any) {
+//             handleError(error)
+//         }
+//     })
 
 export const getWithdrawRequestList = async (
     query: string,
@@ -99,16 +99,17 @@ export const getWithdrawRequestList = async (
         try {
 			const res = await axios({
                 method: 'get',
-                url: `/transaction/withdraw/admin/list/request_withdraw`,
+                url: `/transaction/withdraw/admin/list/request_withdraw${query}`,
                 headers: { Authorization: `Bearer ${getAccessToken()}` },
             })
+            console.log(res)
             next(res.data)
         } catch (error: any) {
             handleError(error)
         }
 })
 
-export const getWithdrawList = async (
+export const getWithdrawHistoryList = async (
     query: string,
     next: (withdrawList: TransactionInterface[]) => void,
     handleError: (error: any) => void
@@ -117,7 +118,7 @@ export const getWithdrawList = async (
         try {
 			const res = await axios({
                 method: 'get',
-                url: `/transaction/withdraw/admin/list/withdraw`,
+                url: `/transaction/withdraw/admin/list/withdraw${query}`,
                 headers: { Authorization: `Bearer ${getAccessToken()}` },
             })
             next(res.data)
@@ -126,21 +127,21 @@ export const getWithdrawList = async (
         }
 })
 
-export const deleteTransaction = async (
-    transactionId: string,
-    next: () => void,
-    handleError: (error: any) => void
-) =>
-    await authorizationHandler(async () => {
-        try {
-			await axios({
-                method: 'delete',
-                headers: { Authorization: `Bearer ${getAccessToken()}` },
-                url: '/transaction/delete/soft',
-                data: { transactionId }
-            })
-            next()
-		} catch (error: any) {
-			handleError(error)
-		}
-    })
+// export const deleteTransaction = async (
+//     transactionId: string,
+//     next: () => void,
+//     handleError: (error: any) => void
+// ) =>
+//     await authorizationHandler(async () => {
+//         try {
+// 			await axios({
+//                 method: 'delete',
+//                 headers: { Authorization: `Bearer ${getAccessToken()}` },
+//                 url: '/transaction/delete/soft',
+//                 data: { transactionId }
+//             })
+//             next()
+// 		} catch (error: any) {
+// 			handleError(error)
+// 		}
+//     })

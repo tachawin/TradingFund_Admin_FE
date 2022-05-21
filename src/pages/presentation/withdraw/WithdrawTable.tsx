@@ -7,9 +7,14 @@ import PaginationButtons, { dataPagination, PER_COUNT } from 'components/Paginat
 import Button from 'components/bootstrap/Button'
 import { WithdrawModalType } from './WithdrawModal'
 import banks from 'common/data/dummyBankData'
+import { useSelector } from 'react-redux'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { TransactionInterface, TransactionStatus, TransactionType } from 'common/apis/transaction'
+import moment from 'moment'
 
 interface WithdrawTableInterface {
-    data: any
+    data: TransactionInterface[]
     setIsOpenWithdrawModal?: (value: { type: WithdrawModalType, bank?: string, selectedRow: any }) => void
     setIsOpenCancelWithdrawModal?: (value: { type: WithdrawModalType, selectedRow: any }) => void
     columns?: any
@@ -28,6 +33,8 @@ const WithdrawTable = ({
     const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
+
+    const permission = useSelector(selectPermission)
 
     const getStatusText = (status: string): ReactNode => {
         if (status === 'success') {
@@ -145,27 +152,27 @@ const WithdrawTable = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {dataPagination(items, currentPage, perPage).map((i: any, index: number) => (
-                            <tr key={i.id}>
+                        {items.length > 0 ? dataPagination(items, currentPage, perPage).map((transaction: TransactionInterface, index: number) => (
+                            <tr key={transaction.transactionId}>
                                 {columns?.id && <td className='text-center'>
                                     <div>{index + 1}</div>
                                 </td>}
                                 <td>
-                                    <div>{i.date.format('ll')}</div>
+                                    <div>{moment(transaction.createdAt).format('ll')}</div>
                                     <div>
                                         <small className='text-muted'>
-                                            {i.date.fromNow()}
+                                            {moment(transaction.createdAt).fromNow()}
                                         </small>
                                     </div>
                                 </td>
                                 {columns?.name &&
                                     <td>
-                                        <div>{i.name}</div>
+                                        <div>{transaction.mobileNumber}</div>
                                     </td>
                                 }
                                 {columns?.mobileNumber &&
                                     <td>
-                                        <div>{i.mobileNumber}</div>
+                                        <div>{transaction.mobileNumber}</div>
                                     </td>
                                 }
                                 {columns?.from && 
@@ -173,11 +180,11 @@ const WithdrawTable = ({
                                         <div className='d-flex align-items-center'>
                                             <div className='flex-grow-1'>
                                                 <div className='fs-6 fw-bold'>
-                                                    *{i.payerBankAccountNumber}
+                                                    *{transaction.payerBankAccountNumber}
                                                 </div>
                                                 <div className='text-muted text-nowrap'>
                                                     <Icon icon='Label' />{' '}
-                                                    <small>{i.payerBankName.toUpperCase()}</small>
+                                                    <small>{transaction.payerBankName.toUpperCase()}</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -187,44 +194,44 @@ const WithdrawTable = ({
                                     <div className='d-flex align-items-center'>
                                         <div className='flex-grow-1'>
                                             <div className='fs-6 fw-bold'>
-                                                *{i.recipientBankAccountNumber}
+                                                *{transaction.recipientBankAccountNumber}
                                             </div>
                                             <div className='text-muted text-nowrap'>
                                                 <Icon icon='Label' />{' '}
-                                                <small>{i.recipientBankName.toUpperCase()}</small>
+                                                <small>{transaction.recipientBankName.split(' ')[0].toUpperCase()}</small>
                                             </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <div>{i.amount.toLocaleString()}</div>
+                                    <div>{transaction.amount.toLocaleString()}</div>
                                 </td>
                                 {columns?.lastDepositAmount &&
                                     <td>
-                                        <div>{i.amount.toLocaleString()}</div>
+                                        <div>{transaction.amount.toLocaleString()}</div>
                                     </td>
                                 }
                                 {columns?.notes &&
-                                    <td style={{ width: '15%' }}>
-                                        <div>{i.note}</div>
+                                    <td>
+                                        <div>{transaction.notes}</div>
                                     </td>
                                 }
                                 {columns?.status &&
                                     <td>
-                                        <div>{getStatusText(i.status)}</div>
+                                        <div>{getStatusText(transaction.status)}</div>
                                     </td>
                                 }
                                 {columns?.operator &&
                                     <td>
-                                        <div>{i.operator}</div>
+                                        <div>{transaction.adminId}</div>
                                     </td>
                                 }
                                 {(setIsOpenWithdrawModal && setIsOpenCancelWithdrawModal) && <td>
-                                    {i.status === 'request' ? <div className='row gap-3'>
+                                    {transaction.transactionType === TransactionType.RequestWithdraw ? <div className='row gap-3'>
                                         {banks.map((bank) => 
                                             <Button
                                                 key={bank.id}
-                                                onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.System, bank: bank.name, selectedRow: i})}
+                                                onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.System, bank: bank.name, selectedRow: transaction})}
                                                 color='primary'
                                                 className='col'
                                                 isLight
@@ -233,14 +240,14 @@ const WithdrawTable = ({
                                             </Button>
                                         )}
                                         <Button
-                                            onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.Manual, selectedRow: i})}
+                                            onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.Manual, selectedRow: transaction})}
                                             className='text-nowrap col'
                                             color='light-dark'
                                         >
                                             {t('manual')}
                                         </Button>
                                         <Button
-                                            onClick={() => setIsOpenCancelWithdrawModal({ type: WithdrawModalType.Delete, selectedRow: i})}
+                                            onClick={() => setIsOpenCancelWithdrawModal({ type: WithdrawModalType.Delete, selectedRow: transaction})}
                                             color='light-dark'
                                             className='col'
                                         >
@@ -249,7 +256,13 @@ const WithdrawTable = ({
                                     </div> : <></>}
                                 </td>}
                             </tr>
-                        ))}
+                        )) : permission.withdraw[PermissionType.Read] === PermissionValue.Unavailable ?
+                        <tr>
+                            <td colSpan={8} className='text-center'>ไม่มีสิทธิ์เข้าถึง</td>
+                        </tr>
+                        : <tr>
+                            <td colSpan={8} className='text-center'>ไม่พบข้อมูล</td>
+                        </tr>}
                     </tbody>
                 </table>
             </CardBody>

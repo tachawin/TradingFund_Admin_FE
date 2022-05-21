@@ -42,12 +42,13 @@ interface DepositFilterInterface {
 	price: {
 		min: string
 		max: string
-	},
+	}
 	createdAt: {
 		startDate: Date
 		endDate: Date
 		key: string
 	}[]
+	isCreatedAtDateChanged: boolean
 }
 
 const Deposit = () => {
@@ -67,7 +68,6 @@ const Deposit = () => {
 		let query = queryString ? `?${queryString}` : ''
 		setIsLoading(true)
 		getDepositList(query, (depositList: TransactionInterface[]) => {
-			console.log(depositList)
 			dispatch(storeDepositList(depositList))
 			setIsLoading(false)
 		}, (error: any) => {
@@ -100,18 +100,18 @@ const Deposit = () => {
 					key: 'selection',
 				},
 			],
-            bank: []
+            bank: [],
+			isCreatedAtDateChanged: false,
 		},
 		onSubmit: (values) => {
 			dispatch(storeDepositQuery({
 				...depositQueryList,
-				bank: values.bank.length > 0 ? `bank=${values.bank.map((item) => item.bankId).join(',')}` : '',
+				bank: values.bank.length > 0 ? `companyBankId=${values.bank.map((item) => item.bankId).join(',')}` : '',
 				status: values.status.length > 0 ? `status=${values.status.join(',')}` : '',
-				start: `start=${moment(values.createdAt[0].startDate).format('YYYY-MM-DD')}`,
-				end: `end=${moment(values.createdAt[0].endDate).format('YYYY-MM-DD')}`,
-				min: `min=${values.price.min}`,
-				max: `max=${values.price.max}`
-
+				start: values.isCreatedAtDateChanged ? `start=${moment(values.createdAt[0].startDate).format('YYYY-MM-DD')}` : '',
+				end: values.isCreatedAtDateChanged ? `end=${moment(values.createdAt[0].endDate).format('YYYY-MM-DD')}`: '',
+				min: values.price.min ? `min=${values.price.min}` : '',
+				max: values.price.max ? `max=${values.price.max}` : ''
 			}))
 		},
 	})
@@ -120,7 +120,8 @@ const Deposit = () => {
 		values,
 		setFieldValue,
 		resetForm,
-		handleSubmit
+		handleSubmit,
+		handleChange
 	} = formik
 
 	const datePicker = (selectedDate: any, field: string) => (
@@ -212,18 +213,28 @@ const Deposit = () => {
 							},
 							{
 								label: t('filter.timestamp'),
-								children: <Dropdown >
-									<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										<span data-tour='date-range'>
-											{`${moment(values.createdAt[0].startDate).format('MMM Do YY')} - ${moment(
-												values.createdAt[0].endDate,
-											).format('MMM Do YY')}`}
-										</span>
-									</DropdownToggle>
-									<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										{datePicker(values.createdAt, 'createdAt')}
-									</DropdownMenu>
-								</Dropdown>
+								children: <div>
+									<Checks
+										id='isCreatedAtDateChanged'
+										type='switch'
+										label={t('filter.timestamp')}
+										onChange={handleChange}
+										checked={values.isCreatedAtDateChanged}
+										ariaLabel='Filter Created At Date'
+									/>
+									{values.isCreatedAtDateChanged && <Dropdown className='mt-2'>
+										<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
+											<span data-tour='date-range'>
+												{`${moment(values.createdAt[0].startDate).format('MMM Do YY')} - ${moment(
+													values.createdAt[0].endDate,
+												).format('MMM Do YY')}`}
+											</span>
+										</DropdownToggle>
+										<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
+											{datePicker(values.createdAt, 'createdAt')}
+										</DropdownMenu>
+									</Dropdown>}
+								</div>
 							},
 							{
 								label: t('filter.amount'),
@@ -272,10 +283,9 @@ const Deposit = () => {
 			</SubHeader>
 			<Page>
 				<div className='row h-100'>
-					<div className={`col-12 ${(isLoading || depositList.length === 0) ? 'd-flex align-items-center justify-content-center' : 'px-4'}`}>
+					<div className={`col-12 ${isLoading ? 'd-flex align-items-center justify-content-center' : 'px-4'}`}>
 						{isLoading ? <Spinner color='info' isGrow size={60} /> 
-							: depositList.length > 0 ? <DepositTable data={depositList} setIsOpenDepositModal={setIsOpenDepositModal} />
-							: <CommonTableNotFound />
+							: <DepositTable data={depositList} setIsOpenDepositModal={setIsOpenDepositModal} />
 						}
 					</div>
 				</div>

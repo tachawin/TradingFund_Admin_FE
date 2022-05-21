@@ -9,6 +9,9 @@ import { TransactionInterface, TransactionStatus } from 'common/apis/transaction
 import moment from 'moment'
 import 'moment/locale/th'
 import { DepositModalProperties, DepositModalType } from './DepositModal'
+import { useSelector } from 'react-redux'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
 
 interface DepositTableInterface {
     data: TransactionInterface[]
@@ -23,6 +26,8 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
     const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
+
+    const permission = useSelector(selectPermission)
 
     const getStatusText = (status: string): ReactNode => {
         if (status === TransactionStatus.Success) {
@@ -102,7 +107,7 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                         </tr>
                     </thead>
                     <tbody>
-                        {dataPagination(items, currentPage, perPage).map((transaction: TransactionInterface, index: number) => (
+                        {items.length > 0 ? dataPagination(items, currentPage, perPage).map((transaction: TransactionInterface, index: number) => (
                             <tr key={transaction.transactionId}>
                                 <td className='text-center'>
                                     <div>{index + 1}</div>
@@ -174,7 +179,13 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                                     </div>
                                 </td>}
                             </tr>
-                        ))}
+                        )) : permission.deposit[PermissionType.Read] === PermissionValue.Unavailable ?
+                        <tr>
+                            <td colSpan={8} className='text-center'>ไม่มีสิทธิ์เข้าถึง</td>
+                        </tr>
+                        : <tr>
+                            <td colSpan={8} className='text-center'>ไม่พบข้อมูล</td>
+                        </tr>}
                     </tbody>
                 </table>
             </CardBody>
