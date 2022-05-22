@@ -20,7 +20,8 @@
     
     "deposit": "ฝาก",
     "withdraw": "ถอน",
+    "request.withdraw": "คำขอถอน",
 
-    "export.pdf": "ดาวน์โหลด PDF",
+    "export.excel": "ดาวน์โหลด Excel",
     "print": "พิมพ์"
 }

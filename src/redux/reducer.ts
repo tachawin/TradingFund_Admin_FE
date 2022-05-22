@@ -8,6 +8,7 @@ import levelReducer from './level/reducer'
 import withdrawReducer from './withdraw/reducer'
 import productReducer from './product/reducer'
 import userReducer from './user/reducer'
+import transactionReducer from './transaction/reducer'
 
 const rootReducer = combineReducers({
   admin: adminReducer,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   deposit: depositReducer,
   level: levelReducer,
   product: productReducer,
+  transaction: transactionReducer,
   user: userReducer,
   withdraw: withdrawReducer
 })

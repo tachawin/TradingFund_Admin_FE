@@ -69,3 +69,23 @@ export const deleteProduct = async (
 			handleError(error)
 		}
     })
+
+export const uploadProductImage = async (
+    productId: string,
+    file: File,
+    next: () => void,
+    handleError: (error: any) => void
+) =>
+    await authorizationHandler(async () => {
+        try {
+			await axios({
+                method: 'post',
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
+                url: '/product/upload/preview',
+                data: { productId, file }
+            })
+            next()
+		} catch (error: any) {
+			handleError(error)
+		}
+    })

@@ -6,7 +6,7 @@ import {
 
 const INITIAL_STATE: InitialState = {
   features: {
-    report: '0000',
+    report: '1000',
     customer: '0000',
     deposit: '1111',
     withdraw: '1111',

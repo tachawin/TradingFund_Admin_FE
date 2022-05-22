@@ -122,6 +122,7 @@
     "customer": "ลูกค้า",
     "deposit": "ฝากเงิน",
     "withdraw": "ถอนเงิน",
+    "request.withdraw": "คำขอถอนเงิน",
     "bank": "ธนาคารบริษัท",
     "reward": "แลกรางวัล",
     "credit": "แลกเครดิต",
