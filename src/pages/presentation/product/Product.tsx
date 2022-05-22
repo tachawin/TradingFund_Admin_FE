@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import ProductModal from './ProductModal'
+import ProductModal, { ProductModalType } from './ProductModal'
 import CommonGridProductItem from 'pages/presentation/product/ProductItem'
 import ProductDeleteModal from './ProductDeleteModal'
 import Icon from 'components/icon/Icon'
@@ -80,9 +80,9 @@ const Product = ({ isOpenProductModal, setIsOpenProductModal }: ProductProps) =>
 								description={product.description}
 								remaining={product.quantity}
 								points={product.point}
-								img={product.imageURL}
-								editAction={() => setIsOpenProductModal({ type: 'edit', selectedRow: product })}
-								deleteAction={() => setIsOpenDeleteProductModal({ type: 'delete', selectedRow: product })}
+								img={product?.imageURL}
+								editAction={() => setIsOpenProductModal({ type: ProductModalType.Edit, selectedRow: product })}
+								deleteAction={() => setIsOpenDeleteProductModal({ type: ProductModalType.Delete, selectedRow: product })}
 							/>
 						</div>
 				)) : permission.product[PermissionType.Read] === PermissionValue.Unavailable ? <CommonUnauthorized /> : <CommonTableNotFound />}

@@ -14,7 +14,7 @@ const INITIAL_STATE: InitialState = {
     reward: '0000',
     credit: '0000',
     chat: '0000',
-    product: '1000',
+    product: '1111',
     adminManage: '1111',
     level: '0000',
   }

@@ -14,6 +14,7 @@ import { storeProductQuery } from 'redux/product/action'
 import { selectProductQuery } from 'redux/product/selector'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
+import { ProductModalType } from './ProductModal'
 
 interface ProductFilterInterface {
 	searchInput: string
@@ -155,7 +156,7 @@ const ProductSubHeader = ({ setIsOpenProductModal }: ProductProps) => {
 					icon='PlusLg'
 					color='primary'
 					isLight
-					onClick={() => setIsOpenProductModal({ type: "add" })}
+					onClick={() => setIsOpenProductModal({ type: ProductModalType.Add })}
 					className='text-nowrap'
 				>
 				{t('product:add.product')}

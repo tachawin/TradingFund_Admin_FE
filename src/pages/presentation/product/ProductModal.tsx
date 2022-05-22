@@ -14,7 +14,7 @@ import * as Yup from 'yup'
 import Button from 'components/bootstrap/Button'
 import PlaceholderImage from 'components/extras/PlaceholderImage'
 import { ProductModalInterface } from './Product'
-import { createProduct, updateProduct, ProductBaseInterface, uploadProductImage } from 'common/apis/product'
+import { createProduct, updateProduct, ProductBaseInterface, uploadProductImage, ProductImageUrlInterface } from 'common/apis/product'
 import Spinner from 'components/bootstrap/Spinner'
 import Textarea from '../../../components/bootstrap/forms/Textarea'
 import { useDispatch } from 'react-redux'
@@ -22,10 +22,17 @@ import { addProduct, updateProductById } from 'redux/product/action'
 
 interface ProductForm {
     imageURL: string
+    imageFile: FormData | string
     name: string
     description?: string
     quantity: string | number
     point: string | number
+}
+
+export enum ProductModalType {
+    Add = 'add',
+    Edit = 'edit',
+    Delete = 'delete'
 }
 
 const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) => {
@@ -96,9 +103,32 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
         })
     }
 
+    const uploadImage = (requestBody: ProductBaseInterface, imageFile: FormData) => {
+        uploadProductImage(imageFile, (imageURL: ProductImageUrlInterface) => {
+            if (type === ProductModalType.Add) {
+                addNewProduct({ ...requestBody, imageURL: imageURL.productPreviewPictureURL })
+            } else {
+                editProduct({ ...requestBody, imageURL: imageURL.productPreviewPictureURL })
+            }
+        }, (err) => {
+            const { response } = err
+            const message = response?.data
+            console.log(message)
+            setIsLoading(false)
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <Icon icon='Info' size='lg' className='me-1' />
+                    <span>{t('product:upload.image.failed')}</span>
+                </span>,
+                t('product:upload.product.image.failed', { productName: values.name }),
+            )
+        })
+    }
+
 	const formik = useFormik<ProductForm>({
 		initialValues: {
 			imageURL: data?.imageURL || '',
+            imageFile: '',
             name: data?.name || '',
             description: data?.description || '',
             quantity: data?.quantity || '',
@@ -107,15 +137,21 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
         validationSchema: productSchema,
 		onSubmit: (values) => {
             setIsLoading(true)
+            const { imageFile, ...restValue } = values
             let requestBody: ProductBaseInterface = {
-                ...values,
+                ...restValue,
                 quantity: values.quantity as number,
                 point: values.point as number
             }
-            if (type === 'add') {
-                addNewProduct(requestBody)
+            if (imageFile) {
+                uploadImage(requestBody, imageFile as FormData)
             } else {
-                editProduct(requestBody)
+                const { imageURL, ...restRequestBody } = requestBody
+                if (type === ProductModalType.Add) {
+                    addNewProduct(restRequestBody)
+                } else {
+                    editProduct(restRequestBody)
+                }
             }
 		},
 	})
@@ -126,6 +162,7 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
             const formData = new FormData()
             formData.append('file', uploadedFile)
     
+            setFieldValue('imageFile', formData)
             setFieldValue('imageURL', URL.createObjectURL(uploadedFile))
         }
     }
@@ -164,7 +201,7 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
                                 <div className='col-12'>
                                     <div className='row g-4'>
                                         <Input
-                                            accept="imageURL/*"
+                                            accept="image/*"
                                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleUploadImage(e)}
                                             type='file' 
                                             autoComplete='photo'

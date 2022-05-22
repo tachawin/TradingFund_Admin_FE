@@ -26,7 +26,7 @@ interface ProductItemInterface {
 	description?: string,
 	points: number,
 	remaining: number
-	img: string,
+	img?: string,
 	editAction: any,
 	deleteAction: any,
 }
@@ -101,12 +101,11 @@ const ProductItem = ({
 				</CardActions>
 			</CardHeader>
 			<CardBody>
-				<div style={{ minWidth: 256, minHeight: 220 }}>{img ? 
-					<img
+				<div className='w-100 d-flex align-items-center' style={{ height: 220 }}>{
+					img ? <img
 						src={img}
 						alt=''
-						width={256}
-						height={220}
+						style={{ width: 256, height: 220, objectFit: 'contain' }}
 						className='mx-auto d-block img-fluid mb-3'
 					/>
 					: <PlaceholderImage

@@ -2,7 +2,7 @@ import { getAccessToken } from 'common/utils/auth'
 import axios, { authorizationHandler } from './axios'
 
 export interface ProductBaseInterface {
-    imageURL: string
+    imageURL?: string
     name: string
     description?: string
     point: number
@@ -15,6 +15,10 @@ export interface ProductInterface extends ProductBaseInterface {
     status?: string
     createdAt?: Date
     updatedAt?: Date
+}
+
+export interface ProductImageUrlInterface {
+    productPreviewPictureURL: string
 }
 
 export const createProduct = (data: ProductInterface) => 
@@ -71,20 +75,22 @@ export const deleteProduct = async (
     })
 
 export const uploadProductImage = async (
-    productId: string,
-    file: File,
-    next: () => void,
+    data: FormData,
+    next: (imageURL: ProductImageUrlInterface) => void,
     handleError: (error: any) => void
 ) =>
     await authorizationHandler(async () => {
         try {
-			await axios({
+			const res = await axios({
                 method: 'post',
-                headers: { Authorization: `Bearer ${getAccessToken()}` },
+                headers: { 
+                    Authorization: `Bearer ${getAccessToken()}`,
+                    "Content-Type": "multipart/form-data",
+                },
                 url: '/product/upload/preview',
-                data: { productId, file }
+                data
             })
-            next()
+            next(res.data)
 		} catch (error: any) {
 			handleError(error)
 		}
