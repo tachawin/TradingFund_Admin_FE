@@ -14,16 +14,18 @@ import Level, { LevelModalProperties } from '../level/Level'
 import ProductSubHeader from '../product/ProductSubHeader'
 import LevelSubHeader from '../level/LevelSubHeader'
 import BankSubHeader from '../bank/BankSubHeader'
+import OTPSettings from '../otp/OTPSetting'
 
 enum SettingPanel {
     Product = 'product',
     Bank = 'bank',
-    Level = 'level'
+    Level = 'level',
+	OTP = 'otp'
 }
 
 const Settings = () => {
     const { t } = useTranslation(['common', 'settings'])
-    const [panel, setPanel] = useState<SettingPanel>(SettingPanel.Product)
+    const [panel, setPanel] = useState<SettingPanel>(SettingPanel.OTP)
 	const [isOpenProductModal, setIsOpenProductModal] = useState<ProductModalProperties>()
 	const [isOpenBankModal, setIsOpenBankModal] = useState<BankModalProperties>()
 	const [isOpenLevelModal, setIsOpenLevelModal] = useState<LevelModalProperties>()
@@ -44,6 +46,11 @@ const Settings = () => {
 			id: SettingPanel.Level,
 			subHeader: <LevelSubHeader isOpenLevelModal={isOpenLevelModal} setIsOpenLevelModal={setIsOpenLevelModal} />,
 			body:  <Level isOpenLevelModal={isOpenLevelModal} setIsOpenLevelModal={setIsOpenLevelModal} />
+		},
+		{
+			id: SettingPanel.OTP,
+			subHeader: <></>,
+			body: <OTPSettings />
 		}
 	]
 
@@ -77,6 +84,14 @@ const Settings = () => {
 								onClick={() => setPanel(SettingPanel.Level)}
 							>
 								{t('level')}
+							</Button>
+							<Button
+								color='primary'
+								isLight
+								isActive={panel === SettingPanel.OTP}
+								onClick={() => setPanel(SettingPanel.OTP)}
+							>
+								{t('otp.setting')}
 							</Button>
 						</SubHeaderLeft>
 						<SubHeaderRight className='w-50'>

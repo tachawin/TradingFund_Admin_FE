@@ -44,12 +44,12 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
         withdraw: t("withdraw"),
         bank: t("bank"),
         reward: t("reward"),
-        redeem: t("reward"), // CHANGE TO REWARD
         credit: t("credit"),  
         chat: t("chat"),
         product: t("product"),
         adminManage: t('admin'),
         level: t('level'),
+        systemSetting: t('system.setting'),
     }
 
     const onSelectCheckbox = (event: ChangeEvent<HTMLInputElement>) => {

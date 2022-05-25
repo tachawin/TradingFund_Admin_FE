@@ -128,6 +128,20 @@
     "credit": "แลกเครดิต",
     "chat": "แชทสนทนา",
     "product": "รายการสินค้า",
+    "otp.setting": "ตั้งค่า OTP",
+
+    "otp.customer.desc": "เปิด - ปิดระบบ OTP ขณะลูกค้าสมัครสมาชิก",
+    "otp.admin.desc": "เปิด - ปิดระบบ OTP ขณะแอดมินเข้าสู่ระบบ",
+
+    "on": "เปิด",
+    "off": "ปิด",
+
+    "update.otp.setting.successfully": "ตั้งค่า OTP สำเร็จ",
+    "update.otp.setting.customer.successfully": "ตั้งค่า OTP สำหรับลูกค้าสำเร็จ",
+    "update.otp.setting.admin.successfully": "ตั้งค่า OTP สำหรับแอดมินสำเร็จ",
+    "update.otp.setting.failed": "ตั้งค่า OTP ไม่สำเร็จ",
+    "update.otp.setting.customer.failed": "ตั้งค่า OTP สำหรับลูกค้าไม่สำเร็จ",
+    "update.otp.setting.admin.failed": "ตั้งค่า OTP สำหรับแอดมินไม่สำเร็จ",
 
     "form.tracking.number": "เลขติดตามพัสดุ",
     "form.tracking.number.placeholder": "กรุณาใส่เลขพัสดุ"

@@ -45,8 +45,6 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
     const { type, selectedRow: data } = properties
     const dispatch = useDispatch()
 
-    console.log(data)
-
     const AddDepositSchema = Yup.object().shape({
         mobileNumber: Yup.string().required('โปรดใส่เบอร์โทรลูกค้า'),
         amount: Yup.string().required('โปรดใส่จำนวนเงิน'),
