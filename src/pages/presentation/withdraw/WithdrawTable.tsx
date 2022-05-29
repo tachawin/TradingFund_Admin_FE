@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
@@ -6,12 +6,12 @@ import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
 import { WithdrawModalType } from './WithdrawModal'
-import banks from 'common/data/dummyBankData'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { TransactionInterface, TransactionStatus, TransactionType } from 'common/apis/transaction'
 import moment from 'moment'
+import { selectCompanyBankList } from 'redux/companyBank/selector'
 
 interface WithdrawTableInterface {
     data: TransactionInterface[]
@@ -24,7 +24,7 @@ interface WithdrawTableInterface {
 const WithdrawTable = ({ 
     data, 
     setIsOpenWithdrawModal,
-    setIsOpenCancelWithdrawModal, 
+    setIsOpenCancelWithdrawModal,
     columns, 
     cardHeader 
 }: WithdrawTableInterface) => {
@@ -35,6 +35,7 @@ const WithdrawTable = ({
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
 
     const permission = useSelector(selectPermission)
+    const banks = useSelector(selectCompanyBankList)
 
     const getStatusText = (status: string): ReactNode => {
         if (status === 'success') {
@@ -230,13 +231,13 @@ const WithdrawTable = ({
                                     {transaction.transactionType === TransactionType.RequestWithdraw ? <div className='row gap-3'>
                                         {banks.map((bank) => 
                                             <Button
-                                                key={bank.id}
-                                                onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.System, bank: bank.name, selectedRow: transaction})}
+                                                key={bank.bankId}
+                                                onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.System, bank: bank.bankName, selectedRow: transaction})}
                                                 color='primary'
                                                 className='col'
                                                 isLight
                                             >
-                                                {bank.label.toLocaleUpperCase()}
+                                                {bank.bankName.toLocaleUpperCase()}
                                             </Button>
                                         )}
                                         <Button

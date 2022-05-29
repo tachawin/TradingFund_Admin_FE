@@ -16,7 +16,7 @@ const CustomerTrafficBoard = () => {
     const { t } = useTranslation('dashboard')
 
 	useEffect(() => {
-
+		
 	}, [])
 
 	const chartOptions = {

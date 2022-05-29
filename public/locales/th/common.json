@@ -142,6 +142,9 @@
     "on": "เปิด",
     "off": "ปิด",
 
+    "request": "คำขอ",
+    "sending": "กำลังส่ง",
+
     "update.otp.setting.successfully": "ตั้งค่า OTP สำเร็จ",
     "update.otp.setting.customer.successfully": "ตั้งค่า OTP สำหรับลูกค้าสำเร็จ",
     "update.otp.setting.admin.successfully": "ตั้งค่า OTP สำหรับแอดมินสำเร็จ",

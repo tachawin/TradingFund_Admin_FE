@@ -5,6 +5,9 @@ import { useTranslation } from 'react-i18next'
 import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
+import { useSelector } from 'react-redux'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
 
 interface LevelTableInterface {
     data: any
@@ -33,6 +36,8 @@ const LevelTable = ({
     const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
+
+    const permission = useSelector(selectPermission)
 
     return (
         <Card stretch className='mx-3'>
@@ -90,7 +95,7 @@ const LevelTable = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {dataPagination(items, currentPage, perPage).map((i: any, index: number) => (
+                        {items.length > 0 ? dataPagination(items, currentPage, perPage).map((i: any, index: number) => (
                             <tr key={i.id}>
                                 <td className='text-center'>
                                     <div>{index + 1}</div>
@@ -139,7 +144,13 @@ const LevelTable = ({
                                     </Button>
                                 </td>}
                             </tr>
-                        ))}
+                        )) : permission.level[PermissionType.Read] === PermissionValue.Unavailable ?
+                        <tr>
+                            <td colSpan={8} className='text-center'>ไม่มีสิทธิ์เข้าถึง</td>
+                        </tr>
+                        : <tr>
+                            <td colSpan={8} className='text-center'>ไม่พบข้อมูล</td>
+                        </tr>}
                     </tbody>
                 </table>
             </CardBody>

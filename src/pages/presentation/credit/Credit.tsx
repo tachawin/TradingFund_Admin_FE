@@ -10,7 +10,6 @@ import Page from '../../../layout/Page/Page'
 import { demoPages } from '../../../menu'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
-import data from '../../../common/data/dummyCreditData'
 import Button, { ButtonGroup } from '../../../components/bootstrap/Button'
 import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
@@ -272,8 +271,8 @@ const Credit = () => {
                                 </CardHeader>
                             }
                             data={creditTableState === CREDIT_TABLE_STATE.REQUEST ? 
-								data.filter((i: any) => i.status === 'request') : 
-								data.filter((i: any) => i.status !== 'request')
+								[].filter((i: any) => i.status === 'request') : 
+								[].filter((i: any) => i.status !== 'request')
 							}
                             setIsOpenCreditModal={creditTableState === CREDIT_TABLE_STATE.REQUEST ? setIsOpenCreditModal : undefined}
                             columns={{ mobileNumber: true, notes: true, status: creditTableState === CREDIT_TABLE_STATE.HISTORY, operator: creditTableState === CREDIT_TABLE_STATE.HISTORY }} 

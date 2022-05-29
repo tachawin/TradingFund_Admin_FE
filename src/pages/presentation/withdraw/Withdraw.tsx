@@ -33,9 +33,11 @@ import { TransactionInterface } from 'common/apis/transaction'
 import { storeWithdrawHistoryList, storeWithdrawQuery, storeWithdrawRequestList } from 'redux/withdraw/action'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 import CompanyBanksDropdown from 'pages/common/CompanyBanksDropdown'
-import { CompanyBankInterface } from 'common/apis/companyBank'
+import { CompanyBankInterface, getCompanyBankList } from 'common/apis/companyBank'
 import { CommonBankInterface } from 'common/apis/commonBank'
 import Spinner from 'components/bootstrap/Spinner'
+import { selectCompanyBankList } from 'redux/companyBank/selector'
+import { storeCompanyBank } from 'redux/companyBank/action'
 
 interface WithdrawFilterInterface {
 	searchInput: string
@@ -77,6 +79,7 @@ const Withdraw = () => {
     const [withdrawTableState, setWithdrawTableState] = useState(WithdrawTableState.Request)
 	const [isLoading, setIsLoading] = useState(false)
 
+	const banks = useSelector(selectCompanyBankList)
 	const withdrawRequest = useSelector(selectWithdrawRequestList)
 	const withdrawHistory = useSelector(selectWithdrawHistoryList)
 	const withdrawQueryList = useSelector(selectWithdrawQuery)
@@ -119,6 +122,22 @@ const Withdraw = () => {
 				)
 			})
 		}
+
+		banks.length === 0 && getCompanyBankList('?type=withdraw', (companyBankList: CompanyBankInterface[]) => {
+			dispatch(storeCompanyBank(companyBankList))
+			setIsLoading && setIsLoading(false)
+		}, (error: any) => {
+			const { response } = error
+			console.log(response.data)
+			setIsLoading && setIsLoading(false)
+			showNotification(
+				<span className='d-flex align-items-center'>
+					<Icon icon='Info' size='lg' className='me-1' />
+					<span>{t('get.company.bank.failed')}</span>
+				</span>,
+				t('please.refresh.again'),
+			)
+		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [withdrawQueryList, withdrawTableState])
 

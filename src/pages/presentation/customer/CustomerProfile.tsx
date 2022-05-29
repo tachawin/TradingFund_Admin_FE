@@ -7,10 +7,6 @@ import SubHeader, {
 } from '../../../layout/SubHeader/SubHeader';
 import Page from '../../../layout/Page/Page';
 import { pages } from '../../../menu';
-import data from '../../../common/data/dummyCustomerData';
-import depositData from '../../../common/data/dummySalesData';
-import rewardData from '../../../common/data/dummyRewardData';
-import creditData from '../../../common/data/dummyCreditData';
 import Button from '../../../components/bootstrap/Button';
 import Card, {
 	CardBody,
@@ -22,9 +18,6 @@ import Icon from '../../../components/icon/Icon';
 import { useTranslation } from 'react-i18next';
 import DepositTable from '../deposit/DepositTable';
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown';
-import WithdrawTable from '../withdraw/WithdrawTable';
-import RewardTable from '../reward/RewardTable';
-import CreditTable from '../credit/CreditTable';
 import { CustomerInterface, getCustomer } from 'common/apis/customer';
 import showNotification from 'components/extras/showNotification';
 import moment from 'moment';

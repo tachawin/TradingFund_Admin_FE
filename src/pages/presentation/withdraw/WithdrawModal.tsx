@@ -10,19 +10,19 @@ import Icon from '../../../components/icon/Icon'
 import FormGroup from '../../../components/bootstrap/forms/FormGroup'
 import Input from '../../../components/bootstrap/forms/Input'
 import { useTranslation } from 'react-i18next'
-import banks, { Bank } from '../../../common/data/dummyBankData'
 import * as Yup from 'yup'
 import Button, { ButtonGroup } from 'components/bootstrap/Button'
 import PlaceholderImage from 'components/extras/PlaceholderImage'
-import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
+import CompanyBanksDropdown from 'pages/common/CompanyBanksDropdown'
+import { CompanyBankInterface, CompanyBankStatus, CompanyBankType } from 'common/apis/companyBank'
 
 interface WithdrawForm {
     slipImage: string
     bankAccountNumber: string
     bankAccountName: string
     bankName: string
-    payerBank: Bank
+    payerBank: CompanyBankInterface
 }
 
 interface WithdrawModalInterface {
@@ -48,13 +48,15 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
     const { t } = useTranslation(['common', 'withdraw'])
     const { type, bank, selectedRow: data } = properties
     const [withdrawModalState, setWithdrawModalState] = useState(type)
-    const [isOpenPayerBankDropdown, setIsOpenPayerBankDropdown] = useState(false)
 
     const WithdrawSchema = Yup.object().shape({
 		slipImage: Yup.string().required('กรุณาอัปโหลดภาพ'),
         bankAccountNumber: Yup.string().required('โปรดใส่เลขบัญชี'),
         bankAccountName: Yup.string().required('โปรดใส่ชื่อบัญชี'),
         bankName: Yup.string().uppercase().required('โปรดระบุบัญชีธนาคาร'),
+        recipientBank: Yup.object().shape({
+            bankId: Yup.string().required('โปรดเลือกบัญชีบริษัท'),
+        })
 	})
 
 	const formik = useFormik<WithdrawForm>({
@@ -63,7 +65,15 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
             bankAccountNumber: data?.recipientBankAccountNumber || '',
             bankAccountName: data?.recipientBankAccountName || '',
             bankName: data?.recipientBankName || '',
-            payerBank: banks[0]
+            payerBank: {
+                bankId: data?.companyBankId || '',
+                bankAccountNumber: data?.recipientBankAccountNumber || '',
+                bankAccountName: '',
+                bankName: data?.recipientBankName || '',
+                balance: 0,
+                type: CompanyBankType.Deposit,
+                status: CompanyBankStatus.Active
+            },
 		},
         validationSchema: WithdrawSchema,
 		onSubmit: (values) => {
@@ -189,28 +199,13 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                                         selectedBankName={bank ?? 'scb'} 
                                         setSelectedBankName={(bank: string | string[]) => setFieldValue('bankName', bank)} 
                                         disabled
-                                    /> :
-                                    <Dropdown className='w-100'>
-                                        <DropdownToggle 
-                                            className='w-100'
-                                            isLight color='dark' isOpen={Boolean(isOpenPayerBankDropdown)} setIsOpen={setIsOpenPayerBankDropdown}>
-                                            <span>
-                                                {values.payerBank.label.toLocaleUpperCase()}
-                                            </span>
-                                        </DropdownToggle>
-                                        <DropdownMenu isOpen={Boolean(isOpenPayerBankDropdown)} setIsOpen={setIsOpenPayerBankDropdown}>
-                                            {banks.map((bank: Bank) =>
-                                                <DropdownItem key={bank.id}>
-                                                    <Button
-                                                        color='link'
-                                                        isActive={bank.id === values.payerBank.id}
-                                                        onClick={() => setFieldValue('payerBank', bank)}>
-                                                        {bank.label.toLocaleUpperCase()}
-                                                    </Button>
-                                                </DropdownItem>
-                                            )}
-                                        </DropdownMenu>
-                                    </Dropdown>
+                                    /> : <CompanyBanksDropdown 
+                                        selectedBank={values.payerBank}
+                                        setSelectedBank={(bank: CompanyBankInterface | CompanyBankInterface[]) => setFieldValue('payerBank', bank)}
+                                        isValid={isValid}
+                                        touched={touched.payerBank?.bankId}
+                                        error={errors.payerBank?.bankId}
+                                    />
                                 }
                             </FormGroup>
                             <Button color='info' className='w-auto mx-3' onClick={handleSubmit}>

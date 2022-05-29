@@ -9,6 +9,7 @@ import withdrawReducer from './withdraw/reducer'
 import productReducer from './product/reducer'
 import userReducer from './user/reducer'
 import transactionReducer from './transaction/reducer'
+import redeemProductReducer from './redeemProduct/reducer'
 
 const rootReducer = combineReducers({
   admin: adminReducer,
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   deposit: depositReducer,
   level: levelReducer,
   product: productReducer,
+  redeemProduct: redeemProductReducer,
   transaction: transactionReducer,
   user: userReducer,
   withdraw: withdrawReducer

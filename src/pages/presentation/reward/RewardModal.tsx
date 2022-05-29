@@ -13,10 +13,16 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import FormGroup from 'components/bootstrap/forms/FormGroup'
 import Input from 'components/bootstrap/forms/Input'
+import { RedeemInterface, RedeemStatus } from 'common/apis/redeem'
+
+export enum RewardModalType {
+    Approve = 'approve',
+    Reject = 'reject'
+}
 
 interface RewardModalProperties {
-	type: string
-	selectedRow: any
+	type: RewardModalType
+	selectedRow: RedeemInterface
 }
 
 interface RewardModalInterface {
@@ -64,7 +70,7 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
 		initialValues: {
 			notes: ''
 		},
-        validationSchema: type === 'approve' ? RewardFormSchema : undefined,
+        validationSchema: type === RewardModalType.Approve ? RewardFormSchema : undefined,
 		onSubmit: (values) => {
 			console.log(values)
             setIsOpen(false)
@@ -93,12 +99,12 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>
             <ModalHeader setIsOpen={setIsOpen} className='p-4 pb-0'>
                 <ModalTitle id={id}>
-                    {type === 'reject' ? t('reward:reject.request') : data.status === 'sending' ?  t('reward:success.reward') : t('reward:sending.reward')}
+                    {type === RewardModalType.Reject ? t('reward:reject.request') : data.status === RedeemStatus.Sending ?  t('reward:success.reward') : t('reward:sending.reward')}
                 </ModalTitle>
             </ModalHeader>
             <ModalBody className='px-4'>
-                {type === 'reject' ? t('reward:form.reject.request.confirmation', { product: data?.product })
-                    : data.status === 'sending' ? 
+                {type === RewardModalType.Reject ? t('reward:form.reject.request.confirmation', { product: data?.productName })
+                    : data.status === RedeemStatus.Sending ? 
                         <FormGroup id='notes' label={t('form.tracking.number')}>
                             <Input 
                                 onChange={handleChange} 
@@ -109,15 +115,15 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
                                 invalidFeedback={errors.notes}
                             />
                         </FormGroup>
-                        : t('reward:form.sending.request.confirmation', { product: data?.product })
+                        : t('reward:form.sending.request.confirmation', { product: data?.productName })
                 }
             </ModalBody>
             <ModalFooter className='px-4 pb-4 flex-nowrap'>
-                <Button isOutline={type === 'approve'} className='w-50' color='info' onClick={() => setIsOpen(false)}>
+                <Button isOutline={type === RewardModalType.Approve} className='w-50' color='info' onClick={() => setIsOpen(false)}>
                     {t('back')}
                 </Button>
-                <Button isOutline={type === 'reject'} className='w-50'color='info' onClick={type === 'reject' ? handleReject : data.status === 'sending' ? handleSubmit : handleSuccess}>
-                    {type === 'approve' ? t('approve') : t('reject')}
+                <Button isOutline={type === RewardModalType.Reject} className='w-50'color='info' onClick={type === RewardModalType.Reject ? handleReject : data.status === RedeemStatus.Sending ? handleSubmit : handleSuccess}>
+                    {type === RewardModalType.Approve ? t('approve') : t('reject')}
                 </Button>
             </ModalFooter>
         </Modal>
