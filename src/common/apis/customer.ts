@@ -31,6 +31,12 @@ export interface CustomerInterface extends CustomerBaseInterface {
         levelName?: string
         color?: string
     }
+    bank?: {
+        id: number
+        niceName: string
+        officialName: string
+        acronym: string
+    }
 }
 
 export const createCustomer = (data: CustomerInterface) => 

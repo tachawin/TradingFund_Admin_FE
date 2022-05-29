@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import moment from 'moment'
 import 'moment/locale/th'
 import Card, {
@@ -14,6 +14,10 @@ import { useTranslation } from 'react-i18next'
 
 const CustomerTrafficBoard = () => {
     const { t } = useTranslation('dashboard')
+
+	useEffect(() => {
+
+	}, [])
 
 	const chartOptions = {
 		chart: {

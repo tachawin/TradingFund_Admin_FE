@@ -331,7 +331,7 @@ const Customer = () => {
 																</div>
 																<div className='text-muted'>
 																	<Icon icon='Label' />{' '}
-																	<small>{customer.bankName.toUpperCase()}</small>
+																	<small>{customer.bank?.acronym.toUpperCase()}</small>
 																</div>
 															</div>
 														</div>

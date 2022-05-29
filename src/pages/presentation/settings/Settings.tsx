@@ -15,17 +15,19 @@ import ProductSubHeader from '../product/ProductSubHeader'
 import LevelSubHeader from '../level/LevelSubHeader'
 import BankSubHeader from '../bank/BankSubHeader'
 import OTPSettings from '../otp/OTPSetting'
+import InviteFriendSetting from '../invite_friend/InviteFriendSetting'
 
 enum SettingPanel {
     Product = 'product',
     Bank = 'bank',
     Level = 'level',
-	OTP = 'otp'
+	OTP = 'otp',
+	InviteFriend = 'invite_friend'
 }
 
 const Settings = () => {
     const { t } = useTranslation(['common', 'settings'])
-    const [panel, setPanel] = useState<SettingPanel>(SettingPanel.OTP)
+    const [panel, setPanel] = useState<SettingPanel>(SettingPanel.InviteFriend)
 	const [isOpenProductModal, setIsOpenProductModal] = useState<ProductModalProperties>()
 	const [isOpenBankModal, setIsOpenBankModal] = useState<BankModalProperties>()
 	const [isOpenLevelModal, setIsOpenLevelModal] = useState<LevelModalProperties>()
@@ -51,6 +53,11 @@ const Settings = () => {
 			id: SettingPanel.OTP,
 			subHeader: <></>,
 			body: <OTPSettings />
+		},
+		{
+			id: SettingPanel.InviteFriend,
+			subHeader: <></>,
+			body: <InviteFriendSetting />
 		}
 	]
 
@@ -66,6 +73,7 @@ const Settings = () => {
 								isLight
 								isActive={panel === SettingPanel.Product}
 								onClick={() => setPanel(SettingPanel.Product)}
+								className='text-nowrap'
 							>
 								{t('product')}
 							</Button>
@@ -74,6 +82,7 @@ const Settings = () => {
 								isLight
 								isActive={panel === SettingPanel.Bank}
 								onClick={() => setPanel(SettingPanel.Bank)}
+								className='text-nowrap'
 							>
 								{t('bank')}
 							</Button>
@@ -82,6 +91,7 @@ const Settings = () => {
 								isLight
 								isActive={panel === SettingPanel.Level}
 								onClick={() => setPanel(SettingPanel.Level)}
+								className='text-nowrap'
 							>
 								{t('level')}
 							</Button>
@@ -90,8 +100,18 @@ const Settings = () => {
 								isLight
 								isActive={panel === SettingPanel.OTP}
 								onClick={() => setPanel(SettingPanel.OTP)}
+								className='text-nowrap'
 							>
 								{t('otp.setting')}
+							</Button>
+							<Button
+								color='primary'
+								isLight
+								isActive={panel === SettingPanel.InviteFriend}
+								onClick={() => setPanel(SettingPanel.InviteFriend)}
+								className='text-nowrap'
+							>
+								{t('invite.friend')}
 							</Button>
 						</SubHeaderLeft>
 						<SubHeaderRight className='w-50'>

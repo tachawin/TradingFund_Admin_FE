@@ -10,6 +10,24 @@ interface OTPSettingsInterface {
     flagOTP: boolean
 }
 
+export const getOTPSetting = async (
+    next: () => void,
+    handleError: (error: any) => void
+) =>
+    await authorizationHandler(async () => {
+        try {
+            await axios({
+                method: 'get',
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
+                url: '/system/setting/'
+            })
+            next()
+        } catch (error: any) {
+            handleError(error)
+        }
+    })
+    
+
 export const updateOTPSetting = async (
     type: OTPSettingType,
     data: OTPSettingsInterface,

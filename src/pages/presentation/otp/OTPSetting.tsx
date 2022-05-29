@@ -1,11 +1,9 @@
-import { OTPSettingType, updateOTPSetting } from 'common/apis/settings'
-import Button from 'components/bootstrap/Button'
+import { getOTPSetting, OTPSettingType, updateOTPSetting } from 'common/apis/settings'
 import Card, { CardBody, CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 import Checks from 'components/bootstrap/forms/Checks'
 import showNotification from 'components/extras/showNotification'
 import Icon from 'components/icon/Icon'
-import { useFormik } from 'formik'
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 
@@ -14,6 +12,22 @@ const OTPSettings = () => {
     const [customerOTPSetting, setCustomerOTPSetting] = useState(false)
     const [adminOTPSetting, setAdminOTPSetting] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+
+    useEffect(() => {
+        getOTPSetting(() => {
+
+        }, (error) => {
+            const { response } = error
+            console.log(response)
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <Icon icon='Info' size='lg' className='me-1' />
+                    <span>{t('get.otp.setting.failed')}</span>
+                </span>, t('try.again')
+            )
+        }).finally(() => setIsLoading(false))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const handleOTPSettingChange = (type: OTPSettingType, checked: boolean) => {
         setIsLoading(true)
