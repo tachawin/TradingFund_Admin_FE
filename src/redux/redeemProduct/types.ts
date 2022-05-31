@@ -2,6 +2,7 @@ import { RedeemInterface } from 'common/apis/redeem'
 
 export const STORE_REDEEM_PRODUCT_LIST = 'STORE_REDEEM_PRODUCT_LIST'
 export const STORE_LIST_QUERY = 'STORE_LIST_QUERY'
+export const REMOVE_REDEEM_PRODUCT = 'REMOVE_REDEEM_PRODUCT'
 
 export interface InitialState {
   redeemProductList: RedeemInterface[]
@@ -18,4 +19,9 @@ interface StoreListQuery {
   payload: { [key: string] : string }
 }
 
-export type RedeemProductActionTypes = StoreRedeemProductList | StoreListQuery
+interface RemoveRedeemProduct {
+  type: typeof REMOVE_REDEEM_PRODUCT
+  payload: string
+}
+
+export type RedeemProductActionTypes = StoreRedeemProductList | StoreListQuery | RemoveRedeemProduct

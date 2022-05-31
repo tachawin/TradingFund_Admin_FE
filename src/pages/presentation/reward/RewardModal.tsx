@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Modal, {
 	ModalBody,
 	ModalFooter,
@@ -13,7 +13,10 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import FormGroup from 'components/bootstrap/forms/FormGroup'
 import Input from 'components/bootstrap/forms/Input'
-import { RedeemInterface, RedeemStatus } from 'common/apis/redeem'
+import { RedeemAction, RedeemInterface, RedeemStatus, updateRedeem } from 'common/apis/redeem'
+import { useDispatch } from 'react-redux'
+import { removeRedeemProductById } from 'redux/redeemProduct/action'
+import Spinner from 'components/bootstrap/Spinner'
 
 export enum RewardModalType {
     Approve = 'approve',
@@ -34,32 +37,62 @@ interface RewardModalInterface {
 
 const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface) => {
     const { t } = useTranslation(['common', 'reward'])
+    const dispatch = useDispatch()
     const { type, selectedRow: data } = properties
+    const [isLoading, setIsLoading] = useState(false)
 
-    const handleSuccess = () => {
-        setIsOpen(false)
-        // REJECT
-
-        showNotification(
-            <span className='d-flex align-items-center'>
-                <Icon icon='Info' size='lg' className='me-1' />
-                <span>{t('reward:approve.successfully')}</span>
-            </span>,
-            t('reward:approve.request.successfully', { mobileNumber: data?.mobileNumber }),
-        )
+    const handleAccept = () => {
+        setIsLoading(true)
+        data.redeemId && updateRedeem(data.redeemId, RedeemAction.Accept, {}, () => {
+            data.redeemId && dispatch(removeRedeemProductById(data.redeemId))
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <Icon icon='Info' size='lg' className='me-1' />
+                    <span>{t('reward:approve.successfully')}</span>
+                </span>,
+                t('reward:approve.request.successfully', { mobileNumber: data?.mobileNumber }),
+            )
+        }, (error) => {
+            const { response } = error
+            console.log(response)
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <Icon icon='Info' size='lg' className='me-1' />
+                    <span>{t('reward:approve.failed')}</span>
+                </span>,
+                t('reward:approve.request.failed', { mobileNumber: data?.mobileNumber }),
+            )
+        }).finally(() => {
+            setIsOpen(false)
+            setIsLoading(false)
+        })
     }
 
     const handleReject = () => {
-        setIsOpen(false)
-        // REJECT
-
-        showNotification(
-            <span className='d-flex align-items-center'>
-                <Icon icon='Info' size='lg' className='me-1' />
-                <span>{t('reward:reject.successfully')}</span>
-            </span>,
-            t('reward:reject.request.successfully', { mobileNumber: data?.mobileNumber }),
-        )
+        setIsLoading(true)
+        data.redeemId && updateRedeem(data.redeemId, RedeemAction.Reject, {}, () => {
+            data.redeemId && dispatch(removeRedeemProductById(data.redeemId))
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <Icon icon='Info' size='lg' className='me-1' />
+                    <span>{t('reward:reject.successfully')}</span>
+                </span>,
+                t('reward:reject.request.successfully', { mobileNumber: data?.mobileNumber }),
+            )
+        }, (error) => {
+            const { response } = error
+            console.log(response)
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <Icon icon='Info' size='lg' className='me-1' />
+                    <span>{t('reward:reject.failed')}</span>
+                </span>,
+                t('reward:reject.request.failed', { mobileNumber: data?.mobileNumber }),
+            )
+        }).finally(() => {
+            setIsOpen(false)
+            setIsLoading(false)
+        })
     }
 
     const RewardFormSchema = Yup.object().shape({
@@ -72,17 +105,30 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
 		},
         validationSchema: type === RewardModalType.Approve ? RewardFormSchema : undefined,
 		onSubmit: (values) => {
-			console.log(values)
-            setIsOpen(false)
-            // APPROVE
-
-            showNotification(
-                <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
-                    <span>{t('reward:sending.successfully')}</span>
-                </span>,
-                t('reward:sending.reward.successfully', { mobileNumber: data?.mobileNumber }),
-            )
+            setIsLoading(true)
+            data.redeemId && updateRedeem(data.redeemId, RedeemAction.Sending, { notes: values.notes }, () => {
+                data.redeemId && dispatch(removeRedeemProductById(data.redeemId))
+                showNotification(
+                    <span className='d-flex align-items-center'>
+                        <Icon icon='Info' size='lg' className='me-1' />
+                        <span>{t('reward:sending.successfully')}</span>
+                    </span>,
+                    t('reward:sending.reward.successfully', { mobileNumber: data?.mobileNumber }),
+                )
+            }, (error) => {
+                const { response } = error
+                console.log(response)
+                showNotification(
+                    <span className='d-flex align-items-center'>
+                        <Icon icon='Info' size='lg' className='me-1' />
+                        <span>{t('reward:sending.failed')}</span>
+                    </span>,
+                    t('reward:sending.reward.failed', { mobileNumber: data?.mobileNumber }),
+                )
+            }).finally(() => {
+                setIsOpen(false)
+                setIsLoading(false)
+            })
 		},
 	})
 
@@ -122,8 +168,8 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
                 <Button isOutline={type === RewardModalType.Approve} className='w-50' color='info' onClick={() => setIsOpen(false)}>
                     {t('back')}
                 </Button>
-                <Button isOutline={type === RewardModalType.Reject} className='w-50'color='info' onClick={type === RewardModalType.Reject ? handleReject : data.status === RedeemStatus.Sending ? handleSubmit : handleSuccess}>
-                    {type === RewardModalType.Approve ? t('approve') : t('reject')}
+                <Button isOutline={type === RewardModalType.Reject} className='w-50'color='info' onClick={type === RewardModalType.Reject ? handleReject : data.status === RedeemStatus.Sending ? handleSubmit : handleAccept}>
+                    {isLoading ? <Spinner size={16} /> : type === RewardModalType.Approve ? t('approve') : t('reject')}
                 </Button>
             </ModalFooter>
         </Modal>

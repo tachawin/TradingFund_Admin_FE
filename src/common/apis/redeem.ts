@@ -79,6 +79,7 @@ export const updateRedeem = async (
 			await axios({
                 method: 'patch',
                 url: `/redeem_product/${action}/${redeemId}`,
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
                 data
             })
             next()

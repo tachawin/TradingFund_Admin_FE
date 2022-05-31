@@ -62,10 +62,7 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
     }
 
     const onSubmit = () => {
-        delete permissionsValue.reward
-        console.log(permissionsValue)
         id && updatePermission(id, permissionsValue).then((response) => {
-            console.log(response.data)
             dispatch(updatePermissionById(id, permissionsValue))
             showNotification(
                 <span className='d-flex align-items-center'>
