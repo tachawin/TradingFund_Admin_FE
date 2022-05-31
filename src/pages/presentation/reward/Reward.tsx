@@ -26,7 +26,7 @@ import RewardTable from './RewardTable'
 import { CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectRedeemProductList, selectRedeemProductQuery } from 'redux/redeemProduct/selector'
-import { getRedeemProductRequestList, RedeemInterface, RedeemStatus, STATUS } from 'common/apis/redeem'
+import { getRedeemProductList, RedeemInterface, RedeemStatus, STATUS } from 'common/apis/redeem'
 import { storeRedeemProductList, storeRedeemProductQuery } from 'redux/redeemProduct/action'
 import showNotification from 'components/extras/showNotification'
 import Spinner from 'components/bootstrap/Spinner'
@@ -74,7 +74,7 @@ const Reward = () => {
 		let queryString = Object.values(queryList).filter(Boolean).join('&')
 		let query = queryString ? `?${queryString}` : ''
 		setIsLoading(true)
-		getRedeemProductRequestList(query, rewardTableState, (redeemProductRequest: RedeemInterface[]) => {
+		getRedeemProductList(query, rewardTableState, (redeemProductRequest: RedeemInterface[]) => {
 			dispatch(storeRedeemProductList(redeemProductRequest))
 			setIsLoading(false)
 		}, (error: any) => {
@@ -115,8 +115,8 @@ const Reward = () => {
 				status: values.status.length > 0 ? `status=${values.status.join(',')}` : '',
 				start: values.isCreatedAtDateChanged ? `startCreated=${moment(values.timestamp[0].startDate).format('YYYY-MM-DD')}` : '',
 				end: values.isCreatedAtDateChanged ? `endCreated=${moment(values.timestamp[0].endDate).format('YYYY-MM-DD')}`: '',
-				min: values.points.min ? `minPoint=${values.points.min}` : '',
-				max: values.points.max ? `maxPoint=${values.points.max}` : ''
+				minPoint: values.points.min ? `minPoint=${values.points.min}` : '',
+				maxPoint: values.points.max ? `maxPoint=${values.points.max}` : ''
 			}))
 		},
 	})

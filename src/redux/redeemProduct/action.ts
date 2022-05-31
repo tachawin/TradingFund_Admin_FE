@@ -6,9 +6,9 @@ export const storeRedeemProductList = (list: RedeemInterface[]): RedeemProductAc
   payload: list,
 })
 
-export const storeRedeemProductQuery = (luery: { [key: string]: string }): RedeemProductActionTypes => ({
+export const storeRedeemProductQuery = (query: { [key: string]: string }): RedeemProductActionTypes => ({
   type: STORE_LIST_QUERY,
-  payload: luery,
+  payload: query,
 })
 
 export const removeRedeemProductById = (redeemId: string): RedeemProductActionTypes => ({
