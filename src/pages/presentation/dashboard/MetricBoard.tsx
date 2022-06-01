@@ -1,17 +1,13 @@
-import React, { useState } from 'react'
-import Card, { CardActions, CardBody, CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
-import { Calendar as DatePicker } from 'react-date-range'
-import { getLabel } from 'components/extras/calendarHelper'
-import { Views } from 'react-big-calendar'
-import Dropdown, { DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown'
+import Card, { CardBody, CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
+import Spinner from 'components/bootstrap/Spinner'
 import Icon from 'components/icon/Icon'
 import { useTranslation } from 'react-i18next'
-import { th } from 'date-fns/locale'
 
 interface MetricInterface {
+    isLoading: boolean
     type: MetricBoardType
-    deposit: number
-    withdraw: number
+    deposit?: number
+    withdraw?: number
 }
 
 export enum MetricBoardType {
@@ -19,15 +15,8 @@ export enum MetricBoardType {
     Night = 'night'
 }
 
-const MetricBoard = ({ type, deposit, withdraw }: MetricInterface) => {
+const MetricBoard = ({ isLoading, type, deposit, withdraw }: MetricInterface) => {
     const { t } = useTranslation('dashboard')
-    const [date, setDate] = useState<Date>(new Date())
-    const [isOpenCalendar, setIsOpenCalendar] = useState(false)
-
-    const onDateChange = (item: Date) => {
-        setDate(item)
-        setIsOpenCalendar(false)
-    }
 
     return (
         <Card className='col'>
@@ -43,21 +32,6 @@ const MetricBoard = ({ type, deposit, withdraw }: MetricInterface) => {
                         }
                     </div>
                 </CardLabel>
-				<CardActions>
-                    <Dropdown>
-                        <DropdownToggle color='primary' isLight hasIcon={false} isOpen={isOpenCalendar} setIsOpen={setIsOpenCalendar}>
-                            <span>{getLabel(date, Views.DAY)}</span>
-                        </DropdownToggle>
-                        <DropdownMenu className='p-0' isAlignmentEnd isOpen={isOpenCalendar} setIsOpen={setIsOpenCalendar}>
-                            <DatePicker
-								onChange={onDateChange}
-								date={date}
-								color={process.env.REACT_APP_PRIMARY_COLOR}
-                                locale={th}
-							/>
-                        </DropdownMenu>
-                    </Dropdown>
-				</CardActions>
 			</CardHeader>
 			<CardBody className='row g-4 py-0'>
                 <div className='col'>
@@ -70,7 +44,7 @@ const MetricBoard = ({ type, deposit, withdraw }: MetricInterface) => {
                         </CardLabel>
                         <CardBody className="pt-0 align-self-center">
                             <span color='success' className='fs-3 fw-bold text-success'>
-                                {deposit.toLocaleString()}
+                                {isLoading ? <Spinner color='primary' size={12} /> : deposit?.toLocaleString()}
 							</span>
                         </CardBody>
                     </Card>
@@ -85,7 +59,7 @@ const MetricBoard = ({ type, deposit, withdraw }: MetricInterface) => {
                         </CardLabel>
                         <CardBody className="pt-0 align-self-center">
                             <span color='success' className='fs-3 fw-bold text-danger'>
-                                {withdraw.toLocaleString()}
+                                {isLoading ? <Spinner color='primary' size={14} /> : withdraw?.toLocaleString()}
 							</span>
                         </CardBody>
                     </Card>
