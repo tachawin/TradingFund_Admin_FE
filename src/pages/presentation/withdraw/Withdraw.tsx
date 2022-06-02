@@ -25,12 +25,12 @@ import WithdrawTable from './WithdrawTable'
 import { CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 import WithdrawModal, { WithdrawModalType } from './WithdrawModal'
 import BankBalanceCard from './BankBalanceCard'
-import { getWithdrawHistoryList, getWithdrawRequestList } from 'common/apis/withdraw'
+import { getWithdrawList } from 'common/apis/withdraw'
 import showNotification from 'components/extras/showNotification'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectWithdrawHistoryList, selectWithdrawQuery, selectWithdrawRequestList } from 'redux/withdraw/selector'
+import { selectWithdrawList, selectWithdrawQuery } from 'redux/withdraw/selector'
 import { TransactionInterface } from 'common/apis/transaction'
-import { storeWithdrawHistoryList, storeWithdrawQuery, storeWithdrawRequestList } from 'redux/withdraw/action'
+import { storeWithdrawList, storeWithdrawQuery } from 'redux/withdraw/action'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 import CompanyBanksDropdown from 'pages/common/CompanyBanksDropdown'
 import { CompanyBankInterface, getCompanyBankList } from 'common/apis/companyBank'
@@ -63,9 +63,9 @@ interface WithdrawModalProperties {
 	selectedRow: any
 }
 
-enum WithdrawTableState {
-	Request = 'request',
-	History = 'history'
+export enum WithdrawTableState {
+	Request = 'request_withdraw',
+	History = 'withdraw'
 }
 
 const Withdraw = () => {
@@ -80,48 +80,28 @@ const Withdraw = () => {
 	const [isLoading, setIsLoading] = useState(false)
 
 	const banks = useSelector(selectCompanyBankList)
-	const withdrawRequest = useSelector(selectWithdrawRequestList)
-	const withdrawHistory = useSelector(selectWithdrawHistoryList)
+	const withdrawList = useSelector(selectWithdrawList)
 	const withdrawQueryList = useSelector(selectWithdrawQuery)
 
 	useEffect(() => {
 		let queryString = Object.values(withdrawQueryList).filter(Boolean).join('&')
 		let query = queryString ? `?${queryString}` : ''
 		setIsLoading(true)
-		if (withdrawTableState === WithdrawTableState.Request && withdrawRequest.length === 0) {
-			getWithdrawRequestList(query, (withdrawList: TransactionInterface[]) => {
-				console.log(query, withdrawList)
-				dispatch(storeWithdrawRequestList(withdrawList))
-				setIsLoading(false)
-			}, (error: any) => {
-				const { response } = error
-				console.log(response.data)
-				setIsLoading(false)
-				showNotification(
-					<span className='d-flex align-items-center'>
-						<Icon icon='Info' size='lg' className='me-1' />
-						<span>{t('get.withdraw.request.failed')}</span>
-					</span>,
-					t('please.refresh.again'),
-				)
-			})
-		} else if (withdrawTableState === WithdrawTableState.History && withdrawHistory.length === 0) {
-			getWithdrawHistoryList(query, (withdrawList: TransactionInterface[]) => {
-				dispatch(storeWithdrawHistoryList(withdrawList))
-				setIsLoading(false)
-			}, (error: any) => {
-				const { response } = error
-				console.log(response.data)
-				setIsLoading(false)
-				showNotification(
-					<span className='d-flex align-items-center'>
-						<Icon icon='Info' size='lg' className='me-1' />
-						<span>{t('get.withdraw.history.failed')}</span>
-					</span>,
-					t('please.refresh.again'),
-				)
-			})
-		}
+		getWithdrawList(query, withdrawTableState, (withdrawList: TransactionInterface[]) => {
+			dispatch(storeWithdrawList(withdrawList))
+			setIsLoading(false)
+		}, (error: any) => {
+			const { response } = error
+			console.log(response.data)
+			setIsLoading(false)
+			showNotification(
+				<span className='d-flex align-items-center'>
+					<Icon icon='Info' size='lg' className='me-1' />
+					<span>{t('get.withdraw.failed')}</span>
+				</span>,
+				t('please.refresh.again'),
+			)
+		})
 
 		banks.length === 0 && getCompanyBankList('?type=withdraw', (companyBankList: CompanyBankInterface[]) => {
 			dispatch(storeCompanyBank(companyBankList))
@@ -364,7 +344,7 @@ const Withdraw = () => {
 										</ButtonGroup>
 									</CardHeader>
 								}
-								data={withdrawTableState === WithdrawTableState.Request ? withdrawRequest : withdrawHistory}
+								data={withdrawList}
 								setIsOpenWithdrawModal={withdrawTableState === WithdrawTableState.Request ? setIsOpenWithdrawModal : undefined} 
 								setIsOpenCancelWithdrawModal={withdrawTableState === WithdrawTableState.Request ? setIsOpenCancelWithdrawModal : undefined}
 								columns={{ 

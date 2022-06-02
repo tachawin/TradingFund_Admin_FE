@@ -156,7 +156,7 @@ const RewardTable = ({
                                 }
                                 {columns?.operator &&
                                     <td>
-                                        <div>{item.adminId}</div>
+                                        <div>{item.adminName}</div>
                                     </td>
                                 }
                                 {setIsOpenRewardModal && <td>

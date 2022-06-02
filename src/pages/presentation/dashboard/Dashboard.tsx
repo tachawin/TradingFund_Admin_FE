@@ -31,7 +31,6 @@ const Dashboard = () => {
     useEffect(() => {
 		setIsLoading(true)
 		getTransactionMetric(moment(date).format('YYYY-MM-DD'), (metric: TransactionMetricInterface) => {
-			console.log(metric)
 			setTransactionMetric(metric)
 			setIsLoading(false)
 		}, (error: any) => {

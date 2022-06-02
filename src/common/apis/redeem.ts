@@ -36,6 +36,7 @@ export interface RedeemBaseInterface {
     status: RedeemStatus
     redeemType: RedeemType
     productName: string
+    adminName?: string
 }
 
 export interface RedeemUpdateBodyInterface {
@@ -51,7 +52,7 @@ export interface RedeemInterface extends RedeemBaseInterface {
 
 export const getRedeemProductList = async (
     query: string,
-    state: RewardTableState,
+    state: RewardTableState | string,
     next: (redeemList: RedeemInterface[]) => void,
     handleError: (error: any) => void
 ) =>
@@ -59,7 +60,7 @@ export const getRedeemProductList = async (
         try {
             const res = await axios({
                 method: 'get',
-                url: `/redeem_product/${state}/list${query}`,
+                url: `/redeem_product/list/${state}${query}`,
                 headers: { Authorization: `Bearer ${getAccessToken()}` },
             })
             next(res.data)
@@ -70,7 +71,7 @@ export const getRedeemProductList = async (
 
 export const getRedeemCreditList = async (
     query: string,
-    state: CreditTableState,
+    state: CreditTableState | string,
     next: (redeemList: RedeemInterface[]) => void,
     handleError: (error: any) => void
 ) =>
@@ -78,7 +79,7 @@ export const getRedeemCreditList = async (
         try {
             const res = await axios({
                 method: 'get',
-                url: `/redeem_credit/${state}/list${query}`,
+                url: `/redeem_credit/list/${state}${query}`,
                 headers: { Authorization: `Bearer ${getAccessToken()}` },
             })
             next(res.data)

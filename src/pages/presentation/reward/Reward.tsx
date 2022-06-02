@@ -84,9 +84,9 @@ const Reward = () => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<Icon icon='Info' size='lg' className='me-1' />
-					<span>{t('get.deposit.failed')}</span>
+					<span>เรียกดูรายการแลกสินค้าไม่สำเร็จ</span>
 				</span>,
-				t('please.refresh.again'),
+				'กรุณาลองใหม่อีกครั้ง',
 			)
 		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps

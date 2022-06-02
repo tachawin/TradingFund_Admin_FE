@@ -74,7 +74,7 @@ export const getCustomer = async (
         try {
             const res = await axios({
                 method: 'get',
-                url: `/customer/${customerId}`,
+                url: `/customer_admin/${customerId}`,
                 headers: { Authorization: `Bearer ${getAccessToken()}` }
             })
             next(res.data)

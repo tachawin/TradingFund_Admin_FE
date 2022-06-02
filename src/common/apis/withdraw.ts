@@ -1,4 +1,5 @@
 import { getAccessToken } from 'common/utils/auth'
+import { WithdrawTableState } from 'pages/presentation/withdraw/Withdraw'
 import axios, { authorizationHandler } from './axios'
 import { TransactionInterface } from './transaction'
 
@@ -90,8 +91,9 @@ export interface WithdrawCreateInterface {
 //         }
 //     })
 
-export const getWithdrawRequestList = async (
+export const getWithdrawList = async (
     query: string,
+    type: WithdrawTableState | string,
     next: (withdrawList: TransactionInterface[]) => void,
     handleError: (error: any) => void
 ) =>
@@ -99,7 +101,7 @@ export const getWithdrawRequestList = async (
         try {
 			const res = await axios({
                 method: 'get',
-                url: `/transaction/withdraw/admin/list/request_withdraw${query}`,
+                url: `/transaction/withdraw/admin/list/${type}${query}`,
                 headers: { Authorization: `Bearer ${getAccessToken()}` },
             })
             console.log(res)
@@ -109,23 +111,6 @@ export const getWithdrawRequestList = async (
         }
 })
 
-export const getWithdrawHistoryList = async (
-    query: string,
-    next: (withdrawList: TransactionInterface[]) => void,
-    handleError: (error: any) => void
-) =>
-    await authorizationHandler(async () => {
-        try {
-			const res = await axios({
-                method: 'get',
-                url: `/transaction/withdraw/admin/list/withdraw${query}`,
-                headers: { Authorization: `Bearer ${getAccessToken()}` },
-            })
-            next(res.data)
-        } catch (error: any) {
-            handleError(error)
-        }
-})
 
 // export const deleteTransaction = async (
 //     transactionId: string,

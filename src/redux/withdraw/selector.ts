@@ -5,6 +5,5 @@ import { InitialState } from './types'
 
 const selectWithdraw = (state: RootState) => state.withdraw
 
-export const selectWithdrawRequestList = createSelector([selectWithdraw], (withdraw: InitialState) => withdraw.withdrawRequestList)
-export const selectWithdrawHistoryList = createSelector([selectWithdraw], (withdraw: InitialState) => withdraw.withdrawHistoryList)
+export const selectWithdrawList = createSelector([selectWithdraw], (withdraw: InitialState) => withdraw.withdrawList)
 export const selectWithdrawQuery = createSelector([selectWithdraw], (withdraw: InitialState) => withdraw.withdrawQuery)

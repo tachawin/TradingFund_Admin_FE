@@ -259,10 +259,10 @@ const WithdrawTable = ({
                             </tr>
                         )) : permission.withdraw[PermissionType.Read] === PermissionValue.Unavailable ?
                         <tr>
-                            <td colSpan={8} className='text-center'>ไม่มีสิทธิ์เข้าถึง</td>
+                            <td colSpan={9} className='text-center'>ไม่มีสิทธิ์เข้าถึง</td>
                         </tr>
                         : <tr>
-                            <td colSpan={8} className='text-center'>ไม่พบข้อมูล</td>
+                            <td colSpan={9} className='text-center'>ไม่พบข้อมูล</td>
                         </tr>}
                     </tbody>
                 </table>

@@ -42,7 +42,6 @@ const CustomerTrafficBoard = () => {
 		setIsLoading(true)
 		const selectedDateRange = dateRange[activeDateRangeTab]
 		getCustomerRegisterAndActionMetric(selectedDateRange.start, selectedDateRange.end, (metric: CustomerMetricInterface) => {
-			console.log(metric)
 			setTrafficData(metric)
 		}, (error: any) => {
 			const { response } = error
