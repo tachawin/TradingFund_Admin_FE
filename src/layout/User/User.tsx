@@ -5,11 +5,11 @@ import USERS from '../../common/data/userDummyData'
 import { pages } from '../../menu'
 import { DropdownItem, DropdownMenu } from '../../components/bootstrap/Dropdown'
 import Button from '../../components/bootstrap/Button'
-import Icon from '../../components/icon/Icon'
 import { useTranslation } from 'react-i18next'
 import { didLogout } from 'common/utils/auth'
 import { logout } from 'common/apis/auth'
 import showNotification from 'components/extras/showNotification'
+import { AccountBoxTwoTone } from '@mui/icons-material'
 
 const User = () => {
 	const { t } = useTranslation('login')
@@ -27,7 +27,7 @@ const User = () => {
 		// }).catch(() => {
 		// 	showNotification(
 		// 		<span className='d-flex align-items-center'>
-		// 			<Icon icon='Info' size='lg' className='me-1' />
+		// 			<InfoTwoTone className='me-1' />
 		// 			<span>{t('logout.failed')}</span>
 		// 		</span>,
 		// 		t('please.try.again'),
@@ -53,7 +53,6 @@ const User = () => {
 				<div className='user-info'>
 					<div className='user-name d-flex align-items-center'>
 						{`${USERS[1].name} ${USERS[1].surname}`}
-						<Icon icon='Verified' className='ms-1' color='info' />
 					</div>
 					<div className='user-sub-title'>{USERS[1].position}</div>
 				</div>
@@ -61,7 +60,7 @@ const User = () => {
 			<DropdownMenu isOpen={collapseStatus} setIsOpen={setCollapseStatus}>
 				<DropdownItem>
 					<Button
-						icon='AccountBox'
+						icon={AccountBoxTwoTone}
 						onClick={handleLogout}
 					>
 						{t('logout')}
@@ -69,7 +68,7 @@ const User = () => {
 				</DropdownItem>
 				<DropdownItem>
 					<Button
-						icon='AccountBox'
+						icon={AccountBoxTwoTone}
 						onClick={() => navigate('/settings')}
 					>
 						{t('settings')}

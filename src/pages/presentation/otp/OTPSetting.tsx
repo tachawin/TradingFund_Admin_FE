@@ -1,8 +1,8 @@
+import { InfoTwoTone } from '@mui/icons-material'
 import { getOTPSetting, OTPSettingType, updateOTPSetting } from 'common/apis/settings'
 import Card, { CardBody, CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 import Checks from 'components/bootstrap/forms/Checks'
 import showNotification from 'components/extras/showNotification'
-import Icon from 'components/icon/Icon'
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -21,7 +21,7 @@ const OTPSettings = () => {
             console.log(response)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('get.otp.setting.failed')}</span>
                 </span>, t('try.again')
             )
@@ -40,7 +40,7 @@ const OTPSettings = () => {
             }
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('update.otp.setting.successfully')}</span>
                 </span>, t(`update.otp.setting.${type}.successfully`)
             )
@@ -49,7 +49,7 @@ const OTPSettings = () => {
             console.log(response)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('update.otp.setting.failed')}</span>
                 </span>, t(`update.otp.setting.${type}.failed`)
             )

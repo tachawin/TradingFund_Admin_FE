@@ -2,7 +2,6 @@ import React, { ReactNode, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
 import { PermissionType, PermissionValue } from 'common/apis/user'
@@ -12,6 +11,7 @@ import { RedeemInterface, RedeemStatus } from 'common/apis/redeem'
 import 'moment/locale/th'
 import moment from 'moment'
 import { CreditModalType } from './CreditModal'
+import { FilterList } from '@mui/icons-material'
 
 interface CreditTableInterface {
     data: RedeemInterface[]
@@ -60,43 +60,27 @@ const CreditTable = ({
                                 onClick={() => requestSort('timestamp')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.timestamp')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('timestamp')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('timestamp')} />
                             </th>
                             {columns?.mobileNumber && <th>{t('column.mobile.number')}</th>}
                             <th
                                 onClick={() => requestSort('points')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.points')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('points')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('points')} />
                             </th>
                             <th
                                 onClick={() => requestSort('credit')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.credit')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('credit')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('credit')} />
                             </th>
                             {columns?.status &&
                                 <th
                                     onClick={() => requestSort('status')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.status')}{' '}
-                                    <Icon
-                                        size='lg'
-                                        className={getClassNamesFor('status')}
-                                        icon='FilterList'
-                                    />
+                                    <FilterList fontSize='small' className={getClassNamesFor('status')} />
                                 </th>
                             }
                             {columns?.operator &&
@@ -104,11 +88,7 @@ const CreditTable = ({
                                     onClick={() => requestSort('operator')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.operator')}{' '}
-                                    <Icon
-                                        size='lg'
-                                        className={getClassNamesFor('operator')}
-                                        icon='FilterList'
-                                    />
+                                    <FilterList fontSize='small' className={getClassNamesFor('operator')} />
                                 </th>
                             }
                             {setIsOpenCreditModal && <td />}

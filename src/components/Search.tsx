@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
-import Icon from './icon/Icon';
 import Input from './bootstrap/forms/Input';
 import Modal, { ModalBody, ModalHeader } from './bootstrap/Modal';
 import { componentsMenu } from '../menu';
+import { Search as SearchIcon } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors';
 
 const Search = () => {
 	const refSearchInput = useRef<any>(null);
@@ -55,7 +56,7 @@ const Search = () => {
 		<>
 			<div className='d-flex' data-tour='search'>
 				<label className='border-0 bg-transparent cursor-pointer' htmlFor='searchInput'>
-					<Icon icon='Search' size='2x' color='primary' />
+					<SearchIcon fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
 				</label>
 				<Input
 					id='searchInput'
@@ -75,7 +76,7 @@ const Search = () => {
 				data-tour='search-modal'>
 				<ModalHeader setIsOpen={setSearchModalStatus}>
 					<label className='border-0 bg-transparent cursor-pointer' htmlFor='searchInput'>
-						<Icon icon='Search' size='2x' color='primary' />
+						<SearchIcon fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
 					</label>
 					<Input
 						ref={refSearchInput}
@@ -96,8 +97,9 @@ const Search = () => {
 						</thead>
 						<tbody>
 							{filterResult.length ? (
-								filterResult.map((item) => (
-									<tr
+								filterResult.map((item) => {
+									const ItemIcon = item.icon
+									return (<tr
 										key={item.id}
 										className='cursor-pointer'
 										onClick={() => {
@@ -105,18 +107,17 @@ const Search = () => {
 										}}>
 										<td>
 											{item.icon && (
-												<Icon
-													icon={item.icon}
-													size='lg'
+												<ItemIcon
+													fontSize='large'
 													className='me-2'
-													color='primary'
+													htmlColor={COLORS.PRIMARY.code}
 												/>
 											)}
 											{item.text}
 										</td>
-									</tr>
-								))
-							) : (
+									</tr>)
+								}
+							)) : (
 								<tr className='table-active'>
 									<td>No result found for query "{formik.values.searchInput}"</td>
 								</tr>

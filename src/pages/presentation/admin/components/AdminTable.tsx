@@ -2,7 +2,6 @@ import React, { ReactNode, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown'
@@ -12,6 +11,7 @@ import moment from 'moment'
 import { useSelector } from 'react-redux'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
+import { FilterList, LabelTwoTone, MoreHoriz } from '@mui/icons-material'
 
 interface AdminTableInterface {
     data: AdminInterface[]
@@ -90,52 +90,32 @@ const AdminTable = ({
                                 onClick={() => requestSort('username')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.username')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('username')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('username')} />
                             </th>
                             <th
                                 onClick={() => requestSort('name')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.name')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('name')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('name')} />
                             </th>
                             <th>{t('column.mobile.number')}</th>
                             <th
                                 onClick={() => requestSort('updatedAt')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.updated.at')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('updatedAt')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('updatedAt')} />
                             </th>
                             <th
                                 onClick={() => requestSort('createdAt')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.created.at')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('createdAt')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('createdAt')} />
                             </th>
                             <th
                                 onClick={() => requestSort('status')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.status')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('status')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('status')} />
                             </th>
                             <td />
                         </tr>
@@ -156,7 +136,7 @@ const AdminTable = ({
                                                 {admin.name}
                                             </div>
                                             <div className='text-muted'>
-                                                <Icon icon='Label' />{' '}
+                                                <LabelTwoTone fontSize='small' />{' '}
                                                 <small>
                                                     {admin.role === AdminRole.SuperAdmin ? t('admin:super.admin') : t('admin:admin') }
                                                 </small>
@@ -212,7 +192,7 @@ const AdminTable = ({
                                                 isOpen={Boolean(isOpenDropdown)} 
                                                 setIsOpen={setIsOpenDropdown}
                                                 index={index}
-                                                icon='MoreHoriz'
+                                                icon={MoreHoriz}
                                                 color='dark'
                                                 isLight
                                             />

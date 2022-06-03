@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import ProductModal, { ProductModalType } from './ProductModal'
 import CommonGridProductItem from 'pages/presentation/product/ProductItem'
 import ProductDeleteModal from './ProductDeleteModal'
-import Icon from 'components/icon/Icon'
 import { storeProducts } from '../../../redux/product/action'
 import { getProductList, ProductInterface } from 'common/apis/product'
 import { selectProducts } from 'redux/product/selector'
@@ -15,6 +14,7 @@ import CommonTableNotFound from 'pages/common/CommonTableNotFound'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import CommonUnauthorized from 'pages/common/CommonUnauthorized'
+import { InfoTwoTone } from '@mui/icons-material'
 
 export interface ProductModalProperties {
 	type: string
@@ -56,7 +56,7 @@ const Product = ({ isOpenProductModal, setIsOpenProductModal }: ProductProps) =>
 			console.log(response.data)
 			showNotification(
 				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
+					<InfoTwoTone className='me-1' />
 					<span>{t('get.product.failed')}</span>
 				</span>,
 				t('please.refresh.again'),

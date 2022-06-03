@@ -6,6 +6,7 @@ import Badge from '../../components/bootstrap/Badge';
 import Button from '../../components/bootstrap/Button';
 import { demoPages } from '../../menu';
 import useDarkMode from '../../hooks/useDarkMode';
+import { EditTwoTone } from '@mui/icons-material';
 
 interface CommonTableRowInterface {
 	id?: string | number,
@@ -137,7 +138,7 @@ const CommonTableRow = ({
 				<Button
 					color='dark'
 					isLight
-					icon='Edit'
+					icon={EditTwoTone}
 					tag='a'
 					to={`../${demoPages.sales.subMenu.productID.path}/${id}`}
 				/>

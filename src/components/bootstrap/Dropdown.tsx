@@ -14,7 +14,7 @@ interface DropdownToggleInterface {
 	index?: number
 	color?: string
 	isLight?: boolean
-	icon?: string
+	icon?: any
 	className?: any
 	disabled?: boolean
 }

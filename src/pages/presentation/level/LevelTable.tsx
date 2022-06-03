@@ -2,12 +2,12 @@ import React, { ReactNode, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
 import { useSelector } from 'react-redux'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
+import { FilterList, StarRounded } from '@mui/icons-material'
 
 interface LevelTableInterface {
     data: any
@@ -55,41 +55,25 @@ const LevelTable = ({
                                 onClick={() => requestSort('levelName')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.level.name')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('levelName')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('levelName')} />
                             </th>
                             <th
                                 onClick={() => requestSort('minimumDeposit')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.minimum.deposit')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('minimumDeposit')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('minumumDeposit')} />
                             </th>
                             <th
                                 onClick={() => requestSort('createdAt')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.created.at')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('createdAt')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('createdAt')} />
                             </th>
                             <th
                                 onClick={() => requestSort('updatedAt')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.updated.at')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('updatedAt')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('updatedAt')} />
                             </th>
                             {setIsOpenLevelModal && <td />}
                         </tr>
@@ -102,7 +86,7 @@ const LevelTable = ({
                                 </td>
                                 <td>
                                     <div>
-                                        <Icon icon='StarFill' color={i.id === Level.Gold ? 'warning' 
+                                        <StarRounded htmlColor={i.id === Level.Gold ? 'warning' 
                                             : i.id === Level.Silver ? 'light' 
                                             : i.id === Level.Platinum ? 'primary' 
                                             : i.id === Level.Bronze ? 'danger' : 'secondary' } />{' '}

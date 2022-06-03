@@ -11,10 +11,8 @@ import Button from '../../../components/bootstrap/Button';
 import Card, {
 	CardBody,
 	CardHeader,
-	CardLabel,
 	CardTitle,
 } from '../../../components/bootstrap/Card';
-import Icon from '../../../components/icon/Icon';
 import { useTranslation } from 'react-i18next';
 import DepositTable from '../deposit/DepositTable';
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown';
@@ -29,7 +27,6 @@ import { TransactionInterface } from 'common/apis/transaction';
 import { getWithdrawList } from 'common/apis/withdraw';
 import { selectWithdrawList } from 'redux/withdraw/selector';
 import { storeWithdrawList } from 'redux/withdraw/action';
-import { WithdrawTableState } from '../withdraw/Withdraw';
 import WithdrawTable from '../withdraw/WithdrawTable';
 import Spinner from 'components/bootstrap/Spinner';
 import { getRedeemCreditList, getRedeemProductList, RedeemInterface } from 'common/apis/redeem';
@@ -39,6 +36,8 @@ import { selectRedeemProductList } from 'redux/redeemProduct/selector';
 import { storeRedeemCreditList } from 'redux/redeemCredit/action';
 import { selectRedeemCreditList } from 'redux/redeemCredit/selector';
 import CreditTable from '../credit/CreditTable';
+import { AccountBalanceWalletTwoTone, AccountCircleTwoTone, ArrowBack, CreditCardTwoTone, CurrencyExchangeTwoTone, GroupTwoTone, InfoTwoTone, LocalAtmTwoTone, PhoneIphoneTwoTone, ReceiptTwoTone, StarRounded, StarTwoTone, VpnKeyTwoTone } from '@mui/icons-material';
+import COLORS from 'common/data/enumColors';
 
 enum TransactionState {
 	Deposit = 'deposit',
@@ -75,7 +74,7 @@ const CustomerProfile = () => {
 				console.log(response.data)
 				showNotification(
 					<span className='d-flex align-items-center'>
-						<Icon icon='Info' size='lg' className='me-1' />
+						<InfoTwoTone className='me-1' />
 						<span>{t('get.deposit.failed')}</span>
 					</span>,
 					t('please.refresh.again'),
@@ -89,7 +88,7 @@ const CustomerProfile = () => {
 				console.log(response.data)
 				showNotification(
 					<span className='d-flex align-items-center'>
-						<Icon icon='Info' size='lg' className='me-1' />
+						<InfoTwoTone className='me-1' />
 						<span>{t('get.withdraw.failed')}</span>
 					</span>,
 					t('please.refresh.again'),
@@ -103,7 +102,7 @@ const CustomerProfile = () => {
 				console.log(response.data)
 				showNotification(
 					<span className='d-flex align-items-center'>
-						<Icon icon='Info' size='lg' className='me-1' />
+						<InfoTwoTone className='me-1' />
 						<span>เรียกดูรายการแลกสินค้าไม่สำเร็จ</span>
 					</span>,
 					'กรุณาลองใหม่อีกครั้ง',
@@ -117,7 +116,7 @@ const CustomerProfile = () => {
 				console.log(response.data)
 				showNotification(
 					<span className='d-flex align-items-center'>
-						<Icon icon='Info' size='lg' className='me-1' />
+						<InfoTwoTone className='me-1' />
 						<span>{t('get.deposit.failed')}</span>
 					</span>,
 					t('please.refresh.again'),
@@ -136,7 +135,7 @@ const CustomerProfile = () => {
 			console.log(response.data)
 			showNotification(
 				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
+					<InfoTwoTone className='me-1' />
 					<span>{t('get.customer.failed')}</span>
 				</span>,
 				t('please.refresh.again'),
@@ -146,10 +145,11 @@ const CustomerProfile = () => {
 	}, [])
 
 	const transactionHeader = () => 
-		<CardHeader>
-			<CardLabel icon='Receipt'>
-				<CardTitle>{t('customer:transaction.history')}</CardTitle>
-			</CardLabel>
+		<CardHeader className='pb-0'>
+			<div className='d-flex justify-content-start align-items-center'>
+				<ReceiptTwoTone className='me-2' fontSize='large' htmlColor={COLORS.PRIMARY.code} />
+				<CardTitle className='mb-0'>{t('customer:transaction.history')}</CardTitle>
+			</div>
 			<Dropdown>
 				<DropdownToggle isOpen={Boolean(isOpenTransactionDropdown)} setIsOpen={setIsOpenTransactionDropdown}>
 					<span>
@@ -202,96 +202,81 @@ const CustomerProfile = () => {
 					<Button
 						color='primary'
 						isLink
-						icon='ArrowBack'
 						tag='a'
 						to={`../${pages.customer.path}`}>
+						<ArrowBack htmlColor={COLORS.PRIMARY.code} className='me-2' />
 						{t('back')}
 					</Button>
 				</SubHeaderLeft>
 			</SubHeader>
 			<Page className='p-3 justify-content-center'>
 				{isCustomerLoading ? <Spinner isGrow color='primary' size={50} className='align-self-center' /> : <>
-					<div className='pt-3 pb-5 d-flex align-items-center'>
+					<div className='p-3 d-flex align-items-center'>
 						<span className='display-4 fw-bold me-3'>{customer?.name}</span>
 						<span className={`border border-${customer?.level?.color} border-2 text-${customer?.level?.color} fw-bold px-3 py-2 rounded`}>
-							<Icon icon='StarFill' color={customer?.level?.color} />
+							<StarRounded htmlColor={customer?.level?.color} />
 							{' ' + customer?.level?.levelName}
 						</span>
 					</div>
 					<div className='row'>
 						<div className='col-lg-4'>
 							<Card className='shadow-3d-primary'>
-								<CardHeader className='pb-0'>
-									<CardLabel icon='Person'>
-										<CardTitle>{t('profile')}</CardTitle>
-									</CardLabel>
+								<CardHeader className='d-flex justify-content-start align-items-center'>
+									<AccountCircleTwoTone className='me-2' fontSize='large' htmlColor={COLORS.INFO.code} />
+									<CardTitle>{t('profile')}</CardTitle>
 								</CardHeader>
-								<CardBody>
-									<div className='row g-5 py-3'>
-										<div className='col-12'>
-											<div className='row g-3'>
-												<div className='col-12'>
-													<div className='d-flex align-items-center'>
-														<div className='flex-shrink-0'>
-															<Icon
-																icon='Mail'
-																size='3x'
-																color='primary'
-															/>
+								<CardBody className='pt-0'>
+									<div className='row g-5 p-3'>
+										<div className='row g-3'>
+											<div className='col-12'>
+												<div className='d-flex align-items-center'>
+													<div className='flex-shrink-0'>
+														<PhoneIphoneTwoTone fontSize='large' htmlColor={COLORS.PRIMARY.code} />
+													</div>
+													<div className='flex-grow-1 ms-3'>
+														<div className='fw-bold fs-5 mb-0'>
+															{customer?.mobileNumber}
 														</div>
-														<div className='flex-grow-1 ms-3'>
-															<div className='fw-bold fs-5 mb-0'>
-																{customer?.mobileNumber}
-															</div>
-															<div className='text-muted'>
-																{t('column.mobile.number')}
-															</div>
+														<div className='text-muted'>
+															{t('column.mobile.number')}
 														</div>
 													</div>
 												</div>
-												<div className='col-12'>
-													<div className='d-flex align-items-center'>
-														<div className='flex-shrink-0'>
-															<Icon
-																icon='Savings'
-																size='3x'
-																color='primary'
-															/>
+											</div>
+											<div className='col-12'>
+												<div className='d-flex align-items-center'>
+													<div className='flex-shrink-0'>
+														<CreditCardTwoTone fontSize='large' htmlColor={COLORS.PRIMARY.code} />
+													</div>
+													<div className='flex-grow-1 ms-3'>
+														<div className='fw-bold fs-5 mb-0'>
+															{customer?.bank?.acronym.toLocaleUpperCase()}
 														</div>
-														<div className='flex-grow-1 ms-3'>
-															<div className='fw-bold fs-5 mb-0'>
-																{customer?.bank?.acronym.toLocaleUpperCase()}
-															</div>
-															<div className='text-muted'>
-																{t('column.bank.account')}
-															</div>
+														<div className='text-muted'>
+															{t('column.bank.account')}
 														</div>
-														<div className='flex-grow-1 ms-3'>
-															<div className='fw-bold fs-5 mb-0'>
-																{customer?.bankAccountNumber}
-															</div>
-															<div className='text-muted'>
-																{customer?.bankAccountName}
-															</div>
+													</div>
+													<div className='flex-grow-1 ms-3'>
+														<div className='fw-bold fs-5 mb-0'>
+															{customer?.bankAccountNumber}
+														</div>
+														<div className='text-muted'>
+															{customer?.bankAccountName}
 														</div>
 													</div>
 												</div>
-												<div className='col-12'>
-													<div className='d-flex align-items-center'>
-														<div className='flex-shrink-0'>
-															<Icon
-																icon='CardMembership'
-																size='3x'
-																color='primary'
-															/>
+											</div>
+											<div className='col-12'>
+												<div className='d-flex align-items-center'>
+													<div className='flex-shrink-0'>
+														<VpnKeyTwoTone fontSize='large' htmlColor={COLORS.PRIMARY.code} />
+													</div>
+													<div className='flex-grow-1 ms-3'>
+														<div className='fw-bold fs-5 mb-0'>
+															{t('last.active.at', { date: moment(customer?.lastLoginAt).fromNow() })}
 														</div>
-														<div className='flex-grow-1 ms-3'>
-															<div className='fw-bold fs-5 mb-0'>
-																{t('last.active.at', { date: moment(customer?.lastLoginAt).fromNow() })}
-															</div>
-															<div className='text-muted'>
-																{t('has.joined.at', { date: moment(customer?.createdAt).format('ll') })}
-															</div>
+														<div className='text-muted'>
+															{t('has.joined.at', { date: moment(customer?.createdAt).format('ll') })}
 														</div>
 													</div>
 												</div>
@@ -301,18 +286,17 @@ const CustomerProfile = () => {
 								</CardBody>
 							</Card>
 							<Card>
-								<CardHeader>
-									<CardLabel icon='AccountBalanceWallet'>
-										<CardTitle>{t('wallet')}</CardTitle>
-									</CardLabel>
+								<CardHeader className='d-flex justify-content-start align-items-center'>
+									<AccountBalanceWalletTwoTone className='me-2' fontSize='large' htmlColor={COLORS.INFO.code} />
+									<CardTitle className='mb-0'>{t('wallet')}</CardTitle>
 								</CardHeader>
-								<CardBody>
+								<CardBody className='pt-0'>
 									<div className='row g-4 align-items-center'>
 										<div className='col-xl-6'>
 											<div
 												className={`d-flex align-items-center bg-l10-warning rounded-2 p-3`}>
 												<div className='flex-shrink-0'>
-													<Icon icon='Cash' size='3x' color='warning' />
+													<LocalAtmTwoTone fontSize='large' htmlColor={COLORS.WARNING.code} />
 												</div>
 												<div className='flex-grow-1 ms-3'>
 													<div className='fw-bold fs-3 mb-0'>{customer?.credit?.toLocaleString()}</div>
@@ -326,7 +310,7 @@ const CustomerProfile = () => {
 											<div
 												className={`d-flex align-items-center bg-l10-info rounded-2 p-3`}>
 												<div className='flex-shrink-0'>
-													<Icon icon='Star' size='3x' color='info' />
+													<StarTwoTone fontSize='large' htmlColor={COLORS.INFO.code} />
 												</div>
 												<div className='flex-grow-1 ms-3'>
 													<div className='fw-bold fs-3 mb-0 d-block text-nowrap overflow-hidden text-overflow-ellipsis'>
@@ -342,7 +326,7 @@ const CustomerProfile = () => {
 											<div
 												className={`d-flex align-items-center bg-l10-primary rounded-2 p-3`}>
 												<div className='flex-shrink-0'>
-													<Icon icon='CashCoin' size='3x' color='primary' />
+													<CurrencyExchangeTwoTone fontSize='large' htmlColor={COLORS.PRIMARY.code} />
 												</div>
 												<div className='flex-grow-1 ms-3'>
 													<div className='fw-bold fs-3 mb-0'>{customer?.cashbackBonus?.toLocaleString()}</div>
@@ -356,7 +340,7 @@ const CustomerProfile = () => {
 											<div
 												className={`d-flex align-items-center bg-l10-success rounded-2 p-3`}>
 												<div className='flex-shrink-0'>
-													<Icon icon='People' size='3x' color='success' />
+													<GroupTwoTone fontSize='large' htmlColor={COLORS.SUCCESS.code} />
 												</div>
 												<div className='flex-grow-1 ms-3'>
 													<div className='fw-bold fs-3 mb-0'>{customer?.referralBonus?.toLocaleString()}</div>

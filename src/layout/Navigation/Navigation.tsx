@@ -4,9 +4,9 @@ import classNames from 'classnames'
 import { NavHashLink } from 'react-router-hash-link'
 import { Manager, Popper, Reference } from 'react-popper'
 import { useTranslation } from 'react-i18next'
-import Icon from '../../components/icon/Icon'
 import { ThemeContext } from '../../contexts/themeContext'
 import useDarkMode from '../../hooks/useDarkMode'
+import { ChevronRight, CircleTwoTone, MoreHoriz } from '@mui/icons-material'
 
 interface ListInterface extends DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement> {
 	ariaLabelledby?: string,
@@ -41,7 +41,7 @@ interface ItemInterface {
 	children: any,
 	to?: any,
 	title: string,
-	icon: string,
+	icon: any,
 	id?: string,
 	parentId?: string | number,
 	isHorizontal: boolean,
@@ -57,7 +57,7 @@ export const Item = ({
 	children,
 	to,
 	title,
-	icon,
+	icon: ItemIcon,
 	id,
 	parentId,
 	rootId,
@@ -100,14 +100,13 @@ export const Item = ({
 	const _Inner = (
 		<>
 			<span className='navigation-link-info'>
-				{icon && <Icon className='navigation-icon' icon={icon} />}
+				{ItemIcon && <ItemIcon className='navigation-icon' />}
 				<span className='navigation-text'>{t(title)}</span>
 			</span>
 			{(!!children || !!notification) && (
 				<span className='navigation-link-extra'>
 					{!!notification && (
-						<Icon
-							icon='Circle'
+						<CircleTwoTone
 							className={classNames(
 								'navigation-notification',
 								{
@@ -118,7 +117,7 @@ export const Item = ({
 							)}
 						/>
 					)}
-					{!!children && <Icon className='navigation-arrow' icon='ChevronRight' />}
+					{!!children && <ChevronRight className='navigation-arrow' />}
 				</span>
 			)}
 		</>
@@ -321,7 +320,7 @@ const Navigation = forwardRef<any, NavigationInterface>(({ menu, horizontal = fa
 					<Item
 						rootId={`other-${id}`}
 						title={t('More')}
-						icon='MoreHoriz'
+						icon={MoreHoriz}
 						isHorizontal
 						isMore>
 						{fillMenu(menu, `other-${id}`, `other-${id}`, false, true)}

@@ -2,7 +2,6 @@ import React, { ReactNode, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
 import { TransactionInterface, TransactionStatus } from 'common/apis/transaction'
@@ -12,6 +11,7 @@ import { DepositModalProperties, DepositModalType } from './DepositModal'
 import { useSelector } from 'react-redux'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
+import { FilterList, LabelTwoTone } from '@mui/icons-material'
 
 interface DepositTableInterface {
     data: TransactionInterface[]
@@ -55,51 +55,31 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                                 onClick={() => requestSort('status')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.status')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('status')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('status')} />
                             </th>
                             <th
                                 onClick={() => requestSort('timestamp')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.timestamp')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('timestamp')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('timestamp')} />
                             </th>
                             <th
                                 onClick={() => requestSort('from')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.from')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('from')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('from')} />
                             </th>
                             <th
                                 onClick={() => requestSort('to')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.to')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('to')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('to')} />
                             </th>
                             <th
                                 onClick={() => requestSort('amount')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.amount')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('amount')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('amount')} />
                             </th>
                             {!disabledColumns?.includes('mobile-number') && <th>{t('column.mobile.number')}</th>}
                             {!disabledColumns?.includes('notes') && <th>{t('column.notes')}</th>}
@@ -133,7 +113,7 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                                                 *{transaction.recipientBankAccountNumber.slice(-4)}
                                             </div>
                                             <div className='text-muted'>
-                                                <Icon icon='Label' />{' '}
+                                                <LabelTwoTone fontSize='small' />{' '}
                                                 <small>{transaction.recipientBankName.toUpperCase()}</small>
                                             </div>
                                         </div>

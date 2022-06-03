@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react'
 import bankIcons from 'common/banks'
 import Button from 'components/bootstrap/Button'
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown'
-import { Check } from 'components/icon/bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectCompanyBankList } from 'redux/companyBank/selector'
 import { getCompanyBankList, CompanyBankInterface } from 'common/apis/companyBank'
 import showNotification from 'components/extras/showNotification'
-import Icon from 'components/icon/Icon'
 import { useTranslation } from 'react-i18next'
 import Spinner from 'components/bootstrap/Spinner'
 import { storeCompanyBank } from 'redux/companyBank/action'
+import { Check, InfoTwoTone } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 
 interface CompanyBanksDropdownInterface {
     selectedBank: CompanyBankInterface | CompanyBankInterface[] | string
@@ -57,7 +57,7 @@ const CompanyBanksDropdown = ({
             console.log(response.data)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('get.bank.failed')}</span>
                 </span>,
                 t('please.refresh.again'),
@@ -109,7 +109,7 @@ const CompanyBanksDropdown = ({
                 setIsOpen={setIsOpenBankDropdown}
             >
                 {!isLoading ? companyBankList && companyBankList.map((bank: CompanyBankInterface) => { 
-                    const Icon = bankIcons[bank.bankName].icon
+                    const BankIcon = bankIcons[bank.bankName].icon
                     return <DropdownItem key={bank.bankId}>
                         <Button
                             color='link'
@@ -117,10 +117,10 @@ const CompanyBanksDropdown = ({
                             onClick={() => multipleSelect ? handleOnChangeMultipleBanks(bank) : setSelectedBank(bank)}
                         >
                             <div className='p-1' style={{ backgroundColor: bankIcons[bank.bankName].color, borderRadius: 3 }}>
-                                <Icon height={20} width={20} />
+                                <BankIcon height={20} width={20} />
                             </div>
                             <span className='mx-3 mw-75'>{bank.bankName?.toUpperCase()}{' *'}{bank.bankAccountNumber?.slice(-4)}</span>
-                            {(multipleSelect && (selectedBank as CompanyBankInterface[]).indexOf(bank) > -1) && <Check />}
+                            {(multipleSelect && (selectedBank as CompanyBankInterface[]).indexOf(bank) > -1) && <Check htmlColor={COLORS.PRIMARY.code} />}
                         </Button>
                     </DropdownItem>
                 }) : <div key='loading' className='d-flex justify-content-center'>

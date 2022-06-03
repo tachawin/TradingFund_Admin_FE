@@ -1,8 +1,7 @@
-import React, { ReactNode, useState, useEffect } from 'react'
+import React, { ReactNode, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
 import { CompanyBankInterface, CompanyBankStatus } from 'common/apis/companyBank'
@@ -10,6 +9,7 @@ import moment from 'moment'
 import { useSelector } from 'react-redux'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
+import { FilterList, LabelTwoTone } from '@mui/icons-material'
 
 interface BankTableInterface {
     data: any
@@ -49,51 +49,31 @@ const BankTable = ({
                                 onClick={() => requestSort('bankAccount')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.bank.account')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('bankAccount')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('bankAccount')} />
                             </th>
                             <th
                                 onClick={() => requestSort('bankAccountName')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.bank.account.name')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('bankAccountName')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('bankAccountName')} />
                             </th>
                             <th
                                 onClick={() => requestSort('paymentType')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.payment.type')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('paymentType')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('paymentType')} />
                             </th>
                             <th
                                 onClick={() => requestSort('addedAt')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.added.at')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('addedAt')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('addedAt')} />
                             </th>
                             <th
                                 onClick={() => requestSort('status')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.status')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('status')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('status')} />
                             </th>
                             {setIsOpenBankModal && <td />}
                         </tr>
@@ -111,7 +91,7 @@ const BankTable = ({
                                                 *{bank.bankAccountNumber.slice(-4)}
                                             </div>
                                             <div className='text-muted'>
-                                                <Icon icon='Label' />{' '}
+                                                <LabelTwoTone fontSize='small' />{' '}
                                                 <small>{bank.bankName.toUpperCase()}</small>
                                             </div>
                                         </div>

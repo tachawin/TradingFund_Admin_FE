@@ -2,7 +2,6 @@ import React, { ReactNode, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
 import { useSelector } from 'react-redux'
@@ -12,6 +11,7 @@ import { RedeemInterface, RedeemStatus } from 'common/apis/redeem'
 import moment from 'moment'
 import 'moment/locale/th'
 import { RewardModalType } from './RewardModal'
+import { FilterList } from '@mui/icons-material'
 
 interface RewardTableInterface {
     data: RedeemInterface[]
@@ -60,32 +60,20 @@ const RewardTable = ({
                                 onClick={() => requestSort('timestamp')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.timestamp')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('timestamp')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('timestamp')} />
                             </th>
                             {columns?.mobileNumber && <th>{t('column.mobile.number')}</th>}
                             <th
                                 onClick={() => requestSort('points')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.points')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('points')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('points')} />
                             </th>
                             <th
                                 onClick={() => requestSort('product')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.product')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('product')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('product')} />
                             </th>
                             <th style={{ width: '15%' }}>{t('column.address')}</th>
                             {columns?.notes && <th>{t('column.notes')}</th>}
@@ -94,11 +82,7 @@ const RewardTable = ({
                                     onClick={() => requestSort('status')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.status')}{' '}
-                                    <Icon
-                                        size='lg'
-                                        className={getClassNamesFor('status')}
-                                        icon='FilterList'
-                                    />
+                                    <FilterList fontSize='small' className={getClassNamesFor('status')} />
                                 </th>
                             }
                             {columns?.operator &&
@@ -106,11 +90,7 @@ const RewardTable = ({
                                     onClick={() => requestSort('operator')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.operator')}{' '}
-                                    <Icon
-                                        size='lg'
-                                        className={getClassNamesFor('operator')}
-                                        icon='FilterList'
-                                    />
+                                    <FilterList fontSize='small' className={getClassNamesFor('operator')} />
                                 </th>
                             }
                             {setIsOpenRewardModal && <td />}

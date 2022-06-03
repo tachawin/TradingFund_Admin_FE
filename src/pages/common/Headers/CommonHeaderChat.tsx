@@ -8,6 +8,7 @@ import USERS from '../../../common/data/userDummyData';
 import Avatar from '../../../components/Avatar';
 import showNotification from '../../../components/extras/showNotification';
 import CHATS from '../../../common/data/chatDummyData';
+import { SendTwoTone } from '@mui/icons-material';
 
 const CommonHeaderChat = () => {
 	const [state, setState] = useState(false);
@@ -101,7 +102,7 @@ const CommonHeaderChat = () => {
 				<div className='chat-send-message p-3'>
 					<InputGroup>
 						<Textarea />
-						<Button color='info' icon='Send'>
+						<Button color='info' icon={SendTwoTone}>
 							SEND
 						</Button>
 					</InputGroup>

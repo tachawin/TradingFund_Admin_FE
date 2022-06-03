@@ -3,6 +3,7 @@ import moment from 'moment';
 import 'moment/locale/th'
 import Button, { ButtonGroup } from '../bootstrap/Button';
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from '../bootstrap/Dropdown';
+import { CalendarViewDayTwoTone, CalendarViewMonthTwoTone, CalendarViewWeekTwoTone, ChevronLeft, ChevronRight, ViewAgendaTwoTone, ViewWeekTwoTone } from '@mui/icons-material';
 
 export const getUnitType = (viewMode: View) => {
 	let unitType = null;
@@ -61,7 +62,7 @@ export const CalendarTodayButton = ({ setDate, date, unitType, viewMode }: Calen
 				color='info'
 				isLight
 				onClick={() => setDate(moment(date).subtract(1, 'day').toDate())}
-				icon='ChevronLeft'
+				icon={ChevronLeft}
 				aria-label='Prev'
 			/>
 			<Button color='info' isLight onClick={() => setDate(moment().toDate())}>
@@ -71,7 +72,7 @@ export const CalendarTodayButton = ({ setDate, date, unitType, viewMode }: Calen
 				color='info'
 				isLight
 				onClick={() => setDate(moment(date).add(1, 'day').toDate())}
-				icon='ChevronRight'
+				icon={ChevronRight}
 				aria-label='Next'
 			/>
 		</ButtonGroup>
@@ -91,11 +92,11 @@ export const CalendarViewModeButtons = ({ viewMode, setViewMode }: CalendarViewM
 					color='primary'
 					isLight
 					icon={
-						(viewMode === Views.MONTH && 'calendar_view_month') ||
-						(viewMode === Views.WEEK && 'calendar_view_week') ||
-						(viewMode === Views.WORK_WEEK && 'view_week') ||
-						(viewMode === Views.DAY && 'calendar_viewtoDate(ay') ||
-						'view_agenda'
+						(viewMode === Views.MONTH && CalendarViewMonthTwoTone) ||
+						(viewMode === Views.WEEK && CalendarViewWeekTwoTone) ||
+						(viewMode === Views.WORK_WEEK && ViewWeekTwoTone) ||
+						(viewMode === Views.DAY && CalendarViewDayTwoTone) ||
+						ViewAgendaTwoTone
 					}>
 					{(viewMode === Views.MONTH && 'Month') ||
 						(viewMode === Views.WEEK && 'Week') ||
@@ -108,7 +109,7 @@ export const CalendarViewModeButtons = ({ viewMode, setViewMode }: CalendarViewM
 				<DropdownItem>
 					<Button
 						color='link'
-						icon='calendar_view_month'
+						icon={CalendarViewMonthTwoTone}
 						isActive={viewMode === Views.MONTH}
 						onClick={() => setViewMode(Views.MONTH)}>
 						Month
@@ -117,7 +118,7 @@ export const CalendarViewModeButtons = ({ viewMode, setViewMode }: CalendarViewM
 				<DropdownItem>
 					<Button
 						color='link'
-						icon='calendar_view_week'
+						icon={CalendarViewWeekTwoTone}
 						isActive={viewMode === Views.WEEK}
 						onClick={() => setViewMode(Views.WEEK)}>
 						Week
@@ -126,7 +127,7 @@ export const CalendarViewModeButtons = ({ viewMode, setViewMode }: CalendarViewM
 				<DropdownItem>
 					<Button
 						color='link'
-						icon='view_week'
+						icon={ViewWeekTwoTone}
 						isActive={viewMode === Views.WORK_WEEK}
 						onClick={() => setViewMode(Views.WORK_WEEK)}>
 						Work Week
@@ -135,7 +136,7 @@ export const CalendarViewModeButtons = ({ viewMode, setViewMode }: CalendarViewM
 				<DropdownItem>
 					<Button
 						color='link'
-						icon='calendar_viewtoDate(ay'
+						icon={CalendarViewDayTwoTone}
 						isActive={viewMode === Views.DAY}
 						onClick={() => setViewMode(Views.DAY)}>
 						Day
@@ -144,7 +145,7 @@ export const CalendarViewModeButtons = ({ viewMode, setViewMode }: CalendarViewM
 				<DropdownItem>
 					<Button
 						color='link'
-						icon='view_agenda'
+						icon={ViewAgendaTwoTone}
 						isActive={viewMode === Views.AGENDA}
 						onClick={() => setViewMode(Views.AGENDA)}>
 						Agenda

@@ -6,7 +6,6 @@ import Modal, {
 	ModalTitle,
 } from '../../../components/bootstrap/Modal'
 import showNotification from '../../../components/extras/showNotification'
-import Icon from '../../../components/icon/Icon'
 import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
@@ -20,6 +19,7 @@ import { CompanyBankBaseInterface, CompanyBankStatus, CompanyBankType, createCom
 import Spinner from 'components/bootstrap/Spinner'
 import { useDispatch } from 'react-redux'
 import { addCompanyBank, updateCompanyBankById } from 'redux/companyBank/action'
+import { InfoTwoTone } from '@mui/icons-material'
 
 enum BankModalType {
     Add = 'add',
@@ -73,7 +73,7 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
                     dispatch(addCompanyBank(requestBody))
                     showNotification(
                         <span className='d-flex align-items-center'>
-                            <Icon icon='Info' size='lg' className='me-1' />
+                            <InfoTwoTone className='me-1' />
                             <span>{t('bank:added.successfully')}</span>
                         </span>,
                         t('bank:added.bank.successfully', { bankName: values.bankName.toUpperCase() }),
@@ -84,7 +84,7 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
                     console.log(message)
                     showNotification(
                         <span className='d-flex align-items-center'>
-                            <Icon icon='Info' size='lg' className='me-1' />
+                            <InfoTwoTone className='me-1' />
                             <span>{t('bank:save.failed')}</span>
                         </span>,
                         t('bank:save.bank.failed', { bankName: values.bankName.toUpperCase() }),
@@ -98,7 +98,7 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
                     data?.bankId && dispatch(updateCompanyBankById(data.bankId, requestBody))
                     showNotification(
                         <span className='d-flex align-items-center'>
-                            <Icon icon='Info' size='lg' className='me-1' />
+                            <InfoTwoTone className='me-1' />
                             <span>{t('bank:edit.successfully')}</span>
                         </span>,
                         t('bank:edit.bank.successfully', { bankName: values.bankName.toUpperCase() }),
@@ -111,7 +111,7 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
                     console.log(message)
                     showNotification(
                         <span className='d-flex align-items-center'>
-                            <Icon icon='Info' size='lg' className='me-1' />
+                            <InfoTwoTone className='me-1' />
                             <span>{t('bank:save.failed')}</span>
                         </span>,
                         t('bank:save.bank.failed', { bankName: values.bankName.toUpperCase() }),

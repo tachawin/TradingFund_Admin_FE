@@ -6,9 +6,9 @@ import Modal, {
 	ModalTitle,
 } from '../../../components/bootstrap/Modal'
 import showNotification from '../../../components/extras/showNotification'
-import Icon from '../../../components/icon/Icon'
 import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
+import { InfoTwoTone } from '@mui/icons-material'
 
 interface WithdrawModalProperties {
 	selectedRow: any
@@ -31,7 +31,7 @@ const WithdrawCancelModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModa
 
         showNotification(
             <span className='d-flex align-items-center'>
-                <Icon icon='Info' size='lg' className='me-1' />
+                <InfoTwoTone className='me-1' />
                 <span>{t('withdraw:reject.successfully')}</span>
             </span>,
             t('withdraw:reject.request.successfully', { mobileNumber: data?.mobileNumber }),

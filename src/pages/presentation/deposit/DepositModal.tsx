@@ -7,7 +7,6 @@ import Modal, {
 	ModalTitle,
 } from '../../../components/bootstrap/Modal'
 import showNotification from '../../../components/extras/showNotification'
-import Icon from '../../../components/icon/Icon'
 import FormGroup from '../../../components/bootstrap/forms/FormGroup'
 import Input from '../../../components/bootstrap/forms/Input'
 import Button from '../../../components/bootstrap/Button'
@@ -21,6 +20,7 @@ import { CompanyBankInterface, CompanyBankStatus, CompanyBankType } from 'common
 import { TransactionInterface, TransactionStatus } from 'common/apis/transaction'
 import { useDispatch } from 'react-redux'
 import { addNewDeposit, updateDepositById } from 'redux/deposit/action'
+import { InfoTwoTone } from '@mui/icons-material'
 
 export enum DepositModalType {
     Add = 'add',
@@ -84,7 +84,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             }))
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('deposit:save.deposit.successfully')}</span>
                 </span>, t('deposit:save.deposit.from.mobile.number.successfully', { mobileNumber: values.mobileNumber })
             )
@@ -93,7 +93,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             console.log(response)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('deposit:save.deposit.failed')}</span>
                 </span>, t('deposit:save.deposit.from.mobile.number.failed', { mobileNumber: values.mobileNumber })
             )
@@ -105,7 +105,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             dispatch(updateDepositById(id, newData))
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('deposit:edit.successfully')}</span>
                 </span>, t('deposit:edit.deposit.successfully', { mobileNumber: values.mobileNumber })
             )
@@ -114,7 +114,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             console.log(response)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('deposit:edit.failed')}</span>
                 </span>, t('deposit:edit.deposit.failed', { mobileNumber: values.mobileNumber })
             )
@@ -126,7 +126,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             dispatch(updateDepositById(id, { ...newData, status: TransactionStatus.Success }))
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('deposit:edit.successfully')}</span>
                 </span>, t('deposit:edit.deposit.successfully', { mobileNumber: values.mobileNumber })
             )
@@ -135,7 +135,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             console.log(response)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('deposit:edit.failed')}</span>
                 </span>, t('deposit:edit.deposit.failed', { mobileNumber: values.mobileNumber })
             )
@@ -147,7 +147,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             dispatch(updateDepositById(id, { ...newData, status: TransactionStatus.Cancel }))
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('deposit:edit.successfully')}</span>
                 </span>, t('deposit:edit.deposit.successfully', { mobileNumber: values.mobileNumber })
             )
@@ -156,7 +156,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             console.log(response)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('deposit:edit.failed')}</span>
                 </span>, t('deposit:edit.deposit.failed', { mobileNumber: values.mobileNumber })
             )

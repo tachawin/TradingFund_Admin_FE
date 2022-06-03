@@ -3,7 +3,6 @@ import { useFormik } from 'formik'
 import debounce from 'lodash/debounce'
 import { SubheaderSeparator } from '../../../layout/SubHeader/SubHeader'
 import Button from '../../../components/bootstrap/Button'
-import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import Checks  from '../../../components/bootstrap/forms/Checks'
 import { useTranslation } from 'react-i18next'
@@ -17,6 +16,8 @@ import { selectCompanyBankQuery } from 'redux/companyBank/selector'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
+import { SavingsTwoTone, Search } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 
 interface BankFilterInterface {
 	searchInput: string
@@ -109,7 +110,7 @@ const BankSubHeader = ({ setIsOpenBankModal }: BankSubHeaderInterface) => {
 		<label
 			className='border-0 bg-transparent cursor-pointer me-0'
 			htmlFor='searchInput'>
-			<Icon icon='Search' size='2x' color='primary' />
+			<Search fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
 		</label>
 		<Input
 			id='searchInput'
@@ -175,7 +176,7 @@ const BankSubHeader = ({ setIsOpenBankModal }: BankSubHeaderInterface) => {
 			<SubheaderSeparator />
 			<Button
 				className='text-nowrap'
-				icon='PiggyBank'
+				icon={SavingsTwoTone}
 				color='primary'
 				isLight
 				onClick={() => setIsOpenBankModal({ type: "add", selectedRow: undefined})}

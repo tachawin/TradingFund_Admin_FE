@@ -7,7 +7,6 @@ import Modal, {
 	ModalTitle,
 } from '../../../components/bootstrap/Modal'
 import showNotification from '../../../components/extras/showNotification'
-import Icon from '../../../components/icon/Icon'
 import FormGroup from '../../../components/bootstrap/forms/FormGroup'
 import Input from '../../../components/bootstrap/forms/Input'
 import { useTranslation } from 'react-i18next'
@@ -19,6 +18,8 @@ import Spinner from 'components/bootstrap/Spinner'
 import { useDispatch } from 'react-redux'
 import { addCustomer } from '../../../redux/customer/action'
 import 'moment/locale/th'
+import { AccountCircleTwoTone, CreditCardTwoTone, InfoTwoTone } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 
 interface CustomerAddForm {
     mobileNumber: string
@@ -66,7 +67,7 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
                 dispatch(addCustomer(response.data))
                 showNotification(
                     <span className='d-flex align-items-center'>
-                        <Icon icon='Info' size='lg' className='me-1' />
+                        <InfoTwoTone className='me-1' />
                         <span>{t('customer:save.successfully')}</span>
                     </span>,
                     t('customer:save.customer.successfully', { adminName: values.name }),
@@ -77,7 +78,7 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
                 console.log(message)
                 showNotification(
                     <span className='d-flex align-items-center'>
-                        <Icon icon='Info' size='lg' className='me-1' />
+                        <InfoTwoTone className='me-1' />
                         <span>{t('customer:save.failed')}</span>
                     </span>,
                     t('customer:save.customer.failed', { adminName: values.name }),
@@ -110,7 +111,7 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
                     <div className='col'>
                         <div className='row g-4'>
                             <h5>
-                                <Icon icon='Person' className='ms-1' color='info' />{' '}
+                                <AccountCircleTwoTone className='ms-1' htmlColor={COLORS.INFO.code} />{' '}
                                 {t('profile')}
                             </h5>
                             <FormGroup id='mobileNumber' label={t('form.mobile.number')}>
@@ -140,7 +141,7 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
                     <div className='col'>
                         <div className='row g-4'>
                             <h5>
-                                <Icon icon='Bank' className='ms-1' color='info' />{' '}
+                                <CreditCardTwoTone className='ms-1' htmlColor={COLORS.INFO.code} />{' '}
                                 {t('bank.account')}
                             </h5>
                             <FormGroup id='bankAccountNumber' label={t('form.bank.account.number')}>

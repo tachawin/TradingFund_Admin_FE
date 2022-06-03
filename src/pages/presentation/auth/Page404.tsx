@@ -2,6 +2,7 @@ import PageWrapper from '../../../layout/PageWrapper/PageWrapper';
 import Page from '../../../layout/Page/Page';
 import Button from '../../../components/bootstrap/Button';
 import { demoPages } from '../../../menu';
+import { HolidayVillageTwoTone } from '@mui/icons-material';
 
 const Page404 = () => {
 	return (
@@ -33,7 +34,7 @@ const Page404 = () => {
 							className='px-5 py-3'
 							color='primary'
 							isLight
-							icon='HolidayVillage'
+							icon={HolidayVillageTwoTone}
 							tag='a'
 							href='/'>
 							Homepage

@@ -13,7 +13,6 @@ import { CardHeader, CardLabel, CardTitle } from '../../../components/bootstrap/
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
 import Button from '../../../components/bootstrap/Button'
-import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import Dropdown, {
 	DropdownMenu,
@@ -35,6 +34,8 @@ import { selectAdmins } from 'redux/admin/selector'
 import { storeAdmins } from 'redux/admin/action'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
+import { InfoTwoTone, PersonAddAlt1TwoTone, Search } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 
 interface AdminModalProperties {
 	type?: AdminModalType
@@ -174,7 +175,7 @@ const Admin = () => {
 			setIsLoading(false)
 			showNotification(
 				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
+					<InfoTwoTone className='me-1' />
 					<span>{t('get.admin.failed')}</span>
 				</span>,
 				t('please.refresh.again'),
@@ -190,7 +191,7 @@ const Admin = () => {
 					<label
 						className='border-0 bg-transparent cursor-pointer me-0'
 						htmlFor='searchInput'>
-						<Icon icon='Search' size='2x' color='primary' />
+						<Search fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
 					</label>
 					<Input
 						id='searchInput'
@@ -299,7 +300,7 @@ const Admin = () => {
 					{permission.adminManage[PermissionType.Create] === PermissionValue.Available && <>
 						<SubheaderSeparator />
 						<Button
-							icon='PersonAdd'
+							icon={PersonAddAlt1TwoTone}
 							color='primary'
 							isLight
 							onClick={() => setIsOpenAdminModal({ type: AdminModalType.Add })}

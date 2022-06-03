@@ -6,10 +6,10 @@ import Modal, {
 	ModalTitle,
 } from '../../../components/bootstrap/Modal'
 import showNotification from '../../../components/extras/showNotification'
-import Icon from '../../../components/icon/Icon'
 import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import { LevelModalInterface } from './Level'
+import { InfoTwoTone } from '@mui/icons-material'
 
 const LevelDeleteModal = ({ id, isOpen, setIsOpen, properties }: LevelModalInterface) => {
     const { t } = useTranslation(['common', 'level'])
@@ -21,7 +21,7 @@ const LevelDeleteModal = ({ id, isOpen, setIsOpen, properties }: LevelModalInter
 
         showNotification(
             <span className='d-flex align-items-center'>
-                <Icon icon='Info' size='lg' className='me-1' />
+                <InfoTwoTone className='me-1' />
                 <span>{t('level:delete.successfully')}</span>
             </span>,
             t('level:delete.level.successfully', { levelName: data?.levelName }),

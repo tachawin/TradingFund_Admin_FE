@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
 import TagWrapper from '../TagWrapper';
-import Icon from '../icon/Icon';
 
 interface ButtonGroupInterface {
 	isToolbar?: boolean
@@ -50,7 +49,7 @@ interface ButtonInterface {
 	isLight?: boolean,
 	isLink?: boolean,
 	className?: string,
-	icon?: string | null,
+	icon?: any,
 	rounded?: string | number,
 	size?: string,
 	isDisable?: boolean,
@@ -78,7 +77,7 @@ const Button = forwardRef<any, ButtonInterface>(
 			isLight,
 			isLink,
 			className,
-			icon,
+			icon: ButtonIcon,
 			rounded,
 			size,
 			isDisable,
@@ -118,7 +117,7 @@ const Button = forwardRef<any, ButtonInterface>(
 
 		const _Inner = (
 			<>
-				{icon && <Icon icon={icon} className='btn-icon' />}
+				{ButtonIcon && <ButtonIcon className='btn-icon' />}
 				{isVisuallyHidden ? (
 					<span className='visually-hidden'>Toggle Dropdown</span>
 				) : (

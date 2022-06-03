@@ -2,13 +2,13 @@ import React, { ReactNode, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { TransactionInterface, TransactionStatus, TransactionType } from 'common/apis/transaction'
+import { FilterList, LabelTwoTone } from '@mui/icons-material'
 
 interface ReportTableInterface {
     data: TransactionInterface[]
@@ -56,61 +56,37 @@ const ReportTable = ({ data }: ReportTableInterface) => {
                             onClick={() => requestSort('type')}
                             className='cursor-pointer text-decoration-underline'>
                             {t('column.type')}{' '}
-                            <Icon
-                                size='lg'
-                                className={getClassNamesFor('type')}
-                                icon='FilterList'
-                            />
+                            <FilterList fontSize='small' className={getClassNamesFor('type')} />
                         </th>
                         <th
                             onClick={() => requestSort('mobileNumber')}
                             className='cursor-pointer text-decoration-underline'>
                             {t('column.mobile.number')}{' '}
-                            <Icon
-                                size='lg'
-                                className={getClassNamesFor('mobileNumber')}
-                                icon='FilterList'
-                            />
+                            <FilterList fontSize='small' className={getClassNamesFor('mobileNumber')} />
                         </th>
                         <th
                             onClick={() => requestSort('timestamp')}
                             className='cursor-pointer text-decoration-underline'>
                             {t('column.timestamp')}{' '}
-                            <Icon
-                                size='lg'
-                                className={getClassNamesFor('timestamp')}
-                                icon='FilterList'
-                            />
+                            <FilterList fontSize='small' className={getClassNamesFor('timestamp')} />
                         </th>
                         <th
                             onClick={() => requestSort('bank')}
                             className='cursor-pointer text-decoration-underline'>
                             {t('column.bank')}{' '}
-                            <Icon
-                                size='lg'
-                                className={getClassNamesFor('bank')}
-                                icon='FilterList'
-                            />
+                            <FilterList fontSize='small' className={getClassNamesFor('bank')} />
                         </th>
                         <th
                             onClick={() => requestSort('amount')}
                             className='cursor-pointer text-decoration-underline'>
                             {t('column.amount')}{' '}
-                            <Icon
-                                size='lg'
-                                className={getClassNamesFor('amount')}
-                                icon='FilterList'
-                            />
+                            <FilterList fontSize='small' className={getClassNamesFor('amount')} />
                         </th>
                         <th
                             onClick={() => requestSort('status')}
                             className='cursor-pointer text-decoration-underline'>
                             {t('column.status')}{' '}
-                            <Icon
-                                size='lg'
-                                className={getClassNamesFor('status')}
-                                icon='FilterList'
-                            />
+                            <FilterList fontSize='small' className={getClassNamesFor('status')} />
                         </th>
                         <th>{t('column.notes')}</th>
                     </tr>
@@ -142,7 +118,7 @@ const ReportTable = ({ data }: ReportTableInterface) => {
                                             {transaction.transactionType === TransactionType.Deposit ? `*${transaction.recipientBankAccountNumber}` : `*${transaction.payerBankAccountNumber}`}
                                         </div>
                                         <div className='text-muted'>
-                                            <Icon icon='Label' />{' '}
+                                            <LabelTwoTone fontSize='small' />{' '}
                                             <small>{transaction.transactionType === TransactionType.Deposit ? transaction.recipientBankName.toUpperCase() : transaction.payerBankName.toUpperCase()}</small>
                                         </div>
                                     </div>

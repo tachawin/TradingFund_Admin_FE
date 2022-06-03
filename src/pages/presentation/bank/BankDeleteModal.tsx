@@ -6,7 +6,6 @@ import Modal, {
 	ModalTitle,
 } from '../../../components/bootstrap/Modal'
 import showNotification from '../../../components/extras/showNotification'
-import Icon from '../../../components/icon/Icon'
 import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import { BankModalInterface } from './Bank'
@@ -14,6 +13,7 @@ import { deleteCompanyBank } from 'common/apis/companyBank'
 import Spinner from 'components/bootstrap/Spinner'
 import { useDispatch } from 'react-redux'
 import { deleteCompanyBankById } from 'redux/companyBank/action'
+import { InfoTwoTone } from '@mui/icons-material'
 
 const BankDeleteModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) => {
     const { t } = useTranslation(['common', 'bank'])
@@ -29,7 +29,7 @@ const BankDeleteModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterfa
                 data?.bankId && dispatch(deleteCompanyBankById(data.bankId))
                 showNotification(
                     <span className='d-flex align-items-center'>
-                        <Icon icon='Info' size='lg' className='me-1' />
+                        <InfoTwoTone className='me-1' />
                         <span>{t('bank:delete.successfully')}</span>
                     </span>,
                     t('bank:delete.bank.successfully', { bankName: data?.bankName }),
@@ -39,7 +39,7 @@ const BankDeleteModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterfa
                 console.log(response.data)
                 showNotification(
                     <span className='d-flex align-items-center'>
-                        <Icon icon='Info' size='lg' className='me-1' />
+                        <InfoTwoTone className='me-1' />
                         <span>{t('bank:delete.failed')}</span>
                     </span>,
                     t('bank:delete.bank.failed', { bankName: data?.bankName }),

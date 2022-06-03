@@ -7,7 +7,6 @@ import SubHeader, {
 	SubHeaderRight,
 	SubheaderSeparator,
 } from '../../../layout/SubHeader/SubHeader';
-import Icon from '../../../components/icon/Icon';
 import Button from '../../../components/bootstrap/Button';
 import Page from '../../../layout/Page/Page';
 import Card, {
@@ -25,6 +24,8 @@ import Textarea from '../../../components/bootstrap/forms/Textarea';
 import { demoPages } from '../../../menu';
 import CHATS from '../../../common/data/chatDummyData';
 import CommonChatStatus from '../../common/CommonChatStatus';
+import { AccountCircleTwoTone, InfoTwoTone, Logout, SendTwoTone } from '@mui/icons-material';
+import COLORS from 'common/data/enumColors';
 
 const OnlyListChatPage = () => {
 	const navigate = useNavigate();
@@ -73,10 +74,9 @@ const OnlyListChatPage = () => {
 			<SubHeader>
 				<SubHeaderLeft>
 					<span>
-						<Icon icon='Info' className='me-2' size='2x' color='danger' />
+						<InfoTwoTone fontSize='large' className='me-2' htmlColor={COLORS.DANGER.code} />
 						<span className='text-muted'>
-							You have <Icon icon='Chat5' color='danger' className='mx-1' size='lg' />{' '}
-							14 unread messages.
+							You have 14 unread messages.
 						</span>
 					</span>
 				</SubHeaderLeft>
@@ -84,7 +84,7 @@ const OnlyListChatPage = () => {
 					<CommonChatStatus />
 					<SubheaderSeparator />
 					<Button
-						icon='Logout'
+						icon={Logout}
 						color='danger'
 						isLight
 						onClick={() => navigate(`../${demoPages.login.path}`)}>
@@ -97,7 +97,7 @@ const OnlyListChatPage = () => {
 					<div className='col-md-6'>
 						<Card stretch>
 							<CardHeader>
-								<CardLabel icon='AccountCircle' iconColor='success'>
+								<CardLabel icon={AccountCircleTwoTone} iconColor='success'>
 									<CardTitle>Online</CardTitle>
 									<CardSubTitle>3 users</CardSubTitle>
 								</CardLabel>
@@ -149,7 +149,7 @@ const OnlyListChatPage = () => {
 					<div className='col-md-6'>
 						<Card stretch>
 							<CardHeader>
-								<CardLabel icon='AccountCircle' iconColor='danger'>
+								<CardLabel icon={AccountCircleTwoTone} iconColor='danger'>
 									<CardTitle>Offline</CardTitle>
 									<CardSubTitle>3 users</CardSubTitle>
 								</CardLabel>
@@ -227,7 +227,7 @@ const OnlyListChatPage = () => {
 					<div className='chat-send-message p-3'>
 						<InputGroup>
 							<Textarea />
-							<Button color='info' icon='Send'>
+							<Button color='info' icon={SendTwoTone}>
 								SEND
 							</Button>
 						</InputGroup>

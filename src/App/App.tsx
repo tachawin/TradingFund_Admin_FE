@@ -10,9 +10,7 @@ import { ThemeContext } from '../contexts/themeContext'
 import Wrapper from '../layout/Wrapper/Wrapper'
 import Portal from '../layout/Portal/Portal'
 import { demoPages, layoutMenu, pages } from '../menu'
-import { Toast, ToastContainer } from '../components/bootstrap/Toasts'
 import COLORS from '../common/data/enumColors'
-import steps, { styles } from '../steps'
 
 const App = () => {
 	const theme = {
@@ -51,32 +49,24 @@ const App = () => {
 
 	return (
 		<ThemeProvider theme={theme}>
-			<ToastProvider components={{ ToastContainer, Toast }}>
-				<TourProvider
-					steps={steps}
-					styles={styles}
-					showNavigation={false}
-					showBadge={false}>
-					<div
-						ref={ref}
-						className='app'
-						style={{
-							backgroundColor: fullScreenStatus ? 'var(--bs-body-bg)' : 'initial',
-							zIndex: fullScreenStatus ? 1 : 'auto',
-							overflow: fullScreenStatus ? 'scroll' : 'auto',
-						}}>
-						<Routes>
-							{withOutAsidePages.map((path) => (
-								<Route key={path} path={path} />
-							))}
-						</Routes>
-						<Wrapper />
-					</div>
-					<Portal id='portal-notification'>
-						<ReactNotifications />
-					</Portal>
-				</TourProvider>
-			</ToastProvider>
+			<div
+				ref={ref}
+				className='app'
+				style={{
+					backgroundColor: fullScreenStatus ? 'var(--bs-body-bg)' : 'initial',
+					zIndex: fullScreenStatus ? 1 : 'auto',
+					overflow: fullScreenStatus ? 'scroll' : 'auto',
+				}}>
+				<Routes>
+					{withOutAsidePages.map((path) => (
+						<Route key={path} path={path} />
+					))}
+				</Routes>
+				<Wrapper />
+			</div>
+			<Portal id='portal-notification'>
+				<ReactNotifications />
+			</Portal>
 		</ThemeProvider>
 	)
 }

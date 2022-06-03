@@ -6,7 +6,6 @@ import Modal, {
 	ModalTitle,
 } from '../../../components/bootstrap/Modal'
 import showNotification from '../../../components/extras/showNotification'
-import Icon from '../../../components/icon/Icon'
 import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import { ProductModalInterface } from './Product'
@@ -14,6 +13,7 @@ import { deleteProduct } from 'common/apis/product'
 import Spinner from 'components/bootstrap/Spinner'
 import { useDispatch } from 'react-redux'
 import { deleteProductById } from 'redux/product/action'
+import { InfoTwoTone } from '@mui/icons-material'
 
 const ProductDeleteModal = ({ id, isOpen, setIsOpen, properties }: ProductModalInterface) => {
     const { t } = useTranslation(['common', 'product'])
@@ -30,7 +30,7 @@ const ProductDeleteModal = ({ id, isOpen, setIsOpen, properties }: ProductModalI
                 data?.productId && dispatch(deleteProductById(data.productId))
                 showNotification(
                     <span className='d-flex align-items-center'>
-                        <Icon icon='Info' size='lg' className='me-1' />
+                        <InfoTwoTone className='me-1' />
                         <span>{t('product:delete.successfully')}</span>
                     </span>,
                     t('product:delete.product.successfully', { productName: data?.name }),
@@ -41,7 +41,7 @@ const ProductDeleteModal = ({ id, isOpen, setIsOpen, properties }: ProductModalI
                 console.log(response.data)
                 showNotification(
                     <span className='d-flex align-items-center'>
-                        <Icon icon='Info' size='lg' className='me-1' />
+                        <InfoTwoTone className='me-1' />
                         <span>{t('product:delete.failed')}</span>
                     </span>,
                     t('product:delete.product.failed', { productName: data?.name }),

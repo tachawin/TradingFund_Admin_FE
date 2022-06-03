@@ -6,13 +6,13 @@ import Modal, {
 	ModalTitle,
 } from '../../../components/bootstrap/Modal'
 import showNotification from '../../../components/extras/showNotification'
-import Icon from '../../../components/icon/Icon'
 import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import { RedeemAction, RedeemInterface, updateRedeemCredit } from 'common/apis/redeem'
 import { useDispatch } from 'react-redux'
 import { removeRedeemCreditById } from 'redux/redeemCredit/action'
 import Spinner from 'components/bootstrap/Spinner'
+import { InfoTwoTone } from '@mui/icons-material'
 
 export enum CreditModalType {
     Approve = 'approve',
@@ -42,7 +42,7 @@ const CreditModal = ({ id, isOpen, setIsOpen, properties }: CreditModalInterface
             data.redeemId && dispatch(removeRedeemCreditById(data.redeemId))
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('credit:approve.successfully')}</span>
                 </span>,
                 t('credit:approve.request.successfully', { mobileNumber: data?.mobileNumber }),
@@ -52,7 +52,7 @@ const CreditModal = ({ id, isOpen, setIsOpen, properties }: CreditModalInterface
             console.log(response)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('credit:approve.failed')}</span>
                 </span>,
                 t('credit:approve.request.failed', { mobileNumber: data?.mobileNumber }),
@@ -69,7 +69,7 @@ const CreditModal = ({ id, isOpen, setIsOpen, properties }: CreditModalInterface
             data.redeemId && dispatch(removeRedeemCreditById(data.redeemId))
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('credit:reject.successfully')}</span>
                 </span>,
                 t('credit:reject.request.successfully', { mobileNumber: data?.mobileNumber }),
@@ -79,7 +79,7 @@ const CreditModal = ({ id, isOpen, setIsOpen, properties }: CreditModalInterface
             console.log(response)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('credit:reject.failed')}</span>
                 </span>,
                 t('credit:reject.request.failed', { mobileNumber: data?.mobileNumber }),

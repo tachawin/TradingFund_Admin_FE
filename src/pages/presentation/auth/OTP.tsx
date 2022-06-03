@@ -12,8 +12,8 @@ import { useFormik } from 'formik'
 import { OTPResponse, sendOTP } from 'common/apis/auth'
 import Spinner from 'components/bootstrap/Spinner'
 import showNotification from 'components/extras/showNotification'
-import Icon from 'components/icon/Icon'
 import { didLogin } from 'common/utils/auth'
+import { InfoTwoTone } from '@mui/icons-material'
 
 interface OTPInterface {
 	adminId: string
@@ -45,7 +45,7 @@ const OTP = ({ adminId, refCode }: OTPInterface) => {
 			}, (err) => {
 				showNotification(
 					<span className='d-flex align-items-center'>
-						<Icon icon='Info' size='lg' className='me-1' />
+						<InfoTwoTone className='me-1' />
 						<span>{t('otp.failed')}</span>
 					</span>,
 					t('please.try.again'),

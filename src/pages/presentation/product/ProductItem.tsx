@@ -19,6 +19,7 @@ import PlaceholderImage from 'components/extras/PlaceholderImage'
 import { useSelector } from 'react-redux'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
+import { Delete, DeleteTwoTone, Edit, EditTwoTone, MoreHoriz } from '@mui/icons-material'
 
 interface ProductItemInterface {
 	id?: number | string,
@@ -77,7 +78,7 @@ const ProductItem = ({
 								setIsOpen={setIsOpenDropdown}						
 								color='dark'
 								isLight
-								icon='MoreHoriz' 
+								icon={MoreHoriz}
 								hasIcon={false} 
 							/>
 							<DropdownMenu
@@ -86,12 +87,12 @@ const ProductItem = ({
 								isAlignmentEnd
 							>
 								{permission.product[PermissionType.Update] === PermissionValue.Available && <DropdownItem>
-									<Button icon='Edit' onClick={handleEdit}>
+									<Button icon={EditTwoTone} onClick={handleEdit}>
 									{t('edit')}
 									</Button>
 								</DropdownItem>}
 								{permission.product[PermissionType.Delete] === PermissionValue.Available && <DropdownItem>
-									<Button icon='Delete' onClick={handleDelete}>
+									<Button icon={DeleteTwoTone} onClick={handleDelete}>
 										{t('delete')}
 									</Button>
 								</DropdownItem>}

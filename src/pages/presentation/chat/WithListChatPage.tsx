@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 import SubHeader, { SubHeaderLeft, SubHeaderRight } from '../../../layout/SubHeader/SubHeader';
@@ -19,10 +19,11 @@ import Chat, { ChatAvatar, ChatGroup, ChatListItem } from '../../../components/C
 import InputGroup from '../../../components/bootstrap/forms/InputGroup';
 import Textarea from '../../../components/bootstrap/forms/Textarea';
 import USERS from '../../../common/data/userDummyData';
-import Icon from '../../../components/icon/Icon';
 import { demoPages } from '../../../menu';
 import CHATS from '../../../common/data/chatDummyData';
 import CommonChatStatus from '../../common/CommonChatStatus';
+import { AccountCircleTwoTone, ChevronLeft, InfoTwoTone, Logout, SendTwoTone } from '@mui/icons-material';
+import COLORS from 'common/data/enumColors';
 
 const WithListChatPage = () => {
 	const navigate = useNavigate();
@@ -64,10 +65,9 @@ const WithListChatPage = () => {
 			<SubHeader>
 				<SubHeaderLeft>
 					<span>
-						<Icon icon='Info' className='me-2' size='2x' color='danger' />
+						<InfoTwoTone fontSize='large' className='me-2' htmlColor={COLORS.DANGER.code} />
 						<span className='text-muted'>
-							You have <Icon icon='Chat5' color='danger' className='mx-1' size='lg' />{' '}
-							14 unread messages.
+							You have 14 unread messages.
 						</span>
 					</span>
 				</SubHeaderLeft>
@@ -77,7 +77,7 @@ const WithListChatPage = () => {
 						<Button
 							color='info'
 							isLight
-							icon='ChevronLeft'
+							icon={ChevronLeft}
 							onClick={() => {
 								setListShow(true);
 							}}>
@@ -94,7 +94,7 @@ const WithListChatPage = () => {
 								<CardBody isScrollable className='p-0'>
 									<Card shadow='none' className='mb-0'>
 										<CardHeader className='sticky-top'>
-											<CardLabel icon='AccountCircle' iconColor='success'>
+											<CardLabel icon={AccountCircleTwoTone} iconColor='success'>
 												<CardTitle>Online</CardTitle>
 												<CardSubTitle>3 users</CardSubTitle>
 											</CardLabel>
@@ -152,7 +152,7 @@ const WithListChatPage = () => {
 									</Card>
 									<Card shadow='none' className='mb-0'>
 										<CardHeader className='sticky-top'>
-											<CardLabel icon='AccountCircle' iconColor='danger'>
+											<CardLabel icon={AccountCircleTwoTone} iconColor='danger'>
 												<CardTitle>Offline</CardTitle>
 												<CardSubTitle>3 users</CardSubTitle>
 											</CardLabel>
@@ -204,7 +204,7 @@ const WithListChatPage = () => {
 								<CardFooter>
 									<CardFooterLeft className='w-100'>
 										<Button
-											icon='Logout'
+											icon={Logout}
 											color='danger'
 											isLight
 											className='w-100 p-3'
@@ -247,7 +247,7 @@ const WithListChatPage = () => {
 								<CardFooter className='d-block'>
 									<InputGroup>
 										<Textarea />
-										<Button color='info' icon='Send'>
+										<Button color='info' icon={SendTwoTone}>
 											SEND
 										</Button>
 									</InputGroup>

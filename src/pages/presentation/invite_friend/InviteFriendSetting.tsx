@@ -1,12 +1,9 @@
 import { OTPSettingType, updateOTPSetting } from 'common/apis/settings'
 import Button from 'components/bootstrap/Button'
 import Card, { CardBody, CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
-import Checks from 'components/bootstrap/forms/Checks'
 import Input from 'components/bootstrap/forms/Input'
-import showNotification from 'components/extras/showNotification'
-import Icon from 'components/icon/Icon'
 import { useFormik } from 'formik'
-import React, { ChangeEvent, ChangeEventHandler, useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 

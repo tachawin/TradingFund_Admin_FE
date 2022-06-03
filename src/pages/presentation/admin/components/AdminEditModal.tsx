@@ -7,7 +7,6 @@ import Modal, {
 	ModalTitle,
 } from 'components/bootstrap/Modal'
 import showNotification from 'components/extras/showNotification'
-import Icon from 'components/icon/Icon'
 import FormGroup from 'components/bootstrap/forms/FormGroup'
 import Input from 'components/bootstrap/forms/Input'
 import Button, { ButtonGroup } from 'components/bootstrap/Button'
@@ -19,6 +18,7 @@ import Spinner from 'components/bootstrap/Spinner'
 import regEx from 'common/utils/commonRegEx'
 import { useDispatch } from 'react-redux'
 import { addAdmin, updateAdminById } from 'redux/admin/action'
+import { InfoTwoTone } from '@mui/icons-material'
 
 export enum AdminModalType {
     Add = 'add',
@@ -98,7 +98,7 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
             dispatch(addAdmin(adminData))
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('admin:save.successfully')}</span>
                 </span>,
                 t('admin:save.admin.successfully', { adminName: values.name }),
@@ -109,7 +109,7 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
             console.log(message)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('admin:save.failed')}</span>
                 </span>,
                 t('admin:save.admin.failed', { adminName: values.name }),
@@ -136,7 +136,7 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
             data.adminId && dispatch(updateAdminById(data.adminId, dataToUpdate))
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('admin:save.successfully')}</span>
                 </span>,
                 t('admin:save.admin.successfully', { adminName: values.name }),
@@ -147,7 +147,7 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
             console.log(message)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('admin:save.failed')}</span>
                 </span>,
                 t('admin:save.admin.failed', { adminName: values.name }),

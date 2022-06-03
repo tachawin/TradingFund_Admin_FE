@@ -6,13 +6,13 @@ import Modal, {
 	ModalTitle,
 } from 'components/bootstrap/Modal'
 import showNotification from 'components/extras/showNotification'
-import Icon from 'components/icon/Icon'
 import Button from 'components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import { AdminInterface, deleteAdmin } from 'common/apis/admin'
 import Spinner from 'components/bootstrap/Spinner'
 import { useDispatch } from 'react-redux'
 import { deleteAdminById } from 'redux/admin/action'
+import { InfoTwoTone } from '@mui/icons-material'
 
 interface AdminEditModalInterface {
 	id?: string | number
@@ -35,7 +35,7 @@ const AdminDeleteModal = ({ id, isOpen, setIsOpen, data }: AdminEditModalInterfa
                     data.adminId && dispatch(deleteAdminById(data.adminId))
                     showNotification(
                         <span className='d-flex align-items-center'>
-                            <Icon icon='Info' size='lg' className='me-1' />
+                            <InfoTwoTone className='me-1' />
                             <span>{t('admin:delete.successfully')}</span>
                         </span>,
                         t('admin:delete.admin.successfully', { adminName: data?.name }),
@@ -47,7 +47,7 @@ const AdminDeleteModal = ({ id, isOpen, setIsOpen, data }: AdminEditModalInterfa
                     console.log(response.data)
                     showNotification(
                         <span className='d-flex align-items-center'>
-                            <Icon icon='Info' size='lg' className='me-1' />
+                            <InfoTwoTone className='me-1' />
                             <span>{t('admin:delete.failed')}</span>
                         </span>,
                         t('admin:delete.admin.failed', { adminName: data?.name }),

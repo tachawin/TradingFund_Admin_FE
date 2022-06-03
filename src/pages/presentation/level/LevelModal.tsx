@@ -6,7 +6,6 @@ import Modal, {
 	ModalTitle,
 } from '../../../components/bootstrap/Modal'
 import showNotification from '../../../components/extras/showNotification'
-import Icon from '../../../components/icon/Icon'
 import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
@@ -15,6 +14,7 @@ import FormGroup from 'components/bootstrap/forms/FormGroup'
 import Input from 'components/bootstrap/forms/Input'
 import { LevelModalInterface } from './Level'
 import { HuePicker, SliderPicker } from 'react-color'
+import { InfoTwoTone } from '@mui/icons-material'
 
 interface LevelFormInterface {
     levelName: string
@@ -47,7 +47,7 @@ const LevelModal = ({ id, isOpen, setIsOpen, properties }: LevelModalInterface) 
                 // ADD
                 showNotification(
                     <span className='d-flex align-items-center'>
-                        <Icon icon='Info' size='lg' className='me-1' />
+                        <InfoTwoTone className='me-1' />
                         <span>{t('level:added.successfully')}</span>
                     </span>,
                     t('level:added.level.successfully', { levelName: data?.levelName }),
@@ -56,7 +56,7 @@ const LevelModal = ({ id, isOpen, setIsOpen, properties }: LevelModalInterface) 
                 // EDIT
                 showNotification(
                     <span className='d-flex align-items-center'>
-                        <Icon icon='Info' size='lg' className='me-1' />
+                        <InfoTwoTone className='me-1' />
                         <span>{t('level:edit.successfully')}</span>
                     </span>,
                     t('level:edit.level.successfully', { levelName: data?.levelName }),

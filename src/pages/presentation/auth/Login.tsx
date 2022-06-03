@@ -17,10 +17,10 @@ import Button from '../../../components/bootstrap/Button'
 import OTP from './OTP'
 import Spinner from 'components/bootstrap/Spinner'
 import showNotification from 'components/extras/showNotification'
-import Icon from 'components/icon/Icon'
 import { didLogin, getAccessToken } from 'common/utils/auth'
 import { useNavigate } from 'react-router-dom'
 import { pages } from 'menu'
+import { InfoTwoTone } from '@mui/icons-material'
 
 enum LoginState {
 	Login = 'login',
@@ -72,7 +72,7 @@ const Login = () => {
 				console.log(message)
 				showNotification(
 					<span className='d-flex align-items-center'>
-						<Icon icon='Info' size='lg' className='me-1' />
+						<InfoTwoTone className='me-1' />
 						<span>{t('login.failed')}</span>
 					</span>,
 					t('please.try.again'),

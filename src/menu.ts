@@ -595,7 +595,7 @@ interface ComponentsMenuInterface {
 				id: string
 				text: string
 				path: string
-				icon: string
+				icon: any
 			}
 		}
 	}

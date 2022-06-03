@@ -17,7 +17,6 @@ import PaginationButtons, {
 	PER_COUNT,
 } from '../../../components/PaginationButtons'
 import Button from '../../../components/bootstrap/Button'
-import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import Dropdown, {
 	DropdownMenu,
@@ -38,6 +37,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectCustomers } from 'redux/customer/selector'
 import { storeCustomerQuery, storeCustomers } from '../../../redux/customer/action'
 import { selectCustomerQuery } from '../../../redux/customer/selector'
+import { FilterList, InfoTwoTone, LabelTwoTone, PersonAddAlt1TwoTone, Search, StarRounded, VisibilityTwoTone } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 
 interface DepositFilterInterface {
 	searchInput: string
@@ -152,7 +153,7 @@ const Customer = () => {
 			console.log(response.data)
 			showNotification(
 				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
+					<InfoTwoTone className='me-1' />
 					<span>{t('get.admin.failed')}</span>
 				</span>,
 				t('please.refresh.again'),
@@ -168,7 +169,7 @@ const Customer = () => {
 					<label
 						className='border-0 bg-transparent cursor-pointer me-0'
 						htmlFor='searchInput'>
-						<Icon icon='Search' size='2x' color='primary' />
+						<Search fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
 					</label>
 					<Input
 						id='searchInput'
@@ -238,7 +239,7 @@ const Customer = () => {
 					/>
 					<SubheaderSeparator />
 					<Button
-						icon='PersonAdd'
+						icon={PersonAddAlt1TwoTone}
 						color='primary'
 						isLight
 						onClick={() => setIsOpenCustomerModal('add')}
@@ -265,41 +266,25 @@ const Customer = () => {
 													onClick={() => requestSort('name')}
 													className='cursor-pointer text-decoration-underline'>
 													{t('column.name')}{' '}
-													<Icon
-														size='lg'
-														className={getClassNamesFor('name')}
-														icon='FilterList'
-													/>
+													<FilterList fontSize='small' className={getClassNamesFor('name')} />
 												</th>
 												<th
 													className='cursor-pointer text-decoration-underline'>
 													{t('column.bank.account.number')}{' '}
-													<Icon
-														size='lg'
-														className={getClassNamesFor('bankAccountNumber')}
-														icon='FilterList'
-													/>
+													<FilterList fontSize='small' className={getClassNamesFor('bankAccountNumber')} />
 												</th>
 												<th>{t('column.mobile.number')}</th>
 												<th
 													onClick={() => requestSort('createdAt')}
 													className='cursor-pointer text-decoration-underline'>
 													{t('column.created.at')}{' '}
-													<Icon
-														size='lg'
-														className={getClassNamesFor('createdAt')}
-														icon='FilterList'
-													/>
+													<FilterList fontSize='small' className={getClassNamesFor('createdAt')} />
 												</th>
 												<th
 													onClick={() => requestSort('lastActiveAt')}
 													className='cursor-pointer text-decoration-underline'>
 													{t('column.last.active.at')}{' '}
-													<Icon
-														size='lg'
-														className={getClassNamesFor('lastActiveAt')}
-														icon='FilterList'
-													/>
+													<FilterList fontSize='small' className={getClassNamesFor('lastActiveAt')} />
 												</th>
 												<td />
 											</tr>
@@ -317,7 +302,7 @@ const Customer = () => {
 																	{customer.name}
 																</div>
 																<div className='text-muted'>
-																	<Icon icon='StarFill' style={{ fill: customer.level?.color }} />{' '}
+																	<StarRounded htmlColor={customer.level?.color} />{' '}
 																	<small>{customer.level?.levelName}</small>
 																</div>
 															</div>
@@ -330,7 +315,7 @@ const Customer = () => {
 																	{customer.bankAccountNumber}
 																</div>
 																<div className='text-muted'>
-																	<Icon icon='Label' />{' '}
+																	<LabelTwoTone fontSize='small' />{' '}
 																	<small>{customer.bank?.acronym.toUpperCase()}</small>
 																</div>
 															</div>
@@ -357,7 +342,7 @@ const Customer = () => {
 													</td>
 													<td>
 														<Button
-															icon='Visibility'
+															icon={VisibilityTwoTone}
 															onClick={() => navigate(`${customer.customerId}`)}
 															color='primary'
 															isLight

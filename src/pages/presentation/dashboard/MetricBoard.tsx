@@ -1,6 +1,7 @@
+import { AttachMoneyOutlined, DarkModeOutlined, LightModeOutlined, MoneyOffOutlined } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 import Card, { CardBody, CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 import Spinner from 'components/bootstrap/Spinner'
-import Icon from 'components/icon/Icon'
 import { useTranslation } from 'react-i18next'
 
 interface MetricInterface {
@@ -24,10 +25,10 @@ const MetricBoard = ({ isLoading, type, deposit, withdraw }: MetricInterface) =>
                 <CardLabel>
                     <div className="d-flex row g-2 align-items-center">
                         {type === MetricBoardType.Day ? <>
-                            <Icon className='col' icon='Sunrise' size='2x' color='primary' />
+                            <LightModeOutlined htmlColor={COLORS.PRIMARY.code} fontSize='large' />
                             <CardTitle className="col mx-2 text-nowrap">00:00 - 12:00</CardTitle></>
                             : 
-                            <><Icon className='col' icon='SunsetFill' size='2x' color='primary' />
+                            <><DarkModeOutlined htmlColor={COLORS.PRIMARY.code} fontSize='large' />
                             <CardTitle className="col mx-2 text-nowrap">12:01 - 23:59</CardTitle></>
                         }
                     </div>
@@ -38,7 +39,7 @@ const MetricBoard = ({ isLoading, type, deposit, withdraw }: MetricInterface) =>
                     <Card style={{ minWidth: 136 }}>
                         <CardLabel className='p-3'>
                             <div className="d-flex row g-2 align-items-center">
-                                <Icon className='col text-nowrap' icon='AttachMoney' size='2x' color='success' />
+                                <AttachMoneyOutlined htmlColor={COLORS.SUCCESS.code} fontSize='large' />
                                 <span className='col align-self-center text-nowrap'>{t('deposit')}</span>
                             </div>
                         </CardLabel>
@@ -53,7 +54,7 @@ const MetricBoard = ({ isLoading, type, deposit, withdraw }: MetricInterface) =>
                     <Card style={{ minWidth: 136 }}>
                         <CardLabel className='p-3'>
                             <div className="d-flex row g-2 align-items-center">
-                                <Icon className='col' icon='MoneyOff' size='2x' color='danger' />
+                                <MoneyOffOutlined htmlColor={COLORS.DANGER.code} fontSize='large' />
                                 <span className='col align-self-center text-nowrap'>{t('withdraw')}</span>
                             </div>
                         </CardLabel>

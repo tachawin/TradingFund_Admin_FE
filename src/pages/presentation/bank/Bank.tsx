@@ -6,16 +6,11 @@ import { CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 import BankDeleteModal from './BankDeleteModal'
 import { CompanyBankInterface, getCompanyBankList } from 'common/apis/companyBank'
 import showNotification from 'components/extras/showNotification'
-import Icon from 'components/icon/Icon'
 import Spinner from 'components/bootstrap/Spinner'
-import CommonTableNotFound from 'pages/common/CommonTableNotFound'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectCompanyBankList, selectCompanyBankQuery } from 'redux/companyBank/selector'
-import { selectPermission } from 'redux/user/selector'
-import { PermissionType, PermissionValue } from 'common/apis/user'
-import CommonUnauthorized from 'pages/common/CommonUnauthorized'
-import { selectCommonBanksList } from 'redux/bank/selector'
 import { storeCompanyBank } from 'redux/companyBank/action'
+import { InfoTwoTone } from '@mui/icons-material'
 
 export interface BankModalProperties {
 	type: string
@@ -57,7 +52,7 @@ const Bank = ({ isOpenBankModal, setIsOpenBankModal }: BankProps) => {
 			setIsLoading(false)
 			showNotification(
 				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
+					<InfoTwoTone className='me-1' />
 					<span>{t('get.company.bank.failed')}</span>
 				</span>,
 				t('please.refresh.again'),

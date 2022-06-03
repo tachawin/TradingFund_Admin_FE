@@ -6,7 +6,6 @@ import Modal, {
 	ModalTitle,
 } from 'components/bootstrap/Modal'
 import showNotification from 'components/extras/showNotification'
-import Icon from 'components/icon/Icon'
 import Button from 'components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import Checks from 'components/bootstrap/forms/Checks'
@@ -14,6 +13,7 @@ import { updatePermission } from 'common/apis/admin'
 import Spinner from 'components/bootstrap/Spinner'
 import { useDispatch } from 'react-redux'
 import { updatePermissionById } from 'redux/admin/action'
+import { InfoTwoTone } from '@mui/icons-material'
 
 interface Permission {
     [key: string]: string
@@ -66,7 +66,7 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
             dispatch(updatePermissionById(id, permissionsValue))
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('admin:save.successfully')}</span>
                 </span>,
                 t('admin:save.admin.successfully', { adminName: name }),
@@ -77,7 +77,7 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
             console.log(message)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('admin:save.failed')}</span>
                 </span>,
                 t('admin:save.admin.failed', { adminName: name }),

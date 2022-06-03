@@ -1,16 +1,16 @@
-import React, { ChangeEvent, ChangeEventHandler, useEffect, useState } from 'react'
-import { getCustomerList, CustomerInterface, getMobileNumberList } from 'common/apis/customer'
+import React, { ChangeEvent, useEffect, useState } from 'react'
+import { getMobileNumberList } from 'common/apis/customer'
 import Button from 'components/bootstrap/Button'
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown'
-import { Check } from 'components/icon/bootstrap'
-import Icon from 'components/icon/Icon'
 import { useDispatch, useSelector } from 'react-redux'
-import { storeCustomerMobileNumber, storeCustomers } from 'redux/customer/action'
+import { storeCustomerMobileNumber } from 'redux/customer/action'
 import showNotification from 'components/extras/showNotification'
 import { useTranslation } from 'react-i18next'
 import Spinner from 'components/bootstrap/Spinner'
 import { selectCustomerMobileNumber } from 'redux/customer/selector'
 import Input from 'components/bootstrap/forms/Input'
+import { Check, InfoTwoTone } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 
 interface CustomerMobileNumberDropdownInterface {
     selectedMobileNumber: string | string[]
@@ -75,7 +75,7 @@ const CustomerMobileNumberDropdown = ({
 			console.log(response.data)
 			showNotification(
 				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
+					<InfoTwoTone className='me-1' />
 					<span>{t('get.mobile.number.failed')}</span>
 				</span>,
 				t('please.refresh.again'),
@@ -126,7 +126,7 @@ const CustomerMobileNumberDropdown = ({
                             onClick={() => multipleSelect ? handleOnChangeMultipleCustomers(mobileNumber) : setSelectedMobileNumber(mobileNumber)}
                         >
                             <span className='mw-75'>{mobileNumber}</span>
-                            {(multipleSelect && (selectedMobileNumber as string[]).indexOf(mobileNumber) > -1) && <Check />}
+                            {(multipleSelect && (selectedMobileNumber as string[]).indexOf(mobileNumber) > -1) && <Check htmlColor={COLORS.PRIMARY.code} />}
                         </Button>
                     </DropdownItem>
                 )) : <div className='mx-3'>ไม่พบเบอร์ที่ค้นหา</div> 

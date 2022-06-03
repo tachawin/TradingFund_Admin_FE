@@ -11,7 +11,6 @@ import { demoPages } from '../../../menu'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
 import Button, { ButtonGroup } from '../../../components/bootstrap/Button'
-import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import Dropdown, {
 	DropdownMenu,
@@ -38,6 +37,8 @@ import { CommonBankInterface } from 'common/apis/commonBank'
 import Spinner from 'components/bootstrap/Spinner'
 import { selectCompanyBankList } from 'redux/companyBank/selector'
 import { storeCompanyBank } from 'redux/companyBank/action'
+import { InfoTwoTone, Search } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 
 interface WithdrawFilterInterface {
 	searchInput: string
@@ -96,7 +97,7 @@ const Withdraw = () => {
 			setIsLoading(false)
 			showNotification(
 				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
+					<InfoTwoTone className='me-1' />
 					<span>{t('get.withdraw.failed')}</span>
 				</span>,
 				t('please.refresh.again'),
@@ -112,7 +113,7 @@ const Withdraw = () => {
 			setIsLoading && setIsLoading(false)
 			showNotification(
 				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
+					<InfoTwoTone className='me-1' />
 					<span>{t('get.company.bank.failed')}</span>
 				</span>,
 				t('please.refresh.again'),
@@ -208,7 +209,7 @@ const Withdraw = () => {
 					<label
 						className='border-0 bg-transparent cursor-pointer me-0'
 						htmlFor='searchInput'>
-						<Icon icon='Search' size='2x' color='primary' />
+						<Search fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
 					</label>
 					<Input
 						id='searchInput'

@@ -6,7 +6,6 @@ import Modal, {
 	ModalTitle,
 } from '../../../components/bootstrap/Modal'
 import showNotification from '../../../components/extras/showNotification'
-import Icon from '../../../components/icon/Icon'
 import FormGroup from '../../../components/bootstrap/forms/FormGroup'
 import Input from '../../../components/bootstrap/forms/Input'
 import { useTranslation } from 'react-i18next'
@@ -19,6 +18,7 @@ import Spinner from 'components/bootstrap/Spinner'
 import Textarea from '../../../components/bootstrap/forms/Textarea'
 import { useDispatch } from 'react-redux'
 import { addProduct, updateProductById } from 'redux/product/action'
+import { InfoTwoTone } from '@mui/icons-material'
 
 interface ProductForm {
     imageURL: string
@@ -53,7 +53,7 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
             dispatch(addProduct(response.data))
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('product:save.product.successfully')}</span>
                 </span>,
                 t('product:save.product.name.successfully', { name: values.name }),
@@ -64,7 +64,7 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
             console.log(message)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('product:save.failed')}</span>
                 </span>,
                 t('product:save.product.failed', { productName: values.name }),
@@ -81,7 +81,7 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
             dispatch(updateProductById(data.productId, data))
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('product:save.product.successfully')}</span>
                 </span>,
                 t('product:save.product.name.successfully', { name: values.name }),
@@ -92,7 +92,7 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
             console.log(message)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('product:save.failed')}</span>
                 </span>,
                 t('product:save.product.failed', { productName: values.name }),
@@ -117,7 +117,7 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
             setIsLoading(false)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('product:upload.image.failed')}</span>
                 </span>,
                 t('product:upload.product.image.failed', { productName: values.name }),

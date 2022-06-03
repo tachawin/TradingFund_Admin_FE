@@ -4,7 +4,6 @@ import debounce from 'lodash/debounce'
 import { SubheaderSeparator } from '../../../layout/SubHeader/SubHeader'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
-import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import Dropdown, {
 	DropdownMenu,
@@ -15,6 +14,8 @@ import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGrou
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import Button from 'components/bootstrap/Button'
 import { LevelProps } from './Level'
+import { Add, Search } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 
 interface LevelFilterInterface {
 	searchInput: string
@@ -112,7 +113,7 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 		<label
 			className='border-0 bg-transparent cursor-pointer me-0'
 			htmlFor='searchInput'>
-			<Icon icon='Search' size='2x' color='primary' />
+			<Search fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
 		</label>
 		<Input
 			id='searchInput'
@@ -187,7 +188,7 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 		<SubheaderSeparator />
 		<Button
 			className='text-nowrap'
-			icon='PlusLg'
+			icon={Add}
 			color='primary'
 			isLight
 			onClick={() => setIsOpenLevelModal({ type: "add", selectedRow: null})}

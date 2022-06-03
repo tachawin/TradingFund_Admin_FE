@@ -1,15 +1,15 @@
+import React, { useEffect, useState } from 'react'
 import { getLevelList, LevelInterface } from 'common/apis/level'
 import Button from 'components/bootstrap/Button'
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown'
-import { Check } from 'components/icon/bootstrap'
-import Icon from 'components/icon/Icon'
-import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectLevels } from 'redux/level/selector'
 import { storeLevels } from 'redux/level/action'
 import showNotification from 'components/extras/showNotification'
 import { useTranslation } from 'react-i18next'
 import Spinner from 'components/bootstrap/Spinner'
+import { Check, InfoTwoTone, StarRounded } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 
 interface CommonLevelsDropdownInterface {
     selectedLevel: LevelInterface | LevelInterface[] | string
@@ -48,7 +48,7 @@ const CommonLevelsDropdown = ({ selectedLevel, setSelectedLevel, disabled = fals
 			console.log(response.data)
 			showNotification(
 				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
+					<InfoTwoTone className='me-1' />
 					<span>{t('get.bank.failed')}</span>
 				</span>,
 				t('please.refresh.again'),
@@ -83,7 +83,7 @@ const CommonLevelsDropdown = ({ selectedLevel, setSelectedLevel, disabled = fals
             >
                 {selectedLevel !== LEVEL_PLACEHOLDER && 
                     <span className='p-1'>
-                        <Icon icon='StarFill' />
+                        <StarRounded />
                     </span>
                 }
                 <span
@@ -106,9 +106,9 @@ const CommonLevelsDropdown = ({ selectedLevel, setSelectedLevel, disabled = fals
                             isActive={!multipleSelect && level === selectedLevel }
                             onClick={() => multipleSelect ? handleOnChangeMultipleLevels(level) : setSelectedLevel(level)}
                         >
-                            <Icon icon='StarFill' style={{ fill: level.color, marginRight: 0 }} />
-                            <span className='mx-3 mw-75'>{level.levelName}</span>
-                            {(multipleSelect && (selectedLevel as LevelInterface[]).indexOf(level) > -1) && <Check />}
+                            <StarRounded htmlColor={level.color} className='me-0' />
+                            <span className='mx-2 mw-75'>{level.levelName}</span>
+                            {(multipleSelect && (selectedLevel as LevelInterface[]).indexOf(level) > -1) && <Check htmlColor={COLORS.PRIMARY.code} />}
                         </Button>
                     </DropdownItem>
                 )) : <div key='loading' className='d-flex justify-content-center'>

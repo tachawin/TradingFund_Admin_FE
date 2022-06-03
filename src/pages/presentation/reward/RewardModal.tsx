@@ -6,7 +6,6 @@ import Modal, {
 	ModalTitle,
 } from '../../../components/bootstrap/Modal'
 import showNotification from '../../../components/extras/showNotification'
-import Icon from '../../../components/icon/Icon'
 import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
@@ -17,6 +16,7 @@ import { RedeemAction, RedeemInterface, RedeemStatus, updateRedeem } from 'commo
 import { useDispatch } from 'react-redux'
 import { removeRedeemProductById } from 'redux/redeemProduct/action'
 import Spinner from 'components/bootstrap/Spinner'
+import { InfoTwoTone } from '@mui/icons-material'
 
 export enum RewardModalType {
     Approve = 'approve',
@@ -47,7 +47,7 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
             data.redeemId && dispatch(removeRedeemProductById(data.redeemId))
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('reward:approve.successfully')}</span>
                 </span>,
                 t('reward:approve.request.successfully', { mobileNumber: data?.mobileNumber }),
@@ -57,7 +57,7 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
             console.log(response)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('reward:approve.failed')}</span>
                 </span>,
                 t('reward:approve.request.failed', { mobileNumber: data?.mobileNumber }),
@@ -74,7 +74,7 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
             data.redeemId && dispatch(removeRedeemProductById(data.redeemId))
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('reward:reject.successfully')}</span>
                 </span>,
                 t('reward:reject.request.successfully', { mobileNumber: data?.mobileNumber }),
@@ -84,7 +84,7 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
             console.log(response)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('reward:reject.failed')}</span>
                 </span>,
                 t('reward:reject.request.failed', { mobileNumber: data?.mobileNumber }),
@@ -110,7 +110,7 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
                 data.redeemId && dispatch(removeRedeemProductById(data.redeemId))
                 showNotification(
                     <span className='d-flex align-items-center'>
-                        <Icon icon='Info' size='lg' className='me-1' />
+                        <InfoTwoTone className='me-1' />
                         <span>{t('reward:sending.successfully')}</span>
                     </span>,
                     t('reward:sending.reward.successfully', { mobileNumber: data?.mobileNumber }),
@@ -120,7 +120,7 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
                 console.log(response)
                 showNotification(
                     <span className='d-flex align-items-center'>
-                        <Icon icon='Info' size='lg' className='me-1' />
+                        <InfoTwoTone className='me-1' />
                         <span>{t('reward:sending.failed')}</span>
                     </span>,
                     t('reward:sending.reward.failed', { mobileNumber: data?.mobileNumber }),

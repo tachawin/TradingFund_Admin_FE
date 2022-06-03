@@ -11,7 +11,6 @@ import { pages } from '../../../menu'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
 import Button, { ButtonGroup } from '../../../components/bootstrap/Button'
-import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import Dropdown, {
 	DropdownMenu,
@@ -30,6 +29,8 @@ import { getRedeemProductList, RedeemInterface, RedeemStatus, STATUS } from 'com
 import { storeRedeemProductList, storeRedeemProductQuery } from 'redux/redeemProduct/action'
 import showNotification from 'components/extras/showNotification'
 import Spinner from 'components/bootstrap/Spinner'
+import { InfoTwoTone, Search } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 
 interface RewardFilterInterface {
 	searchInput: string
@@ -83,7 +84,7 @@ const Reward = () => {
 			setIsLoading(false)
 			showNotification(
 				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
+					<InfoTwoTone className='me-1' />
 					<span>เรียกดูรายการแลกสินค้าไม่สำเร็จ</span>
 				</span>,
 				'กรุณาลองใหม่อีกครั้ง',
@@ -176,7 +177,7 @@ const Reward = () => {
 					<label
 						className='border-0 bg-transparent cursor-pointer me-0'
 						htmlFor='searchInput'>
-						<Icon icon='Search' size='2x' color='primary' />
+						<Search fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
 					</label>
 					<Input
 						id='searchInput'

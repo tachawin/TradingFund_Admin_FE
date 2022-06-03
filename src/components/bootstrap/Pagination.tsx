@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import classNames from 'classnames';
-import Icon from '../icon/Icon';
+import { ChevronLeft, ChevronRight, FirstPage, LastPage } from '@mui/icons-material';
 
 interface PaginationItemInterface {
 	className?: string,
@@ -53,10 +53,10 @@ export const PaginationItem = forwardRef<HTMLLIElement, PaginationItemInterface>
 					aria-label={
 						(isPrev && 'First Page') || (isNext && 'Last Page') || `${children} page`
 					}>
-					{isPrev && <Icon icon='ChevronLeft' />}
-					{isFirst && <Icon icon='FirstPage' />}
-					{isNext && <Icon icon='ChevronRight' />}
-					{isLast && <Icon icon='LastPage' />}
+					{isPrev && <ChevronLeft />}
+					{isFirst && <FirstPage />}
+					{isNext && <ChevronRight />}
+					{isLast && <LastPage />}
 					{children}
 				</span>
 			</li>

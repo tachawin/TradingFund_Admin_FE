@@ -9,8 +9,8 @@ import { selectLevels } from 'redux/level/selector'
 import { getLevelList, LevelInterface } from 'common/apis/level'
 import { storeLevels } from 'redux/level/action'
 import showNotification from 'components/extras/showNotification'
-import Icon from 'components/icon/Icon'
 import Spinner from 'components/bootstrap/Spinner'
+import { InfoTwoTone } from '@mui/icons-material'
 
 export interface LevelModalProperties {
 	type: string
@@ -45,7 +45,7 @@ const Level = ({ isOpenLevelModal, setIsOpenLevelModal }: LevelProps) => {
 			console.log(response.data)
 			showNotification(
 				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
+					<InfoTwoTone className='me-1' />
 					<span>{t('get.bank.failed')}</span>
 				</span>,
 				t('please.refresh.again'),

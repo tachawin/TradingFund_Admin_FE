@@ -13,8 +13,8 @@ import Chart from '../../../components/extras/Chart'
 import { useTranslation } from 'react-i18next'
 import { CustomerMetricInterface, getCustomerRegisterAndActionMetric } from 'common/apis/dashboard'
 import showNotification from 'components/extras/showNotification'
-import Icon from 'components/icon/Icon'
 import Spinner from 'components/bootstrap/Spinner'
+import { InfoTwoTone } from '@mui/icons-material'
 
 enum DateRange {
 	Week = 'week',
@@ -48,7 +48,7 @@ const CustomerTrafficBoard = () => {
 			console.log(response.data)
 			showNotification(
 				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
+					<InfoTwoTone className='me-1' />
 					<span>{t('get.dashboard.failed')}</span>
 				</span>,
 				t('please.refresh.again'),

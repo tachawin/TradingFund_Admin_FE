@@ -6,7 +6,6 @@ import Modal, {
 	ModalTitle,
 } from '../../../components/bootstrap/Modal'
 import showNotification from '../../../components/extras/showNotification'
-import Icon from '../../../components/icon/Icon'
 import FormGroup from '../../../components/bootstrap/forms/FormGroup'
 import Input from '../../../components/bootstrap/forms/Input'
 import { useTranslation } from 'react-i18next'
@@ -16,6 +15,7 @@ import PlaceholderImage from 'components/extras/PlaceholderImage'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 import CompanyBanksDropdown from 'pages/common/CompanyBanksDropdown'
 import { CompanyBankInterface, CompanyBankStatus, CompanyBankType } from 'common/apis/companyBank'
+import { InfoTwoTone } from '@mui/icons-material'
 
 interface WithdrawForm {
     slipImage: string
@@ -83,7 +83,7 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
 			setIsOpen(false)
 			showNotification(
 				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
+					<InfoTwoTone className='me-1' />
 					<span>{t('withdraw:withdraw.successfully')}</span>
 				</span>,
 				t('withdraw:withdraw.to.account.successfully', { accountName: values.bankAccountName }),

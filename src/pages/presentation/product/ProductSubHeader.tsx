@@ -2,7 +2,6 @@ import React, { ChangeEvent, useCallback, useState } from 'react'
 import { useFormik } from 'formik'
 import debounce from 'lodash/debounce'
 import { SubheaderSeparator } from '../../../layout/SubHeader/SubHeader'
-import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import { useTranslation } from 'react-i18next'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
@@ -15,6 +14,8 @@ import { selectProductQuery } from 'redux/product/selector'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { ProductModalType } from './ProductModal'
+import { Add, Search } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 
 interface ProductFilterInterface {
 	searchInput: string
@@ -84,7 +85,7 @@ const ProductSubHeader = ({ setIsOpenProductModal }: ProductProps) => {
 		<label
 			className='border-0 bg-transparent cursor-pointer me-0'
 			htmlFor='searchInput'>
-			<Icon icon='Search' size='2x' color='primary' />
+			<Search fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
 		</label>
 		<Input
 			id='searchInput'
@@ -153,7 +154,7 @@ const ProductSubHeader = ({ setIsOpenProductModal }: ProductProps) => {
 		{permission.product[PermissionType.Create] === PermissionValue.Available && <>
 			<SubheaderSeparator />
 				<Button
-					icon='PlusLg'
+					icon={Add}
 					color='primary'
 					isLight
 					onClick={() => setIsOpenProductModal({ type: ProductModalType.Add })}

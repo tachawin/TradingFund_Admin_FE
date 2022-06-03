@@ -10,10 +10,10 @@ import showNotification from 'components/extras/showNotification'
 import Dropdown, { DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown'
 import { Calendar as DatePicker } from 'react-date-range'
 import { th } from 'date-fns/locale'
-import Icon from 'components/icon/Icon'
 import { getLabel } from 'components/extras/calendarHelper'
 import { Views } from 'react-big-calendar'
 import moment from 'moment'
+import { InfoTwoTone } from '@mui/icons-material'
 
 const Dashboard = () => {
 	const { t } = useTranslation('dashboard')
@@ -39,7 +39,7 @@ const Dashboard = () => {
 			setIsLoading(false)
 			showNotification(
 				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
+					<InfoTwoTone className='me-1' />
 					<span>{t('get.deposit.failed')}</span>
 				</span>,
 				t('please.refresh.again'),

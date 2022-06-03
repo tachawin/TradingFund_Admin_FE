@@ -12,7 +12,6 @@ import { demoPages } from '../../../menu'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
 import Button from '../../../components/bootstrap/Button'
-import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import Dropdown, {
 	DropdownMenu,
@@ -32,10 +31,10 @@ import { storeTransaction, storeTransactionQuery } from 'redux/transaction/actio
 import CompanyBanksDropdown from 'pages/common/CompanyBanksDropdown'
 import { CompanyBankInterface } from 'common/apis/companyBank'
 import 'moment/locale/th'
-import { Grid } from "gridjs"
-import ReportPrint from './ReportPrint'
 import { useNavigate } from 'react-router-dom'
 import Spinner from 'components/bootstrap/Spinner'
+import { ArticleTwoTone, InfoTwoTone, PrintTwoTone, Search } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 
 interface ReportFilterInterface {
 	searchInput: string
@@ -78,7 +77,7 @@ const Report = () => {
 			setIsLoading(false)
 			showNotification(
 				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
+					<InfoTwoTone className='me-1' />
 					<span>{t('get.transaction.failed')}</span>
 				</span>,
 				t('please.refresh.again'),
@@ -163,7 +162,7 @@ const Report = () => {
 			setIsLoading(false)
 			showNotification(
 				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
+					<InfoTwoTone className='me-1' />
 					<span>{t('download.transaction.failed')}</span>
 				</span>,
 				t('please.refresh.again'),
@@ -197,7 +196,7 @@ const Report = () => {
 					<label
 						className='border-0 bg-transparent cursor-pointer me-0'
 						htmlFor='searchInput'>
-						<Icon icon='Search' size='2x' color='primary' />
+						<Search fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
 					</label>
 					<Input
 						id='searchInput'
@@ -298,7 +297,7 @@ const Report = () => {
 					/>
 					<SubheaderSeparator />
 					<Button
-						icon='FileExcel'
+						icon={ArticleTwoTone}
 						color='primary'
 						isLight
 						onClick={() => handleExportExcel()}
@@ -306,7 +305,7 @@ const Report = () => {
 						{t('export.excel')}
 					</Button>
 					<Button
-						icon='Print'
+						icon={PrintTwoTone}
 						color='primary'
 						isLight
 						onClick={() => handlePrint()}

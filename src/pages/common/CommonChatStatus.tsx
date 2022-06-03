@@ -1,3 +1,4 @@
+import { AccountCircleTwoTone, DarkModeTwoTone, NoAccountsTwoTone, VisibilityOffTwoTone } from '@mui/icons-material';
 import { useState } from 'react';
 import Button, { ButtonGroup } from '../../components/bootstrap/Button';
 
@@ -15,25 +16,25 @@ const CommonChatStatus = () => {
 				Status:
 			</Button>
 			<Button
-				icon='AccountCircle'
+				icon={AccountCircleTwoTone}
 				color={status === STATUS.ONLINE ? 'success' : 'dark'}
 				isLight={status !== STATUS.ONLINE}
 				onClick={() => setStatus(STATUS.ONLINE)}
 			/>
 			<Button
-				icon='DarkMode'
+				icon={DarkModeTwoTone}
 				color={status === STATUS.DONT_DISTURB ? 'warning' : 'dark'}
 				isLight={status !== STATUS.DONT_DISTURB}
 				onClick={() => setStatus(STATUS.DONT_DISTURB)}
 			/>
 			<Button
-				icon='NoAccounts'
+				icon={NoAccountsTwoTone}
 				color={status === STATUS.OFFLINE ? 'danger' : 'dark'}
 				isLight={status !== STATUS.OFFLINE}
 				onClick={() => setStatus(STATUS.OFFLINE)}
 			/>
 			<Button
-				icon='VisibilityOff'
+				icon={VisibilityOffTwoTone}
 				color={status === STATUS.INVISIBLE ? 'info' : 'dark'}
 				isLight={status !== STATUS.INVISIBLE}
 				onClick={() => setStatus(STATUS.INVISIBLE)}

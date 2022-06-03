@@ -1,17 +1,17 @@
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
 import { WithdrawModalType } from './WithdrawModal'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
-import { TransactionInterface, TransactionStatus, TransactionType } from 'common/apis/transaction'
+import { TransactionInterface, TransactionType } from 'common/apis/transaction'
 import moment from 'moment'
 import { selectCompanyBankList } from 'redux/companyBank/selector'
+import { FilterList, LabelTwoTone } from '@mui/icons-material'
 
 interface WithdrawTableInterface {
     data: TransactionInterface[]
@@ -63,22 +63,14 @@ const WithdrawTable = ({
                                 onClick={() => requestSort('timestamp')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.timestamp')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('timestamp')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('timestamp')} />
                             </th>
                             {columns?.name &&
                                 <th
                                     onClick={() => requestSort('name')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.name')}{' '}
-                                    <Icon
-                                        size='lg'
-                                        className={getClassNamesFor('name')}
-                                        icon='FilterList'
-                                    />
+                                    <FilterList fontSize='small' className={getClassNamesFor('name')} />
                                 </th>
                             }
                             {columns?.mobileNumber && <th>{t('column.mobile.number')}</th>}
@@ -86,42 +78,26 @@ const WithdrawTable = ({
                                 onClick={() => requestSort('from')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.from')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('from')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('from')} />
                             </th>}
                             <th
                                 onClick={() => requestSort('to')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.to')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('to')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('to')} />
                             </th>
                             <th
                                 onClick={() => requestSort('amount')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.amount')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('amount')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('amount')} />
                             </th>
                             {columns?.lastDepositAmount &&
                                 <th
                                     onClick={() => requestSort('lastDepositAmount')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.last.deposit.amount')}{' '}
-                                    <Icon
-                                        size='lg'
-                                        className={getClassNamesFor('lastDepositAmount')}
-                                        icon='FilterList'
-                                    />
+                                    <FilterList fontSize='small' className={getClassNamesFor('lastDepositAmount')} />
                                 </th>
                             }
                             {columns?.notes && <th>{t('column.notes')}</th>}
@@ -130,11 +106,7 @@ const WithdrawTable = ({
                                     onClick={() => requestSort('status')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.status')}{' '}
-                                    <Icon
-                                        size='lg'
-                                        className={getClassNamesFor('status')}
-                                        icon='FilterList'
-                                    />
+                                    <FilterList fontSize='small' className={getClassNamesFor('status')} />
                                 </th>
                             }
                             {columns?.operator &&
@@ -142,11 +114,7 @@ const WithdrawTable = ({
                                     onClick={() => requestSort('operator')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.operator')}{' '}
-                                    <Icon
-                                        size='lg'
-                                        className={getClassNamesFor('operator')}
-                                        icon='FilterList'
-                                    />
+                                    <FilterList fontSize='small' className={getClassNamesFor('operator')} />
                                 </th>
                             }
                             {setIsOpenCancelWithdrawModal && <td />}
@@ -184,7 +152,7 @@ const WithdrawTable = ({
                                                     *{transaction.payerBankAccountNumber}
                                                 </div>
                                                 <div className='text-muted text-nowrap'>
-                                                    <Icon icon='Label' />{' '}
+                                                    <LabelTwoTone fontSize='small' />{' '}
                                                     <small>{transaction.payerBankName.toUpperCase()}</small>
                                                 </div>
                                             </div>
@@ -198,7 +166,7 @@ const WithdrawTable = ({
                                                 *{transaction.recipientBankAccountNumber}
                                             </div>
                                             <div className='text-muted text-nowrap'>
-                                                <Icon icon='Label' />{' '}
+                                                <LabelTwoTone fontSize='small' />{' '}
                                                 <small>{transaction.recipientBankName.split(' ')[0].toUpperCase()}</small>
                                             </div>
                                         </div>
