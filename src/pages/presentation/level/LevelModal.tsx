@@ -13,7 +13,7 @@ import * as Yup from 'yup'
 import FormGroup from 'components/bootstrap/forms/FormGroup'
 import Input from 'components/bootstrap/forms/Input'
 import { LevelModalInterface } from './Level'
-import { HuePicker, SliderPicker } from 'react-color'
+import { HuePicker } from 'react-color'
 import { InfoTwoTone } from '@mui/icons-material'
 
 interface LevelFormInterface {

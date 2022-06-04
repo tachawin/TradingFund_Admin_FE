@@ -20,15 +20,15 @@ const BankBalanceCard = () => {
             <CardBody>
                 <div className='row g-5'>
                     {banks.map((bank: CompanyBankInterface) => {
-                        let BankIcon = bankIcons[bank.bankName].icon
-                        return (<div className='col mt-4' key={bank.bankId}>
+                        let BankIcon = bankIcons[bank.bankName]?.icon
+                        return (BankIcon && <div className='col mt-4' key={bank.bankId}>
                             <div className='row'>
                                 <div className='col d-flex align-items-center'>
                                     <div className='flex-shrink-0'>
                                         <div className='ratio ratio-1x1 me-3' style={{ width: 32 }}>
                                             <div 
                                                 className='p-1 d-flex align-items-center justify-content-center' 
-                                                style={{ backgroundColor: bankIcons[bank.bankName].color, borderRadius: 3 }}
+                                                style={{ backgroundColor: bankIcons[bank.bankName]?.color, borderRadius: 3 }}
                                             >
                                                 <BankIcon height={20} width={20} />
                                             </div>

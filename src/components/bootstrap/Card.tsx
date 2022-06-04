@@ -27,7 +27,7 @@ export const CardLabel = forwardRef<HTMLDivElement, CardLabelInterface>(
 				{CardIcon && (
 					<CardIcon className={classNames('card-icon', { [`text-${iconColor}`]: iconColor })} />
 				)}
-				<div className='card-title-wrapper'>{children}</div>
+				<div className='card-title-wrapper w-100'>{children}</div>
 			</TagWrapper>
 		);
 	},

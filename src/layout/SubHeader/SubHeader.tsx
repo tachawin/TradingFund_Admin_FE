@@ -1,20 +1,20 @@
 import { ReactNode, useLayoutEffect } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useMeasure } from 'react-use';
 
 interface SubHeaderCommonInterface {
 	children: ReactNode
 	className?: string
+	style?: any
 }
 
 export const SubHeaderLeft = ({ children, className }: SubHeaderCommonInterface) => {
 	return <div className={classNames('subheader-left', 'col-sm', className)}>{children}</div>;
 };
 
-export const SubHeaderRight = ({ children, className }: SubHeaderCommonInterface) => {
+export const SubHeaderRight = ({ children, className, style }: SubHeaderCommonInterface) => {
 	return (
-		<div className={classNames('subheader-right', 'col-sm-auto', className)}>{children}</div>
+		<div className={classNames('subheader-right', 'col-sm-auto', className)} style={style}>{children}</div>
 	);
 };
 

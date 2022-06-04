@@ -3,8 +3,6 @@ import { ThemeProvider } from 'react-jss'
 import { ReactNotifications } from 'react-notifications-component'
 import { useFullscreen } from 'react-use'
 import { Route, Routes } from 'react-router-dom'
-import { ToastProvider } from 'react-toast-notifications'
-import { TourProvider } from '@reactour/tour'
 import { ThemeContext } from '../contexts/themeContext'
 
 import Wrapper from '../layout/Wrapper/Wrapper'

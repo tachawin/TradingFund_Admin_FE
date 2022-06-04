@@ -19,7 +19,7 @@ import PlaceholderImage from 'components/extras/PlaceholderImage'
 import { useSelector } from 'react-redux'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
-import { Delete, DeleteTwoTone, Edit, EditTwoTone, MoreHoriz } from '@mui/icons-material'
+import { DeleteTwoTone, EditTwoTone, MoreHoriz } from '@mui/icons-material'
 
 interface ProductItemInterface {
 	id?: number | string,

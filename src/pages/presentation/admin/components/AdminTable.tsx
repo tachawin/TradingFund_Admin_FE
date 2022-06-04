@@ -11,7 +11,7 @@ import moment from 'moment'
 import { useSelector } from 'react-redux'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
-import { FilterList, LabelTwoTone, MoreHoriz } from '@mui/icons-material'
+import { DeleteTwoTone, EditTwoTone, FilterList, LabelTwoTone, MoreHoriz, VisibilityTwoTone } from '@mui/icons-material'
 
 interface AdminTableInterface {
     data: AdminInterface[]
@@ -23,8 +23,8 @@ interface AdminTableInterface {
 }
 
 interface AdminRowAction {
-	icon: string,
-	onClick: (row: any) => void,
+	icon: any,
+	onClick: (row: AdminInterface) => void,
 	title: string
     disabled: boolean
 }
@@ -46,7 +46,7 @@ const AdminTable = ({
 
     const ADMIN_ROW_ACTIONS: AdminRowAction[] = [
 		{
-			icon: 'Edit',
+			icon: EditTwoTone,
 			onClick: (row: AdminInterface) => setIsOpenAdminModal && setIsOpenAdminModal({ 
                 type: AdminModalType.Edit, 
                 selectedRow: row
@@ -55,13 +55,13 @@ const AdminTable = ({
             disabled: permission.adminManage[PermissionType.Update] === PermissionValue.Unavailable,
 		},
 		{
-			icon: 'Visibility',
+			icon: VisibilityTwoTone,
 			onClick: (row: AdminInterface) => setIsOpenPermissionModal && setIsOpenPermissionModal({ selectedRow: row }),
 			title: t('admin:grant.permission'),
             disabled: permission.adminManage[PermissionType.Update] === PermissionValue.Unavailable,
 		},
 		{
-			icon: 'Delete',
+			icon: DeleteTwoTone,
 			onClick: (row: AdminInterface) => setIsOpenDeleteModal && setIsOpenDeleteModal({ selectedRow: row }),
 			title: t('delete'),
             disabled: permission.adminManage[PermissionType.Delete] === PermissionValue.Unavailable

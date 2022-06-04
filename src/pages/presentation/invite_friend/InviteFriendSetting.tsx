@@ -1,27 +1,61 @@
-import { OTPSettingType, updateOTPSetting } from 'common/apis/settings'
+import { updateInviteFriendSetting } from 'common/apis/settings'
 import Button from 'components/bootstrap/Button'
 import Card, { CardBody, CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 import Input from 'components/bootstrap/forms/Input'
 import { useFormik } from 'formik'
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
+import { useDispatch, useSelector } from 'react-redux'
+import { selectReferralSetting } from 'redux/setting/selector'
+import { updateReferralSetting } from 'redux/setting/action'
+import showNotification from 'components/extras/showNotification'
+import { InfoTwoTone } from '@mui/icons-material'
+import Spinner from 'components/bootstrap/Spinner'
 
 const InviteFriendSetting = () => {
     const { t } = useTranslation('common')
+    const dispatch = useDispatch()
     const [isLoading, setIsLoading] = useState(false)
+
+    const referralSetting = useSelector(selectReferralSetting)
+
+    useEffect(() => {
+        setValues(referralSetting)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [referralSetting])
 
     const formik = useFormik({
 		initialValues: {
-            firstLevel: '',
-            secondLevel: '',
-		},
+            firstLevel: referralSetting.firstLevel || 0,
+            secondLevel: referralSetting.secondLevel || 0
+        },
 		onSubmit: (values) => {
-            
+            setIsLoading(true)
+            updateInviteFriendSetting({
+                firstReferralPercentage: values.firstLevel,
+                secondReferralPercentage: values.secondLevel
+            }, () => {
+                dispatch(updateReferralSetting(values))
+                showNotification(
+                    <span className='d-flex align-items-center'>
+                        <InfoTwoTone className='me-1' />
+                        <span>{t('update.referral.setting.successfully')}</span>
+                    </span>, t(`update.referral.setting.successfully`)
+                )
+            }, (error) => {
+                const { response } = error
+                console.log(response)
+                showNotification(
+                    <span className='d-flex align-items-center'>
+                        <InfoTwoTone className='me-1' />
+                        <span>{t('update.referral.setting.failed')}</span>
+                    </span>, t(`update.referral.setting.failed`)
+                )
+            }).finally(() => setIsLoading(false))
 		},
 	})
 
-    const { values, handleChange, setFieldValue, isValid, touched, errors } = formik
+    const { values, setValues, setFieldValue, handleSubmit } = formik
 
 	return (<>
 		<div className='row h-100'>
@@ -66,7 +100,9 @@ const InviteFriendSetting = () => {
                             </div>
                         </div>
                         <div className='w-50' style={{ minWidth: '450px' }}>
-                            <Button color='primary' className='float-end'>{t('save')}</Button>
+                            <Button color='primary' className='float-end' onClick={handleSubmit}>
+                                {isLoading ? <Spinner size={16} /> : t('save')}
+                            </Button>
                         </div>
                     </CardBody>
                 </Card>

@@ -1,43 +1,26 @@
 import { InfoTwoTone } from '@mui/icons-material'
-import { getOTPSetting, OTPSettingType, updateOTPSetting } from 'common/apis/settings'
+import { ServiceType, updateOTPSetting } from 'common/apis/settings'
 import Card, { CardBody, CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 import Checks from 'components/bootstrap/forms/Checks'
 import showNotification from 'components/extras/showNotification'
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
+import { toggleOTPSetting } from 'redux/setting/action'
+import { selectOTPSetting } from 'redux/setting/selector'
 
 
 const OTPSettings = () => {
     const { t } = useTranslation('common')
-    const [customerOTPSetting, setCustomerOTPSetting] = useState(false)
-    const [adminOTPSetting, setAdminOTPSetting] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const dispatch = useDispatch()
 
-    useEffect(() => {
-        getOTPSetting(() => {
+    const OTPSetting = useSelector(selectOTPSetting)
 
-        }, (error) => {
-            const { response } = error
-            console.log(response)
-            showNotification(
-                <span className='d-flex align-items-center'>
-                    <InfoTwoTone className='me-1' />
-                    <span>{t('get.otp.setting.failed')}</span>
-                </span>, t('try.again')
-            )
-        }).finally(() => setIsLoading(false))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    const handleOTPSettingChange = (type: OTPSettingType, checked: boolean) => {
+    const handleOTPSettingChange = (type: ServiceType, checked: boolean) => {
         setIsLoading(true)
-
         updateOTPSetting(type, { flagOTP: checked }, () => {
-            if (type === OTPSettingType.Customer) {
-                setCustomerOTPSetting(checked)
-            } else {
-                setAdminOTPSetting(checked)
-            }
+            dispatch(toggleOTPSetting(type, checked))
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
@@ -73,11 +56,11 @@ const OTPSettings = () => {
                             </div>
                             <Checks
                                 key='customer'
-                                label={customerOTPSetting ? t('on') : t('off')}
-                                name={'customer'}
-                                value={customerOTPSetting}
-                                onChange={(e: ChangeEvent<HTMLInputElement>) => handleOTPSettingChange(OTPSettingType.Customer, e.target.checked)}
-                                checked={customerOTPSetting}
+                                label={OTPSetting.customer ? t('on') : t('off')}
+                                name='customer'
+                                value={OTPSetting.customer}
+                                onChange={(e: ChangeEvent<HTMLInputElement>) => handleOTPSettingChange(ServiceType.Customer, e.target.checked)}
+                                checked={OTPSetting.customer}
                                 disabled={isLoading}
                                 ariaLabel='customer'
                                 type='switch'
@@ -90,12 +73,12 @@ const OTPSettings = () => {
                             </div>
                             <Checks
                                 key='admin'
-                                label={adminOTPSetting ? t('on') : t('off')}
-                                name={'admin'}
-                                value={adminOTPSetting}
-                                onChange={(e: ChangeEvent<HTMLInputElement>) => handleOTPSettingChange(OTPSettingType.Admin, e.target.checked)}
+                                label={OTPSetting.admin ? t('on') : t('off')}
+                                name='admin'
+                                value={OTPSetting.admin}
+                                onChange={(e: ChangeEvent<HTMLInputElement>) => handleOTPSettingChange(ServiceType.Admin, e.target.checked)}
                                 disabled={isLoading}
-                                checked={adminOTPSetting}
+                                checked={OTPSetting.admin}
                                 ariaLabel='admin'
                                 type='switch'
                             />
