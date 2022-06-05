@@ -16,6 +16,7 @@ const INITIAL_STATE: InitialState = {
     chat: '0000',
     product: '1111',
     adminManage: '1111',
+    creditCondition: '1111',
     level: '0000',
   }
 }

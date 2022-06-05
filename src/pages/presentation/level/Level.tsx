@@ -60,7 +60,7 @@ const Level = ({ isOpenLevelModal, setIsOpenLevelModal }: LevelProps) => {
 	}, [queryList])
 
 	return (<>
-		<div className='row h-100'>
+		<div className='row'>
 			<div className={`col-12 ${isLoading ? 'd-flex align-items-center justify-content-center' : 'px-4'}`}>
 				{isLoading ? <Spinner color='info' isGrow size={60} /> 
 					: <LevelTable

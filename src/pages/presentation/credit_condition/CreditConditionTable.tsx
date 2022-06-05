@@ -8,24 +8,24 @@ import { useSelector } from 'react-redux'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { FilterList, StarRounded } from '@mui/icons-material'
-import { LevelInterface } from 'common/apis/level'
-import { LevelModalType } from './LevelModal'
+import { CreditConditionInterface } from 'common/apis/creditCondition'
+import { CreditConditionModalType } from './CreditConditionModal'
 import moment from 'moment'
 
-interface LevelTableInterface {
-    data: LevelInterface[]
-    setIsOpenLevelModal?: (value: { type: LevelModalType, selectedRow: LevelInterface }) => void
-    setIsOpenDeleteLevelModal?: (value: { type: LevelModalType, selectedRow: LevelInterface }) => void
+interface CreditConditionTableInterface {
+    data: CreditConditionInterface[]
+    setIsOpenCreditConditionModal?: (value: { type: CreditConditionModalType, selectedRow: CreditConditionInterface }) => void
+    setIsOpenDeleteCreditConditionModal?: (value: { type: CreditConditionModalType, selectedRow: CreditConditionInterface }) => void
     columns?: any
     cardHeader?: ReactNode
 }
 
-const LevelTable = ({ 
+const CreditConditionTable = ({ 
     data, 
-    setIsOpenLevelModal, 
-    setIsOpenDeleteLevelModal,
+    setIsOpenCreditConditionModal, 
+    setIsOpenDeleteCreditConditionModal,
     cardHeader 
-}: LevelTableInterface) => {
+}: CreditConditionTableInterface) => {
     const { t } = useTranslation('common')
 
     const [currentPage, setCurrentPage] = useState(1)
@@ -47,15 +47,21 @@ const LevelTable = ({
                                 {t('column.no')}
                             </th>
                             <th
-                                onClick={() => requestSort('levelName')}
+                                onClick={() => requestSort('point')}
                                 className='cursor-pointer text-decoration-underline'>
-                                {t('column.level.name')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('levelName')} />
+                                {t('column.point')}{' '}
+                                <FilterList fontSize='small' className={getClassNamesFor('creditConditionName')} />
                             </th>
                             <th
-                                onClick={() => requestSort('minimumDeposit')}
+                                onClick={() => requestSort('credit')}
                                 className='cursor-pointer text-decoration-underline'>
-                                {t('column.minimum.deposit')}{' '}
+                                {t('column.credit')}{' '}
+                                <FilterList fontSize='small' className={getClassNamesFor('minumumDeposit')} />
+                            </th>
+                            <th
+                                onClick={() => requestSort('quantity')}
+                                className='cursor-pointer text-decoration-underline'>
+                                {t('column.quantity')}{' '}
                                 <FilterList fontSize='small' className={getClassNamesFor('minumumDeposit')} />
                             </th>
                             <th
@@ -70,23 +76,23 @@ const LevelTable = ({
                                 {t('column.updated.at')}{' '}
                                 <FilterList fontSize='small' className={getClassNamesFor('updatedAt')} />
                             </th>
-                            {setIsOpenLevelModal && <td />}
+                            {setIsOpenCreditConditionModal && <td />}
                         </tr>
                     </thead>
                     <tbody>
-                        {items.length > 0 ? dataPagination(items, currentPage, perPage).map((item: LevelInterface, index: number) => (
-                            <tr key={item.levelId}>
+                        {items.length > 0 ? dataPagination(items, currentPage, perPage).map((item: CreditConditionInterface, index: number) => (
+                            <tr key={item.conditionId}>
                                 <td className='text-center'>
                                     <div>{index + 1}</div>
                                 </td>
                                 <td>
-                                    <div>
-                                        <StarRounded htmlColor={item.color} />{' '}
-                                        {item.levelName}
-                                    </div>
+                                    <div>{item.point.toLocaleString()}</div>
                                 </td>
                                 <td>
-                                    <div>{item.minimumCredit.toLocaleString()}</div>
+                                    <div>{item.credit.toLocaleString()}</div>
+                                </td>
+                                <td>
+                                    <div>{item.quantity?.toLocaleString()}</div>
                                 </td>
                                 <td>
                                     <div>{moment(item.createdAt).format('ll')}</div>
@@ -104,17 +110,17 @@ const LevelTable = ({
                                         </small>
                                     </div>
                                 </td>
-                                {(setIsOpenLevelModal && setIsOpenDeleteLevelModal) && <td>
+                                {(setIsOpenCreditConditionModal && setIsOpenDeleteCreditConditionModal) && <td>
                                     <div className='row gap-3 w-100'>
                                         <Button
-                                            onClick={() => setIsOpenLevelModal({ type: LevelModalType.Edit, selectedRow: item })}
+                                            onClick={() => setIsOpenCreditConditionModal({ type: CreditConditionModalType.Edit, selectedRow: item })}
                                             color='light-dark'
                                             className='col'
                                         >
                                             {t('edit')}
                                         </Button>
                                         <Button
-                                            onClick={() => setIsOpenDeleteLevelModal({ type: LevelModalType.Delete, selectedRow: item })}
+                                            onClick={() => setIsOpenDeleteCreditConditionModal({ type: CreditConditionModalType.Delete, selectedRow: item })}
                                             color='light-dark'
                                             className='col'
                                         >
@@ -123,7 +129,7 @@ const LevelTable = ({
                                     </div>
                                 </td>}
                             </tr>
-                        )) : permission.level[PermissionType.Read] === PermissionValue.Unavailable ?
+                        )) : permission.creditCondition[PermissionType.Read] === PermissionValue.Unavailable ?
                         <tr>
                             <td colSpan={8} className='text-center'>ไม่มีสิทธิ์เข้าถึง</td>
                         </tr>
@@ -145,4 +151,4 @@ const LevelTable = ({
     )
 }
 
-export default LevelTable
+export default CreditConditionTable

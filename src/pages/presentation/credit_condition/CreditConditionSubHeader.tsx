@@ -13,17 +13,17 @@ import { useTranslation } from 'react-i18next'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import Button from 'components/bootstrap/Button'
-import { LevelProps } from './Level'
+import { CreditConditionProps } from './CreditCondition'
 import { Add, Search } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
-import { LevelModalType } from './LevelModal'
+import { CreditConditionModalType } from './CreditConditionModal'
 import { useDispatch, useSelector } from 'react-redux'
-import { storeLevelQuery } from 'redux/level/action'
-import { selectCompanyLevelQuery } from 'redux/level/selector'
+import { storeCreditConditionQuery } from 'redux/creditCondition/action'
 import 'moment/locale/th'
 import Checks from 'components/bootstrap/forms/Checks'
+import { selectCreditConditionQuery } from 'redux/creditCondition/selector'
 
-interface LevelFilterInterface {
+interface CreditConditionFilterInterface {
 	searchInput: string
 	minimumCredit: {
 		min: string
@@ -43,17 +43,17 @@ interface LevelFilterInterface {
 	isUpdatedAtDateChanged: boolean
 }
 
-const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
-	const { t } = useTranslation(['common', 'level'])
+const CreditConditionSubHeader = ({ setIsOpenCreditConditionModal }: CreditConditionProps) => {
+	const { t } = useTranslation(['common', 'creditCondition'])
 	const dispatch = useDispatch()
 
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
     const [isOpenUpdatedAtDatePicker, setIsOpenUpdatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
 
-	const queryList = useSelector(selectCompanyLevelQuery)
+	const queryList = useSelector(selectCreditConditionQuery)
 
-	const formik = useFormik<LevelFilterInterface>({
+	const formik = useFormik<CreditConditionFilterInterface>({
 		initialValues: {
 			searchInput: '',
             minimumCredit: {
@@ -78,7 +78,7 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 			isUpdatedAtDateChanged: false,
 		},
 		onSubmit: (values) => {
-			dispatch(storeLevelQuery({
+			dispatch(storeCreditConditionQuery({
 				...queryList,
 				minCredit: values.minimumCredit.min ? `minCredit=${values.minimumCredit.min}` : '',
 				maxCredit: values.minimumCredit.max ? `maxCredit=${values.minimumCredit.max}` : '',
@@ -113,7 +113,7 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 	  // eslint-disable-next-line react-hooks/exhaustive-deps
 	const debounceSearchChange = useCallback(
 		debounce((value: string) => {
-			dispatch(storeLevelQuery({ ...queryList, keyword: `keyword=${value}` }))
+			dispatch(storeCreditConditionQuery({ ...queryList, keyword: `keyword=${value}` }))
 		}, 1000), []
 	  )
 
@@ -135,7 +135,7 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 				id='searchInput'
 				type='search'
 				className='border-0 shadow-none bg-transparent'
-				placeholder={t('level:search.level') + '...'}
+				placeholder={t('creditCondition:search.creditCondition') + '...'}
 				onChange={handleSearchChange}
 				value={searchInput}
 			/>
@@ -229,12 +229,12 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 				icon={Add}
 				color='primary'
 				isLight
-				onClick={() => setIsOpenLevelModal({ type: LevelModalType.Add, selectedRow: undefined})}
+				onClick={() => setIsOpenCreditConditionModal({ type: CreditConditionModalType.Add, selectedRow: undefined})}
 			>
-				{t('level:add.level')}
+				{t('creditCondition:add.creditCondition')}
 			</Button>
 		</SubHeaderRight>
 	</SubHeader>)
 }
 
-export default LevelSubHeader
+export default CreditConditionSubHeader

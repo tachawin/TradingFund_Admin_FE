@@ -12,11 +12,13 @@ import transactionReducer from './transaction/reducer'
 import redeemCreditReducer from './redeemCredit/reducer'
 import redeemProductReducer from './redeemProduct/reducer'
 import systemSettingReducer from './setting/reducer'
+import creditConditionReducer from './creditCondition/reducer'
 
 const rootReducer = combineReducers({
   admin: adminReducer,
   commonBank: commonBankReducer,
   companyBank: companyBankReducer,
+  creditCondition: creditConditionReducer,
   customer: customerReducer,
   deposit: depositReducer,
   level: levelReducer,

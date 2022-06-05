@@ -20,6 +20,7 @@ import showNotification from 'components/extras/showNotification'
 import { InfoTwoTone } from '@mui/icons-material'
 import { useDispatch } from 'react-redux'
 import { storeSetting } from 'redux/setting/action'
+import CreditCondition, { CreditConditionModalProperties } from '../credit_condition/CreditCondition'
 
 enum SettingPanel {
     Product = 'product',
@@ -33,6 +34,7 @@ const Settings = () => {
 	const [isOpenProductModal, setIsOpenProductModal] = useState<ProductModalProperties>()
 	const [isOpenBankModal, setIsOpenBankModal] = useState<BankModalProperties>()
 	const [isOpenLevelModal, setIsOpenLevelModal] = useState<LevelModalProperties>()
+	const [isOpenCreditConditionModal, setIsOpenCreditConditionModal] = useState<CreditConditionModalProperties>()
 	const [isLoading, setIsLoading] = useState(false)
 
 	const dispatch = useDispatch()
@@ -58,6 +60,7 @@ const Settings = () => {
 					<InviteFriendSetting />
 				</div>
 				<Level isOpenLevelModal={isOpenLevelModal} setIsOpenLevelModal={setIsOpenLevelModal} />
+				<CreditCondition isOpenCreditConditionModal={isOpenCreditConditionModal} setIsOpenCreditConditionModal={setIsOpenCreditConditionModal} />
 			</div>
 		}
 	]
