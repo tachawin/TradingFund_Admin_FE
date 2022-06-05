@@ -26,15 +26,15 @@ interface StoreCompanyBankQuery {
   payload: { [key: string] : string }
 }
 
-interface updateCompanyBank {
+interface UpdateCompanyBank {
   type: typeof UPDATE_COMPANY_BANK
   id: string
   payload: CompanyBankInterface
 }
 
-interface deleteCompanyBank {
+interface DeleteCompanyBank {
   type: typeof DELETE_COMPANY_BANK
   payload: string
 }
 
-export type CompanyBankActionTypes = AddCompanyBank | StoreCompanyBank | StoreCompanyBankQuery | updateCompanyBank | deleteCompanyBank
+export type CompanyBankActionTypes = AddCompanyBank | StoreCompanyBank | StoreCompanyBankQuery | UpdateCompanyBank | DeleteCompanyBank

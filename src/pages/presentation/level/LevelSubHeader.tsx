@@ -16,10 +16,16 @@ import Button from 'components/bootstrap/Button'
 import { LevelProps } from './Level'
 import { Add, Search } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
+import { LevelModalType } from './LevelModal'
+import { useDispatch, useSelector } from 'react-redux'
+import { storeLevelQuery } from 'redux/level/action'
+import { selectCompanyLevelQuery } from 'redux/level/selector'
+import 'moment/locale/th'
+import Checks from 'components/bootstrap/forms/Checks'
 
 interface LevelFilterInterface {
 	searchInput: string
-	minimumDeposit: {
+	minimumCredit: {
 		min: string
 		max: string
 	}
@@ -33,19 +39,24 @@ interface LevelFilterInterface {
 		endDate: Date
 		key: string
 	}[]
+	isCreatedAtDateChanged: boolean
+	isUpdatedAtDateChanged: boolean
 }
 
 const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 	const { t } = useTranslation(['common', 'level'])
+	const dispatch = useDispatch()
 
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
     const [isOpenUpdatedAtDatePicker, setIsOpenUpdatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
 
+	const queryList = useSelector(selectCompanyLevelQuery)
+
 	const formik = useFormik<LevelFilterInterface>({
 		initialValues: {
 			searchInput: '',
-            minimumDeposit: {
+            minimumCredit: {
                 min: '',
                 max: ''
             },
@@ -62,13 +73,20 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 					endDate: moment().endOf('week').toDate(),
 					key: 'selection',
 				},
-			]
+			],
+			isCreatedAtDateChanged: false,
+			isUpdatedAtDateChanged: false,
 		},
 		onSubmit: (values) => {
-			console.log('submit filter')
-			console.log(values)
-
-			// Send Filter
+			dispatch(storeLevelQuery({
+				...queryList,
+				minCredit: values.minimumCredit.min ? `minCredit=${values.minimumCredit.min}` : '',
+				maxCredit: values.minimumCredit.max ? `maxCredit=${values.minimumCredit.max}` : '',
+				startCreated: values.isCreatedAtDateChanged ? `startCreated=${moment(values.createdAt[0].startDate).format('YYYY-MM-DD')}` : '',
+				endCreated: values.isCreatedAtDateChanged ?`endCreated=${moment(values.createdAt[0].endDate).format('YYYY-MM-DD')}` : '',
+				startUpdated: values.isUpdatedAtDateChanged ? `startUpdated=${moment(values.updatedAt[0].startDate).format('YYYY-MM-DD')}` : '',
+				endUpdated: values.isUpdatedAtDateChanged ? `endUpdated=${moment(values.updatedAt[0].endDate).format('YYYY-MM-DD')}` : ''
+			}))
 		},
 	})
 
@@ -95,18 +113,15 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 	  // eslint-disable-next-line react-hooks/exhaustive-deps
 	const debounceSearchChange = useCallback(
 		debounce((value: string) => {
-			// Send search filter
-			console.log(value)
+			dispatch(storeLevelQuery({ ...queryList, keyword: `keyword=${value}` }))
 		}, 1000), []
 	  )
 
 	const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
 		let value = event.target.value
 
-		if (value) {
-			setSearchInput(value)
-			debounceSearchChange(value)
-		}
+		setSearchInput(value)
+		debounceSearchChange(value)
 	}
 
 	return (<>
@@ -131,53 +146,73 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 			filters={[
 				{
 					label: t('filter.created.at'),
-					children: <Dropdown >
-						<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
-							<span data-tour='date-range'>
-								{`${moment(values.createdAt[0].startDate).format('MMM Do YY')} - ${moment(
-									values.createdAt[0].endDate,
-								).format('MMM Do YY')}`}
-							</span>
-						</DropdownToggle>
-						<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
-							{datePicker(values.createdAt, 'createdAt')}
-						</DropdownMenu>
-					</Dropdown>
+					children: <div>
+						<Checks
+							id='isCreatedAtDateChanged'
+							type='switch'
+							label={t('filter.created.at')}
+							onChange={handleChange}
+							checked={values.isCreatedAtDateChanged}
+							ariaLabel='Filter Created At Date'
+						/>
+						{values.isCreatedAtDateChanged && <Dropdown className='mt-2'>
+							<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
+								<span data-tour='date-range'>
+									{`${moment(values.createdAt[0].startDate).format('MMM Do YY')} - ${moment(
+										values.createdAt[0].endDate,
+									).format('MMM Do YY')}`}
+								</span>
+							</DropdownToggle>
+							<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
+								{datePicker(values.createdAt, 'createdAt')}
+							</DropdownMenu>
+						</Dropdown>}
+					</div>
 				},
 				{
 					label: t('filter.updated.at'),
-					children: <Dropdown >
-						<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenUpdatedAtDatePicker)} setIsOpen={setIsOpenUpdatedAtDatePicker}>
-							<span data-tour='date-range'>
-								{`${moment(values.updatedAt[0].startDate).format('MMM Do YY')} - ${moment(
-									values.updatedAt[0].endDate,
-								).format('MMM Do YY')}`}
-							</span>
-						</DropdownToggle>
-						<DropdownMenu isAlignmentEnd isOpen={isOpenUpdatedAtDatePicker} setIsOpen={setIsOpenUpdatedAtDatePicker}>
-							{datePicker(values.updatedAt, 'updatedAt')}
-						</DropdownMenu>
-					</Dropdown>
+					children: <div>
+						<Checks
+							id='isUpdatedAtDateChanged'
+							type='switch'
+							label={t('filter.updated.at')}
+							onChange={handleChange}
+							checked={values.isUpdatedAtDateChanged}
+							ariaLabel='Filter Updated At Date'
+						/>
+						{values.isCreatedAtDateChanged && <Dropdown className='mt-2'>
+							<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenUpdatedAtDatePicker)} setIsOpen={setIsOpenUpdatedAtDatePicker}>
+								<span data-tour='date-range'>
+									{`${moment(values.updatedAt[0].startDate).format('MMM Do YY')} - ${moment(
+										values.updatedAt[0].endDate,
+									).format('MMM Do YY')}`}
+								</span>
+							</DropdownToggle>
+							<DropdownMenu isAlignmentEnd isOpen={isOpenUpdatedAtDatePicker} setIsOpen={setIsOpenUpdatedAtDatePicker}>
+								{datePicker(values.updatedAt, 'updatedAt')}
+							</DropdownMenu>
+						</Dropdown>}
+					</div>
 				},
 				{
-					label: t('filter.minimum.deposit'),
+					label: t('filter.minimum.credit'),
 					children: <div>
 						<InputGroup>
 							<Input
-								id='minimumDeposit.min'
-								ariaLabel='Minimum deposit'
+								id='minimumCredit.min'
+								ariaLabel='Minimum credit'
 								placeholder={t('filter.min')}
 								onChange={handleChange}
-								value={values.minimumDeposit.min}
+								value={values.minimumCredit.min}
 								type='number'
 							/>
 							<InputGroupText>{t('filter.to')}</InputGroupText>
 							<Input
-								id='minimumDeposit.max'
-								ariaLabel='Maximum deposit'
+								id='minimumCredit.max'
+								ariaLabel='Maximum credit'
 								placeholder={t('filter.max')}
 								onChange={handleChange}
-								value={values.minimumDeposit.max}
+								value={values.minimumCredit.max}
 								type='number'
 							/>
 						</InputGroup>
@@ -191,7 +226,7 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 			icon={Add}
 			color='primary'
 			isLight
-			onClick={() => setIsOpenLevelModal({ type: "add", selectedRow: null})}
+			onClick={() => setIsOpenLevelModal({ type: LevelModalType.Add, selectedRow: undefined})}
 		>
 			{t('level:add.level')}
 		</Button>

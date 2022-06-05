@@ -28,13 +28,25 @@ export interface LevelInterface extends LevelBaseInterface {
     updatedAt: Date
 }
 
-export const createLevel = (data: LevelInterface) => 
-    axios({
-        method: 'post',
-        url: '/level/create',
-        headers: { Authorization: `Bearer ${getAccessToken()}` },
-        data
-    })
+export const createLevel = async (
+    data: LevelBaseInterface,
+    next: (level: LevelInterface) => void,
+    handleError: (error: any) => void
+) =>
+    await authorizationHandler(async () => {
+        try {
+            const res = await axios({
+                method: 'post',
+                url: '/level/create',
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
+                data
+            })
+            next(res.data)
+        } catch (error: any) {
+            handleError(error)
+        }
+    }
+)
 
 export const getLevelList = async (
     query: string,
@@ -57,17 +69,18 @@ export const getLevelList = async (
 export const updateLevel = async (
     levelId: string,
     data: LevelUpdateBodyInterface,
-    next: () => void,
+    next: (level: LevelInterface) => void,
     handleError: (error: any) => void
 ) =>
     await authorizationHandler(async () => {
         try {
-			await axios({
-                method: 'get',
+			const res = await axios({
+                method: 'patch',
                 url: `/level/update/${levelId}`,
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
                 data
             })
-            next()
+            next(res.data)
 		} catch (error: any) {
 			handleError(error)
 		}
@@ -81,8 +94,9 @@ export const deleteLevel = async (
     await authorizationHandler(async () => {
         try {
 			await axios({
-                method: 'get',
+                method: 'delete',
                 url: '/level/delete',
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
                 data: { levelId }
             })
             next()

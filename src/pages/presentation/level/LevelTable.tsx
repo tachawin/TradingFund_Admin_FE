@@ -8,21 +8,16 @@ import { useSelector } from 'react-redux'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { FilterList, StarRounded } from '@mui/icons-material'
+import { LevelInterface } from 'common/apis/level'
+import { LevelModalType } from './LevelModal'
+import moment from 'moment'
 
 interface LevelTableInterface {
-    data: any
-    setIsOpenLevelModal?: (value: { type: string, selectedRow: any }) => void
-    setIsOpenDeleteLevelModal?: (value: { type: string, selectedRow: any }) => void
+    data: LevelInterface[]
+    setIsOpenLevelModal?: (value: { type: LevelModalType, selectedRow: LevelInterface }) => void
+    setIsOpenDeleteLevelModal?: (value: { type: LevelModalType, selectedRow: LevelInterface }) => void
     columns?: any
     cardHeader?: ReactNode
-}
-
-enum Level {
-    Platinum = 'platinum',
-    Gold = 'gold',
-    Silver = 'silver',
-    Bronze = 'bronze',
-    Standard = 'standard'
 }
 
 const LevelTable = ({ 
@@ -79,53 +74,53 @@ const LevelTable = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {items.length > 0 ? dataPagination(items, currentPage, perPage).map((i: any, index: number) => (
-                            <tr key={i.id}>
+                        {items.length > 0 ? dataPagination(items, currentPage, perPage).map((item: LevelInterface, index: number) => (
+                            <tr key={item.levelId}>
                                 <td className='text-center'>
                                     <div>{index + 1}</div>
                                 </td>
                                 <td>
                                     <div>
-                                        <StarRounded htmlColor={i.id === Level.Gold ? 'warning' 
-                                            : i.id === Level.Silver ? 'light' 
-                                            : i.id === Level.Platinum ? 'primary' 
-                                            : i.id === Level.Bronze ? 'danger' : 'secondary' } />{' '}
-                                        {i.levelName}
+                                        <StarRounded htmlColor={item.color} />{' '}
+                                        {item.levelName}
                                     </div>
                                 </td>
                                 <td>
-                                    <div>{i.minimumDeposit.toLocaleString()}</div>
+                                    <div>{item.minimumCredit.toLocaleString()}</div>
                                 </td>
                                 <td>
-                                    <div>{i.createdAtDate.format('ll')}</div>
+                                    <div>{moment(item.createdAt).format('ll')}</div>
                                     <div>
                                         <small className='text-muted'>
-                                            {i.createdAtDate.fromNow()}
+                                            {moment(item.createdAt).fromNow()}
                                         </small>
                                     </div>
                                 </td>
                                 <td>
-                                    <div>{i.updatedAtDate.format('ll')}</div>
+                                    <div>{moment(item.updatedAt).format('ll')}</div>
                                     <div>
                                         <small className='text-muted'>
-                                            {i.updatedAtDate.fromNow()}
+                                            {moment(item.updatedAt).fromNow()}
                                         </small>
                                     </div>
                                 </td>
                                 {(setIsOpenLevelModal && setIsOpenDeleteLevelModal) && <td>
-                                    <Button
-                                        onClick={() => setIsOpenLevelModal({ type: "edit", selectedRow: i})}
-                                        className='p-0'
-                                        isLight
-                                    >
-                                        {t('edit')}
-                                    </Button> / <Button
-                                        onClick={() => setIsOpenDeleteLevelModal({ type: "delete", selectedRow: i })}
-                                        className='p-0'
-                                        isLight
-                                    >
-                                        {t('delete')}
-                                    </Button>
+                                    <div className='row gap-3 w-100'>
+                                        <Button
+                                            onClick={() => setIsOpenLevelModal({ type: LevelModalType.Edit, selectedRow: item })}
+                                            color='light-dark'
+                                            className='col'
+                                        >
+                                            {t('edit')}
+                                        </Button>
+                                        <Button
+                                            onClick={() => setIsOpenDeleteLevelModal({ type: LevelModalType.Delete, selectedRow: item })}
+                                            color='light-dark'
+                                            className='col'
+                                        >
+                                            {t('delete')}
+                                        </Button>
+                                    </div>
                                 </td>}
                             </tr>
                         )) : permission.level[PermissionType.Read] === PermissionValue.Unavailable ?

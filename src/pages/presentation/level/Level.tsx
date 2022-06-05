@@ -5,7 +5,7 @@ import LevelTable from './LevelTable'
 import { CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 import LevelDeleteModal from './LevelDeleteModal'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectLevels } from 'redux/level/selector'
+import { selectCompanyLevelQuery, selectLevels } from 'redux/level/selector'
 import { getLevelList, LevelInterface } from 'common/apis/level'
 import { storeLevels } from 'redux/level/action'
 import showNotification from 'components/extras/showNotification'
@@ -14,7 +14,7 @@ import { InfoTwoTone } from '@mui/icons-material'
 
 export interface LevelModalProperties {
 	type: string
-	selectedRow: any
+	selectedRow?: LevelInterface
 }
 
 export interface LevelModalInterface {
@@ -35,10 +35,14 @@ const Level = ({ isOpenLevelModal, setIsOpenLevelModal }: LevelProps) => {
 
 	const [isLoading, setIsLoading] = useState(false)
     const [isOpenDeleteLevelModal, setIsOpenDeleteLevelModal] = useState<LevelModalProperties>()
+	
 	const levels = useSelector(selectLevels)
+	const queryList = useSelector(selectCompanyLevelQuery)
 
 	useEffect(() => {
-		levels.length === 0 && getLevelList('', (levelList: LevelInterface[]) => {
+		let queryString = Object.values(queryList).filter(Boolean).join('&')
+		let query = queryString ? `?${queryString}` : ''
+		getLevelList(query, (levelList: LevelInterface[]) => {
 			dispatch(storeLevels(levelList))
 		}, (error: any) => {
 			const { response } = error
@@ -52,7 +56,7 @@ const Level = ({ isOpenLevelModal, setIsOpenLevelModal }: LevelProps) => {
 			)
 		}).finally(() => setIsLoading(false))
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	}, [queryList])
 
 	return (<>
 		<div className='row h-100'>
