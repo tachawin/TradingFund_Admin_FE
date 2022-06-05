@@ -40,9 +40,9 @@ const OTPSettings = () => {
     }
 
 	return (<>
-		<div className='row h-100'>
-			<div className='col-12'>
-				<Card stretch className='mx-3 px-3'>
+		<div className='col-md'>
+			<div className='col-12 h-100'>
+				<Card stretch>
                     <CardHeader>
                         <CardLabel>
                             <CardTitle>{t('otp.setting')}</CardTitle>

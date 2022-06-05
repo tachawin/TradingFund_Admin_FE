@@ -58,16 +58,16 @@ const InviteFriendSetting = () => {
     const { values, setValues, setFieldValue, handleSubmit } = formik
 
 	return (<>
-		<div className='row h-100'>
+		<div className='col-md'>
 			<div className='col-12'>
-				<Card stretch className='mx-3 px-3'>
+				<Card stretch>
                     <CardHeader>
                         <CardLabel>
                             <CardTitle>{t('otp.setting')}</CardTitle>
                         </CardLabel>
                     </CardHeader>
                     <CardBody>
-                        <div className='d-flex justify-content-between align-items-center w-50' style={{ minWidth: '450px' }}>
+                        <div className='d-flex justify-content-between align-items-center'>
                             <div>
                                 <h5>{t('first.level')}</h5>
                                 <p>{t('first.level.desc')}</p>
@@ -83,7 +83,7 @@ const InviteFriendSetting = () => {
                                 <span>%</span>
                             </div>
                         </div>
-                        <div className='d-flex justify-content-between align-items-center w-50' style={{ minWidth: '450px' }}>
+                        <div className='d-flex justify-content-between align-items-center'>
                             <div>
                                 <h5>{t('second.level')}</h5>
                                 <p>{t('second.level.desc')}</p>
@@ -99,7 +99,7 @@ const InviteFriendSetting = () => {
                                 <span>%</span>
                             </div>
                         </div>
-                        <div className='w-50' style={{ minWidth: '450px' }}>
+                        <div>
                             <Button color='primary' className='float-end' onClick={handleSubmit}>
                                 {isLoading ? <Spinner size={16} /> : t('save')}
                             </Button>

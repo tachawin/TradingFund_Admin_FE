@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useCallback, useState } from 'react'
 import { useFormik } from 'formik'
 import debounce from 'lodash/debounce'
-import { SubheaderSeparator } from '../../../layout/SubHeader/SubHeader'
+import SubHeader, { SubHeaderLeft, SubHeaderRight, SubheaderSeparator } from '../../../layout/SubHeader/SubHeader'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
 import Input from '../../../components/bootstrap/forms/Input'
@@ -124,113 +124,117 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 		debounceSearchChange(value)
 	}
 
-	return (<>
-		<label
-			className='border-0 bg-transparent cursor-pointer me-0'
-			htmlFor='searchInput'>
-			<Search fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
-		</label>
-		<Input
-			id='searchInput'
-			type='search'
-			className='border-0 shadow-none bg-transparent'
-			placeholder={t('level:search.level') + '...'}
-			onChange={handleSearchChange}
-			value={searchInput}
-		/>
-		<CommonTableFilter
-			resetLabel={t('filter.reset')}
-			onReset={resetForm}
-			submitLabel={t('filter')}
-			onSubmit={handleSubmit}
-			filters={[
-				{
-					label: t('filter.created.at'),
-					children: <div>
-						<Checks
-							id='isCreatedAtDateChanged'
-							type='switch'
-							label={t('filter.created.at')}
-							onChange={handleChange}
-							checked={values.isCreatedAtDateChanged}
-							ariaLabel='Filter Created At Date'
-						/>
-						{values.isCreatedAtDateChanged && <Dropdown className='mt-2'>
-							<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
-								<span data-tour='date-range'>
-									{`${moment(values.createdAt[0].startDate).format('MMM Do YY')} - ${moment(
-										values.createdAt[0].endDate,
-									).format('MMM Do YY')}`}
-								</span>
-							</DropdownToggle>
-							<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
-								{datePicker(values.createdAt, 'createdAt')}
-							</DropdownMenu>
-						</Dropdown>}
-					</div>
-				},
-				{
-					label: t('filter.updated.at'),
-					children: <div>
-						<Checks
-							id='isUpdatedAtDateChanged'
-							type='switch'
-							label={t('filter.updated.at')}
-							onChange={handleChange}
-							checked={values.isUpdatedAtDateChanged}
-							ariaLabel='Filter Updated At Date'
-						/>
-						{values.isCreatedAtDateChanged && <Dropdown className='mt-2'>
-							<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenUpdatedAtDatePicker)} setIsOpen={setIsOpenUpdatedAtDatePicker}>
-								<span data-tour='date-range'>
-									{`${moment(values.updatedAt[0].startDate).format('MMM Do YY')} - ${moment(
-										values.updatedAt[0].endDate,
-									).format('MMM Do YY')}`}
-								</span>
-							</DropdownToggle>
-							<DropdownMenu isAlignmentEnd isOpen={isOpenUpdatedAtDatePicker} setIsOpen={setIsOpenUpdatedAtDatePicker}>
-								{datePicker(values.updatedAt, 'updatedAt')}
-							</DropdownMenu>
-						</Dropdown>}
-					</div>
-				},
-				{
-					label: t('filter.minimum.credit'),
-					children: <div>
-						<InputGroup>
-							<Input
-								id='minimumCredit.min'
-								ariaLabel='Minimum credit'
-								placeholder={t('filter.min')}
+	return (<SubHeader className='pt-3' style={{ boxShadow: 'none' }}>
+		<SubHeaderLeft>
+			<label
+				className='border-0 bg-transparent cursor-pointer me-0'
+				htmlFor='searchInput'>
+				<Search fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
+			</label>
+			<Input
+				id='searchInput'
+				type='search'
+				className='border-0 shadow-none bg-transparent'
+				placeholder={t('level:search.level') + '...'}
+				onChange={handleSearchChange}
+				value={searchInput}
+			/>
+		</SubHeaderLeft>
+		<SubHeaderRight>
+			<CommonTableFilter
+				resetLabel={t('filter.reset')}
+				onReset={resetForm}
+				submitLabel={t('filter')}
+				onSubmit={handleSubmit}
+				filters={[
+					{
+						label: t('filter.created.at'),
+						children: <div>
+							<Checks
+								id='isCreatedAtDateChanged'
+								type='switch'
+								label={t('filter.created.at')}
 								onChange={handleChange}
-								value={values.minimumCredit.min}
-								type='number'
+								checked={values.isCreatedAtDateChanged}
+								ariaLabel='Filter Created At Date'
 							/>
-							<InputGroupText>{t('filter.to')}</InputGroupText>
-							<Input
-								id='minimumCredit.max'
-								ariaLabel='Maximum credit'
-								placeholder={t('filter.max')}
+							{values.isCreatedAtDateChanged && <Dropdown className='mt-2'>
+								<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
+									<span data-tour='date-range'>
+										{`${moment(values.createdAt[0].startDate).format('MMM Do YY')} - ${moment(
+											values.createdAt[0].endDate,
+										).format('MMM Do YY')}`}
+									</span>
+								</DropdownToggle>
+								<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
+									{datePicker(values.createdAt, 'createdAt')}
+								</DropdownMenu>
+							</Dropdown>}
+						</div>
+					},
+					{
+						label: t('filter.updated.at'),
+						children: <div>
+							<Checks
+								id='isUpdatedAtDateChanged'
+								type='switch'
+								label={t('filter.updated.at')}
 								onChange={handleChange}
-								value={values.minimumCredit.max}
-								type='number'
+								checked={values.isUpdatedAtDateChanged}
+								ariaLabel='Filter Updated At Date'
 							/>
-						</InputGroup>
-					</div>
-				}
-			]} 
-		/>
-		<SubheaderSeparator />
-		<Button
-			className='text-nowrap'
-			icon={Add}
-			color='primary'
-			isLight
-			onClick={() => setIsOpenLevelModal({ type: LevelModalType.Add, selectedRow: undefined})}
-		>
-			{t('level:add.level')}
-		</Button>
-	</>)
+							{values.isCreatedAtDateChanged && <Dropdown className='mt-2'>
+								<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenUpdatedAtDatePicker)} setIsOpen={setIsOpenUpdatedAtDatePicker}>
+									<span data-tour='date-range'>
+										{`${moment(values.updatedAt[0].startDate).format('MMM Do YY')} - ${moment(
+											values.updatedAt[0].endDate,
+										).format('MMM Do YY')}`}
+									</span>
+								</DropdownToggle>
+								<DropdownMenu isAlignmentEnd isOpen={isOpenUpdatedAtDatePicker} setIsOpen={setIsOpenUpdatedAtDatePicker}>
+									{datePicker(values.updatedAt, 'updatedAt')}
+								</DropdownMenu>
+							</Dropdown>}
+						</div>
+					},
+					{
+						label: t('filter.minimum.credit'),
+						children: <div>
+							<InputGroup>
+								<Input
+									id='minimumCredit.min'
+									ariaLabel='Minimum credit'
+									placeholder={t('filter.min')}
+									onChange={handleChange}
+									value={values.minimumCredit.min}
+									type='number'
+								/>
+								<InputGroupText>{t('filter.to')}</InputGroupText>
+								<Input
+									id='minimumCredit.max'
+									ariaLabel='Maximum credit'
+									placeholder={t('filter.max')}
+									onChange={handleChange}
+									value={values.minimumCredit.max}
+									type='number'
+								/>
+							</InputGroup>
+						</div>
+					}
+				]} 
+			/>
+			<SubheaderSeparator />
+			<Button
+				className='text-nowrap'
+				icon={Add}
+				color='primary'
+				isLight
+				onClick={() => setIsOpenLevelModal({ type: LevelModalType.Add, selectedRow: undefined})}
+			>
+				{t('level:add.level')}
+			</Button>
+		</SubHeaderRight>
+	</SubHeader>)
 }
 
 export default LevelSubHeader

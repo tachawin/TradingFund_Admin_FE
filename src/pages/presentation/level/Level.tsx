@@ -11,6 +11,7 @@ import { storeLevels } from 'redux/level/action'
 import showNotification from 'components/extras/showNotification'
 import Spinner from 'components/bootstrap/Spinner'
 import { InfoTwoTone } from '@mui/icons-material'
+import LevelSubHeader from './LevelSubHeader'
 
 export interface LevelModalProperties {
 	type: string
@@ -64,11 +65,14 @@ const Level = ({ isOpenLevelModal, setIsOpenLevelModal }: LevelProps) => {
 				{isLoading ? <Spinner color='info' isGrow size={60} /> 
 					: <LevelTable
 						cardHeader={
-							<CardHeader>
-								<CardLabel>
-									<CardTitle>{t('level:level')}</CardTitle>
-								</CardLabel>
-							</CardHeader>
+							<>
+								<LevelSubHeader isOpenLevelModal={isOpenLevelModal} setIsOpenLevelModal={setIsOpenLevelModal}  />
+								<CardHeader>
+									<CardLabel>
+										<CardTitle>{t('level:level')}</CardTitle>
+									</CardLabel>
+								</CardHeader>
+							</>
 						}
 						data={levels} 
 						setIsOpenLevelModal={setIsOpenLevelModal}

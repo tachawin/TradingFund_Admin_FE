@@ -12,7 +12,6 @@ import Product, { ProductModalProperties } from '../product/Product'
 import Bank, { BankModalProperties } from '../bank/Bank'
 import Level, { LevelModalProperties } from '../level/Level'
 import ProductSubHeader from '../product/ProductSubHeader'
-import LevelSubHeader from '../level/LevelSubHeader'
 import BankSubHeader from '../bank/BankSubHeader'
 import OTPSettings from '../otp/OTPSetting'
 import InviteFriendSetting from '../invite_friend/InviteFriendSetting'
@@ -25,14 +24,12 @@ import { storeSetting } from 'redux/setting/action'
 enum SettingPanel {
     Product = 'product',
     Bank = 'bank',
-    Level = 'level',
-	OTP = 'otp',
-	InviteFriend = 'invite_friend'
+	Common = 'common'
 }
 
 const Settings = () => {
     const { t } = useTranslation(['common', 'settings'])
-    const [panel, setPanel] = useState<SettingPanel>(SettingPanel.Product)
+    const [panel, setPanel] = useState<SettingPanel>(SettingPanel.Common)
 	const [isOpenProductModal, setIsOpenProductModal] = useState<ProductModalProperties>()
 	const [isOpenBankModal, setIsOpenBankModal] = useState<BankModalProperties>()
 	const [isOpenLevelModal, setIsOpenLevelModal] = useState<LevelModalProperties>()
@@ -53,24 +50,20 @@ const Settings = () => {
 			body:  <Bank isOpenBankModal={isOpenBankModal} setIsOpenBankModal={setIsOpenBankModal} />
 		},
 		{
-			id: SettingPanel.Level,
-			subHeader: <LevelSubHeader isOpenLevelModal={isOpenLevelModal} setIsOpenLevelModal={setIsOpenLevelModal} />,
-			body:  <Level isOpenLevelModal={isOpenLevelModal} setIsOpenLevelModal={setIsOpenLevelModal} />
-		},
-		{
-			id: SettingPanel.OTP,
+			id: SettingPanel.Common,
 			subHeader: <></>,
-			body: <OTPSettings />
-		},
-		{
-			id: SettingPanel.InviteFriend,
-			subHeader: <></>,
-			body: <InviteFriendSetting />
+			body: <div>
+				<div className='row px-4'>
+					<OTPSettings />
+					<InviteFriendSetting />
+				</div>
+				<Level isOpenLevelModal={isOpenLevelModal} setIsOpenLevelModal={setIsOpenLevelModal} />
+			</div>
 		}
 	]
 
 	useEffect(() => {
-		if (panel === SettingPanel.OTP || panel === SettingPanel.InviteFriend) {
+		if (panel === SettingPanel.Common) {
 			getSystemSetting((systemSettings: SystemSettingResponse[]) => {
 				const newSystemSetting: SystemSettingInterface = {
 					flagOTP: {
@@ -131,29 +124,11 @@ const Settings = () => {
 							<Button
 								color='primary'
 								isLight
-								isActive={panel === SettingPanel.Level}
-								onClick={() => setPanel(SettingPanel.Level)}
+								isActive={panel === SettingPanel.Common}
+								onClick={() => setPanel(SettingPanel.Common)}
 								className='text-nowrap'
 							>
-								{t('level')}
-							</Button>
-							<Button
-								color='primary'
-								isLight
-								isActive={panel === SettingPanel.OTP}
-								onClick={() => setPanel(SettingPanel.OTP)}
-								className='text-nowrap'
-							>
-								{t('otp.setting')}
-							</Button>
-							<Button
-								color='primary'
-								isLight
-								isActive={panel === SettingPanel.InviteFriend}
-								onClick={() => setPanel(SettingPanel.InviteFriend)}
-								className='text-nowrap'
-							>
-								{t('invite.friend')}
+								{t('common')}
 							</Button>
 						</SubHeaderLeft>
 						<SubHeaderRight className='col-md' style={{ minWidth: '400px' }}>

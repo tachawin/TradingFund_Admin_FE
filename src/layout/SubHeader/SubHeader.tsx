@@ -26,7 +26,7 @@ export const SubheaderSeparator = ({ className }: SubheaderSeparatorInterface) =
 	return <div className={classNames('subheader-separator', className)} />;
 };
 
-const SubHeader = ({ children, className }: SubHeaderCommonInterface) => {
+const SubHeader = ({ children, className, style }: SubHeaderCommonInterface) => {
 	const [ref, { height }] = useMeasure<any>();
 
 	const root = document.documentElement;
@@ -40,7 +40,7 @@ const SubHeader = ({ children, className }: SubHeaderCommonInterface) => {
 	});
 
 	return (
-		<div ref={ref} className={classNames('subheader', 'row', className)}>
+		<div ref={ref} className={classNames('subheader', 'row', className)} style={style}>
 			{children}
 		</div>
 	);

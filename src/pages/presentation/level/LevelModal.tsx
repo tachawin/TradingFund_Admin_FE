@@ -48,9 +48,7 @@ const LevelModal = ({ id, isOpen, setIsOpen, properties }: LevelModalInterface) 
         validationSchema: LevelFormSchema,
 		onSubmit: (values) => {
             setIsLoading(true)
-            console.log('here')
             if (type === LevelModalType.Add) {
-                console.log('add')
                 createLevel(values, (level: LevelInterface) => {
                     dispatch(addLevel(level))
                     setIsOpen(false)
@@ -98,7 +96,7 @@ const LevelModal = ({ id, isOpen, setIsOpen, properties }: LevelModalInterface) 
 
     return (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>
-            <ModalHeader setIsOpen={setIsOpen} className='p-4'>
+            <ModalHeader setIsOpen={setIsOpen} className='p-4 pb-0'>
                 <ModalTitle id={id}>{type === LevelModalType.Add ? t('level:add.level') : t('level:edit.level')}</ModalTitle>
             </ModalHeader>
             <ModalBody className='px-4'>
