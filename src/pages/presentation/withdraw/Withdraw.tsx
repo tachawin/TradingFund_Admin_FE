@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import debounce from 'lodash/debounce'
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper'
@@ -10,24 +10,34 @@ import Page from '../../../layout/Page/Page'
 import { demoPages } from '../../../menu'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
-import data from '../../../common/data/dummySalesData'
 import Button, { ButtonGroup } from '../../../components/bootstrap/Button'
-import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import Dropdown, {
 	DropdownMenu,
 	DropdownToggle,
 } from '../../../components/bootstrap/Dropdown'
-import Checks  from '../../../components/bootstrap/forms/Checks'
 import { useTranslation } from 'react-i18next'
 import WithdrawCancelModal from './WithdrawCancelModal'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
-import banks from 'common/data/dummyBankData'
 import WithdrawTable from './WithdrawTable'
 import { CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 import WithdrawModal, { WithdrawModalType } from './WithdrawModal'
 import BankBalanceCard from './BankBalanceCard'
+import { getWithdrawList } from 'common/apis/withdraw'
+import showNotification from 'components/extras/showNotification'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectWithdrawList, selectWithdrawQuery } from 'redux/withdraw/selector'
+import { TransactionInterface } from 'common/apis/transaction'
+import { storeWithdrawList, storeWithdrawQuery } from 'redux/withdraw/action'
+import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
+import CompanyBanksDropdown from 'pages/common/CompanyBanksDropdown'
+import { CompanyBankInterface, getCompanyBankList } from 'common/apis/companyBank'
+import Spinner from 'components/bootstrap/Spinner'
+import { selectCompanyBankList } from 'redux/companyBank/selector'
+import { storeCompanyBank } from 'redux/companyBank/action'
+import { InfoTwoTone, Search } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 
 interface WithdrawFilterInterface {
 	searchInput: string
@@ -40,6 +50,7 @@ interface WithdrawFilterInterface {
 		max: string
 	},
 	bank: string[]
+	companyBank: CompanyBankInterface[]
 	timestamp: {
 		startDate: Date
 		endDate: Date
@@ -52,19 +63,63 @@ interface WithdrawModalProperties {
 	selectedRow: any
 }
 
-enum WITHDRAW_TABLE_STATE {
-	REQUEST = 'request',
-	HISTORY = 'history'
+export enum WithdrawTableState {
+	Request = 'request_withdraw',
+	History = 'withdraw'
 }
 
 const Withdraw = () => {
     const { t } = useTranslation(['common', 'withdraw'])
+	const dispatch = useDispatch()
 
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
     const [isOpenCancelWithdrawModal, setIsOpenCancelWithdrawModal] = useState<WithdrawModalProperties>()
 	const [isOpenWithdrawModal, setIsOpenWithdrawModal] = useState<WithdrawModalProperties>()
-    const [withdrawTableState, setWithdrawTableState] = useState(WITHDRAW_TABLE_STATE.REQUEST)
+    const [withdrawTableState, setWithdrawTableState] = useState(WithdrawTableState.Request)
+	const [isLoading, setIsLoading] = useState(false)
+
+	const banks = useSelector(selectCompanyBankList)
+	const withdrawList = useSelector(selectWithdrawList)
+	const withdrawQueryList = useSelector(selectWithdrawQuery)
+
+	useEffect(() => {
+		let queryString = Object.values(withdrawQueryList).filter(Boolean).join('&')
+		let query = queryString ? `?${queryString}` : ''
+		setIsLoading(true)
+		getWithdrawList(query, withdrawTableState, (withdrawList: TransactionInterface[]) => {
+			dispatch(storeWithdrawList(withdrawList))
+			setIsLoading(false)
+		}, (error: any) => {
+			const { response } = error
+			console.log(response.data)
+			setIsLoading(false)
+			showNotification(
+				<span className='d-flex align-items-center'>
+					<InfoTwoTone className='me-1' />
+					<span>{t('get.withdraw.failed')}</span>
+				</span>,
+				t('please.refresh.again'),
+			)
+		})
+
+		banks.length === 0 && getCompanyBankList('?type=withdraw', (companyBankList: CompanyBankInterface[]) => {
+			dispatch(storeCompanyBank(companyBankList))
+			setIsLoading && setIsLoading(false)
+		}, (error: any) => {
+			const { response } = error
+			console.log(response.data)
+			setIsLoading && setIsLoading(false)
+			showNotification(
+				<span className='d-flex align-items-center'>
+					<InfoTwoTone className='me-1' />
+					<span>{t('get.company.bank.failed')}</span>
+				</span>,
+				t('please.refresh.again'),
+			)
+		})
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [withdrawQueryList, withdrawTableState])
 
 	const formik = useFormik<WithdrawFilterInterface>({
 		initialValues: {
@@ -84,13 +139,31 @@ const Withdraw = () => {
 					key: 'selection',
 				},
 			],
-            bank: []
+            bank: [],
+			companyBank: []
 		},
 		onSubmit: (values) => {
-			console.log('submit filter')
-			console.log(values)
+			const defaultWithdrawQuery = {
+				...withdrawQueryList,
+				startCreated: `startCreated=${moment(values.timestamp[0].startDate).format('YYYY-MM-DD')}`,
+				endCreated: `endCreated=${moment(values.timestamp[0].endDate).format('YYYY-MM-DD')}`,
+				min: values.amount.min ? `min=${values.amount.min}` : '',
+				max: values.amount.max ? `max=${values.amount.max}` : '',
+			}
 
-			// Send Filter
+			if (withdrawTableState === WithdrawTableState.Request) {
+				dispatch(storeWithdrawQuery({
+					...defaultWithdrawQuery,
+					minLastDeposit: values.lastDepositAmount.min ? `minLastDeposit=${values.lastDepositAmount.min}` : '',
+					maxLastDeposit: values.lastDepositAmount.max ? `maxLastDeposit=${values.lastDepositAmount.max}` : '',
+					bank: values.bank.length > 0 ? `bank=${values.bank.join(',')}` : '',
+				}))
+			} else {
+				dispatch(storeWithdrawQuery({
+					...defaultWithdrawQuery,
+					companyBankId: values.companyBank.length > 0 ? `companyBankId=${values.companyBank.map((bank) => bank.bankId).join(',')}` : '',
+				}))
+			}
 		},
 	})
 
@@ -117,32 +190,15 @@ const Withdraw = () => {
 	  // eslint-disable-next-line react-hooks/exhaustive-deps
 	const debounceSearchChange = useCallback(
 		debounce((value: string) => {
-			// Send search filter
-			console.log(value)
+			dispatch(storeWithdrawQuery({ ...withdrawQueryList, keyword: `keyword=${value}` }))
 		}, 1000), []
 	  )
 
 	const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
 		let value = event.target.value
 
-		if (value) {
-			setSearchInput(value)
-			debounceSearchChange(value)
-		}
-	}
-
-    const handleOnChangeBankFilter = (event: ChangeEvent<HTMLInputElement>) => {
-		let bank = event.target.name
-		let indexInBankFilter = parseInt(event.target.value)
-		let isSelected = event.target.checked
-		let newBankFilterValue = values.bank
-
-		if (isSelected) {
-			newBankFilterValue.push(bank)
-		} else {
-			newBankFilterValue.splice(indexInBankFilter, 1)
-		}
-		setFieldValue('bank', newBankFilterValue )
+		setSearchInput(value)
+		debounceSearchChange(value)
 	}
 
 	return (
@@ -152,7 +208,7 @@ const Withdraw = () => {
 					<label
 						className='border-0 bg-transparent cursor-pointer me-0'
 						htmlFor='searchInput'>
-						<Icon icon='Search' size='2x' color='primary' />
+						<Search fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
 					</label>
 					<Input
 						id='searchInput'
@@ -211,7 +267,7 @@ const Withdraw = () => {
 							},
                             {
 								label: t('filter.last.deposit.amount'),
-								disabled: withdrawTableState === WITHDRAW_TABLE_STATE.HISTORY,
+								disabled: withdrawTableState === WithdrawTableState.History,
 								children: <div>
 									<InputGroup>
 										<Input
@@ -236,21 +292,21 @@ const Withdraw = () => {
 							},
 							{
 								label: t('filter.payer.bank'),
-								children: <div>
-									{banks.map((bank: any) => {
-										let indexInBankFilter = values.bank.indexOf(bank.label)
-										return <Checks
-												key={bank.id}
-												label={bank.label}
-												name={bank.label}
-												value={indexInBankFilter}
-												onChange={handleOnChangeBankFilter}
-												checked={indexInBankFilter > -1}
-												ariaLabel={bank.label}
-											/>
-										}
-									)}
-								</div>
+								disabled: withdrawTableState === WithdrawTableState.Request,
+								children: <CompanyBanksDropdown
+									multipleSelect
+									selectedBank={values.companyBank}
+									setSelectedBank={(bank: CompanyBankInterface | CompanyBankInterface[]) => setFieldValue('companyBank', bank)}
+								/>
+							},
+							{
+								label: t('filter.recipient.bank'),
+								disabled: withdrawTableState === WithdrawTableState.History,
+								children: <CommonBanksDropdown
+									multipleSelect
+									selectedBankName={values.bank}
+									setSelectedBankName={(bank: string | string[]) => setFieldValue('bank', bank)}
+								/>
 							},
 						]} 
 					/>
@@ -259,51 +315,50 @@ const Withdraw = () => {
 			<Page>
 				<div className='col h-100 px-3'>
 					<BankBalanceCard />
-					<div className='h-100'>
-						<WithdrawTable
-                            cardHeader={
-                                <CardHeader>
-                                    <CardLabel>
-                                        <CardTitle>{
-											withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST ?
-											t('withdraw:withdraw.request') : t('withdraw:withdraw.history')
-										}</CardTitle>
-                                    </CardLabel>
-                                    <ButtonGroup>
-                                        <Button
-                                            color={withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST ? 'success' : 'dark'}
-                                            isLight={withdrawTableState !== WITHDRAW_TABLE_STATE.REQUEST}
-                                            onClick={() => setWithdrawTableState(WITHDRAW_TABLE_STATE.REQUEST)}
-                                        >
-                                            {t('withdraw:request')}
-                                        </Button>
-                                        <Button
-                                            color={withdrawTableState === WITHDRAW_TABLE_STATE.HISTORY ? 'success' : 'dark'}
-                                            isLight={withdrawTableState !== WITHDRAW_TABLE_STATE.HISTORY}
-                                            onClick={() => setWithdrawTableState(WITHDRAW_TABLE_STATE.HISTORY)}
-                                        >
-                                            {t('withdraw:history')}
-                                        </Button>
-                                    </ButtonGroup>
-                                </CardHeader>
-                            }
-                            data={withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST ? 
-								data.filter((i: any) => i.status === 'request') : 
-								data.filter((i: any) => i.status !== 'request')
-							}
-							setIsOpenWithdrawModal={withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST ? setIsOpenWithdrawModal : undefined} 
-                            setIsOpenCancelWithdrawModal={withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST ? setIsOpenCancelWithdrawModal : undefined}
-                            columns={{ 
-								id: false,
-								status: withdrawTableState === WITHDRAW_TABLE_STATE.HISTORY, 
-								mobileNumber: true, 
-								notes: withdrawTableState === WITHDRAW_TABLE_STATE.HISTORY, 
-								lastDepositAmount: withdrawTableState === WITHDRAW_TABLE_STATE.REQUEST, 
-								from: withdrawTableState === WITHDRAW_TABLE_STATE.HISTORY,
-								operator: withdrawTableState === WITHDRAW_TABLE_STATE.HISTORY,
-								name: true 
-							}} 
-                        />
+					<div className={`h-100 col-12 ${isLoading ? 'd-flex align-items-center justify-content-center' : ''}`}>
+						{isLoading ? <Spinner color='info' isGrow size={60} /> 
+							: <WithdrawTable
+								cardHeader={
+									<CardHeader>
+										<CardLabel>
+											<CardTitle>{
+												withdrawTableState === WithdrawTableState.Request ?
+												t('withdraw:withdraw.request') : t('withdraw:withdraw.history')
+											}</CardTitle>
+										</CardLabel>
+										<ButtonGroup>
+											<Button
+												color={withdrawTableState === WithdrawTableState.Request ? 'success' : 'dark'}
+												isLight={withdrawTableState !== WithdrawTableState.Request}
+												onClick={() => setWithdrawTableState(WithdrawTableState.Request)}
+											>
+												{t('withdraw:request')}
+											</Button>
+											<Button
+												color={withdrawTableState === WithdrawTableState.History ? 'success' : 'dark'}
+												isLight={withdrawTableState !== WithdrawTableState.History}
+												onClick={() => setWithdrawTableState(WithdrawTableState.History)}
+											>
+												{t('withdraw:history')}
+											</Button>
+										</ButtonGroup>
+									</CardHeader>
+								}
+								data={withdrawList}
+								setIsOpenWithdrawModal={withdrawTableState === WithdrawTableState.Request ? setIsOpenWithdrawModal : undefined} 
+								setIsOpenCancelWithdrawModal={withdrawTableState === WithdrawTableState.Request ? setIsOpenCancelWithdrawModal : undefined}
+								columns={{ 
+									id: false,
+									status: withdrawTableState === WithdrawTableState.History, 
+									mobileNumber: true, 
+									notes: withdrawTableState === WithdrawTableState.History, 
+									lastDepositAmount: withdrawTableState === WithdrawTableState.Request, 
+									from: withdrawTableState === WithdrawTableState.History,
+									operator: withdrawTableState === WithdrawTableState.History,
+									name: true 
+								}} 
+							/>
+						}
 					</div>
 				</div>
 			</Page>

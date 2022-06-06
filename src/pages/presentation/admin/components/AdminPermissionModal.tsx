@@ -6,12 +6,14 @@ import Modal, {
 	ModalTitle,
 } from 'components/bootstrap/Modal'
 import showNotification from 'components/extras/showNotification'
-import Icon from 'components/icon/Icon'
 import Button from 'components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import Checks from 'components/bootstrap/forms/Checks'
 import { updatePermission } from 'common/apis/admin'
 import Spinner from 'components/bootstrap/Spinner'
+import { useDispatch } from 'react-redux'
+import { updatePermissionById } from 'redux/admin/action'
+import { InfoTwoTone } from '@mui/icons-material'
 
 interface Permission {
     [key: string]: string
@@ -27,6 +29,7 @@ interface AdminPermissionModalInterface {
 
 const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: AdminPermissionModalInterface) => {
     const { t } = useTranslation(['common', 'admin'])
+    const dispatch = useDispatch()
     const [permissionsValue, setPermissionValue] = useState(permissions)
     const [isLoading, setIsLoading] = useState(false)
 
@@ -41,11 +44,12 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
         withdraw: t("withdraw"),
         bank: t("bank"),
         reward: t("reward"),
-        credit: t("credit"),
+        credit: t("credit"),  
         chat: t("chat"),
         product: t("product"),
         adminManage: t('admin'),
         level: t('level'),
+        systemSetting: t('system.setting'),
     }
 
     const onSelectCheckbox = (event: ChangeEvent<HTMLInputElement>) => {
@@ -59,11 +63,10 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
 
     const onSubmit = () => {
         id && updatePermission(id, permissionsValue).then((response) => {
-            console.log(response.data)
-
+            dispatch(updatePermissionById(id, permissionsValue))
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('admin:save.successfully')}</span>
                 </span>,
                 t('admin:save.admin.successfully', { adminName: name }),
@@ -74,7 +77,7 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
             console.log(message)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('admin:save.failed')}</span>
                 </span>,
                 t('admin:save.admin.failed', { adminName: name }),

@@ -1,11 +1,7 @@
-import { Children, forwardRef, ReactNode, useState, memo } from 'react';
+import { Children, forwardRef, ReactNode, useState } from 'react';
 import classNames from 'classnames';
-import { atomOneLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
-import SyntaxHighlighter from 'react-syntax-highlighter';
 import TagWrapper from '../TagWrapper';
-import Icon from '../icon/Icon';
 import Button from './Button';
-import PrismCode from '../extras/PrismCode';
 
 interface CardLabelInterface {
 	tag?: any
@@ -14,25 +10,24 @@ interface CardLabelInterface {
 	icon?: any
 	iconColor?: string
 	pre?: any
+	style?: any
 }
 
 export const CardLabel = forwardRef<HTMLDivElement, CardLabelInterface>(
-	({ tag = 'div', className = null, children = null, icon = null, iconColor = 'primary', pre = null, ...props }, ref) => {
+	({ tag = 'div', className = null, children = null, icon: CardIcon = null, iconColor = 'primary', pre = null, style, ...props }, ref) => {
 		return (
 			<TagWrapper
 				ref={ref}
 				tag={tag}
 				className={classNames('card-label', className)}
+				style={style}
 				// eslint-disable-next-line react/jsx-props-no-spreading
 				{...props}>
 				{pre}
-				{icon && (
-					<Icon
-						icon={icon}
-						className={classNames('card-icon', { [`text-${iconColor}`]: iconColor })}
-					/>
+				{CardIcon && (
+					<CardIcon className={classNames('card-icon', { [`text-${iconColor}`]: iconColor })} />
 				)}
-				<div className='card-title-wrapper'>{children}</div>
+				<div className='card-title-wrapper w-100'>{children}</div>
 			</TagWrapper>
 		);
 	},
@@ -151,47 +146,6 @@ export const CardBody = forwardRef<HTMLDivElement, CardBodyInterface>(({ tag = '
 		</TagWrapper>
 	);
 });
-
-interface CardCodeViewInterface {
-	language?: string
-	customStyle?: object
-	isPrismJs?: boolean
-	className?: string | null
-	children: any
-}
-
-export const CardCodeView = memo(
-	
-	({ children, language = 'jsx', customStyle, isPrismJs = true, className = null }: CardCodeViewInterface) => {
-		if (isPrismJs) {
-			return (
-				<PrismCode
-					code={children}
-					language={language}
-					className={classNames('my-0', className)}
-					style={customStyle}
-				/>
-			);
-		}
-		return (
-			<SyntaxHighlighter
-				language={language}
-				style={atomOneLight}
-				customStyle={{
-					borderRadius: 13,
-					backgroundColor: 'var(--bs-light)',
-					fontSize: '1rem',
-					padding: '1.5rem 2rem',
-					...customStyle,
-				}}
-				wrapLongLines
-				PreTag='code'
-				className={classNames('shadow-sm', className)}>
-				{children}
-			</SyntaxHighlighter>
-		);
-	},
-);
 
 interface CardFooterLeftInterface {
 	tag?: any

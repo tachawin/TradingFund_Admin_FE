@@ -7,16 +7,18 @@ import Modal, {
 	ModalTitle,
 } from 'components/bootstrap/Modal'
 import showNotification from 'components/extras/showNotification'
-import Icon from 'components/icon/Icon'
 import FormGroup from 'components/bootstrap/forms/FormGroup'
 import Input from 'components/bootstrap/forms/Input'
 import Button, { ButtonGroup } from 'components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import Checks from 'components/bootstrap/forms/Checks'
-import { AdminStatus, AdminInterface, AdminRole, createAdmin, updateAdmin } from 'common/apis/admin'
+import { AdminStatus, AdminInterface, AdminRole, createAdmin, updateAdmin, AdminUpdateInterface } from 'common/apis/admin'
 import * as Yup from 'yup'
 import Spinner from 'components/bootstrap/Spinner'
 import regEx from 'common/utils/commonRegEx'
+import { useDispatch } from 'react-redux'
+import { addAdmin, updateAdminById } from 'redux/admin/action'
+import { InfoTwoTone } from '@mui/icons-material'
 
 export enum AdminModalType {
     Add = 'add',
@@ -42,6 +44,7 @@ interface AdminEditModalInterface {
 
 const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInterface) => {
     const { t } = useTranslation(['common', 'admin'])
+    const dispatch = useDispatch()
     const { selectedRow: data, type } = properties
     const [isLoading, setIsLoading] = useState(false)
     const [adminModalState, setAdminModalState] = useState(AdminModalState.Profile)
@@ -78,27 +81,24 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
 		},
         validationSchema: type === AdminModalType.Add ? adminAddSchema : (adminModalState === AdminModalState.Profile ? adminEditProfileSchema : adminEditPasswordSchema),
 		onSubmit: (values) => {
-            // ADD ADMIN
             setIsLoading(true)
             let status = values.status ? AdminStatus.Active : AdminStatus.Inactive
             if (type === AdminModalType.Add) {
-                addAdmin({ ...values, status })
+                handleAddAdmin({ ...values, status })
             } else {
                 editAdmin({ ...values, status })
             }
-            // EDIT
 		},
 	})
 
     const { values, setFieldValue, initialValues, setValues, resetForm, handleChange, handleSubmit, isValid, touched, errors } = formik
 
-    const addAdmin = (adminData: AdminInterface) => {
-        createAdmin(adminData).then((response) => {
-            console.log(response.data)
-
+    const handleAddAdmin = (adminData: AdminInterface) => {
+        createAdmin(adminData).then(() => {
+            dispatch(addAdmin(adminData))
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('admin:save.successfully')}</span>
                 </span>,
                 t('admin:save.admin.successfully', { adminName: values.name }),
@@ -109,7 +109,7 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
             console.log(message)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('admin:save.failed')}</span>
                 </span>,
                 t('admin:save.admin.failed', { adminName: values.name }),
@@ -121,12 +121,22 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
     }
 
     const editAdmin = (adminData: AdminInterface) => {
-        data?.adminId && updateAdmin(data.adminId, adminData).then((response) => {
-            console.log(response.data)
-
+        let dataToUpdate: AdminUpdateInterface = {}
+        if (adminModalState === AdminModalState.Password) {
+            dataToUpdate = { password: adminData.password }
+        } else {
+            dataToUpdate = {
+                name: adminData.name,
+                mobileNumber: adminData.mobileNumber,
+                role: adminData.role,
+                status: adminData.status
+            }
+        }
+        data?.adminId && updateAdmin(data.adminId, dataToUpdate).then((response) => {
+            data.adminId && dispatch(updateAdminById(data.adminId, dataToUpdate))
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('admin:save.successfully')}</span>
                 </span>,
                 t('admin:save.admin.successfully', { adminName: values.name }),
@@ -137,7 +147,7 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
             console.log(message)
             showNotification(
                 <span className='d-flex align-items-center'>
-                    <Icon icon='Info' size='lg' className='me-1' />
+                    <InfoTwoTone className='me-1' />
                     <span>{t('admin:save.failed')}</span>
                 </span>,
                 t('admin:save.admin.failed', { adminName: values.name }),
@@ -205,17 +215,19 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
                         </Button>
                     </ButtonGroup>}
                     { adminModalState === AdminModalState.Profile ? <>
-                        <FormGroup id='username' label={t('form.username')}>
-                            <Input
-                                placeholder={t('admin:form.username.placeholder')}
-                                onChange={handleChange} 
-                                value={values.username}
-                                isValid={isValid}
-                                isTouched={touched.username && errors.username}
-                                invalidFeedback={errors.username}
-                            />
-                        </FormGroup>
-                        { type === AdminModalType.Add && passwordFields()}
+                        { type === AdminModalType.Add && <>
+                            <FormGroup id='username' label={t('form.username')}>
+                                <Input
+                                    placeholder={t('admin:form.username.placeholder')}
+                                    onChange={handleChange} 
+                                    value={values.username}
+                                    isValid={isValid}
+                                    isTouched={touched.username && errors.username}
+                                    invalidFeedback={errors.username}
+                                />
+                            </FormGroup>
+                            {passwordFields()}
+                        </>}
                         <div className='row mt-4'>
                             <FormGroup id='name' label={t('form.name')} className='col'>
                                 <Input 

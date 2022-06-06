@@ -13,7 +13,6 @@ import { CardHeader, CardLabel, CardTitle } from '../../../components/bootstrap/
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
 import Button from '../../../components/bootstrap/Button'
-import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import Dropdown, {
 	DropdownMenu,
@@ -28,21 +27,15 @@ import CommonTableFilter from 'components/common/CommonTableFilter'
 import AdminTable from './components/AdminTable'
 import { AdminInterface, AdminRole, AdminStatus, getAdminList, ROLES, STATUS } from 'common/apis/admin'
 import Spinner from 'components/bootstrap/Spinner'
-import CommonTableNotFound from 'pages/common/CommonTableNotFound'
 import showNotification from 'components/extras/showNotification'
 import 'moment/locale/th'
-
-const mockPermission = { 
-    report: '0011',
-    customer: '1001',
-    deposit: '0000',
-    withdraw: '1111',
-    bank: '1111',
-    reward: '1011',
-    credit: '0101',
-    chat: '0001',
-    product: '1100'
-}
+import { useDispatch, useSelector } from 'react-redux'
+import { selectAdmins } from 'redux/admin/selector'
+import { storeAdmins } from 'redux/admin/action'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { InfoTwoTone, PersonAddAlt1TwoTone, Search } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 
 interface AdminModalProperties {
 	type?: AdminModalType
@@ -62,12 +55,16 @@ interface AdminFilterInterface {
 		endDate: Date
 		key: string
 	}[]
+	isCreatedAtDateChanged: boolean
+	isUpdatedAtDateChanged: boolean
 }
 
 const Admin = () => {
     const { t } = useTranslation(['common', 'admin'])
+	const dispatch = useDispatch()
+	const admins = useSelector(selectAdmins)
+	const permission = useSelector(selectPermission)
 
-	const [data, setData] = useState<AdminInterface[]>()
 	const [isLoading, setIsLoading] = useState(true)
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [isOpenUpdatedAtDatePicker, setIsOpenUpdatedAtDatePicker] = useState(false)
@@ -101,17 +98,19 @@ const Admin = () => {
 					endDate: moment().endOf('week').toDate(),
 					key: 'selection',
 				},
-			]
+			],
+			isCreatedAtDateChanged: false,
+			isUpdatedAtDateChanged: false
 		},
 		onSubmit: (values) => {
 			setQueryList({ 
 				...queryList,
 				status: values.status.length > 0 ? `status=${values.status.join(',')}` : '',
 				role: values.roles.length > 0 ? `role=${values.roles.join(',')}` : '',
-				startCreated: `startCreated=${moment(values.createdAtDate[0].startDate).format('YYYY-MM-DD')}`,
-				endCreated: `endCreated=${moment(values.createdAtDate[0].endDate).format('YYYY-MM-DD')}`,
-				startUpdated: `startUpdated=${moment(values.updatedAtDate[0].startDate).format('YYYY-MM-DD')}`,
-				endUpdated: `endUpdated=${moment(values.updatedAtDate[0].endDate).format('YYYY-MM-DD')}`
+				startCreated: values.isCreatedAtDateChanged ? `startCreated=${moment(values.createdAtDate[0].startDate).format('YYYY-MM-DD')}` : '',
+				endCreated: values.isCreatedAtDateChanged ?`endCreated=${moment(values.createdAtDate[0].endDate).format('YYYY-MM-DD')}` : '',
+				startUpdated: values.isUpdatedAtDateChanged ? `startUpdated=${moment(values.updatedAtDate[0].startDate).format('YYYY-MM-DD')}` : '',
+				endUpdated: values.isUpdatedAtDateChanged ? `endUpdated=${moment(values.updatedAtDate[0].endDate).format('YYYY-MM-DD')}` : ''
 			})
 		},
 	})
@@ -120,7 +119,8 @@ const Admin = () => {
 		values,
 		setFieldValue,
 		resetForm,
-		handleSubmit
+		handleSubmit,
+		handleChange
 	} = formik
 
 	const datePicker = (selectedDate: any, field: string) => (
@@ -138,7 +138,6 @@ const Admin = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debounceSearchChange = useCallback(
 		debounce((value: string) => {
-			// Send search filter
 			setQueryList({ ...queryList, keyword: `keyword=${value}` })
 		}, 1000), []
 	)
@@ -165,10 +164,10 @@ const Admin = () => {
 	}
 
 	useEffect(() => {
-		let queryString = `?${Object.values(queryList).join('&')}`
-		getAdminList(queryString, (adminList: AdminInterface[]) => {
-			console.log(adminList)
-			setData(adminList)
+		let queryString = Object.values(queryList).filter(Boolean).join('&')
+		let query = queryString ? `?${queryString}` : ''
+		getAdminList(query, (adminList: AdminInterface[]) => {
+			dispatch(storeAdmins(adminList))
 			setIsLoading(false)
 		}, (error: any) => {
 			const { response } = error
@@ -176,7 +175,7 @@ const Admin = () => {
 			setIsLoading(false)
 			showNotification(
 				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
+					<InfoTwoTone className='me-1' />
 					<span>{t('get.admin.failed')}</span>
 				</span>,
 				t('please.refresh.again'),
@@ -192,7 +191,7 @@ const Admin = () => {
 					<label
 						className='border-0 bg-transparent cursor-pointer me-0'
 						htmlFor='searchInput'>
-						<Icon icon='Search' size='2x' color='primary' />
+						<Search fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
 					</label>
 					<Input
 						id='searchInput'
@@ -230,33 +229,53 @@ const Admin = () => {
 							},
 							{
 								label: t('filter.created.at'),
-								children: <Dropdown >
-									<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										<span data-tour='date-range'>
-											{`${moment(values.createdAtDate[0].startDate).format('MMM Do YY')} - ${moment(
-												values.createdAtDate[0].endDate,
-											).format('MMM Do YY')}`}
-										</span>
-									</DropdownToggle>
-									<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										{datePicker(values.createdAtDate, 'createdAtDate')}
-									</DropdownMenu>
-								</Dropdown>
+								children: <div>
+									<Checks
+										id='isCreatedAtDateChanged'
+										type='switch'
+										label={t('filter.created.at')}
+										onChange={handleChange}
+										checked={values.isCreatedAtDateChanged}
+										ariaLabel='Filter Created At Date'
+									/>
+									{values.isCreatedAtDateChanged && <Dropdown className='mt-2'>
+										<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
+											<span data-tour='date-range'>
+												{`${moment(values.createdAtDate[0].startDate).format('MMM Do YY')} - ${moment(
+													values.createdAtDate[0].endDate,
+												).format('MMM Do YY')}`}
+											</span>
+										</DropdownToggle>
+										<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
+											{datePicker(values.createdAtDate, 'createdAtDate')}
+										</DropdownMenu>
+									</Dropdown>}
+								</div>
 							},
 							{
 								label: t('filter.updated.at'),
-								children: <Dropdown>
-									<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenUpdatedAtDatePicker)} setIsOpen={setIsOpenUpdatedAtDatePicker}>
-										<span data-tour='date-range'>
-											{`${moment(values.updatedAtDate[0].startDate).format('MMM Do YY')} - ${moment(
-												values.updatedAtDate[0].endDate,
-											).format('MMM Do YY')}`}
-										</span>
-									</DropdownToggle>
-									<DropdownMenu isAlignmentEnd isOpen={isOpenUpdatedAtDatePicker} setIsOpen={setIsOpenUpdatedAtDatePicker}>
-										{datePicker(values.updatedAtDate, 'updatedAtDate')}
-									</DropdownMenu>
-								</Dropdown>
+								children: <div>
+									<Checks
+										id='isUpdatedAtDateChanged'
+										type='switch'
+										label={t('filter.updated.at')}
+										onChange={handleChange}
+										checked={values.isUpdatedAtDateChanged}
+										ariaLabel='Filter Updated At Date'
+									/>
+									{values.isUpdatedAtDateChanged && <Dropdown className='mt-2'>
+										<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenUpdatedAtDatePicker)} setIsOpen={setIsOpenUpdatedAtDatePicker}>
+											<span data-tour='date-range'>
+												{`${moment(values.updatedAtDate[0].startDate).format('MMM Do YY')} - ${moment(
+													values.updatedAtDate[0].endDate,
+												).format('MMM Do YY')}`}
+											</span>
+										</DropdownToggle>
+										<DropdownMenu isAlignmentEnd isOpen={isOpenUpdatedAtDatePicker} setIsOpen={setIsOpenUpdatedAtDatePicker}>
+											{datePicker(values.updatedAtDate, 'updatedAtDate')}
+										</DropdownMenu>
+									</Dropdown>}
+								</div>
 							},
 							{
 								label: t('filter.role'),
@@ -278,22 +297,24 @@ const Admin = () => {
 							},
 						]} 
 					/>
-					<SubheaderSeparator />
-					<Button
-						icon='PersonAdd'
-						color='primary'
-						isLight
-						onClick={() => setIsOpenAdminModal({ type: AdminModalType.Add })}
-					>
-						{t('admin:new.admin')}
-					</Button>
+					{permission.adminManage[PermissionType.Create] === PermissionValue.Available && <>
+						<SubheaderSeparator />
+						<Button
+							icon={PersonAddAlt1TwoTone}
+							color='primary'
+							isLight
+							onClick={() => setIsOpenAdminModal({ type: AdminModalType.Add })}
+						>
+							{t('admin:new.admin')}
+						</Button>
+					</>}
 				</SubHeaderRight>
 			</SubHeader>
 			<Page>
 				<div className='row h-100'>
-					<div className={`col-12 ${(isLoading || !data) ? 'd-flex align-items-center justify-content-center' : 'px-4'}`}>
+					<div className={`col-12 ${(isLoading || !admins) ? 'd-flex align-items-center justify-content-center' : 'px-4'}`}>
 						{isLoading ? <Spinner color='info' isGrow size={60} /> 
-							: data ? <AdminTable 
+							: <AdminTable 
 								cardHeader={
 									<CardHeader>
 										<CardLabel>
@@ -301,11 +322,11 @@ const Admin = () => {
 										</CardLabel>
 									</CardHeader>
 								}
-								data={data} 
+								data={admins} 
 								setIsOpenAdminModal={setIsOpenAdminModal}
 								setIsOpenDeleteModal={setIsOpenDeleteModal}
 								setIsOpenPermissionModal={setIsOpenPermissionModal}
-							/> : <CommonTableNotFound />
+							/>
 						}
 					</div>
 				</div>

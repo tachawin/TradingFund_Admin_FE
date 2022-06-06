@@ -2,9 +2,14 @@ import React, { ReactNode, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
+import { CompanyBankInterface, CompanyBankStatus } from 'common/apis/companyBank'
+import moment from 'moment'
+import { useSelector } from 'react-redux'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { FilterList, LabelTwoTone } from '@mui/icons-material'
 
 interface BankTableInterface {
     data: any
@@ -22,6 +27,7 @@ const BankTable = ({
     cardHeader 
 }: BankTableInterface) => {
     const { t } = useTranslation('common')
+    const permission = useSelector(selectPermission)
 
     const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
@@ -43,58 +49,38 @@ const BankTable = ({
                                 onClick={() => requestSort('bankAccount')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.bank.account')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('bankAccount')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('bankAccount')} />
                             </th>
                             <th
                                 onClick={() => requestSort('bankAccountName')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.bank.account.name')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('bankAccountName')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('bankAccountName')} />
                             </th>
                             <th
                                 onClick={() => requestSort('paymentType')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.payment.type')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('paymentType')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('paymentType')} />
                             </th>
                             <th
                                 onClick={() => requestSort('addedAt')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.added.at')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('addedAt')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('addedAt')} />
                             </th>
                             <th
                                 onClick={() => requestSort('status')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.status')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('status')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('status')} />
                             </th>
                             {setIsOpenBankModal && <td />}
                         </tr>
                     </thead>
                     <tbody>
-                        {dataPagination(items, currentPage, perPage).map((i: any, index: number) => (
-                            <tr key={i.id}>
+                        {items.length > 0 ? dataPagination(items, currentPage, perPage).map((bank: CompanyBankInterface, index: number) => (
+                            <tr key={bank.bankId}>
                                 <td className='text-center'>
                                     <div>{index + 1}</div>
                                 </td>
@@ -102,33 +88,32 @@ const BankTable = ({
                                     <div className='d-flex align-items-center'>
                                         <div className='flex-grow-1'>
                                             <div className='fs-6 fw-bold'>
-                                                *{i.number}
+                                                *{bank.bankAccountNumber.slice(-4)}
                                             </div>
                                             <div className='text-muted'>
-                                                <Icon icon='Label' />{' '}
-                                                <small>{i.name.toUpperCase()}</small>
+                                                <LabelTwoTone fontSize='small' />{' '}
+                                                <small>{bank.bankName.toUpperCase()}</small>
                                             </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <div>{i.bankAccountName}</div>
+                                    <div>{bank.bankAccountName}</div>
                                 </td>
                                 <td>
-                                    <div>{i.paymentType}</div>
+                                    <div>{bank.type}</div>
                                 </td>
-
                                 <td>
-                                    <div>{i.createdAtDate.format('ll')}</div>
+                                    <div>{moment(bank.createdAt)?.format('ll')}</div>
                                     <div>
                                         <small className='text-muted'>
-                                            {i.createdAtDate.fromNow()}
+                                            {moment(bank.createdAt)?.fromNow()}
                                         </small>
                                     </div>
                                 </td>
                                 <td>
                                     <div className='d-flex align-items-center'>
-                                        { i.status === 1 ?
+                                        { bank.status === CompanyBankStatus.Active ?
                                             <>
                                                 <span className='badge border border-2 border-light rounded-circle bg-success p-2 me-2'>
                                                     <span className='visually-hidden'>
@@ -148,22 +133,32 @@ const BankTable = ({
                                     </div>
                                 </td>
                                 {(setIsOpenBankModal && setIsOpenDeleteBankModal) && <td>
-                                    <Button
-                                        onClick={() => setIsOpenBankModal({ type: "edit", selectedRow: i})}
-                                        className='p-0'
-                                        isLight
-                                    >
-                                        {t('edit')}
-                                    </Button> / <Button
-                                        onClick={() => setIsOpenDeleteBankModal({ type: "delete", selectedRow: i })}
-                                        className='p-0'
-                                        isLight
-                                    >
-                                        {t('delete')}
-                                    </Button>
+                                    <div className='row gap-3 w-100'>
+                                        {permission.bank[PermissionType.Update] === PermissionValue.Available && <Button
+                                            onClick={() => setIsOpenBankModal({ type: "edit", selectedRow: bank })}
+                                            className='col fit-content'
+                                            color='light-dark'
+                                        >
+                                            {t('edit')}
+                                        </Button>}
+                                        {permission.bank[PermissionType.Delete] === PermissionValue.Available && <Button
+                                            onClick={() => setIsOpenDeleteBankModal({ type: "delete", selectedRow: bank })}
+                                            className='col fit-content'
+                                            color='light-dark'
+                                        >
+                                            {t('delete')}
+                                        </Button>}
+                                    </div>
                                 </td>}
                             </tr>
-                        ))}
+                        )) : permission.bank[PermissionType.Read] === PermissionValue.Unavailable ?
+                        <tr>
+                            <td colSpan={8} className='text-center'>ไม่มีสิทธิ์เข้าถึง</td>
+                        </tr>
+                        : <tr>
+                            <td colSpan={8} className='text-center'>ไม่พบข้อมูล</td>
+                        </tr>
+                    }
                     </tbody>
                 </table>
             </CardBody>

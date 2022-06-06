@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useFormik } from 'formik'
 import Modal, {
 	ModalBody,
@@ -6,7 +6,6 @@ import Modal, {
 	ModalTitle,
 } from '../../../components/bootstrap/Modal'
 import showNotification from '../../../components/extras/showNotification'
-import Icon from '../../../components/icon/Icon'
 import FormGroup from '../../../components/bootstrap/forms/FormGroup'
 import Input from '../../../components/bootstrap/forms/Input'
 import { useTranslation } from 'react-i18next'
@@ -14,47 +13,146 @@ import * as Yup from 'yup'
 import Button from 'components/bootstrap/Button'
 import PlaceholderImage from 'components/extras/PlaceholderImage'
 import { ProductModalInterface } from './Product'
+import { createProduct, updateProduct, ProductBaseInterface, uploadProductImage, ProductImageUrlInterface } from 'common/apis/product'
+import Spinner from 'components/bootstrap/Spinner'
+import Textarea from '../../../components/bootstrap/forms/Textarea'
+import { useDispatch } from 'react-redux'
+import { addProduct, updateProductById } from 'redux/product/action'
+import { InfoTwoTone } from '@mui/icons-material'
 
 interface ProductForm {
-    image: string
-    productName: string
-    description: string
-    quantity: number
-    pointsToRedeem: number
+    imageURL: string
+    imageFile: FormData | string
+    name: string
+    description?: string
+    quantity: string | number
+    point: string | number
 }
 
-const ProductModal = ({ id, isOpen, setIsOpen, properties }: ProductModalInterface) => {
+export enum ProductModalType {
+    Add = 'add',
+    Edit = 'edit',
+    Delete = 'delete'
+}
+
+const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) => {
     const { t } = useTranslation(['common', 'product'])
+    const dispatch = useDispatch()
+    const [isLoading, setIsLoading] = useState(false)
     const { selectedRow: data, type } = properties
 
     const productSchema = Yup.object().shape({
-        image: Yup.string().required('กรุณาอัปโหลดภาพ'),
-        productName: Yup.string().required('โปรดใส่ชื่อสินค้า'),
+        // imageURL: Yup.string().required('กรุณาอัปโหลดภาพ'),
+        name: Yup.string().required('โปรดใส่ชื่อสินค้า'),
         quantity: Yup.string().required('โปรดใส่จำนวนที่มี'),
-        pointsToRedeem: Yup.string().required('โปรดใส่แต้มที่ใช้แลก'),
+        point: Yup.string().required('โปรดใส่แต้มที่ใช้แลก'),
 	})
+
+    const addNewProduct = (requestBody: ProductBaseInterface) => {
+        createProduct(requestBody).then((response) => {    
+            dispatch(addProduct(response.data))
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <InfoTwoTone className='me-1' />
+                    <span>{t('product:save.product.successfully')}</span>
+                </span>,
+                t('product:save.product.name.successfully', { name: values.name }),
+            )
+        }).catch((err) => {
+            const { response } = err
+            const message = response?.data
+            console.log(message)
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <InfoTwoTone className='me-1' />
+                    <span>{t('product:save.failed')}</span>
+                </span>,
+                t('product:save.product.failed', { productName: values.name }),
+            )
+        }).finally(() => {
+            setIsLoading(false)
+            setIsOpen(false)
+        })
+    }
+
+    const editProduct = (requestBody: ProductBaseInterface) => {
+        data?.productId && updateProduct(data.productId, requestBody).then((response) => {    
+            const { data } = response
+            dispatch(updateProductById(data.productId, data))
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <InfoTwoTone className='me-1' />
+                    <span>{t('product:save.product.successfully')}</span>
+                </span>,
+                t('product:save.product.name.successfully', { name: values.name }),
+            )
+        }).catch((err) => {
+            const { response } = err
+            const message = response?.data
+            console.log(message)
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <InfoTwoTone className='me-1' />
+                    <span>{t('product:save.failed')}</span>
+                </span>,
+                t('product:save.product.failed', { productName: values.name }),
+            )
+        }).finally(() => {
+            setIsLoading(false)
+            setIsOpen(false)
+        })
+    }
+
+    const uploadImage = (requestBody: ProductBaseInterface, imageFile: FormData) => {
+        uploadProductImage(imageFile, (imageURL: ProductImageUrlInterface) => {
+            if (type === ProductModalType.Add) {
+                addNewProduct({ ...requestBody, imageURL: imageURL.productPreviewPictureURL })
+            } else {
+                editProduct({ ...requestBody, imageURL: imageURL.productPreviewPictureURL })
+            }
+        }, (err) => {
+            const { response } = err
+            const message = response?.data
+            console.log(message)
+            setIsLoading(false)
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <InfoTwoTone className='me-1' />
+                    <span>{t('product:upload.image.failed')}</span>
+                </span>,
+                t('product:upload.product.image.failed', { productName: values.name }),
+            )
+        })
+    }
 
 	const formik = useFormik<ProductForm>({
 		initialValues: {
-			image: data?.image || '',
-            productName: data?.name || '',
+			imageURL: data?.imageURL || '',
+            imageFile: '',
+            name: data?.name || '',
             description: data?.description || '',
             quantity: data?.quantity || '',
-            pointsToRedeem: data?.points || ''
+            point: data?.point || ''
 		},
         validationSchema: productSchema,
 		onSubmit: (values) => {
-            // EDIT
-            console.log(values)
-
-			setIsOpen(false)
-			showNotification(
-				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
-					<span>{t('product:save.product.successfully')}</span>
-				</span>,
-				t('product:save.product.name.successfully', { name: values.productName }),
-			)
+            setIsLoading(true)
+            const { imageFile, ...restValue } = values
+            let requestBody: ProductBaseInterface = {
+                ...restValue,
+                quantity: values.quantity as number,
+                point: values.point as number
+            }
+            if (imageFile) {
+                uploadImage(requestBody, imageFile as FormData)
+            } else {
+                const { imageURL, ...restRequestBody } = requestBody
+                if (type === ProductModalType.Add) {
+                    addNewProduct(restRequestBody)
+                } else {
+                    editProduct(restRequestBody)
+                }
+            }
 		},
 	})
 
@@ -64,27 +162,28 @@ const ProductModal = ({ id, isOpen, setIsOpen, properties }: ProductModalInterfa
             const formData = new FormData()
             formData.append('file', uploadedFile)
     
-            setFieldValue('image', URL.createObjectURL(uploadedFile))
+            setFieldValue('imageFile', formData)
+            setFieldValue('imageURL', URL.createObjectURL(uploadedFile))
         }
     }
 
     const { errors, touched, values, setFieldValue, handleSubmit, handleChange, isValid } = formik
 
     return (
-        <Modal style={{ maxWidth: '600px' }} isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>
+        <Modal style={{ maxWidth: '600px' }} isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={data?.productId} isCentered>
             <ModalHeader setIsOpen={setIsOpen} className='p-4'>
-                <ModalTitle id={id}>{ type === 'add' ? t('product:add.product') : t('product:edit.product')}</ModalTitle>
+                <ModalTitle id={data?.productId}>{ type === 'add' ? t('product:add.product') : t('product:edit.product')}</ModalTitle>
             </ModalHeader>
             <ModalBody className='px-4 pb-4'>
                 <div className='row align-items-start'>
                     <div className='col'>
                         <div className='row g-4'>
-                        <FormGroup id='image' label={t('form.image')}>
+                        <FormGroup id='imageURL' label={t('form.image')}>
                             <div className='row'>
-                                <div className='col-12'>
-                                    {values.image ? (
+                                <div className='col-12 my-3'>
+                                    {values.imageURL ? (
                                         <img
-                                            src={values.image}
+                                            src={values.imageURL}
                                             alt=''
                                             width={220}
                                             height={220}
@@ -105,7 +204,10 @@ const ProductModal = ({ id, isOpen, setIsOpen, properties }: ProductModalInterfa
                                             accept="image/*"
                                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleUploadImage(e)}
                                             type='file' 
-                                            autoComplete='photo' 
+                                            autoComplete='photo'
+                                            isValid={isValid}
+                                            isTouched={touched.imageURL && errors.imageURL}
+                                            invalidFeedback={errors.imageURL}
                                         />
                                     </div>
                                 </div>
@@ -115,21 +217,21 @@ const ProductModal = ({ id, isOpen, setIsOpen, properties }: ProductModalInterfa
                     </div>
                     <div className='col'>
                         <div className='row g-4 justify-content-end'>
-                            <FormGroup id='productName' label={t('form.product.name')}>
+                            <FormGroup id='name' label={t('form.product.name')}>
                                 <Input 
-                                    onChange={handleChange} 
-                                    value={values.productName} 
+                                    onChange={handleChange}
+                                    value={values.name} 
                                     isValid={isValid}
-                                    isTouched={touched.productName && errors.productName}
-                                    invalidFeedback={errors.productName}
+                                    isTouched={touched.name && errors.name}
+                                    invalidFeedback={errors.name}
                                 />
                             </FormGroup>
                             <FormGroup id='description' label={t('form.description')}>
-                                <Input 
+                                <Textarea 
                                     onChange={handleChange} 
                                     value={values.description}
                                     isValid={isValid}
-                                    isTouched={touched.description && errors.description}
+                                    isTouched={Boolean(touched.description && errors.description)}
                                     invalidFeedback={errors.description}
                                 />
                             </FormGroup>
@@ -143,18 +245,18 @@ const ProductModal = ({ id, isOpen, setIsOpen, properties }: ProductModalInterfa
                                     invalidFeedback={errors.quantity}
                                 />
                             </FormGroup>
-                            <FormGroup id='pointsToRedeem' label={t('form.points.to.redeem')}>
+                            <FormGroup id='point' label={t('form.points.to.redeem')}>
                                 <Input 
                                     onChange={handleChange}
                                     type='number'
-                                    value={values.pointsToRedeem}
+                                    value={values.point}
                                     isValid={isValid}
-                                    isTouched={touched.pointsToRedeem && errors.pointsToRedeem}
-                                    invalidFeedback={errors.pointsToRedeem}
+                                    isTouched={touched.point && errors.point}
+                                    invalidFeedback={errors.point}
                                 />
                             </FormGroup>
                             <Button color='info' className='w-auto mx-3' onClick={handleSubmit}>
-                                {t('save')}
+                                {isLoading ? <Spinner size={16} /> : t('save')}
                             </Button>
                         </div>
                     </div>

@@ -2,57 +2,78 @@ import { ChangeEvent, useCallback, useState } from 'react'
 import { useFormik } from 'formik'
 import debounce from 'lodash/debounce'
 import { SubheaderSeparator } from '../../../layout/SubHeader/SubHeader'
-import data from '../../../common/data/dummyBankData'
 import Button from '../../../components/bootstrap/Button'
-import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import Checks  from '../../../components/bootstrap/forms/Checks'
 import { useTranslation } from 'react-i18next'
 import CommonTableFilter from 'components/common/CommonTableFilter'
-import { BankProps } from './Bank'
+import { BankModalProperties } from './Bank'
+import { useDispatch, useSelector } from 'react-redux'
+import { storeCompanyBankQuery } from 'redux/companyBank/action'
+import moment from 'moment'
+import { CompanyBankStatus, CompanyBankType, STATUS, TYPE } from 'common/apis/companyBank'
+import { selectCompanyBankQuery } from 'redux/companyBank/selector'
+import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { SavingsTwoTone, Search } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 
 interface BankFilterInterface {
 	searchInput: string
-    paymentType: string[]
-	isActive: boolean
+    type: string[]
+	status: string[]
 	bank: string[]
+	createdAtDate: {
+		startDate: Date
+		endDate: Date
+		key: string
+	}[]
 }
 
-const BankSubHeader = ({ setIsOpenBankModal }: BankProps) => {
-	const { t } = useTranslation(['common', 'bank'])
+interface BankSubHeaderInterface {
+	isOpenBankModal?: BankModalProperties
+    setIsOpenBankModal: (value: { type: string, selectedRow: any }) => void
+}
 
-	const PAYMENT_TYPE = [
-        {
-            id: 0,
-            name: t('deposit')
-        },
-        {
-            id: 0,
-            name: t('withdraw')
-        }
-    ]
+const BankSubHeader = ({ setIsOpenBankModal }: BankSubHeaderInterface) => {
+	const { t } = useTranslation(['common', 'bank'])
+	const dispatch = useDispatch()
+	const permission = useSelector(selectPermission)
 
 	const [searchInput, setSearchInput] = useState('')
+	const companyBankQuery = useSelector(selectCompanyBankQuery)
 
 	const formik = useFormik<BankFilterInterface>({
 		initialValues: {
 			searchInput: '',
-			paymentType: [],
-            isActive: false,
-			bank: []
+			type: [],
+            status: [],
+			bank: [],
+			createdAtDate: [
+				{
+					startDate: moment().startOf('week').add('-1', 'week').toDate(),
+					endDate: moment().endOf('week').toDate(),
+					key: 'selection',
+				},
+			],
 		},
 		onSubmit: (values) => {
-			console.log('submit filter')
-			console.log(values)
-
-			// Send Filter
+			const queryList = { 
+				...companyBankQuery,
+				type: values.type.length > 0 ? `type=${values.type.join(',')}` : '',
+				status: values.status.length > 0 ? `status=${values.status.join(',')}` : '',
+				bank: values.bank.length > 0 ? `bank=${values.bank.join(',')}` : '',
+				startCreated: `startCreated=${moment(values.createdAtDate[0].startDate).format('YYYY-MM-DD')}`,
+				endCreated: `endCreated=${moment(values.createdAtDate[0].endDate).format('YYYY-MM-DD')}`,
+			}
+			dispatch(storeCompanyBankQuery(queryList))
 		},
 	})
 
 	const { 
 		values,
 		setFieldValue,
-		handleChange,
 		resetForm,
 		handleSubmit,
 	} = formik
@@ -60,18 +81,15 @@ const BankSubHeader = ({ setIsOpenBankModal }: BankProps) => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debounceSearchChange = useCallback(
 		debounce((value: string) => {
-			// Send search filter
-			console.log(value)
+			dispatch(storeCompanyBankQuery({ ...companyBankQuery, keyword: `keyword=${value}` }))
 		}, 1000), []
 	  )
 
 	const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
 		let value = event.target.value
 
-		if (value) {
-			setSearchInput(value)
-			debounceSearchChange(value)
-		}
+		setSearchInput(value)
+		debounceSearchChange(value)
 	}
 
 	const handleOnChangeMultipleSelector = (event: ChangeEvent<HTMLInputElement>, field: string) => {
@@ -92,7 +110,7 @@ const BankSubHeader = ({ setIsOpenBankModal }: BankProps) => {
 		<label
 			className='border-0 bg-transparent cursor-pointer me-0'
 			htmlFor='searchInput'>
-			<Icon icon='Search' size='2x' color='primary' />
+			<Search fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
 		</label>
 		<Input
 			id='searchInput'
@@ -111,16 +129,16 @@ const BankSubHeader = ({ setIsOpenBankModal }: BankProps) => {
 				{
 					label: t('filter.payment.type'),
 					children: <div>
-						{PAYMENT_TYPE.map((paymentType: any) => {
-							let index = values.paymentType.indexOf(paymentType.name)
+						{TYPE.map((type: CompanyBankType) => {
+							let index = values.type.indexOf(type)
 							return <Checks
-									key={paymentType.id}
-									label={paymentType.name}
-									name={paymentType.name}
+									key={type}
+									label={type}
+									name={type}
 									value={index}
-									onChange={(e) => handleOnChangeMultipleSelector(e, 'paymentType')}
+									onChange={(e) => handleOnChangeMultipleSelector(e, 'type')}
 									checked={index > -1}
-									ariaLabel={paymentType.name}
+									ariaLabel={type}
 								/>
 							}
 						)}
@@ -128,45 +146,44 @@ const BankSubHeader = ({ setIsOpenBankModal }: BankProps) => {
 				},
 				{
 					label: t('filter.bank'),
+					children: <CommonBanksDropdown 
+						selectedBankName={values.bank}
+						setSelectedBankName={(bank: string | string[]) => setFieldValue('bank', bank)}
+						multipleSelect
+					/>
+				},
+				{
+					label: t('filter.status'),
 					children: <div>
-						{data.map((bank: any) => {
-							let indexInBankFilter = values.bank.indexOf(bank.label)
+						{STATUS.map((status: string) => {
+							let indexInStatusFilter = values.status.indexOf(status)
 							return <Checks
-									key={bank.id}
-									label={bank.label}
-									name={bank.label}
-									value={indexInBankFilter}
-									onChange={(e) => handleOnChangeMultipleSelector(e, 'bank')}
-									checked={indexInBankFilter > -1}
-									ariaLabel={bank.label}
+									key={status}
+									label={status === CompanyBankStatus.Active ? t('active') : t('inactive')}
+									name={status}
+									value={indexInStatusFilter}
+									onChange={(e) => handleOnChangeMultipleSelector(e, 'status')}
+									checked={indexInStatusFilter > -1}
+									ariaLabel={status}
 								/>
 							}
 						)}
 					</div>
 				},
-				{
-					label: t('filter.status'),
-					children: <Checks
-						id='isActive'
-						type='switch'
-						label={values.isActive ? t('active') : t('inactive')}
-						onChange={handleChange}
-						checked={values.isActive}
-						ariaLabel='Available status'
-					/>
-				},
 			]} 
 		/>
-		<SubheaderSeparator />
-		<Button
-			className='text-nowrap'
-			icon='PiggyBank'
-			color='primary'
-			isLight
-			onClick={() => setIsOpenBankModal({ type: "add", selectedRow: undefined})}
-		>
-			{t('bank:add.bank')}
-		</Button>
+		{permission.bank[PermissionType.Create] === PermissionValue.Available && <>
+			<SubheaderSeparator />
+			<Button
+				className='text-nowrap'
+				icon={SavingsTwoTone}
+				color='primary'
+				isLight
+				onClick={() => setIsOpenBankModal({ type: "add", selectedRow: undefined})}
+			>
+				{t('bank:add.bank')}
+			</Button>
+		</>}
 	</>)
 }
 

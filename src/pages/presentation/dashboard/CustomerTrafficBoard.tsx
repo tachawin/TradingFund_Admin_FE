@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import moment from 'moment'
 import 'moment/locale/th'
 import Card, {
@@ -11,9 +11,51 @@ import Card, {
 import Button from '../../../components/bootstrap/Button'
 import Chart from '../../../components/extras/Chart'
 import { useTranslation } from 'react-i18next'
+import { CustomerMetricInterface, getCustomerRegisterAndActionMetric } from 'common/apis/dashboard'
+import showNotification from 'components/extras/showNotification'
+import Spinner from 'components/bootstrap/Spinner'
+import { InfoTwoTone } from '@mui/icons-material'
+
+enum DateRange {
+	Week = 'week',
+	Month = 'month',
+}
 
 const CustomerTrafficBoard = () => {
     const { t } = useTranslation('dashboard')
+	const [activeDateRangeTab, setActiveDateRangeTab] = useState<DateRange>(DateRange.Week)
+	const [trafficData, setTrafficData] = useState<CustomerMetricInterface>({})
+	const [isLoading, setIsLoading] = useState(true)
+
+	const dateRange = {
+		week: {
+			start: moment().subtract(7,'d').format('YYYY-MM-DD'),
+			end: moment().format('YYYY-MM-DD')
+		},
+		month: {
+			start: moment().subtract(1, 'months').format('YYYY-MM-DD'),
+			end: moment().format('YYYY-MM-DD')
+		}
+	}
+
+	useEffect(() => {
+		setIsLoading(true)
+		const selectedDateRange = dateRange[activeDateRangeTab]
+		getCustomerRegisterAndActionMetric(selectedDateRange.start, selectedDateRange.end, (metric: CustomerMetricInterface) => {
+			setTrafficData(metric)
+		}, (error: any) => {
+			const { response } = error
+			console.log(response.data)
+			showNotification(
+				<span className='d-flex align-items-center'>
+					<InfoTwoTone className='me-1' />
+					<span>{t('get.dashboard.failed')}</span>
+				</span>,
+				t('please.refresh.again'),
+			)
+		}).finally(() => setIsLoading(false))
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [activeDateRangeTab])
 
 	const chartOptions = {
 		chart: {
@@ -23,7 +65,7 @@ const CustomerTrafficBoard = () => {
 				show: false,
 			},
 		},
-		colors: [process.env.REACT_APP_INFO_COLOR],
+		colors: [process.env.REACT_APP_INFO_COLOR, process.env.REACT_APP_SUCCESS_COLOR],
 		dataLabels: {
 			enabled: false,
 		},
@@ -45,69 +87,46 @@ const CustomerTrafficBoard = () => {
 				stops: [0, 100],
 			},
 		},
-	}
+	};
 
-	function getDate(day: number) {
-		const arr = []
-		for (let i = 0; i < day; i += 1) {
-			arr.push(
-				moment()
-                    .locale('th')
-					.add(-1 * i, 'day')
-					.format('ll'),
-			)
-		}
-		return arr.reverse()
-	}
+	const getLineChartData = () => {
+		const trafficDateList = Object.keys(trafficData).map((date) => 
+			moment(date).locale('th').format('ll')
+		)
+		const trafficValueList = Object.values(trafficData)
+		const totalRegisterList: number[] = []
+		const totalRegisterAndActionList: number[] = []
+		trafficValueList.forEach((trafficValue) => {
+			totalRegisterList.push(trafficValue.totalRegister)
+			totalRegisterAndActionList.push(trafficValue.totalRegisterAndAction)
+		})
 
-	const DUMMY_DATA = {
-		WEEK: {
+		return { 
 			series: [
 				{
-					name: 'This Week',
-					data: [11, 32, 45, 32, 34, 52, 41],
+					name: 'จำนวนผู้ใช้ใหม่',
+					data: totalRegisterList,
+				},
+				{
+					name: 'จำนวนผู้ใช้ใหม่ที่ทำรายการ',
+					data: totalRegisterAndActionList,
 				},
 			],
 			options: {
 				...chartOptions,
 				xaxis: {
-					categories: getDate(7),
+					categories: trafficDateList,
 				},
+				yaxis: {
+					labels: {
+						formatter: function(val: number) {
+							return val.toFixed(0);
+						}
+					}
+				}
 			},
-		},
-		MONTH: {
-			series: [
-				{
-					name: 'This Month',
-					data: [
-						11, 32, 45, 32, 34, 52, 41, 24, 32, 45, 32, 43, 52, 41, 28, 32, 45, 67, 34,
-						52, 41, 11, 32, 89, 32, 34, 52, 41,
-					],
-				},
-			],
-			options: {
-				...chartOptions,
-				xaxis: {
-					categories: getDate(28),
-				},
-			},
-		},
+		};
 	}
-	const [state, setState] = useState<{
-		series: any
-		options: any
-	}>({
-		series: DUMMY_DATA.WEEK.series,
-		options: DUMMY_DATA.WEEK.options,
-	})
-
-	const SALE_PER_TAB = {
-		DAY: t('day'),
-		WEEK: t('week'),
-		MONTH: t('month'),
-	}
-
-	const [activeSalePerTab, setActiveSalePerTab] = useState<string>(t('week'))
 
 	return (
 		<Card stretch>
@@ -118,39 +137,30 @@ const CustomerTrafficBoard = () => {
 				<CardActions>
 					<Button
 						color='info'
-						onClick={() => {
-							setActiveSalePerTab(SALE_PER_TAB.WEEK)
-							setState({
-								series: DUMMY_DATA.WEEK.series,
-								options: DUMMY_DATA.WEEK.options,
-							})
-						}}
-						isLink={activeSalePerTab !== SALE_PER_TAB.WEEK}
-						isLight={activeSalePerTab === SALE_PER_TAB.WEEK}>
+						onClick={() => setActiveDateRangeTab(DateRange.Week)}
+						isLink={activeDateRangeTab !== DateRange.Week}
+						isLight={activeDateRangeTab === DateRange.Week}>
 						{t('week')}
 					</Button>
 					<Button
 						color='info'
-						onClick={() => {
-							setActiveSalePerTab(SALE_PER_TAB.MONTH)
-							setState({
-								series: DUMMY_DATA.MONTH.series,
-								options: DUMMY_DATA.MONTH.options,
-							})
-						}}
-						isLink={activeSalePerTab !== SALE_PER_TAB.MONTH}
-						isLight={activeSalePerTab === SALE_PER_TAB.MONTH}>
+						onClick={() => setActiveDateRangeTab(DateRange.Month)}
+						isLink={activeDateRangeTab !== DateRange.Month}
+						isLight={activeDateRangeTab === DateRange.Month}>
 						{t('month')}
 					</Button>
 				</CardActions>
 			</CardHeader>
-			<CardBody>
-				<Chart
-					series={state.series}
-					options={state.options}
-					type={state.options.chart.type}
-					height={state.options.chart.height}
-				/>
+			<CardBody className='w-100 d-flex justify-content-center'>
+				{isLoading ? <Spinner color='primary' isGrow size={50} />
+					: <Chart
+						className='w-100'
+						series={getLineChartData().series}
+						options={getLineChartData().options}
+						type={getLineChartData().options.chart.type}
+						height={getLineChartData().options.chart.height}
+					/>
+				}
 			</CardBody>
 		</Card>
 	)

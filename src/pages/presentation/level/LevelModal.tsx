@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Modal, {
 	ModalBody,
 	ModalFooter,
@@ -6,7 +6,6 @@ import Modal, {
 	ModalTitle,
 } from '../../../components/bootstrap/Modal'
 import showNotification from '../../../components/extras/showNotification'
-import Icon from '../../../components/icon/Icon'
 import Button from '../../../components/bootstrap/Button'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
@@ -14,56 +13,82 @@ import * as Yup from 'yup'
 import FormGroup from 'components/bootstrap/forms/FormGroup'
 import Input from 'components/bootstrap/forms/Input'
 import { LevelModalInterface } from './Level'
-import { HuePicker, SliderPicker } from 'react-color'
+import { HuePicker } from 'react-color'
+import { InfoTwoTone } from '@mui/icons-material'
+import { createLevel, LevelBaseInterface, LevelInterface, updateLevel } from 'common/apis/level'
+import { useDispatch } from 'react-redux'
+import { addLevel, updateLevelById } from 'redux/level/action'
+import Spinner from 'components/bootstrap/Spinner'
 
-interface LevelFormInterface {
-    levelName: string
-    minimumDeposit: number
-    color: string
+export enum LevelModalType {
+    Add = 'add',
+    Edit = 'edit',
+    Delete = 'delete'
 }
 
 
 const LevelModal = ({ id, isOpen, setIsOpen, properties }: LevelModalInterface) => {
     const { t } = useTranslation(['common', 'level'])
     const { type, selectedRow: data } = properties
+    const dispatch = useDispatch()
+    const [isLoading, setIsLoading] = useState(false)
 
     const LevelFormSchema = Yup.object().shape({
         levelName: Yup.string().required('โปรดใส่ชื่อขั้น'),
-        minimumDeposit: Yup.number().required('โปรดใส่ยอดฝากขั้นต่ำ'),
+        minimumCredit: Yup.number().required('โปรดใส่ยอดฝากขั้นต่ำ'),
         color: Yup.string().required('โปรดเลือกสีขั้น'),
 	})
 	
-	const formik = useFormik<LevelFormInterface>({
+	const formik = useFormik<LevelBaseInterface>({
 		initialValues: {
             levelName: data?.levelName || '',
-            minimumDeposit: data?.minimumDeposit || '',
+            minimumCredit: data?.minimumCredit || 0,
             color: data?.color || '#ff0000'
 		},
         validationSchema: LevelFormSchema,
 		onSubmit: (values) => {
-            console.log(values)
-
-            if (type === 'add') {
-                // ADD
-                showNotification(
-                    <span className='d-flex align-items-center'>
-                        <Icon icon='Info' size='lg' className='me-1' />
-                        <span>{t('level:added.successfully')}</span>
-                    </span>,
-                    t('level:added.level.successfully', { levelName: data?.levelName }),
-                )
+            setIsLoading(true)
+            if (type === LevelModalType.Add) {
+                createLevel(values, (level: LevelInterface) => {
+                    dispatch(addLevel(level))
+                    setIsOpen(false)
+                    showNotification(
+                        <span className='d-flex align-items-center'>
+                            <InfoTwoTone className='me-1' />
+                            <span>{t('level:added.successfully')}</span>
+                        </span>,
+                        t('level:added.level.successfully', { levelName: data?.levelName }),
+                    )
+                }, () => {
+                    showNotification(
+                        <span className='d-flex align-items-center'>
+                            <InfoTwoTone className='me-1' />
+                            <span>{t('level:added.failed')}</span>
+                        </span>,
+                        t('level:added.level.failed', { levelName: data?.levelName }),
+                    )
+                }).finally(() => setIsLoading(false))
             } else {
-                // EDIT
-                showNotification(
-                    <span className='d-flex align-items-center'>
-                        <Icon icon='Info' size='lg' className='me-1' />
-                        <span>{t('level:edit.successfully')}</span>
-                    </span>,
-                    t('level:edit.level.successfully', { levelName: data?.levelName }),
-                )
+                data?.levelId && updateLevel(data.levelId, values, (level: LevelInterface) => {
+                    data?.levelId && dispatch(updateLevelById(data.levelId, level))
+                    setIsOpen(false)
+                    showNotification(
+                        <span className='d-flex align-items-center'>
+                            <InfoTwoTone className='me-1' />
+                            <span>{t('level:edit.successfully')}</span>
+                        </span>,
+                        t('level:edit.level.successfully', { levelName: data?.levelName }),
+                    )
+                }, () => {
+                    showNotification(
+                        <span className='d-flex align-items-center'>
+                            <InfoTwoTone className='me-1' />
+                            <span>{t('level:edit.failed')}</span>
+                        </span>,
+                        t('level:edit.level.failed', { levelName: data?.levelName }),
+                    )
+                }).finally(() => setIsLoading(false))
             }
-			
-            setIsOpen(false)
 		},
 	})
 
@@ -71,8 +96,8 @@ const LevelModal = ({ id, isOpen, setIsOpen, properties }: LevelModalInterface) 
 
     return (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>
-            <ModalHeader setIsOpen={setIsOpen} className='p-4'>
-                <ModalTitle id={id}>{type === 'add' ? t('level:add.level') : t('level:edit.level')}</ModalTitle>
+            <ModalHeader setIsOpen={setIsOpen} className='p-4 pb-0'>
+                <ModalTitle id={id}>{type === LevelModalType.Add ? t('level:add.level') : t('level:edit.level')}</ModalTitle>
             </ModalHeader>
             <ModalBody className='px-4'>
                 <div className='row g-4'>
@@ -85,14 +110,14 @@ const LevelModal = ({ id, isOpen, setIsOpen, properties }: LevelModalInterface) 
                             invalidFeedback={errors.levelName}
                         />
                     </FormGroup>
-                    <FormGroup id='minimumDeposit' label={t('form.minimum.deposit')}>
+                    <FormGroup id='minimumCredit' label={t('form.minimum.credit')}>
                         <Input
                             type='number'
                             onChange={handleChange} 
-                            value={values.minimumDeposit} 
+                            value={values.minimumCredit} 
                             isValid={isValid}
-                            isTouched={touched.minimumDeposit && errors.minimumDeposit}
-                            invalidFeedback={errors.minimumDeposit}
+                            isTouched={touched.minimumCredit && errors.minimumCredit}
+                            invalidFeedback={errors.minimumCredit}
                         />
                     </FormGroup>
                     <FormGroup id='color' label={t('form.level.color')}>
@@ -113,7 +138,7 @@ const LevelModal = ({ id, isOpen, setIsOpen, properties }: LevelModalInterface) 
             </ModalBody>
             <ModalFooter className='px-4 pb-4'>
                 <Button className='w-100' color='info' onClick={handleSubmit}>
-                    {t('save')}
+                    {isLoading ? <Spinner size={16} /> : t('save')}
                 </Button>
             </ModalFooter>
         </Modal>

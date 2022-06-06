@@ -80,6 +80,8 @@
     "filter.max": "สูงสุด",
     "filter.payment.type": "ประเภทธุรกรรม",
     "filter.minimum.deposit": "ยอดฝากขั้นต่ำ",
+    "limited": "ระบุจำนวน",
+    "unlimited": "ไม่จำกัด",
     "filter": "กรอง",
 
     "form.username": "ชื่อผู้ใช้",
@@ -104,7 +106,7 @@
     "form.withdraw.bank": "บัญชีที่ใช้ถอนเงิน",
     "form.payment.type": "ประเภทธุรกรรม",
     "form.slip.image": "อัปโหลดสลิป",
-    "form.image": "อัปโหลดสลิป",
+    "form.image": "อัปโหลดรูปภาพ",
     "form.product.name": "ชื่อสินค้า",
     "form.description": "คำอธิบาย",
     "form.quantity": "จำนวน",
@@ -122,11 +124,35 @@
     "customer": "ลูกค้า",
     "deposit": "ฝากเงิน",
     "withdraw": "ถอนเงิน",
+    "request.withdraw": "คำขอถอนเงิน",
     "bank": "ธนาคารบริษัท",
     "reward": "แลกรางวัล",
     "credit": "แลกเครดิต",
     "chat": "แชทสนทนา",
     "product": "รายการสินค้า",
+    "otp.setting": "ตั้งค่า OTP",
+    "invite.friend": "ตั้งค่าเชิญเพื่อน",
+
+    "otp.customer.desc": "เปิด - ปิดระบบ OTP ขณะลูกค้าสมัครสมาชิก",
+    "otp.admin.desc": "เปิด - ปิดระบบ OTP ขณะแอดมินเข้าสู่ระบบ",
+
+    "first.level": "ขั้นที่ 1",
+    "second.level": "ขั้นที่ 2",
+    "first.level.desc": "ส่วนแบ่งเชิญเพื่อนขั้นที่ 1",
+    "second.level.desc": "ส่วนแบ่งเชิญเพื่อนขั้นที่ 2",
+
+    "on": "เปิด",
+    "off": "ปิด",
+
+    "request": "คำขอ",
+    "sending": "กำลังส่ง",
+
+    "update.otp.setting.successfully": "ตั้งค่า OTP สำเร็จ",
+    "update.otp.setting.customer.successfully": "ตั้งค่า OTP สำหรับลูกค้าสำเร็จ",
+    "update.otp.setting.admin.successfully": "ตั้งค่า OTP สำหรับแอดมินสำเร็จ",
+    "update.otp.setting.failed": "ตั้งค่า OTP ไม่สำเร็จ",
+    "update.otp.setting.customer.failed": "ตั้งค่า OTP สำหรับลูกค้าไม่สำเร็จ",
+    "update.otp.setting.admin.failed": "ตั้งค่า OTP สำหรับแอดมินไม่สำเร็จ",
 
     "form.tracking.number": "เลขติดตามพัสดุ",
     "form.tracking.number.placeholder": "กรุณาใส่เลขพัสดุ"

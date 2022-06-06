@@ -21,5 +21,7 @@
     "sending.successfully": "เปลี่ยนสถานะเป็นกำลังจัดส่งสำเร็จ",
     "sending.reward.successfully": "เปลี่ยนสถานะของ {{mobileNumber}} สำเร็จ",
     "reject.successfully": "ยกเลิกคำขอแลกรางวัลสำเร็จ",
-    "reject.request.successfully": "ยกเลิกคำขอแลกรางวัลของ {{mobileNumber}} สำเร็จ"
+    "reject.request.successfully": "ยกเลิกคำขอแลกรางวัลของ {{mobileNumber}} สำเร็จ",
+
+    "get.reward.failed": "เรียกดูรายการแลกสินค้าไม่สำเร็จ"
 }

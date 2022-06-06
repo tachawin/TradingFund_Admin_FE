@@ -2,24 +2,22 @@ import React, { ReactNode, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
+import { useSelector } from 'react-redux'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { FilterList, StarRounded } from '@mui/icons-material'
+import { LevelInterface } from 'common/apis/level'
+import { LevelModalType } from './LevelModal'
+import moment from 'moment'
 
 interface LevelTableInterface {
-    data: any
-    setIsOpenLevelModal?: (value: { type: string, selectedRow: any }) => void
-    setIsOpenDeleteLevelModal?: (value: { type: string, selectedRow: any }) => void
+    data: LevelInterface[]
+    setIsOpenLevelModal?: (value: { type: LevelModalType, selectedRow: LevelInterface }) => void
+    setIsOpenDeleteLevelModal?: (value: { type: LevelModalType, selectedRow: LevelInterface }) => void
     columns?: any
     cardHeader?: ReactNode
-}
-
-enum Level {
-    Platinum = 'platinum',
-    Gold = 'gold',
-    Silver = 'silver',
-    Bronze = 'bronze',
-    Standard = 'standard'
 }
 
 const LevelTable = ({ 
@@ -34,8 +32,10 @@ const LevelTable = ({
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
 
+    const permission = useSelector(selectPermission)
+
     return (
-        <Card stretch className='mx-3'>
+        <Card stretch className='mx-3' style={{ height: 500 }}>
             {cardHeader}
             <CardBody isScrollable className='table-responsive'>
                 <table className='table table-modern table-hover'>
@@ -50,96 +50,86 @@ const LevelTable = ({
                                 onClick={() => requestSort('levelName')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.level.name')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('levelName')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('levelName')} />
                             </th>
                             <th
                                 onClick={() => requestSort('minimumDeposit')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.minimum.deposit')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('minimumDeposit')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('minumumDeposit')} />
                             </th>
                             <th
                                 onClick={() => requestSort('createdAt')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.created.at')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('createdAt')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('createdAt')} />
                             </th>
                             <th
                                 onClick={() => requestSort('updatedAt')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.updated.at')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('updatedAt')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('updatedAt')} />
                             </th>
                             {setIsOpenLevelModal && <td />}
                         </tr>
                     </thead>
                     <tbody>
-                        {dataPagination(items, currentPage, perPage).map((i: any, index: number) => (
-                            <tr key={i.id}>
+                        {items.length > 0 ? dataPagination(items, currentPage, perPage).map((item: LevelInterface, index: number) => (
+                            <tr key={item.levelId}>
                                 <td className='text-center'>
                                     <div>{index + 1}</div>
                                 </td>
                                 <td>
                                     <div>
-                                        <Icon icon='StarFill' color={i.id === Level.Gold ? 'warning' 
-                                            : i.id === Level.Silver ? 'light' 
-                                            : i.id === Level.Platinum ? 'primary' 
-                                            : i.id === Level.Bronze ? 'danger' : 'secondary' } />{' '}
-                                        {i.levelName}
+                                        <StarRounded htmlColor={item.color} />{' '}
+                                        {item.levelName}
                                     </div>
                                 </td>
                                 <td>
-                                    <div>{i.minimumDeposit.toLocaleString()}</div>
+                                    <div>{item.minimumCredit.toLocaleString()}</div>
                                 </td>
                                 <td>
-                                    <div>{i.createdAtDate.format('ll')}</div>
+                                    <div>{moment(item.createdAt).format('ll')}</div>
                                     <div>
                                         <small className='text-muted'>
-                                            {i.createdAtDate.fromNow()}
+                                            {moment(item.createdAt).fromNow()}
                                         </small>
                                     </div>
                                 </td>
                                 <td>
-                                    <div>{i.updatedAtDate.format('ll')}</div>
+                                    <div>{moment(item.updatedAt).format('ll')}</div>
                                     <div>
                                         <small className='text-muted'>
-                                            {i.updatedAtDate.fromNow()}
+                                            {moment(item.updatedAt).fromNow()}
                                         </small>
                                     </div>
                                 </td>
                                 {(setIsOpenLevelModal && setIsOpenDeleteLevelModal) && <td>
-                                    <Button
-                                        onClick={() => setIsOpenLevelModal({ type: "edit", selectedRow: i})}
-                                        className='p-0'
-                                        isLight
-                                    >
-                                        {t('edit')}
-                                    </Button> / <Button
-                                        onClick={() => setIsOpenDeleteLevelModal({ type: "delete", selectedRow: i })}
-                                        className='p-0'
-                                        isLight
-                                    >
-                                        {t('delete')}
-                                    </Button>
+                                    <div className='row gap-3 w-100'>
+                                        <Button
+                                            onClick={() => setIsOpenLevelModal({ type: LevelModalType.Edit, selectedRow: item })}
+                                            color='light-dark'
+                                            className='col'
+                                        >
+                                            {t('edit')}
+                                        </Button>
+                                        <Button
+                                            onClick={() => setIsOpenDeleteLevelModal({ type: LevelModalType.Delete, selectedRow: item })}
+                                            color='light-dark'
+                                            className='col'
+                                        >
+                                            {t('delete')}
+                                        </Button>
+                                    </div>
                                 </td>}
                             </tr>
-                        ))}
+                        )) : permission.level[PermissionType.Read] === PermissionValue.Unavailable ?
+                        <tr>
+                            <td colSpan={8} className='text-center'>ไม่มีสิทธิ์เข้าถึง</td>
+                        </tr>
+                        : <tr>
+                            <td colSpan={8} className='text-center'>ไม่พบข้อมูล</td>
+                        </tr>}
                     </tbody>
                 </table>
             </CardBody>

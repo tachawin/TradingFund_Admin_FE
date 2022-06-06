@@ -7,6 +7,7 @@ import Badge from '../bootstrap/Badge';
 import Button from '../bootstrap/Button';
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from '../bootstrap/Dropdown';
 import useDarkMode from '../../hooks/useDarkMode';
+import { DeleteTwoTone, MoreHoriz } from '@mui/icons-material';
 
 /**
  * Prop Types
@@ -84,11 +85,11 @@ export const TodoItem = forwardRef<HTMLDivElement, TodoItemInterface>(({ index, 
 				<span>
 					<Dropdown>
 						<DropdownToggle hasIcon={false}>
-							<Button color={themeStatus} icon='MoreHoriz' />
+							<Button color={themeStatus} icon={MoreHoriz} />
 						</DropdownToggle>
 						<DropdownMenu isAlignmentEnd>
 							<DropdownItem>
-								<Button onClick={() => removeTodo(index)} icon='Delete'>
+								<Button onClick={() => removeTodo(index)} icon={DeleteTwoTone}>
 									Delete
 								</Button>
 							</DropdownItem>

@@ -2,13 +2,20 @@ import React, { ReactNode, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
+import { useSelector } from 'react-redux'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { RedeemInterface, RedeemStatus } from 'common/apis/redeem'
+import moment from 'moment'
+import 'moment/locale/th'
+import { RewardModalType } from './RewardModal'
+import { FilterList } from '@mui/icons-material'
 
 interface RewardTableInterface {
-    data: any
-    setIsOpenRewardModal?: (value: { type: string, selectedRow: any }) => void
+    data: RedeemInterface[]
+    setIsOpenRewardModal?: (value: { type: RewardModalType, selectedRow: RedeemInterface }) => void
     columns?: any
     cardHeader?: ReactNode
 }
@@ -25,11 +32,13 @@ const RewardTable = ({
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
 
-    const getStatusText = (status: string): ReactNode => {
-        if (status === 'success') {
+    const permission = useSelector(selectPermission)
+
+    const getStatusText = (status: RedeemStatus): ReactNode => {
+        if (status === RedeemStatus.Success) {
             return <div className='fw-bold text-success'>{t('success')}</div>
-        } else if (status === 'not-found') {
-            return <div className='fw-bold text-warning'>{t('not.found')}</div>
+        } else if (status === RedeemStatus.Sending || status === RedeemStatus.Request) {
+            return <div className='fw-bold text-warning'>{status === RedeemStatus.Sending ? t('sending') : t('request')}</div>
         } else {
             return <div className='fw-bold text-danger'>{t('cancel')}</div>
         }
@@ -51,45 +60,29 @@ const RewardTable = ({
                                 onClick={() => requestSort('timestamp')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.timestamp')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('timestamp')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('timestamp')} />
                             </th>
                             {columns?.mobileNumber && <th>{t('column.mobile.number')}</th>}
                             <th
                                 onClick={() => requestSort('points')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.points')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('points')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('points')} />
                             </th>
                             <th
                                 onClick={() => requestSort('product')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.product')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('product')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('product')} />
                             </th>
                             <th style={{ width: '15%' }}>{t('column.address')}</th>
-                            {columns?.notes && <th style={{ width: '15%' }}>{t('column.notes')}</th>}
+                            {columns?.notes && <th>{t('column.notes')}</th>}
                             {columns?.status &&
                                 <th
                                     onClick={() => requestSort('status')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.status')}{' '}
-                                    <Icon
-                                        size='lg'
-                                        className={getClassNamesFor('status')}
-                                        icon='FilterList'
-                                    />
+                                    <FilterList fontSize='small' className={getClassNamesFor('status')} />
                                 </th>
                             }
                             {columns?.operator &&
@@ -97,78 +90,83 @@ const RewardTable = ({
                                     onClick={() => requestSort('operator')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.operator')}{' '}
-                                    <Icon
-                                        size='lg'
-                                        className={getClassNamesFor('operator')}
-                                        icon='FilterList'
-                                    />
+                                    <FilterList fontSize='small' className={getClassNamesFor('operator')} />
                                 </th>
                             }
                             {setIsOpenRewardModal && <td />}
                         </tr>
                     </thead>
                     <tbody>
-                        {dataPagination(items, currentPage, perPage).map((i: any, index: number) => (
-                            <tr key={i.id}>
+                        {items.length > 0 ? dataPagination(items, currentPage, perPage).map((item: RedeemInterface, index: number) => (
+                            <tr key={item.redeemId}>
                                 <td className='text-center'>
                                     <div>{index + 1}</div>
                                 </td>
                                 <td>
-                                    <div>{i.date.format('ll')}</div>
+                                    <div>{moment(item.createdAt).format('ll')}</div>
                                     <div>
                                         <small className='text-muted'>
-                                            {i.date.fromNow()}
+                                            {moment(item.createdAt).fromNow()}
                                         </small>
                                     </div>
                                 </td>
                                 {columns?.mobileNumber &&
                                     <td>
-                                        <div>{i.mobileNumber}</div>
+                                        <div>{item.mobileNumber}</div>
                                     </td>
                                 }
                                 <td>
-                                    <div>{i.points}</div>
+                                    <div>{item.point}</div>
+                                </td>
+                                <td style={{ maxWidth: '200px' }}>
+                                    <div>{item.productName}</div>
                                 </td>
                                 <td>
-                                    <div>{i.product}</div>
-                                </td>
-                                <td>
-                                    <div>{i.address}</div>
+                                    <div>{item.address}</div>
                                 </td>
                                 {columns?.notes &&
                                     <td>
-                                        <div>{i.note}</div>
+                                        <div>{item.notes}</div>
                                     </td>
                                 }
                                 {columns?.status &&
                                     <td>
-                                        <div>{getStatusText(i.status)}</div>
+                                        <div>{getStatusText(item.status)}</div>
                                     </td>
                                 }
                                 {columns?.operator &&
                                     <td>
-                                        <div>{i.operator}</div>
+                                        <div>{item.adminName}</div>
                                     </td>
                                 }
                                 {setIsOpenRewardModal && <td>
-                                    {i.status === 'request' || i.status === 'sending' ? 
-                                        <><Button
-                                            onClick={() => setIsOpenRewardModal({ type: "approve", selectedRow: i})}
-                                            className='p-0'
+                                    {item.status === RedeemStatus.Request || item.status === RedeemStatus.Sending ? 
+                                        <div className='row gap-3'><Button
+                                            onClick={() => setIsOpenRewardModal({ type: RewardModalType.Approve, selectedRow: item})}
+                                            color='primary'
+                                            className='col text-nowrap'
                                             isLight
                                         >
                                             {t('edit.status')}
-                                        </Button> / <Button
-                                            onClick={() => setIsOpenRewardModal({ type: "reject", selectedRow: i})}
-                                            className='p-0'
+                                        </Button>
+                                        <Button
+                                            onClick={() => setIsOpenRewardModal({ type: RewardModalType.Reject, selectedRow: item})}
+                                            color='primary'
+                                            className='col text-nowrap'
                                             isLight
                                         >
                                             {t('reject')}
-                                        </Button></> : <></>
+                                        </Button></div> : <></>
                                     }
                                 </td>}
                             </tr>
-                        ))}
+                        )) : permission.reward[PermissionType.Read] === PermissionValue.Unavailable ?
+                        <tr>
+                            <td colSpan={8} className='text-center'>ไม่มีสิทธิ์เข้าถึง</td>
+                        </tr>
+                        : <tr>
+                            <td colSpan={8} className='text-center'>ไม่พบข้อมูล</td>
+                        </tr>}
                     </tbody>
                 </table>
             </CardBody>

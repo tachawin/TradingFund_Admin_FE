@@ -1,14 +1,21 @@
-import React, { useState } from 'react'
-import data from '../../../common/data/dummyLevelsData'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import LevelModal from './LevelModal'
 import LevelTable from './LevelTable'
 import { CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 import LevelDeleteModal from './LevelDeleteModal'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectCompanyLevelQuery, selectLevels } from 'redux/level/selector'
+import { getLevelList, LevelInterface } from 'common/apis/level'
+import { storeLevels } from 'redux/level/action'
+import showNotification from 'components/extras/showNotification'
+import Spinner from 'components/bootstrap/Spinner'
+import { InfoTwoTone } from '@mui/icons-material'
+import LevelSubHeader from './LevelSubHeader'
 
 export interface LevelModalProperties {
 	type: string
-	selectedRow: any
+	selectedRow?: LevelInterface
 }
 
 export interface LevelModalInterface {
@@ -25,24 +32,53 @@ export interface LevelProps {
 
 const Level = ({ isOpenLevelModal, setIsOpenLevelModal }: LevelProps) => {
     const { t } = useTranslation(['common', 'level'])
+	const dispatch = useDispatch()
 
+	const [isLoading, setIsLoading] = useState(false)
     const [isOpenDeleteLevelModal, setIsOpenDeleteLevelModal] = useState<LevelModalProperties>()
+	
+	const levels = useSelector(selectLevels)
+	const queryList = useSelector(selectCompanyLevelQuery)
+
+	useEffect(() => {
+		let queryString = Object.values(queryList).filter(Boolean).join('&')
+		let query = queryString ? `?${queryString}` : ''
+		getLevelList(query, (levelList: LevelInterface[]) => {
+			dispatch(storeLevels(levelList))
+		}, (error: any) => {
+			const { response } = error
+			console.log(response.data)
+			showNotification(
+				<span className='d-flex align-items-center'>
+					<InfoTwoTone className='me-1' />
+					<span>{t('get.bank.failed')}</span>
+				</span>,
+				t('please.refresh.again'),
+			)
+		}).finally(() => setIsLoading(false))
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [queryList])
 
 	return (<>
-		<div className='row h-100'>
-			<div className='col-12'>
-				<LevelTable
-					cardHeader={
-						<CardHeader>
-							<CardLabel>
-								<CardTitle>{t('level:level')}</CardTitle>
-							</CardLabel>
-						</CardHeader>
-					}
-					data={data} 
-					setIsOpenLevelModal={setIsOpenLevelModal}
-					setIsOpenDeleteLevelModal={setIsOpenDeleteLevelModal}
-				/>
+		<div className='row'>
+			<div className={`col-12 ${isLoading ? 'd-flex align-items-center justify-content-center' : 'px-4'}`}>
+				{isLoading ? <Spinner color='info' isGrow size={60} /> 
+					: <LevelTable
+						cardHeader={
+							<>
+								<LevelSubHeader isOpenLevelModal={isOpenLevelModal} setIsOpenLevelModal={setIsOpenLevelModal}  />
+								<CardHeader>
+									<CardLabel>
+										<CardTitle>{t('level:level')}</CardTitle>
+									</CardLabel>
+								</CardHeader>
+							</>
+						}
+						data={levels} 
+						setIsOpenLevelModal={setIsOpenLevelModal}
+						setIsOpenDeleteLevelModal={setIsOpenDeleteLevelModal}
+					/>
+				}
 			</div>
 		</div>
 		{isOpenLevelModal && <LevelModal setIsOpen={setIsOpenLevelModal} isOpen={Boolean(isOpenLevelModal)} properties={isOpenLevelModal} />}

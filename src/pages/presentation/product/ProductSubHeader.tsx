@@ -2,21 +2,28 @@ import React, { ChangeEvent, useCallback, useState } from 'react'
 import { useFormik } from 'formik'
 import debounce from 'lodash/debounce'
 import { SubheaderSeparator } from '../../../layout/SubHeader/SubHeader'
-import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import { useTranslation } from 'react-i18next'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import Button from 'components/bootstrap/Button'
 import { ProductProps } from './Product'
+import { useDispatch, useSelector } from 'react-redux'
+import { storeProductQuery } from 'redux/product/action'
+import { selectProductQuery } from 'redux/product/selector'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { ProductModalType } from './ProductModal'
+import { Add, Search } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 
 interface ProductFilterInterface {
 	searchInput: string
-	points: {
+	point: {
 		min: string
 		max: string
 	},
-    remaining: {
+    quantity: {
 		min: string
 		max: string
 	}
@@ -24,25 +31,32 @@ interface ProductFilterInterface {
 
 const ProductSubHeader = ({ setIsOpenProductModal }: ProductProps) => {
 	const { t } = useTranslation(['common', 'product'])
+	const dispatch = useDispatch()
+	const permission = useSelector(selectPermission)
 	const [searchInput, setSearchInput] = useState('')
+
+	const productQueryList = useSelector(selectProductQuery)
 
 	const formik = useFormik<ProductFilterInterface>({
 		initialValues: {
 			searchInput: '',
-            points: {
+            point: {
                 min: '',
                 max: ''
             },
-            remaining: {
+            quantity: {
                 min: '',
                 max: ''
             }
 		},
 		onSubmit: (values) => {
-			console.log('submit filter')
-			console.log(values)
-
-			// Send Filter
+			dispatch(storeProductQuery({
+				...productQueryList,
+				minPoint: `minPoint=${values.point.min}`,
+				maxPoint: `maxPoint=${values.point.max}`,
+				minQuantity: `minQuantity=${values.quantity.min}`,
+				maxQuantity: `maxQuantity=${values.quantity.max}`,
+			}))
 		},
 	})
 
@@ -56,25 +70,22 @@ const ProductSubHeader = ({ setIsOpenProductModal }: ProductProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
 	const debounceSearchChange = useCallback(
 		debounce((value: string) => {
-			// Send search filter
-			console.log(value)
+			dispatch(storeProductQuery({ ...productQueryList, keyword: `keyword=${value}` }))
 		}, 1000), []
 	  )
 
 	const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
 		let value = event.target.value
 
-		if (value) {
-			setSearchInput(value)
-			debounceSearchChange(value)
-		}
+		setSearchInput(value)
+		debounceSearchChange(value)
 	}
 
 	return (<>
 		<label
 			className='border-0 bg-transparent cursor-pointer me-0'
 			htmlFor='searchInput'>
-			<Icon icon='Search' size='2x' color='primary' />
+			<Search fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
 		</label>
 		<Input
 			id='searchInput'
@@ -95,20 +106,20 @@ const ProductSubHeader = ({ setIsOpenProductModal }: ProductProps) => {
 					children: <div>
 						<InputGroup>
 							<Input
-								id='points.min'
-								ariaLabel='Minimum points'
+								id='point.min'
+								ariaLabel='Minimum point'
 								placeholder={t('filter.min')}
 								onChange={handleChange}
-								value={values.points.min}
+								value={values.point.min}
 								type='number'
 							/>
 							<InputGroupText>{t('filter.to')}</InputGroupText>
 							<Input
-								id='points.max'
-								ariaLabel='Maximum points'
+								id='point.max'
+								ariaLabel='Maximum point'
 								placeholder={t('filter.max')}
 								onChange={handleChange}
-								value={values.points.max}
+								value={values.point.max}
 								type='number'
 							/>
 						</InputGroup>
@@ -119,20 +130,20 @@ const ProductSubHeader = ({ setIsOpenProductModal }: ProductProps) => {
 					children: <div>
 						<InputGroup>
 							<Input
-								id='remaining.min'
-								ariaLabel='Minimum remaining'
+								id='quantity.min'
+								ariaLabel='Minimum quantity'
 								placeholder={t('filter.min')}
 								onChange={handleChange}
-								value={values.remaining.min}
+								value={values.quantity.min}
 								type='number'
 							/>
 							<InputGroupText>{t('filter.to')}</InputGroupText>
 							<Input
-								id='remaining.max'
-								ariaLabel='Maximum remaining'
+								id='quantity.max'
+								ariaLabel='Maximum quantity'
 								placeholder={t('filter.max')}
 								onChange={handleChange}
-								value={values.remaining.max}
+								value={values.quantity.max}
 								type='number'
 							/>
 						</InputGroup>
@@ -140,16 +151,18 @@ const ProductSubHeader = ({ setIsOpenProductModal }: ProductProps) => {
 				}
 			]} 
 		/>
-		<SubheaderSeparator />
-			<Button
-				icon='PlusLg'
-				color='primary'
-				isLight
-				onClick={() => setIsOpenProductModal({ type: "add", selectedRow: null})}
-				className='text-nowrap'
-			>
-			{t('product:add.product')}
-		</Button>
+		{permission.product[PermissionType.Create] === PermissionValue.Available && <>
+			<SubheaderSeparator />
+				<Button
+					icon={Add}
+					color='primary'
+					isLight
+					onClick={() => setIsOpenProductModal({ type: ProductModalType.Add })}
+					className='text-nowrap'
+				>
+				{t('product:add.product')}
+			</Button>
+		</>}
 	</>)
 }
 

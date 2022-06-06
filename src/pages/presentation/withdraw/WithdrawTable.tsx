@@ -2,14 +2,19 @@ import React, { ReactNode, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
 import { WithdrawModalType } from './WithdrawModal'
-import banks from 'common/data/dummyBankData'
+import { useSelector } from 'react-redux'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { TransactionInterface, TransactionType } from 'common/apis/transaction'
+import moment from 'moment'
+import { selectCompanyBankList } from 'redux/companyBank/selector'
+import { FilterList, LabelTwoTone } from '@mui/icons-material'
 
 interface WithdrawTableInterface {
-    data: any
+    data: TransactionInterface[]
     setIsOpenWithdrawModal?: (value: { type: WithdrawModalType, bank?: string, selectedRow: any }) => void
     setIsOpenCancelWithdrawModal?: (value: { type: WithdrawModalType, selectedRow: any }) => void
     columns?: any
@@ -19,7 +24,7 @@ interface WithdrawTableInterface {
 const WithdrawTable = ({ 
     data, 
     setIsOpenWithdrawModal,
-    setIsOpenCancelWithdrawModal, 
+    setIsOpenCancelWithdrawModal,
     columns, 
     cardHeader 
 }: WithdrawTableInterface) => {
@@ -28,6 +33,9 @@ const WithdrawTable = ({
     const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
+
+    const permission = useSelector(selectPermission)
+    const banks = useSelector(selectCompanyBankList)
 
     const getStatusText = (status: string): ReactNode => {
         if (status === 'success') {
@@ -55,22 +63,14 @@ const WithdrawTable = ({
                                 onClick={() => requestSort('timestamp')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.timestamp')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('timestamp')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('timestamp')} />
                             </th>
                             {columns?.name &&
                                 <th
                                     onClick={() => requestSort('name')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.name')}{' '}
-                                    <Icon
-                                        size='lg'
-                                        className={getClassNamesFor('name')}
-                                        icon='FilterList'
-                                    />
+                                    <FilterList fontSize='small' className={getClassNamesFor('name')} />
                                 </th>
                             }
                             {columns?.mobileNumber && <th>{t('column.mobile.number')}</th>}
@@ -78,42 +78,26 @@ const WithdrawTable = ({
                                 onClick={() => requestSort('from')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.from')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('from')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('from')} />
                             </th>}
                             <th
                                 onClick={() => requestSort('to')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.to')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('to')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('to')} />
                             </th>
                             <th
                                 onClick={() => requestSort('amount')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.amount')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('amount')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('amount')} />
                             </th>
                             {columns?.lastDepositAmount &&
                                 <th
                                     onClick={() => requestSort('lastDepositAmount')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.last.deposit.amount')}{' '}
-                                    <Icon
-                                        size='lg'
-                                        className={getClassNamesFor('lastDepositAmount')}
-                                        icon='FilterList'
-                                    />
+                                    <FilterList fontSize='small' className={getClassNamesFor('lastDepositAmount')} />
                                 </th>
                             }
                             {columns?.notes && <th>{t('column.notes')}</th>}
@@ -122,11 +106,7 @@ const WithdrawTable = ({
                                     onClick={() => requestSort('status')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.status')}{' '}
-                                    <Icon
-                                        size='lg'
-                                        className={getClassNamesFor('status')}
-                                        icon='FilterList'
-                                    />
+                                    <FilterList fontSize='small' className={getClassNamesFor('status')} />
                                 </th>
                             }
                             {columns?.operator &&
@@ -134,38 +114,34 @@ const WithdrawTable = ({
                                     onClick={() => requestSort('operator')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.operator')}{' '}
-                                    <Icon
-                                        size='lg'
-                                        className={getClassNamesFor('operator')}
-                                        icon='FilterList'
-                                    />
+                                    <FilterList fontSize='small' className={getClassNamesFor('operator')} />
                                 </th>
                             }
                             {setIsOpenCancelWithdrawModal && <td />}
                         </tr>
                     </thead>
                     <tbody>
-                        {dataPagination(items, currentPage, perPage).map((i: any, index: number) => (
-                            <tr key={i.id}>
+                        {items.length > 0 ? dataPagination(items, currentPage, perPage).map((transaction: TransactionInterface, index: number) => (
+                            <tr key={transaction.transactionId}>
                                 {columns?.id && <td className='text-center'>
                                     <div>{index + 1}</div>
                                 </td>}
                                 <td>
-                                    <div>{i.date.format('ll')}</div>
+                                    <div>{moment(transaction.createdAt).format('ll')}</div>
                                     <div>
                                         <small className='text-muted'>
-                                            {i.date.fromNow()}
+                                            {moment(transaction.createdAt).fromNow()}
                                         </small>
                                     </div>
                                 </td>
                                 {columns?.name &&
                                     <td>
-                                        <div>{i.name}</div>
+                                        <div>{transaction.mobileNumber}</div>
                                     </td>
                                 }
                                 {columns?.mobileNumber &&
                                     <td>
-                                        <div>{i.mobileNumber}</div>
+                                        <div>{transaction.mobileNumber}</div>
                                     </td>
                                 }
                                 {columns?.from && 
@@ -173,11 +149,11 @@ const WithdrawTable = ({
                                         <div className='d-flex align-items-center'>
                                             <div className='flex-grow-1'>
                                                 <div className='fs-6 fw-bold'>
-                                                    *{i.payerBankAccountNumber}
+                                                    *{transaction.payerBankAccountNumber}
                                                 </div>
                                                 <div className='text-muted text-nowrap'>
-                                                    <Icon icon='Label' />{' '}
-                                                    <small>{i.payerBankName.toUpperCase()}</small>
+                                                    <LabelTwoTone fontSize='small' />{' '}
+                                                    <small>{transaction.payerBankName.toUpperCase()}</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -187,69 +163,75 @@ const WithdrawTable = ({
                                     <div className='d-flex align-items-center'>
                                         <div className='flex-grow-1'>
                                             <div className='fs-6 fw-bold'>
-                                                *{i.recipientBankAccountNumber}
+                                                *{transaction.recipientBankAccountNumber}
                                             </div>
                                             <div className='text-muted text-nowrap'>
-                                                <Icon icon='Label' />{' '}
-                                                <small>{i.recipientBankName.toUpperCase()}</small>
+                                                <LabelTwoTone fontSize='small' />{' '}
+                                                <small>{transaction.recipientBankName.split(' ')[0].toUpperCase()}</small>
                                             </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <div>{i.amount.toLocaleString()}</div>
+                                    <div>{transaction.amount.toLocaleString()}</div>
                                 </td>
                                 {columns?.lastDepositAmount &&
                                     <td>
-                                        <div>{i.amount.toLocaleString()}</div>
+                                        <div>{transaction.amount.toLocaleString()}</div>
                                     </td>
                                 }
                                 {columns?.notes &&
-                                    <td style={{ width: '15%' }}>
-                                        <div>{i.note}</div>
+                                    <td>
+                                        <div>{transaction.notes}</div>
                                     </td>
                                 }
                                 {columns?.status &&
                                     <td>
-                                        <div>{getStatusText(i.status)}</div>
+                                        <div>{getStatusText(transaction.status)}</div>
                                     </td>
                                 }
                                 {columns?.operator &&
                                     <td>
-                                        <div>{i.operator}</div>
+                                        <div>{transaction.adminId}</div>
                                     </td>
                                 }
                                 {(setIsOpenWithdrawModal && setIsOpenCancelWithdrawModal) && <td>
-                                    {i.status === 'request' ? <div className='d-flex justify-content-between align-items-center'>
+                                    {transaction.transactionType === TransactionType.RequestWithdraw ? <div className='row gap-3'>
                                         {banks.map((bank) => 
-                                            <><Button
-                                                onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.System, bank: bank.name, selectedRow: i})}
+                                            <Button
+                                                key={bank.bankId}
+                                                onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.System, bank: bank.bankName, selectedRow: transaction})}
                                                 color='primary'
-                                                isLink
+                                                className='col'
+                                                isLight
                                             >
-                                                {bank.label.toLocaleUpperCase()}
+                                                {bank.bankName.toLocaleUpperCase()}
                                             </Button>
-                                            <span className='text-primary'>|</span></>
                                         )}
                                         <Button
-                                            onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.Manual, selectedRow: i})}
-                                            color='primary'
-                                            isLink
+                                            onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.Manual, selectedRow: transaction})}
+                                            className='text-nowrap col'
+                                            color='light-dark'
                                         >
                                             {t('manual')}
                                         </Button>
-                                        <span className='text-primary'>|</span>
                                         <Button
-                                            onClick={() => setIsOpenCancelWithdrawModal({ type: WithdrawModalType.Delete, selectedRow: i})}
-                                            color='primary'
-                                            isLink
+                                            onClick={() => setIsOpenCancelWithdrawModal({ type: WithdrawModalType.Delete, selectedRow: transaction})}
+                                            color='light-dark'
+                                            className='col'
                                         >
                                             {t('reject')}
                                         </Button>
                                     </div> : <></>}
                                 </td>}
                             </tr>
-                        ))}
+                        )) : permission.withdraw[PermissionType.Read] === PermissionValue.Unavailable ?
+                        <tr>
+                            <td colSpan={9} className='text-center'>ไม่มีสิทธิ์เข้าถึง</td>
+                        </tr>
+                        : <tr>
+                            <td colSpan={9} className='text-center'>ไม่พบข้อมูล</td>
+                        </tr>}
                     </tbody>
                 </table>
             </CardBody>

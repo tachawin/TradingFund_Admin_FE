@@ -34,6 +34,14 @@ export interface AdminInterface extends AdminBaseInterface {
     password?: string
 }
 
+export interface AdminUpdateInterface {
+    status?: AdminStatus
+    role?: AdminRole
+    name?: string
+    mobileNumber?: string
+    password?: string
+}
+
 export const createAdmin = (data: AdminInterface) => 
     axios({
         method: 'post',
@@ -42,7 +50,7 @@ export const createAdmin = (data: AdminInterface) =>
         data
     })
 
-export const updateAdmin = (adminId: string, data: AdminInterface) => 
+export const updateAdmin = (adminId: string, data: AdminUpdateInterface) => 
     axios({
         method: 'patch',
         url: `/admin/update/${adminId}`,
@@ -53,7 +61,7 @@ export const updateAdmin = (adminId: string, data: AdminInterface) =>
 export const updatePermission = (adminId: string, data: PermissionInterface) => 
     axios({
         method: 'patch',
-        url: `/admin/update/${adminId}`,
+        url: `/admin/permission/${adminId}`,
         headers: { Authorization: `Bearer ${getAccessToken()}` },
         data
     })

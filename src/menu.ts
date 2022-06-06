@@ -106,6 +106,12 @@ export const pages = {
 		path: 'report',
 		icon: 'REPORT',
 	},
+	printReport: {
+		id: 'printReport',
+		text: 'Print Report',
+		path: 'print_report',
+		icon: 'REPORT',
+	},
 	deposit: {
 		id: 'deposit',
 		text: 'Deposit',
@@ -589,7 +595,7 @@ interface ComponentsMenuInterface {
 				id: string
 				text: string
 				path: string
-				icon: string
+				icon: any
 			}
 		}
 	}

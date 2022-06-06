@@ -1,6 +1,11 @@
 import axios from './axios'
 
+export interface OTPResponse {
+    accessToken: string
+    refreshToken: string
+}
 export interface LoginResponse {
+    useOTP?: string
     adminId: string
     refCode: string
 }
@@ -9,20 +14,26 @@ export interface OTPRequest extends LoginResponse {
     otpConfirm: string
 }
 
-export interface OTPResponse {
-    accessToken: string
-    refreshToken: string
+export const login = async (
+    username: string, 
+    password: string,
+    next: (response: LoginResponse & OTPResponse) => void,
+    handleError: (error: any) => void
+) => {
+    try {
+        const res = await axios({
+            method: 'post',
+            url: '/auth/admin/login',
+            data: {
+                username,
+                password,
+            },
+        })
+        next(res.data)
+    } catch (error: any) {
+        handleError(error)
+    }
 }
-
-export const login = (username: string, password: string) => 
-    axios({
-        method: 'post',
-        url: '/auth/admin/login',
-        data: {
-            username,
-            password,
-        },
-    })
 
 export const logout = () => 
     axios({
@@ -31,12 +42,29 @@ export const logout = () =>
     })
 
 
-export const sendOTP = (data: OTPRequest) => 
-    axios({
-        method: 'post',
-        url: '/auth/admin/2fa/verify/otp',
-        data
-    })
+export const sendOTP = async (
+    data: OTPRequest,
+    next: (response: OTPResponse) => void,
+    handleError: (error: any) => void
+) => {
+    try {
+        const res = await axios({
+            method: 'post',
+            url: '/auth/admin/2fa/verify/otp',
+            data
+        })
+        next(res.data)
+    } catch (error: any) {
+        handleError(error)
+    }
+}
+
+export const sendOTPold = (data: OTPRequest) => 
+axios({
+    method: 'post',
+    url: '/auth/admin/2fa/verify/otp',
+    data
+})
 
 export const renewToken = async () => {
     try {

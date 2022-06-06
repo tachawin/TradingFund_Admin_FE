@@ -2,13 +2,16 @@ import React, { ReactNode, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown'
 import { AdminModalType } from './AdminEditModal'
 import { AdminInterface, AdminRole, AdminStatus } from 'common/apis/admin'
 import moment from 'moment'
+import { useSelector } from 'react-redux'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { DeleteTwoTone, EditTwoTone, FilterList, LabelTwoTone, MoreHoriz, VisibilityTwoTone } from '@mui/icons-material'
 
 interface AdminTableInterface {
     data: AdminInterface[]
@@ -20,9 +23,10 @@ interface AdminTableInterface {
 }
 
 interface AdminRowAction {
-	icon: string,
-	onClick: (row: any) => void,
+	icon: any,
+	onClick: (row: AdminInterface) => void,
 	title: string
+    disabled: boolean
 }
 
 const AdminTable = ({ 
@@ -33,6 +37,7 @@ const AdminTable = ({
     cardHeader 
 }: AdminTableInterface) => {
     const { t } = useTranslation('common')
+    const permission = useSelector(selectPermission)
 
     const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
@@ -41,22 +46,25 @@ const AdminTable = ({
 
     const ADMIN_ROW_ACTIONS: AdminRowAction[] = [
 		{
-			icon: 'Edit',
+			icon: EditTwoTone,
 			onClick: (row: AdminInterface) => setIsOpenAdminModal && setIsOpenAdminModal({ 
                 type: AdminModalType.Edit, 
                 selectedRow: row
             }),
-			title: t('edit')
+			title: t('edit'),
+            disabled: permission.adminManage[PermissionType.Update] === PermissionValue.Unavailable,
 		},
 		{
-			icon: 'Visibility',
+			icon: VisibilityTwoTone,
 			onClick: (row: AdminInterface) => setIsOpenPermissionModal && setIsOpenPermissionModal({ selectedRow: row }),
-			title: t('admin:grant.permission')
+			title: t('admin:grant.permission'),
+            disabled: permission.adminManage[PermissionType.Update] === PermissionValue.Unavailable,
 		},
 		{
-			icon: 'Delete',
+			icon: DeleteTwoTone,
 			onClick: (row: AdminInterface) => setIsOpenDeleteModal && setIsOpenDeleteModal({ selectedRow: row }),
-			title: t('delete')
+			title: t('delete'),
+            disabled: permission.adminManage[PermissionType.Delete] === PermissionValue.Unavailable
 		}
 	]
 
@@ -82,58 +90,38 @@ const AdminTable = ({
                                 onClick={() => requestSort('username')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.username')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('username')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('username')} />
                             </th>
                             <th
                                 onClick={() => requestSort('name')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.name')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('name')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('name')} />
                             </th>
                             <th>{t('column.mobile.number')}</th>
                             <th
                                 onClick={() => requestSort('updatedAt')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.updated.at')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('updatedAt')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('updatedAt')} />
                             </th>
                             <th
                                 onClick={() => requestSort('createdAt')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.created.at')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('createdAt')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('createdAt')} />
                             </th>
                             <th
                                 onClick={() => requestSort('status')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.status')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('status')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('status')} />
                             </th>
                             <td />
                         </tr>
                     </thead>
                     <tbody>
-                        {dataPagination(items, currentPage, perPage).map((admin: AdminInterface, index: number) => (
+                        {items.length > 0 ? dataPagination(items, currentPage, perPage).map((admin: AdminInterface, index: number) => (
                             <tr key={admin.adminId}>
                                 <td className='text-center'>
                                     <div>{index + 1}</div>
@@ -148,7 +136,7 @@ const AdminTable = ({
                                                 {admin.name}
                                             </div>
                                             <div className='text-muted'>
-                                                <Icon icon='Label' />{' '}
+                                                <LabelTwoTone fontSize='small' />{' '}
                                                 <small>
                                                     {admin.role === AdminRole.SuperAdmin ? t('admin:super.admin') : t('admin:admin') }
                                                 </small>
@@ -197,33 +185,41 @@ const AdminTable = ({
                                     </div>
                                 </td>
                                 <td>
-                                    <Dropdown>
-                                        <DropdownToggle 
-                                            hasIcon={false} 
-                                            isOpen={Boolean(isOpenDropdown)} 
-                                            setIsOpen={setIsOpenDropdown}
-                                            index={index}
-                                            icon='MoreHoriz'
-                                            color='dark'
-                                            isLight
-                                        />
-                                        <DropdownMenu isAlignmentEnd isOpen={isOpenDropdown === index} setIsOpen={setIsOpenDropdown}>
-                                            {ADMIN_ROW_ACTIONS.map((action: AdminRowAction, index: number) => 
-                                                <DropdownItem key={index}>
-                                                    <Button
-                                                        icon={action.icon}
-                                                        onClick={() => handleOnDropdownClick(action.onClick, admin)}
-                                                    >
-                                                        {action.title}
-                                                    </Button>
-                                                </DropdownItem>
-                                            )}
-                                            
-                                        </DropdownMenu>
-                                    </Dropdown>
+                                    {(permission.adminManage[PermissionType.Update] === PermissionValue.Available || permission.adminManage[PermissionType.Delete] === PermissionValue.Available) &&
+                                        <Dropdown>
+                                            <DropdownToggle 
+                                                hasIcon={false} 
+                                                isOpen={Boolean(isOpenDropdown)} 
+                                                setIsOpen={setIsOpenDropdown}
+                                                index={index}
+                                                icon={MoreHoriz}
+                                                color='dark'
+                                                isLight
+                                            />
+                                            <DropdownMenu isAlignmentEnd isOpen={isOpenDropdown === index} setIsOpen={setIsOpenDropdown}>
+                                                {ADMIN_ROW_ACTIONS.map((action: AdminRowAction, index: number) => 
+                                                    !action.disabled && <DropdownItem key={index}>
+                                                        <Button
+                                                            icon={action.icon}
+                                                            onClick={() => handleOnDropdownClick(action.onClick, admin)}
+                                                        >
+                                                            {action.title}
+                                                        </Button>
+                                                    </DropdownItem>
+                                                )}
+                                                
+                                            </DropdownMenu>
+                                        </Dropdown>
+                                    }
                                 </td>
                             </tr>
-                        ))}
+                        )) : permission.adminManage[PermissionType.Read] === PermissionValue.Unavailable ?
+                        <tr>
+                            <td colSpan={8} className='text-center'>ไม่มีสิทธิ์เข้าถึง</td>
+                        </tr>
+                        : <tr>
+                            <td colSpan={8} className='text-center'>ไม่พบข้อมูล</td>
+                        </tr>}
                     </tbody>
                 </table>
             </CardBody>

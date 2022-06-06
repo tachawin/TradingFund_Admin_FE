@@ -5,7 +5,7 @@ import classNames from 'classnames'
 
 import { useFormik } from 'formik'
 import { UserAuth } from 'common/types/user'
-import { login, LoginResponse } from 'common/apis/auth'
+import { login, LoginResponse, OTPResponse } from 'common/apis/auth'
 import * as Yup from 'yup'
 
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper'
@@ -17,10 +17,10 @@ import Button from '../../../components/bootstrap/Button'
 import OTP from './OTP'
 import Spinner from 'components/bootstrap/Spinner'
 import showNotification from 'components/extras/showNotification'
-import Icon from 'components/icon/Icon'
-import { getAccessToken } from 'common/utils/auth'
+import { didLogin, getAccessToken } from 'common/utils/auth'
 import { useNavigate } from 'react-router-dom'
 import { pages } from 'menu'
+import { InfoTwoTone } from '@mui/icons-material'
 
 enum LoginState {
 	Login = 'login',
@@ -55,26 +55,29 @@ const Login = () => {
 		onSubmit: (values, { setSubmitting, resetForm }) => {
 			const { username, password } = values
 			setIsLoading(true)
-			login(username, password)
-				.then((response) => {
-					const { data }: { data: LoginResponse } = response
+			login(username, password, (data: LoginResponse & OTPResponse) => {
+				console.log(data)
+				const { useOTP, accessToken, refreshToken } = data
+				if (useOTP) {
 					setLoginState(LoginState.OTP)
-					setOTP(data)
-					resetForm()
-				})
-				.catch((err) => {
-					const { response } = err
-					const message = response?.data
-           			console.log(message)
-					showNotification(
-						<span className='d-flex align-items-center'>
-							<Icon icon='Info' size='lg' className='me-1' />
-							<span>{t('login.failed')}</span>
-						</span>,
-						t('please.try.again'),
-					)
-			})
-			.finally(() => {
+				} else {
+					didLogin(accessToken, refreshToken)
+					navigate('/')
+				}
+				setOTP(data)
+				resetForm()
+			}, (err) => {
+				const { response } = err
+				const message = response?.data
+				console.log(message)
+				showNotification(
+					<span className='d-flex align-items-center'>
+						<InfoTwoTone className='me-1' />
+						<span>{t('login.failed')}</span>
+					</span>,
+					t('please.try.again'),
+				)
+			}).finally(() => {
 				setIsLoading(false)
 				setSubmitting(false)
 			})

@@ -14,5 +14,7 @@
 
     "form.delete.confirmation": "ต้องการลบสินค้าใช่หรือไม่ ?",
     "delete.successfully": "ลบสินค้าสำเร็จ",
-    "delete.product.successfully": "ลบสินค้า {{productName}} สำเร็จ"
+    "delete.product.successfully": "ลบสินค้า {{productName}} สำเร็จ",
+    "save.failed": "บันทึกสินค้าไม่สำเร็จ",
+    "save.product.failed": "บันทึกสินค้า {{productName}} ไม่สำเร็จ"
 }

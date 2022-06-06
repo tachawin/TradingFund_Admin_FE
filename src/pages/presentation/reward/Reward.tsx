@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import debounce from 'lodash/debounce'
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper'
@@ -10,9 +10,7 @@ import Page from '../../../layout/Page/Page'
 import { pages } from '../../../menu'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
-import data from '../../../common/data/dummyRewardData'
 import Button, { ButtonGroup } from '../../../components/bootstrap/Button'
-import Icon from '../../../components/icon/Icon'
 import Input from '../../../components/bootstrap/forms/Input'
 import Dropdown, {
 	DropdownMenu,
@@ -20,51 +18,85 @@ import Dropdown, {
 } from '../../../components/bootstrap/Dropdown'
 import Checks  from '../../../components/bootstrap/forms/Checks'
 import { useTranslation } from 'react-i18next'
-import RewardModal from './RewardModal'
+import RewardModal, { RewardModalType } from './RewardModal'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import RewardTable from './RewardTable'
 import { CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectRedeemProductList, selectRedeemProductQuery } from 'redux/redeemProduct/selector'
+import { getRedeemProductList, RedeemInterface, RedeemStatus } from 'common/apis/redeem'
+import { storeRedeemProductList, storeRedeemProductQuery } from 'redux/redeemProduct/action'
+import showNotification from 'components/extras/showNotification'
+import Spinner from 'components/bootstrap/Spinner'
+import { InfoTwoTone, Search } from '@mui/icons-material'
+import COLORS from 'common/data/enumColors'
 
 interface RewardFilterInterface {
 	searchInput: string
-    isApproved: boolean
-    isRejected: boolean
+	status: string[]
 	points: {
 		min: string
 		max: string
-	},
+	}
 	timestamp: {
 		startDate: Date
 		endDate: Date
 		key: string
 	}[]
+	isCreatedAtDateChanged: boolean
 }
 
 interface RewardModalProperties {
-	type: string
-	selectedRow: any
+	type: RewardModalType
+	selectedRow: RedeemInterface
 }
 
-enum REWARD_TABLE_STATE {
-	REQUEST = 'request',
-	WAITLIST = 'waitlist',
-	HISTORY = 'history'
+export enum RewardTableState {
+	Request = 'request',
+	Sending = 'sending',
+	History = 'history'
 }
 
 const Reward = () => {
     const { t } = useTranslation(['common', 'reward'])
+	const dispatch = useDispatch()
 
+	const [isLoading, setIsLoading] = useState(false)
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
     const [isOpenRewardModal, setIsOpenRewardModal] = useState<RewardModalProperties>()
-    const [rewardTableState, setRewardTableState] = useState(REWARD_TABLE_STATE.REQUEST)
+    const [rewardTableState, setRewardTableState] = useState(RewardTableState.Request)
+
+	const redeemProductList = useSelector(selectRedeemProductList)
+	const queryList = useSelector(selectRedeemProductQuery)
+
+	useEffect(() => {
+		let queryString = Object.values(queryList).filter(Boolean).join('&')
+		let query = queryString ? `?${queryString}` : ''
+		setIsLoading(true)
+		getRedeemProductList(query, rewardTableState, (redeemProductRequest: RedeemInterface[]) => {
+			dispatch(storeRedeemProductList(redeemProductRequest))
+			setIsLoading(false)
+		}, (error: any) => {
+			const { response } = error
+			console.log(response.data)
+			setIsLoading(false)
+			showNotification(
+				<span className='d-flex align-items-center'>
+					<InfoTwoTone className='me-1' />
+					<span>เรียกดูรายการแลกสินค้าไม่สำเร็จ</span>
+				</span>,
+				'กรุณาลองใหม่อีกครั้ง',
+			)
+		})
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [queryList, rewardTableState])
 
 	const formik = useFormik<RewardFilterInterface>({
 		initialValues: {
 			searchInput: '',
-            isApproved: false,
-            isRejected: false,
+            status: [],
             points: {
                 min: '',
                 max: ''
@@ -75,13 +107,18 @@ const Reward = () => {
 					endDate: moment().endOf('week').toDate(),
 					key: 'selection',
 				},
-			]
+			],
+			isCreatedAtDateChanged: false,
 		},
 		onSubmit: (values) => {
-			console.log('submit filter')
-			console.log(values)
-
-			// Send Filter
+			dispatch(storeRedeemProductQuery({
+				...queryList,
+				status: values.status.length > 0 ? `status=${values.status.join(',')}` : '',
+				start: values.isCreatedAtDateChanged ? `startCreated=${moment(values.timestamp[0].startDate).format('YYYY-MM-DD')}` : '',
+				end: values.isCreatedAtDateChanged ? `endCreated=${moment(values.timestamp[0].endDate).format('YYYY-MM-DD')}`: '',
+				minPoint: values.points.min ? `minPoint=${values.points.min}` : '',
+				maxPoint: values.points.max ? `maxPoint=${values.points.max}` : ''
+			}))
 		},
 	})
 
@@ -105,21 +142,32 @@ const Reward = () => {
 		/>
 	)
 
-	  // eslint-disable-next-line react-hooks/exhaustive-deps
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debounceSearchChange = useCallback(
 		debounce((value: string) => {
-			// Send search filter
-			console.log(value)
+			dispatch(storeRedeemProductQuery({ ...queryList, keyword: `keyword=${value}` }))
 		}, 1000), []
 	  )
 
 	const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
 		let value = event.target.value
 
-		if (value) {
-			setSearchInput(value)
-			debounceSearchChange(value)
+		setSearchInput(value)
+		debounceSearchChange(value)
+	}
+
+	const handleOnChangeMultipleSelector = (event: ChangeEvent<HTMLInputElement>, field: string) => {
+		let selectedValue = event.target.name
+		let index = parseInt(event.target.value)
+		let isSelected = event.target.checked
+		let newValue = values[field as keyof RewardFilterInterface] as string[]
+
+		if (isSelected) {
+			newValue.push(selectedValue)
+		} else {
+			newValue.splice(index, 1)
 		}
+		setFieldValue(field, newValue)
 	}
 
 	return (
@@ -129,13 +177,13 @@ const Reward = () => {
 					<label
 						className='border-0 bg-transparent cursor-pointer me-0'
 						htmlFor='searchInput'>
-						<Icon icon='Search' size='2x' color='primary' />
+						<Search fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
 					</label>
 					<Input
 						id='searchInput'
 						type='search'
 						className='border-0 shadow-none bg-transparent'
-						placeholder={rewardTableState === REWARD_TABLE_STATE.REQUEST ?
+						placeholder={rewardTableState === RewardTableState.Request ?
 							t('reward:search.reward.request.transaction') + '...' : t('reward:search.reward.history.transaction') + '...'
 						}
 						onChange={handleSearchChange}
@@ -151,38 +199,47 @@ const Reward = () => {
 						filters={[
 							{
 								label: t('filter.status'),
-								disabled: rewardTableState === REWARD_TABLE_STATE.REQUEST,
+								disabled: rewardTableState !== RewardTableState.History,
 								children: <div>
-                                    <Checks
-                                        id='isApproved'
-                                        label={t('approve')}
-                                        onChange={handleChange}
-                                        checked={values.isApproved}
-                                        ariaLabel={t('success')}
-                                    />
-                                    <Checks
-                                        id='isRejected'
-                                        label={t('reject')}
-                                        onChange={handleChange}
-                                        checked={values.isRejected}
-                                        ariaLabel={t('not.found')}
-                                    />
+									{[RedeemStatus.Success, RedeemStatus.Reject].map((status: RedeemStatus) => {
+										let indexInStatusFilter = values.status.indexOf(status)
+										return <Checks
+												key={status}
+												label={status === RedeemStatus.Success ? t('success') : t('reject')}
+												name={status}
+												value={indexInStatusFilter}
+												onChange={(e) => handleOnChangeMultipleSelector(e, 'status')}
+												checked={indexInStatusFilter > -1}
+												ariaLabel={status}
+											/>
+										}
+									)}
                                 </div>
 							},
                             {
 								label: t('filter.timestamp'),
-								children: <Dropdown >
-									<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										<span data-tour='date-range'>
-											{`${moment(values.timestamp[0].startDate).format('MMM Do YY')} - ${moment(
-												values.timestamp[0].endDate,
-											).format('MMM Do YY')}`}
-										</span>
-									</DropdownToggle>
-									<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										{datePicker(values.timestamp, 'timestamp')}
-									</DropdownMenu>
-								</Dropdown>
+								children: <div>
+									<Checks
+										id='isCreatedAtDateChanged'
+										type='switch'
+										label={t('filter.timestamp')}
+										onChange={handleChange}
+										checked={values.isCreatedAtDateChanged}
+										ariaLabel='Filter Created At Date'
+									/>
+									{values.isCreatedAtDateChanged && <Dropdown className='mt-2'>
+										<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
+											<span data-tour='date-range'>
+												{`${moment(values.timestamp[0].startDate).format('MMM Do YY')} - ${moment(
+													values.timestamp[0].endDate,
+												).format('MMM Do YY')}`}
+											</span>
+										</DropdownToggle>
+										<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
+											{datePicker(values.timestamp, 'timestamp')}
+										</DropdownMenu>
+									</Dropdown>}
+								</div>
 							},
 							{
 								label: t('filter.points'),
@@ -214,46 +271,45 @@ const Reward = () => {
 			</SubHeader>
 			<Page>
 				<div className='row h-100'>
-					<div className='col-12'>
-						<RewardTable
-                            cardHeader={
-                                <CardHeader>
-                                    <CardLabel>
-                                        <CardTitle>{rewardTableState === REWARD_TABLE_STATE.REQUEST ? 
-										t('reward:reward.request') : t('reward:reward.history')}</CardTitle>
-                                    </CardLabel>
-                                    <ButtonGroup>
-                                        <Button
-                                            color={rewardTableState === REWARD_TABLE_STATE.REQUEST ? 'success' : 'dark'}
-                                            isLight={rewardTableState !== REWARD_TABLE_STATE.REQUEST}
-                                            onClick={() => setRewardTableState(REWARD_TABLE_STATE.REQUEST)}
-                                        >
-                                            {t('reward:request')}
-                                        </Button>
-										<Button
-                                            color={rewardTableState === REWARD_TABLE_STATE.WAITLIST ? 'success' : 'dark'}
-                                            isLight={rewardTableState !== REWARD_TABLE_STATE.WAITLIST}
-                                            onClick={() => setRewardTableState(REWARD_TABLE_STATE.WAITLIST)}
-                                        >
-                                            {t('reward:waitlist')}
-                                        </Button>
-                                        <Button
-                                            color={rewardTableState === REWARD_TABLE_STATE.HISTORY ? 'success' : 'dark'}
-                                            isLight={rewardTableState !== REWARD_TABLE_STATE.HISTORY}
-                                            onClick={() => setRewardTableState(REWARD_TABLE_STATE.HISTORY)}
-                                        >
-                                            {t('reward:history')}
-                                        </Button>
-                                    </ButtonGroup>
-                                </CardHeader>
-                            }
-                            data={rewardTableState !== REWARD_TABLE_STATE.HISTORY ? 
-								data.filter((i: any) => rewardTableState === REWARD_TABLE_STATE.REQUEST ?  i.status === 'request' : i.status === 'sending') : 
-								data.filter((i: any) => i.status !== 'request')
-							} 
-                            setIsOpenRewardModal={rewardTableState !== REWARD_TABLE_STATE.HISTORY ? setIsOpenRewardModal : undefined}
-                            columns={{ mobileNumber: true, notes: true, status: true, operator: rewardTableState === REWARD_TABLE_STATE.HISTORY }} 
-                        />
+					<div className={`col-12 ${isLoading ? 'd-flex align-items-center justify-content-center' : 'px-4'}`}>
+						{isLoading ? <Spinner color='info' isGrow size={60} /> 
+							: <RewardTable
+								cardHeader={
+									<CardHeader>
+										<CardLabel>
+											<CardTitle>{rewardTableState === RewardTableState.Request ? 
+											t('reward:reward.request') : t('reward:reward.history')}</CardTitle>
+										</CardLabel>
+										<ButtonGroup>
+											<Button
+												color={rewardTableState === RewardTableState.Request ? 'success' : 'dark'}
+												isLight={rewardTableState !== RewardTableState.Request}
+												onClick={() => setRewardTableState(RewardTableState.Request)}
+											>
+												{t('reward:request')}
+											</Button>
+											<Button
+												color={rewardTableState === RewardTableState.Sending ? 'success' : 'dark'}
+												isLight={rewardTableState !== RewardTableState.Sending}
+												onClick={() => setRewardTableState(RewardTableState.Sending)}
+											>
+												{t('reward:waitlist')}
+											</Button>
+											<Button
+												color={rewardTableState === RewardTableState.History ? 'success' : 'dark'}
+												isLight={rewardTableState !== RewardTableState.History}
+												onClick={() => setRewardTableState(RewardTableState.History)}
+											>
+												{t('reward:history')}
+											</Button>
+										</ButtonGroup>
+									</CardHeader>
+								}
+								data={redeemProductList}
+								setIsOpenRewardModal={rewardTableState !== RewardTableState.History ? setIsOpenRewardModal : undefined}
+								columns={{ mobileNumber: true, notes: true, status: true, operator: rewardTableState === RewardTableState.History }} 
+							/>
+						}
 					</div>
 				</div>
 			</Page>

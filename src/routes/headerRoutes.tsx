@@ -5,6 +5,7 @@ import DefaultHeader from '../pages/common/Headers/DefaultHeader'
 const headers = [
 	{ path: pages.login.path, element: null, exact: true },
 	{ path: pages.otp.path, element: null, exact: true },
+	{ path: pages.printReport.path, element: null, exact: true },
 	{
 		path: `*`,
 		element: <DefaultHeader />,

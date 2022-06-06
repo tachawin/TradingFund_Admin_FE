@@ -1,9 +1,7 @@
 import { ReactNode, useState } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 import TagWrapper from '../TagWrapper';
-import Icon from '../icon/Icon';
 
 interface AlertHeadingInterface {
 	children: ReactNode,
@@ -55,7 +53,7 @@ interface AlertInterface {
 	children: ReactNode,
 	className?: string,
 	color?: string,
-	icon?: string,
+	icon?: any,
 	isDismissible?: boolean,
 	isLight?: boolean,
 	isOutline?: boolean,
@@ -71,7 +69,7 @@ const Alert = ({
 	isOutline = false,
 	isLight = false,
 	shadow,
-	icon,
+	icon: AlertIcon,
 	rounded,
 	borderWidth,
 	...props
@@ -101,10 +99,10 @@ const Alert = ({
 				// eslint-disable-next-line react/jsx-props-no-spreading
 				{...props}
 				role='alert'>
-				{icon ? (
+				{AlertIcon ? (
 					<>
 						<div className='alert-icon'>
-							<Icon icon={icon} />
+							<AlertIcon />
 						</div>
 						<div className='alert-text'>{children}</div>
 					</>

@@ -2,7 +2,7 @@ import { Children, cloneElement } from 'react';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 import TagWrapper from '../TagWrapper';
-import Icon from '../icon/Icon';
+import { ChevronRight, HolidayVillageTwoTone } from '@mui/icons-material';
 
 interface BreadcrumbItemInterface {
 	children: any,
@@ -57,8 +57,8 @@ const Breadcrumb = ({
 	itemTag = 'li',
 	ariaLabel = 'breadcrumb',
 	autoActive = true,
-	isToHome = <Icon icon='HolidayVillage' />,
-	divider = <Icon icon='ChevronRight' />,
+	isToHome = <HolidayVillageTwoTone />,
+	divider = <ChevronRight />,
 }: BreadcrumbInterface) => {
 	const _divider = divider !== 'string' && divider;
 	return (

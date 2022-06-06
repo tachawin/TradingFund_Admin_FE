@@ -9,11 +9,11 @@ import FormGroup from '../../../components/bootstrap/forms/FormGroup'
 import Input from '../../../components/bootstrap/forms/Input'
 import Button from '../../../components/bootstrap/Button'
 import { useFormik } from 'formik'
-import { sendOTP } from 'common/apis/auth'
+import { OTPResponse, sendOTP } from 'common/apis/auth'
 import Spinner from 'components/bootstrap/Spinner'
 import showNotification from 'components/extras/showNotification'
-import Icon from 'components/icon/Icon'
 import { didLogin } from 'common/utils/auth'
+import { InfoTwoTone } from '@mui/icons-material'
 
 interface OTPInterface {
 	adminId: string
@@ -37,24 +37,20 @@ const OTP = ({ adminId, refCode }: OTPInterface) => {
 		onSubmit: (values, { setSubmitting, resetForm }) => {
 			const { otp } = values
 			setIsLoading(true)
-			sendOTP({ adminId, refCode, otpConfirm: otp })
-				.then((res) => {
-					const { accessToken, refreshToken } = res.data
-					didLogin(accessToken, refreshToken)
-					resetForm()
-					navigate('/')
-				})
-				.catch((err) => {
-					showNotification(
-						<span className='d-flex align-items-center'>
-							<Icon icon='Info' size='lg' className='me-1' />
-							<span>{t('otp.failed')}</span>
-						</span>,
-						t('please.try.again'),
-					)
-				}
-			)
-			.finally(() => {
+			sendOTP({ adminId, refCode, otpConfirm: otp }, (otpResponse: OTPResponse) => {
+				const { accessToken, refreshToken } = otpResponse
+				didLogin(accessToken, refreshToken)
+				navigate('/')
+				resetForm()
+			}, (err) => {
+				showNotification(
+					<span className='d-flex align-items-center'>
+						<InfoTwoTone className='me-1' />
+						<span>{t('otp.failed')}</span>
+					</span>,
+					t('please.try.again'),
+				)
+			}).finally(() => {
 				setIsLoading(false)
 				setSubmitting(false)
 			})

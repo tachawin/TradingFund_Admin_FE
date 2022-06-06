@@ -6,6 +6,7 @@ import Dropdown, {
 } from 'components/bootstrap/Dropdown'
 import Button from 'components/bootstrap/Button'
 import FormGroup from 'components/bootstrap/forms/FormGroup'
+import { FilterAltTwoTone } from '@mui/icons-material'
 
 interface Filter {
     label: string
@@ -26,7 +27,7 @@ const CommonTableFilter = ({ filters, resetLabel, onReset, submitLabel, onSubmit
 
     return (
         <Dropdown>
-            <DropdownToggle icon='FilterAlt' hasIcon={false} color='dark' isLight isOpen={Boolean(isOpenFilter)} setIsOpen={setOpenFilter} />
+            <DropdownToggle icon={FilterAltTwoTone} hasIcon={false} color='dark' isLight isOpen={Boolean(isOpenFilter)} setIsOpen={setOpenFilter} />
                 
             <DropdownMenu isAlignmentEnd size='lg' isOpen={isOpenFilter} setIsOpen={setOpenFilter}>
                 <div className='container py-2'>

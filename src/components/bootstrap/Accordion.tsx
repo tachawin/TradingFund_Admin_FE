@@ -1,7 +1,6 @@
 import { Children, cloneElement, forwardRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import Icon from '../icon/Icon';
 import TagWrapper from '../TagWrapper';
 
 interface AccordionItemInterface {
@@ -9,7 +8,7 @@ interface AccordionItemInterface {
 	parentId?: string | number,
 	title: string,
 	children: any,
-	icon?: string,
+	icon?: any,
 	tag?: string,
 	headerTag?: string,
 	overWriteColor?: string,
@@ -18,7 +17,7 @@ interface AccordionItemInterface {
 }
 
 export const AccordionItem = forwardRef<any, AccordionItemInterface>(
-	({ id, icon, title, children, tag, headerTag, overWriteColor, ...props }, ref) => {
+	({ id, icon: AccordionItemIcon, title, children, tag, headerTag, overWriteColor, ...props }, ref) => {
 		
 		const _active = props.activeItem === id;
 
@@ -39,7 +38,7 @@ export const AccordionItem = forwardRef<any, AccordionItemInterface>(
 							
 							_active ? props.setActiveItem(null) : props.setActiveItem(id)
 						}>
-						{icon && <Icon icon={icon} className='accordion-icon' />}
+						{AccordionItemIcon && <AccordionItemIcon className='accordion-icon' />}
 						{title}
 					</button>
 				</TagWrapper>

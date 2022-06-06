@@ -2,13 +2,20 @@ import React, { ReactNode, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
-import Icon from 'components/icon/Icon'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
+import { TransactionInterface, TransactionStatus } from 'common/apis/transaction'
+import moment from 'moment'
+import 'moment/locale/th'
+import { DepositModalProperties, DepositModalType } from './DepositModal'
+import { useSelector } from 'react-redux'
+import { selectPermission } from 'redux/user/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { FilterList, LabelTwoTone } from '@mui/icons-material'
 
 interface DepositTableInterface {
-    data: any
-    setIsOpenDepositModal?: (value: { type: string, selectedRow: any }) => void
+    data: TransactionInterface[]
+    setIsOpenDepositModal?: (value: DepositModalProperties) => void
     disabledColumns?: string[]
     cardHeader?: ReactNode
 }
@@ -20,10 +27,12 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
 
+    const permission = useSelector(selectPermission)
+
     const getStatusText = (status: string): ReactNode => {
-        if (status === 'success') {
+        if (status === TransactionStatus.Success) {
             return <div className='fw-bold text-success'>{t('success')}</div>
-        } else if (status === 'not-found') {
+        } else if (status === TransactionStatus.NotFound) {
             return <div className='fw-bold text-warning'>{t('not.found')}</div>
         } else {
             return <div className='fw-bold text-danger'>{t('cancel')}</div>
@@ -46,51 +55,31 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                                 onClick={() => requestSort('status')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.status')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('status')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('status')} />
                             </th>
                             <th
                                 onClick={() => requestSort('timestamp')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.timestamp')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('timestamp')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('timestamp')} />
                             </th>
                             <th
                                 onClick={() => requestSort('from')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.from')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('from')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('from')} />
                             </th>
                             <th
                                 onClick={() => requestSort('to')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.to')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('to')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('to')} />
                             </th>
                             <th
                                 onClick={() => requestSort('amount')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.amount')}{' '}
-                                <Icon
-                                    size='lg'
-                                    className={getClassNamesFor('amount')}
-                                    icon='FilterList'
-                                />
+                                <FilterList fontSize='small' className={getClassNamesFor('amount')} />
                             </th>
                             {!disabledColumns?.includes('mobile-number') && <th>{t('column.mobile.number')}</th>}
                             {!disabledColumns?.includes('notes') && <th>{t('column.notes')}</th>}
@@ -98,77 +87,85 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                         </tr>
                     </thead>
                     <tbody>
-                        {dataPagination(items, currentPage, perPage).map((i: any, index: number) => (
-                            <tr key={i.id}>
+                        {items.length > 0 ? dataPagination(items, currentPage, perPage).map((transaction: TransactionInterface, index: number) => (
+                            <tr key={transaction.transactionId}>
                                 <td className='text-center'>
                                     <div>{index + 1}</div>
                                 </td>
                                 <td>
-                                    <div>{getStatusText(i.status)}</div>
+                                    <div>{getStatusText(transaction.status)}</div>
                                 </td>
                                 <td>
-                                    <div>{i.date.format('ll')}</div>
+                                    <div>{moment(transaction.createdAt).format('ll')}</div>
                                     <div>
                                         <small className='text-muted'>
-                                            {i.date.fromNow()}
+                                            {moment(transaction.createdAt).fromNow()}
                                         </small>
                                     </div>
                                 </td>
                                 <td>
-                                    <div>*{i.payerBankAccountNumber}</div>
+                                    <div>*{transaction.payerBankAccountNumber.slice(-4)}</div>
                                 </td>
                                 <td>
                                     <div className='d-flex align-items-center'>
                                         <div className='flex-grow-1'>
                                             <div className='fs-6 fw-bold'>
-                                                *{i.recipientBankAccountNumber}
+                                                *{transaction.recipientBankAccountNumber.slice(-4)}
                                             </div>
                                             <div className='text-muted'>
-                                                <Icon icon='Label' />{' '}
-                                                <small>{i.recipientBankName.toUpperCase()}</small>
+                                                <LabelTwoTone fontSize='small' />{' '}
+                                                <small>{transaction.recipientBankName.toUpperCase()}</small>
                                             </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <div>{i.amount.toLocaleString()}</div>
+                                    <div>{transaction.amount.toLocaleString()}</div>
                                 </td>
                                 {!disabledColumns?.includes('mobile-number') &&
                                     <td>
-                                        <div>{i.mobileNumber}</div>
+                                        <div>{transaction.mobileNumber}</div>
                                     </td>
                                 }
                                 {!disabledColumns?.includes('notes') &&
-                                    <td className='w-25'>
-                                        <div>{i.note}</div>
+                                    <td>
+                                        <div>{transaction.notes}</div>
                                     </td>
                                 }
                                 {setIsOpenDepositModal && <td>
-                                    {i.status === 'success' ? 
-                                        <><Button
-                                            onClick={() => setIsOpenDepositModal({ type: "refund", selectedRow: i})}
-                                            className='p-0'
-                                            isLight
-                                        >
-                                            {t('refund')}
-                                        </Button> / </>
-                                        : i.status === 'not-found' ? <><Button
-                                            onClick={() => setIsOpenDepositModal({ type: "select-payer", selectedRow: i})}
-                                            className='p-0'
-                                            isLight
-                                        >
-                                            {t('select.payer')}
-                                        </Button> / </> : <></>
-                                    } <Button
-                                            onClick={() => setIsOpenDepositModal({ type: "edit", selectedRow: i})}
-                                            className='p-0'
-                                            isLight
-                                        >
-                                        {t('edit')}
-                                    </Button>
+                                    <div className='row gap-3 w-100'>
+                                        {transaction.status === TransactionStatus.Success ? 
+                                            <Button
+                                                onClick={() => setIsOpenDepositModal({ type: DepositModalType.Refund, selectedRow: transaction})}
+                                                color='light-dark'
+                                                className='col fit-content'
+                                            >
+                                                {t('refund')}
+                                            </Button>
+                                            : transaction.status === TransactionStatus.NotFound ? <Button
+                                                onClick={() => setIsOpenDepositModal({ type: DepositModalType.SelectPayer, selectedRow: transaction})}
+                                                color='light-dark'
+                                                className='col fit-content'
+                                            >
+                                                {t('select.payer')}
+                                            </Button> : <></>
+                                        } {(transaction.status === TransactionStatus.Success || transaction.status === TransactionStatus.Cancel) && <Button
+                                                onClick={() => setIsOpenDepositModal({ type: DepositModalType.Edit, selectedRow: transaction})}
+                                                color='light-dark'
+                                                className='col fit-content'
+                                            >
+                                            {t('edit')}
+                                        </Button>}
+                                    </div>
                                 </td>}
                             </tr>
-                        ))}
+                        )) : permission.deposit[PermissionType.Read] === PermissionValue.Unavailable ?
+                        <tr>
+                            <td colSpan={8} className='text-center'>ไม่มีสิทธิ์เข้าถึง</td>
+                        </tr>
+                        : <tr>
+                            <td colSpan={8} className='text-center'>ไม่พบข้อมูล</td>
+                        </tr>}
                     </tbody>
                 </table>
             </CardBody>
