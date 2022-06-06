@@ -80,6 +80,8 @@
     "filter.max": "สูงสุด",
     "filter.payment.type": "ประเภทธุรกรรม",
     "filter.minimum.deposit": "ยอดฝากขั้นต่ำ",
+    "limited": "ระบุจำนวน",
+    "unlimited": "ไม่จำกัด",
     "filter": "กรอง",
 
     "form.username": "ชื่อผู้ใช้",

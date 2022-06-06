@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import Modal, {
 	ModalBody,
 	ModalFooter,
@@ -13,12 +13,12 @@ import * as Yup from 'yup'
 import FormGroup from 'components/bootstrap/forms/FormGroup'
 import Input from 'components/bootstrap/forms/Input'
 import { CreditConditionModalInterface } from './CreditCondition'
-import { HuePicker } from 'react-color'
 import { InfoTwoTone } from '@mui/icons-material'
-import { createCreditCondition, CreditConditionBaseInterface, CreditConditionInterface, updateCreditCondition } from 'common/apis/creditCondition'
+import { createCreditCondition, CreditConditionInterface, updateCreditCondition } from 'common/apis/creditCondition'
 import { useDispatch } from 'react-redux'
 import { addCreditCondition, updateCreditConditionById } from 'redux/creditCondition/action'
 import Spinner from 'components/bootstrap/Spinner'
+import Checks from 'components/bootstrap/forms/Checks'
 
 export enum CreditConditionModalType {
     Add = 'add',
@@ -26,28 +26,40 @@ export enum CreditConditionModalType {
     Delete = 'delete'
 }
 
+interface CreditConditionInputInterface {
+    point: number
+    credit: number
+    quantity?: number
+}
 
 const CreditConditionModal = ({ id, isOpen, setIsOpen, properties }: CreditConditionModalInterface) => {
     const { t } = useTranslation(['common', 'creditCondition'])
     const { type, selectedRow: data } = properties
     const dispatch = useDispatch()
     const [isLoading, setIsLoading] = useState(false)
+    const [isLimited, setIsLimited] = useState(data?.quantity ? data?.quantity > -1 : false)
 
-    const CreditConditionFormSchema = Yup.object().shape({
-        creditConditionName: Yup.string().required('โปรดใส่ชื่อขั้น'),
-        minimumCredit: Yup.number().required('โปรดใส่ยอดฝากขั้นต่ำ'),
-        color: Yup.string().required('โปรดเลือกสีขั้น'),
-	})
+    const baseFormSchema = {
+        point: Yup.number().min(1, 'โปรดใส่คะแนนที่ใช้แลก').required('โปรดใส่คะแนนที่ใช้แลก'),
+        credit: Yup.number().min(1, 'โปรดใส่คะแนนที่ใช้แลก').required('โปรดใส่เครดิตที่ได้รับ'),
+	}
+    const quantityFormSchema = { quantity: Yup.number().required('โปรดใส่จำนวนที่แลกเงื่อนไขได้') }
+
+    const CreditConditionFormSchema = Yup.object().shape(baseFormSchema)
+    const CreditConditionWithQuantityFormSchema = Yup.object().shape({ ...baseFormSchema, ...quantityFormSchema})
 	
-	const formik = useFormik<CreditConditionBaseInterface>({
+	const formik = useFormik<CreditConditionInputInterface>({
 		initialValues: {
-            point: data?.point || '',
-            credit: data?.credit || '',
-            quantity: data?.quantity || ''
+            point: data?.point || 0,
+            credit: data?.credit || 0,
+            quantity: data?.quantity
 		},
-        validationSchema: CreditConditionFormSchema,
+        validationSchema: isLimited ? CreditConditionWithQuantityFormSchema : CreditConditionFormSchema,
 		onSubmit: (values) => {
             setIsLoading(true)
+            if (!isLimited) {
+                delete values.quantity
+            }
             if (type === CreditConditionModalType.Add) {
                 createCreditCondition(values, (creditCondition: CreditConditionInterface) => {
                     dispatch(addCreditCondition(creditCondition))
@@ -69,7 +81,10 @@ const CreditConditionModal = ({ id, isOpen, setIsOpen, properties }: CreditCondi
                     )
                 }).finally(() => setIsLoading(false))
             } else {
-                data?.conditionId && updateCreditCondition(data.conditionId, values, (creditCondition: CreditConditionInterface) => {
+                data?.conditionId && updateCreditCondition(data.conditionId, {
+                    ...values,
+                    quantity: isLimited ? values.quantity : -1
+                }, (creditCondition: CreditConditionInterface) => {
                     data?.conditionId && dispatch(updateCreditConditionById(data.conditionId, creditCondition))
                     setIsOpen(false)
                     showNotification(
@@ -122,11 +137,28 @@ const CreditConditionModal = ({ id, isOpen, setIsOpen, properties }: CreditCondi
                         />
                     </FormGroup>
                     <FormGroup id='quantity' label={t('form.quantity')}>
-                        <Input
-                            type='number'
-                            onChange={handleChange} 
-                            value={values.quantity}
-                        />
+                        <div className='d-flex align-items-center'>
+                            <Checks
+                                id='isLimited'
+                                label={t('limited')}
+                                onChange={() => {
+                                    setFieldValue('quantity', 0)
+                                    setIsLimited(!isLimited)
+                                }}
+                                checked={isLimited}
+                                ariaLabel='Filter isLimited'
+                            />
+                            <Input
+                                type={isLimited ? 'number' : ''}
+                                onChange={(e: ChangeEvent<HTMLInputElement>) => setFieldValue('quantity', e.target.value)} 
+                                value={isLimited ? values.quantity : t('unlimited')}
+                                disabled={!isLimited}
+                                isValid={isValid}
+                                isTouched={touched.quantity && errors.quantity}
+                                invalidFeedback={errors.quantity}
+                                className='w-50 mx-3'
+                            />
+                        </div>
                     </FormGroup>
                 </div>
             </ModalBody>

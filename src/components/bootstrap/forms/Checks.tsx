@@ -185,7 +185,7 @@ const Checks = forwardRef<any, ChecksInterface>(
 				}, containerClassName)}>
 				{_inner}
 				{label && (
-					<label className='form-check-label' htmlFor={id}>
+					<label className='form-check-label text-nowrap' htmlFor={id}>
 						{label}
 					</label>
 				)}

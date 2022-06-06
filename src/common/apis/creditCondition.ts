@@ -2,15 +2,15 @@ import { getAccessToken } from 'common/utils/auth'
 import axios, { authorizationHandler } from './axios'
 
 export interface CreditConditionBaseInterface {
-    point: string
-    credit: string
-    quantity?: string
+    point: number
+    credit: number
+    quantity?: number
 }
 
 export interface CreditConditionUpdateBodyInterface {
-    point?: string
-    credit?: string
-    quantity?: string
+    point?: number
+    credit?: number
+    quantity?: number
 }
 
 export interface CreditConditionInterface extends CreditConditionBaseInterface {

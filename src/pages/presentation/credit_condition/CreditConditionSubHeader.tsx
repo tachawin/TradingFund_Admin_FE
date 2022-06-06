@@ -1,6 +1,5 @@
-import React, { ChangeEvent, useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import { useFormik } from 'formik'
-import debounce from 'lodash/debounce'
 import SubHeader, { SubHeaderLeft, SubHeaderRight, SubheaderSeparator } from '../../../layout/SubHeader/SubHeader'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
@@ -14,8 +13,7 @@ import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGrou
 import CommonTableFilter from 'components/common/CommonTableFilter'
 import Button from 'components/bootstrap/Button'
 import { CreditConditionProps } from './CreditCondition'
-import { Add, Search } from '@mui/icons-material'
-import COLORS from 'common/data/enumColors'
+import { Add } from '@mui/icons-material'
 import { CreditConditionModalType } from './CreditConditionModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { storeCreditConditionQuery } from 'redux/creditCondition/action'
@@ -25,7 +23,15 @@ import { selectCreditConditionQuery } from 'redux/creditCondition/selector'
 
 interface CreditConditionFilterInterface {
 	searchInput: string
-	minimumCredit: {
+	credit: {
+		min: string
+		max: string
+	}
+	point: {
+		min: string
+		max: string
+	}
+	quantity: {
 		min: string
 		max: string
 	}
@@ -41,6 +47,7 @@ interface CreditConditionFilterInterface {
 	}[]
 	isCreatedAtDateChanged: boolean
 	isUpdatedAtDateChanged: boolean
+	isLimited: boolean
 }
 
 const CreditConditionSubHeader = ({ setIsOpenCreditConditionModal }: CreditConditionProps) => {
@@ -49,14 +56,21 @@ const CreditConditionSubHeader = ({ setIsOpenCreditConditionModal }: CreditCondi
 
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
     const [isOpenUpdatedAtDatePicker, setIsOpenUpdatedAtDatePicker] = useState(false)
-	const [searchInput, setSearchInput] = useState('')
 
 	const queryList = useSelector(selectCreditConditionQuery)
 
 	const formik = useFormik<CreditConditionFilterInterface>({
 		initialValues: {
 			searchInput: '',
-            minimumCredit: {
+            credit: {
+                min: '',
+                max: ''
+            },
+			point: {
+                min: '',
+                max: ''
+            },
+			quantity: {
                 min: '',
                 max: ''
             },
@@ -76,12 +90,17 @@ const CreditConditionSubHeader = ({ setIsOpenCreditConditionModal }: CreditCondi
 			],
 			isCreatedAtDateChanged: false,
 			isUpdatedAtDateChanged: false,
+			isLimited: true,
 		},
 		onSubmit: (values) => {
 			dispatch(storeCreditConditionQuery({
 				...queryList,
-				minCredit: values.minimumCredit.min ? `minCredit=${values.minimumCredit.min}` : '',
-				maxCredit: values.minimumCredit.max ? `maxCredit=${values.minimumCredit.max}` : '',
+				minCredit: values.credit.min ? `minCredit=${values.credit.min}` : '',
+				maxCredit: values.credit.max ? `maxCredit=${values.credit.max}` : '',
+				minPoint: values.point.min ? `minPoint=${values.point.min}` : '',
+				maxPoint: values.point.max ? `maxPoint=${values.point.max}` : '',
+				minQuantity: !values.isLimited ? `minQuantity=-1` : values.quantity.min ? `minQuantity=${values.quantity.min}` : '',
+				maxQuantity: !values.isLimited ? `maxQuantity=-1` : values.quantity.max ? `maxQuantity=${values.quantity.max}` : '',
 				startCreated: values.isCreatedAtDateChanged ? `startCreated=${moment(values.createdAt[0].startDate).format('YYYY-MM-DD')}` : '',
 				endCreated: values.isCreatedAtDateChanged ?`endCreated=${moment(values.createdAt[0].endDate).format('YYYY-MM-DD')}` : '',
 				startUpdated: values.isUpdatedAtDateChanged ? `startUpdated=${moment(values.updatedAt[0].startDate).format('YYYY-MM-DD')}` : '',
@@ -110,35 +129,8 @@ const CreditConditionSubHeader = ({ setIsOpenCreditConditionModal }: CreditCondi
 		/>
 	)
 
-	  // eslint-disable-next-line react-hooks/exhaustive-deps
-	const debounceSearchChange = useCallback(
-		debounce((value: string) => {
-			dispatch(storeCreditConditionQuery({ ...queryList, keyword: `keyword=${value}` }))
-		}, 1000), []
-	  )
-
-	const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
-		let value = event.target.value
-
-		setSearchInput(value)
-		debounceSearchChange(value)
-	}
-
 	return (<SubHeader className='pt-3 mx-3' style={{ boxShadow: 'none' }}>
 		<SubHeaderLeft>
-			<label
-				className='border-0 bg-transparent cursor-pointer me-0'
-				htmlFor='searchInput'>
-				<Search fontSize='medium' htmlColor={COLORS.PRIMARY.code} />
-			</label>
-			<Input
-				id='searchInput'
-				type='search'
-				className='border-0 shadow-none bg-transparent'
-				placeholder={t('creditCondition:search.creditCondition') + '...'}
-				onChange={handleSearchChange}
-				value={searchInput}
-			/>
 		</SubHeaderLeft>
 		<SubHeaderRight>
 			<CommonTableFilter
@@ -198,25 +190,82 @@ const CreditConditionSubHeader = ({ setIsOpenCreditConditionModal }: CreditCondi
 						</div>
 					},
 					{
-						label: t('filter.minimum.credit'),
+						label: t('filter.credit'),
 						children: <div>
 							<InputGroup>
 								<Input
-									id='minimumCredit.min'
+									id='credit.min'
 									ariaLabel='Minimum credit'
 									placeholder={t('filter.min')}
 									onChange={handleChange}
-									value={values.minimumCredit.min}
+									value={values.credit.min}
 									type='number'
 								/>
 								<InputGroupText>{t('filter.to')}</InputGroupText>
 								<Input
-									id='minimumCredit.max'
+									id='credit.max'
 									ariaLabel='Maximum credit'
 									placeholder={t('filter.max')}
 									onChange={handleChange}
-									value={values.minimumCredit.max}
+									value={values.credit.max}
 									type='number'
+								/>
+							</InputGroup>
+						</div>
+					},
+					{
+						label: t('filter.points'),
+						children: <div>
+							<InputGroup>
+								<Input
+									id='point.min'
+									ariaLabel='Minimum point'
+									placeholder={t('filter.min')}
+									onChange={handleChange}
+									value={values.point.min}
+									type='number'
+								/>
+								<InputGroupText>{t('filter.to')}</InputGroupText>
+								<Input
+									id='point.max'
+									ariaLabel='Maximum point'
+									placeholder={t('filter.max')}
+									onChange={handleChange}
+									value={values.point.max}
+									type='number'
+								/>
+							</InputGroup>
+						</div>
+					},
+					{
+						label: t('filter.quantity'),
+						children: <div>
+							<Checks
+								id='isLimited'
+								label={t('limited')}
+								onChange={handleChange}
+								checked={values.isLimited}
+								ariaLabel='Filter isLimited'
+							/>
+							<InputGroup className='mt-2'>
+								<Input
+									id='quantity.min'
+									ariaLabel='Minimum quantity'
+									placeholder={t('filter.min')}
+									onChange={handleChange}
+									value={values.quantity.min}
+									type='number'
+									disabled={!values.isLimited}
+								/>
+								<InputGroupText>{t('filter.to')}</InputGroupText>
+								<Input
+									id='quantity.max'
+									ariaLabel='Maximum quantity'
+									placeholder={t('filter.max')}
+									onChange={handleChange}
+									value={values.quantity.max}
+									type='number'
+									disabled={!values.isLimited}
 								/>
 							</InputGroup>
 						</div>

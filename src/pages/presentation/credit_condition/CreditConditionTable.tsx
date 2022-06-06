@@ -7,7 +7,7 @@ import Button from 'components/bootstrap/Button'
 import { useSelector } from 'react-redux'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
-import { FilterList, StarRounded } from '@mui/icons-material'
+import { FilterList } from '@mui/icons-material'
 import { CreditConditionInterface } from 'common/apis/creditCondition'
 import { CreditConditionModalType } from './CreditConditionModal'
 import moment from 'moment'
@@ -92,7 +92,7 @@ const CreditConditionTable = ({
                                     <div>{item.credit.toLocaleString()}</div>
                                 </td>
                                 <td>
-                                    <div>{item.quantity?.toLocaleString()}</div>
+                                    <div>{item.quantity && item.quantity > -1 ? item.quantity?.toLocaleString() : 'ไม่จำกัด'}</div>
                                 </td>
                                 <td>
                                     <div>{moment(item.createdAt).format('ll')}</div>
