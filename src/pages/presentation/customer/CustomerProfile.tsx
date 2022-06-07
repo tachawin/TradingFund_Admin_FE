@@ -36,7 +36,7 @@ import { selectRedeemProductList } from 'redux/redeemProduct/selector';
 import { storeRedeemCreditList } from 'redux/redeemCredit/action';
 import { selectRedeemCreditList } from 'redux/redeemCredit/selector';
 import CreditTable from '../credit/CreditTable';
-import { AccountBalanceWalletTwoTone, AccountCircleTwoTone, ArrowBack, CreditCardTwoTone, CurrencyExchangeTwoTone, GroupTwoTone, InfoTwoTone, LocalAtmTwoTone, PhoneIphoneTwoTone, ReceiptTwoTone, StarRounded, StarTwoTone, VpnKeyTwoTone } from '@mui/icons-material';
+import { AccountBalanceWalletTwoTone, AccountCircleTwoTone, ArrowBack, CreditCardTwoTone, CurrencyExchangeTwoTone, GroupTwoTone, InfoTwoTone, LocalAtmTwoTone, PhoneIphoneTwoTone, ReceiptTwoTone, StarTwoTone, VpnKeyTwoTone } from '@mui/icons-material';
 import COLORS from 'common/data/enumColors';
 
 enum TransactionState {
@@ -213,8 +213,8 @@ const CustomerProfile = () => {
 				{isCustomerLoading ? <Spinner isGrow color='primary' size={50} className='align-self-center' /> : <>
 					<div className='p-3 d-flex align-items-center'>
 						<span className='display-4 fw-bold me-3'>{customer?.name}</span>
-						<span className={`border border-${customer?.level?.color} border-2 text-${customer?.level?.color} fw-bold px-3 py-2 rounded`}>
-							<StarRounded htmlColor={customer?.level?.color} />
+						<span className='border border-primary border-2 text-primary fw-bold px-3 py-2 rounded'>
+							<img src={customer?.level?.imageURL} alt={customer?.level?.levelName} />{' '}
 							{' ' + customer?.level?.levelName}
 						</span>
 					</div>

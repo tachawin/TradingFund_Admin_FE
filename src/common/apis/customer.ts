@@ -27,9 +27,8 @@ export interface CustomerInterface extends CustomerBaseInterface {
     referralBonus?: number,
     lastDepositAmount?: number,
     level?: {
-        levelId?: string
         levelName?: string
-        color?: string
+        imageURL?: string
     }
     bank?: {
         id: number

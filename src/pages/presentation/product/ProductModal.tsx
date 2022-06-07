@@ -42,7 +42,6 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
     const { selectedRow: data, type } = properties
 
     const productSchema = Yup.object().shape({
-        // imageURL: Yup.string().required('กรุณาอัปโหลดภาพ'),
         name: Yup.string().required('โปรดใส่ชื่อสินค้า'),
         quantity: Yup.string().required('โปรดใส่จำนวนที่มี'),
         point: Yup.string().required('โปรดใส่แต้มที่ใช้แลก'),
@@ -178,40 +177,40 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
                 <div className='row align-items-start'>
                     <div className='col'>
                         <div className='row g-4'>
-                        <FormGroup id='imageURL' label={t('form.image')}>
-                            <div className='row'>
-                                <div className='col-12 my-3'>
-                                    {values.imageURL ? (
-                                        <img
-                                            src={values.imageURL}
-                                            alt=''
-                                            width={220}
-                                            height={220}
-                                            style={{ minHeight: 220, minWidth: 220, objectFit: 'contain' }}
-                                            className='mx-auto d-block img-fluid mb-3'
-                                        />
-                                    ) : (
-                                        <PlaceholderImage
-                                            width={220}
-                                            height={220}
-                                            className='mx-auto d-block img-fluid mb-3 rounded'
-                                        />
-                                    )}
-                                </div>
-                                <div className='col-12'>
-                                    <div className='row g-4'>
-                                        <Input
-                                            accept="image/*"
-                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleUploadImage(e)}
-                                            type='file' 
-                                            autoComplete='photo'
-                                            isValid={isValid}
-                                            isTouched={touched.imageURL && errors.imageURL}
-                                            invalidFeedback={errors.imageURL}
-                                        />
+                            <FormGroup id='imageURL' label={t('form.image')}>
+                                <div className='row'>
+                                    <div className='col-12 my-3'>
+                                        {values.imageURL ? (
+                                            <img
+                                                src={values.imageURL}
+                                                alt=''
+                                                width={220}
+                                                height={220}
+                                                style={{ minHeight: 220, minWidth: 220, objectFit: 'contain' }}
+                                                className='mx-auto d-block img-fluid mb-3'
+                                            />
+                                        ) : (
+                                            <PlaceholderImage
+                                                width={220}
+                                                height={220}
+                                                className='mx-auto d-block img-fluid mb-3 rounded'
+                                            />
+                                        )}
+                                    </div>
+                                    <div className='col-12'>
+                                        <div className='row g-4'>
+                                            <Input
+                                                accept="image/*"
+                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleUploadImage(e)}
+                                                type='file' 
+                                                autoComplete='photo'
+                                                isValid={isValid}
+                                                isTouched={touched.imageURL && errors.imageURL}
+                                                invalidFeedback={errors.imageURL}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             </FormGroup>
                         </div>
                     </div>

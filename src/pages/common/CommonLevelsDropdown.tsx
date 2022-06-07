@@ -8,7 +8,7 @@ import { storeLevels } from 'redux/level/action'
 import showNotification from 'components/extras/showNotification'
 import { useTranslation } from 'react-i18next'
 import Spinner from 'components/bootstrap/Spinner'
-import { Check, InfoTwoTone, StarRounded } from '@mui/icons-material'
+import { Check, InfoTwoTone } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
 
 interface CommonLevelsDropdownInterface {
@@ -83,7 +83,7 @@ const CommonLevelsDropdown = ({ selectedLevel, setSelectedLevel, disabled = fals
             >
                 {selectedLevel !== LEVEL_PLACEHOLDER && 
                     <span className='p-1'>
-                        <StarRounded />
+                        <img src={(selectedLevel as LevelInterface).imageURL} alt={(selectedLevel as LevelInterface).levelName} />
                     </span>
                 }
                 <span
@@ -106,7 +106,7 @@ const CommonLevelsDropdown = ({ selectedLevel, setSelectedLevel, disabled = fals
                             isActive={!multipleSelect && level === selectedLevel }
                             onClick={() => multipleSelect ? handleOnChangeMultipleLevels(level) : setSelectedLevel(level)}
                         >
-                            <StarRounded htmlColor={level.color} className='me-0' />
+                            <img src={(selectedLevel as LevelInterface).imageURL} alt={(selectedLevel as LevelInterface).levelName} />
                             <span className='mx-2 mw-75'>{level.levelName}</span>
                             {(multipleSelect && (selectedLevel as LevelInterface[]).indexOf(level) > -1) && <Check htmlColor={COLORS.PRIMARY.code} />}
                         </Button>

@@ -10,14 +10,18 @@ export const STATUS = [LevelStatus.Active, LevelStatus.Inactive]
 
 export interface LevelBaseInterface {
     levelName: string
-    minimumCredit: number
-    color?: string
+    imageURL?: string
+    minimumDepositAmount: number
+    maximumDepositAmount: number
+    investmentAmount: number
+    cashback: number
     status?: LevelStatus
 }
 
 export interface LevelUpdateBodyInterface {
     levelName?: string
-    minimumCredit?: number
+    minimumDepositAmount?: number
+    maximumDepositAmount?: number
     color?: string
     status?: LevelStatus
 }

@@ -37,7 +37,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectCustomers } from 'redux/customer/selector'
 import { storeCustomerQuery, storeCustomers } from '../../../redux/customer/action'
 import { selectCustomerQuery } from '../../../redux/customer/selector'
-import { FilterList, InfoTwoTone, LabelTwoTone, PersonAddAlt1TwoTone, Search, StarRounded, VisibilityTwoTone } from '@mui/icons-material'
+import { FilterList, InfoTwoTone, LabelTwoTone, PersonAddAlt1TwoTone, Search, VisibilityTwoTone } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
 
 interface DepositFilterInterface {
@@ -302,7 +302,7 @@ const Customer = () => {
 																	{customer.name}
 																</div>
 																<div className='text-muted'>
-																	<StarRounded htmlColor={customer.level?.color} />{' '}
+																	<img src={customer.level?.imageURL} alt={customer.level?.levelName} />{' '}
 																	<small>{customer.level?.levelName}</small>
 																</div>
 															</div>

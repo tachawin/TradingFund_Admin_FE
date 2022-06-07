@@ -92,7 +92,7 @@ const CreditConditionTable = ({
                                     <div>{item.credit.toLocaleString()}</div>
                                 </td>
                                 <td>
-                                    <div>{item.quantity && item.quantity > -1 ? item.quantity?.toLocaleString() : 'ไม่จำกัด'}</div>
+                                    <div>{item.quantity && (item.quantity !== -1 ? item.quantity?.toLocaleString() : 'ไม่จำกัด')}</div>
                                 </td>
                                 <td>
                                     <div>{moment(item.createdAt).format('ll')}</div>

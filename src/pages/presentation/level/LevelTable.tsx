@@ -7,7 +7,7 @@ import Button from 'components/bootstrap/Button'
 import { useSelector } from 'react-redux'
 import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
-import { FilterList, StarRounded } from '@mui/icons-material'
+import { FilterList } from '@mui/icons-material'
 import { LevelInterface } from 'common/apis/level'
 import { LevelModalType } from './LevelModal'
 import moment from 'moment'
@@ -59,6 +59,24 @@ const LevelTable = ({
                                 <FilterList fontSize='small' className={getClassNamesFor('minumumDeposit')} />
                             </th>
                             <th
+                                onClick={() => requestSort('maximumDeposit')}
+                                className='cursor-pointer text-decoration-underline'>
+                                {t('column.maximum.deposit')}{' '}
+                                <FilterList fontSize='small' className={getClassNamesFor('maximumDeposit')} />
+                            </th>
+                            <th
+                                onClick={() => requestSort('investmentAmount')}
+                                className='cursor-pointer text-decoration-underline'>
+                                {t('column.investment.amount')}{' '}
+                                <FilterList fontSize='small' className={getClassNamesFor('investmentAmount')} />
+                            </th>
+                            <th
+                                onClick={() => requestSort('cashback')}
+                                className='cursor-pointer text-decoration-underline'>
+                                {t('column.cashback')}{' '}
+                                <FilterList fontSize='small' className={getClassNamesFor('cashback')} />
+                            </th>
+                            <th
                                 onClick={() => requestSort('createdAt')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.created.at')}{' '}
@@ -81,12 +99,21 @@ const LevelTable = ({
                                 </td>
                                 <td>
                                     <div>
-                                        <StarRounded htmlColor={item.color} />{' '}
+                                        <img src={item.imageURL} alt={item.levelName} />{' '}
                                         {item.levelName}
                                     </div>
                                 </td>
                                 <td>
-                                    <div>{item.minimumCredit.toLocaleString()}</div>
+                                    <div>{item.minimumDepositAmount.toLocaleString()}</div>
+                                </td>
+                                <td>
+                                    <div>{item.maximumDepositAmount.toLocaleString()}</div>
+                                </td>
+                                <td>
+                                    <div>{item.investmentAmount.toLocaleString()}</div>
+                                </td>
+                                <td>
+                                    <div>{item.cashback.toLocaleString()} %</div>
                                 </td>
                                 <td>
                                     <div>{moment(item.createdAt).format('ll')}</div>
