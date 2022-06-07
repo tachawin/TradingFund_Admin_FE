@@ -39,6 +39,7 @@ import { storeCustomerQuery, storeCustomers } from '../../../redux/customer/acti
 import { selectCustomerQuery } from '../../../redux/customer/selector'
 import { FilterList, InfoTwoTone, LabelTwoTone, PersonAddAlt1TwoTone, Search, VisibilityTwoTone } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
+import PlaceholderImage from 'components/extras/PlaceholderImage'
 
 interface DepositFilterInterface {
 	searchInput: string
@@ -297,12 +298,26 @@ const Customer = () => {
 													</td>
 													<td>
 														<div className='d-flex align-items-center'>
+															{customer.level?.imageURL ? 
+																<img 
+																	src={customer.level?.imageURL} 
+																	alt={customer.level?.levelName}
+																	width={32} 
+																	height={32} 
+																	style={{ minWidth: 32, minHeight: 32, objectFit: 'cover' }} 
+																	className='me-2 rounded-circle border border-2 border-light'
+																/> : <PlaceholderImage
+																	width={40}
+																	height={40}
+																	className='me-2 rounded-circle border border-2 border-light'
+																/>
+															}
+															{' '}
 															<div className='flex-grow-1'>
 																<div className='fs-6 fw-bold'>
 																	{customer.name}
 																</div>
 																<div className='text-muted'>
-																	<img src={customer.level?.imageURL} alt={customer.level?.levelName} />{' '}
 																	<small>{customer.level?.levelName}</small>
 																</div>
 															</div>

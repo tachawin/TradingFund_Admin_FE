@@ -214,7 +214,13 @@ const CustomerProfile = () => {
 					<div className='p-3 d-flex align-items-center'>
 						<span className='display-4 fw-bold me-3'>{customer?.name}</span>
 						<span className='border border-primary border-2 text-primary fw-bold px-3 py-2 rounded'>
-							<img src={customer?.level?.imageURL} alt={customer?.level?.levelName} />{' '}
+							<img 
+								src={customer?.level?.imageURL} alt={customer?.level?.levelName}
+								width={40} 
+								height={40} 
+								style={{ objectFit: 'contain' }} 
+								className='me-2 rounded-circle'
+							/>{' '}
 							{' ' + customer?.level?.levelName}
 						</span>
 					</div>

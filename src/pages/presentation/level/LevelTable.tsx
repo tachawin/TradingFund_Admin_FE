@@ -11,6 +11,7 @@ import { FilterList } from '@mui/icons-material'
 import { LevelInterface } from 'common/apis/level'
 import { LevelModalType } from './LevelModal'
 import moment from 'moment'
+import PlaceholderImage from 'components/extras/PlaceholderImage'
 
 interface LevelTableInterface {
     data: LevelInterface[]
@@ -99,7 +100,21 @@ const LevelTable = ({
                                 </td>
                                 <td>
                                     <div>
-                                        <img src={item.imageURL} alt={item.levelName} />{' '}
+                                        {item.imageURL ? 
+                                            <img 
+                                                src={item.imageURL} 
+                                                alt={item.levelName} 
+                                                width={40} 
+                                                height={40} 
+                                                style={{ objectFit: 'cover' }} 
+                                                className='me-2 rounded-circle border border-2 border-light'
+                                            /> : <PlaceholderImage
+                                                width={40}
+                                                height={40}
+                                                className='me-2 rounded-circle border border-2 border-light'
+                                            />
+                                        }
+                                        {' '}
                                         {item.levelName}
                                     </div>
                                 </td>

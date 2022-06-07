@@ -20,9 +20,11 @@ export interface LevelBaseInterface {
 
 export interface LevelUpdateBodyInterface {
     levelName?: string
+    imageURL?: string
     minimumDepositAmount?: number
     maximumDepositAmount?: number
-    color?: string
+    investmentAmount?: number
+    cashback?: number
     status?: LevelStatus
 }
 
@@ -30,6 +32,10 @@ export interface LevelInterface extends LevelBaseInterface {
     levelId: string
     createdAt: Date
     updatedAt: Date
+}
+
+export interface LevelImageUrlInterface {
+    imageURL: string
 }
 
 export const createLevel = async (
@@ -107,4 +113,26 @@ export const deleteLevel = async (
 		} catch (error: any) {
 			handleError(error)
 		}
+    })
+
+export const uploadLevelImage = async (
+    data: FormData,
+    next: (imageURL: LevelImageUrlInterface) => void,
+    handleError: (error: any) => void
+) =>
+    await authorizationHandler(async () => {
+        try {
+            const res = await axios({
+                method: 'post',
+                headers: { 
+                    Authorization: `Bearer ${getAccessToken()}`,
+                    "Content-Type": "multipart/form-data",
+                },
+                url: '/level/upload/image',
+                data
+            })
+            next(res.data)
+        } catch (error: any) {
+            handleError(error)
+        }
     })

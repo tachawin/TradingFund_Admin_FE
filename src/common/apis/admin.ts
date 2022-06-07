@@ -42,29 +42,68 @@ export interface AdminUpdateInterface {
     password?: string
 }
 
-export const createAdmin = (data: AdminInterface) => 
-    axios({
-        method: 'post',
-        url: '/admin/register',
-        headers: { Authorization: `Bearer ${getAccessToken()}` },
-        data
-    })
+export const createAdmin = async (
+    data: AdminInterface,
+    next: (admin: AdminInterface) => void,
+    handleError: (error: any) => void
+) => 
+    await authorizationHandler(async () => {
+        try {
+            const res = await axios({
+                method: 'post',
+                url: '/admin/register',
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
+                data
+            })
+            next(res.data)
+        } catch (error: any) {
+            handleError(error)
+        }
+    }
+)
 
-export const updateAdmin = (adminId: string, data: AdminUpdateInterface) => 
-    axios({
-        method: 'patch',
-        url: `/admin/update/${adminId}`,
-        headers: { Authorization: `Bearer ${getAccessToken()}` },
-        data
-    })
 
-export const updatePermission = (adminId: string, data: PermissionInterface) => 
-    axios({
-        method: 'patch',
-        url: `/admin/permission/${adminId}`,
-        headers: { Authorization: `Bearer ${getAccessToken()}` },
-        data
-    })
+export const updateAdmin = async (
+    adminId: string, 
+    data: AdminUpdateInterface,
+    next: (admin: AdminInterface) => void,
+    handleError: (error: any) => void
+) => 
+    await authorizationHandler(async () => {
+        try {
+            const res = await axios({
+                method: 'patch',
+                url: `/admin/update/${adminId}`,
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
+                data
+            })
+            next(res.data)
+        } catch (error: any) {
+            handleError(error)
+        }
+    }
+)
+
+export const updatePermission = async (
+    adminId: string, 
+    data: PermissionInterface,
+    next: (admin: AdminInterface) => void,
+    handleError: (error: any) => void
+) => 
+    await authorizationHandler(async () => {
+        try {
+            const res = await axios({
+                method: 'patch',
+                url: `/admin/permission/${adminId}`,
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
+                data
+            })
+            next(res.data)
+        } catch (error: any) {
+            handleError(error)
+        }
+    }
+)
 
 export const getAdminList = async (
     query: string,

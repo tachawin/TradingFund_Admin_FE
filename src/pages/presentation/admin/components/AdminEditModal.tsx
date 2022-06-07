@@ -94,8 +94,8 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
     const { values, setFieldValue, initialValues, setValues, resetForm, handleChange, handleSubmit, isValid, touched, errors } = formik
 
     const handleAddAdmin = (adminData: AdminInterface) => {
-        createAdmin(adminData).then(() => {
-            dispatch(addAdmin(adminData))
+        createAdmin(adminData, (admin: AdminInterface) => {
+            dispatch(addAdmin(admin))
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
@@ -103,8 +103,8 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
                 </span>,
                 t('admin:save.admin.successfully', { adminName: values.name }),
             )
-        }).catch((err) => {
-            const { response } = err
+        }, (error) => {
+            const { response } = error
             const message = response?.data
             console.log(message)
             showNotification(
@@ -132,7 +132,7 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
                 status: adminData.status
             }
         }
-        data?.adminId && updateAdmin(data.adminId, dataToUpdate).then((response) => {
+        data?.adminId && updateAdmin(data.adminId, dataToUpdate, () => {
             data.adminId && dispatch(updateAdminById(data.adminId, dataToUpdate))
             showNotification(
                 <span className='d-flex align-items-center'>
@@ -141,8 +141,8 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
                 </span>,
                 t('admin:save.admin.successfully', { adminName: values.name }),
             )
-        }).catch((err) => {
-            const { response } = err
+        }, (error) => {
+            const { response } = error
             const message = response?.data
             console.log(message)
             showNotification(

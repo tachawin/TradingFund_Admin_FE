@@ -14,7 +14,7 @@ import FormGroup from 'components/bootstrap/forms/FormGroup'
 import Input from 'components/bootstrap/forms/Input'
 import { LevelModalInterface } from './Level'
 import { InfoTwoTone } from '@mui/icons-material'
-import { createLevel, LevelInterface, LevelStatus, updateLevel } from 'common/apis/level'
+import { createLevel, LevelInterface, LevelStatus, updateLevel, LevelBaseInterface, uploadLevelImage, LevelImageUrlInterface } from 'common/apis/level'
 import { useDispatch } from 'react-redux'
 import { addLevel, updateLevelById } from 'redux/level/action'
 import Spinner from 'components/bootstrap/Spinner'
@@ -50,6 +50,73 @@ const LevelModal = ({ id, isOpen, setIsOpen, properties }: LevelModalInterface) 
         investmentAmount: Yup.number().required('โปรดใส่ยอดเงินลงทุน'),
         cashback: Yup.number().required('โปรดใส่ % เงินคืน'),
 	})
+
+    const addNewLevel = (requestBody: LevelBaseInterface) => {
+        createLevel(requestBody, (level: LevelInterface) => {
+            dispatch(addLevel(level))
+            setIsOpen(false)
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <InfoTwoTone className='me-1' />
+                    <span>{t('level:added.successfully')}</span>
+                </span>,
+                t('level:added.level.successfully', { levelName: data?.levelName }),
+            )
+        }, () => {
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <InfoTwoTone className='me-1' />
+                    <span>{t('level:added.failed')}</span>
+                </span>,
+                t('level:added.level.failed', { levelName: data?.levelName }),
+            )
+        }).finally(() => setIsLoading(false))
+    }
+
+    const editLevel = (requestBody: LevelBaseInterface) => {
+        console.log(requestBody)
+        data?.levelId && updateLevel(data.levelId, requestBody, (level: LevelInterface) => {
+            data?.levelId && dispatch(updateLevelById(data.levelId, level))
+            setIsOpen(false)
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <InfoTwoTone className='me-1' />
+                    <span>{t('level:edit.successfully')}</span>
+                </span>,
+                t('level:edit.level.successfully', { levelName: data?.levelName }),
+            )
+        }, () => {
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <InfoTwoTone className='me-1' />
+                    <span>{t('level:edit.failed')}</span>
+                </span>,
+                t('level:edit.level.failed', { levelName: data?.levelName }),
+            )
+        }).finally(() => setIsLoading(false))
+    }
+
+    const uploadImage = (requestBody: LevelBaseInterface, imageFile: FormData) => {
+        uploadLevelImage(imageFile, (image: LevelImageUrlInterface) => {
+            if (type === LevelModalType.Add) {
+                addNewLevel({ ...requestBody, imageURL: image.imageURL })
+            } else {
+                editLevel({ ...requestBody, imageURL: image.imageURL })
+            }
+        }, (err) => {
+            const { response } = err
+            const message = response?.data
+            console.log(message)
+            setIsLoading(false)
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <InfoTwoTone className='me-1' />
+                    <span>{t('level:upload.image.failed')}</span>
+                </span>,
+                t('level:upload.level.image.failed', { levelName: values.levelName }),
+            )
+        })
+    }
 	
 	const formik = useFormik<LevelFormInterface>({
 		initialValues: {
@@ -64,52 +131,23 @@ const LevelModal = ({ id, isOpen, setIsOpen, properties }: LevelModalInterface) 
         validationSchema: LevelFormSchema,
 		onSubmit: (values) => {
             setIsLoading(true)
-            if (type === LevelModalType.Add) {
-                createLevel({
-                    ...values,
-                    minimumDepositAmount: values.minimumDepositAmount || 0,
-                    maximumDepositAmount: values.maximumDepositAmount || 0,
-                    investmentAmount: values.investmentAmount || 0,
-                    cashback: values.cashback || 0
-                }, (level: LevelInterface) => {
-                    dispatch(addLevel(level))
-                    setIsOpen(false)
-                    showNotification(
-                        <span className='d-flex align-items-center'>
-                            <InfoTwoTone className='me-1' />
-                            <span>{t('level:added.successfully')}</span>
-                        </span>,
-                        t('level:added.level.successfully', { levelName: data?.levelName }),
-                    )
-                }, () => {
-                    showNotification(
-                        <span className='d-flex align-items-center'>
-                            <InfoTwoTone className='me-1' />
-                            <span>{t('level:added.failed')}</span>
-                        </span>,
-                        t('level:added.level.failed', { levelName: data?.levelName }),
-                    )
-                }).finally(() => setIsLoading(false))
+            const { imageFile, ...restValue } = values
+            let requestBody: LevelBaseInterface = {
+                ...restValue,
+                minimumDepositAmount: values.minimumDepositAmount || 0,
+                maximumDepositAmount: values.maximumDepositAmount || 0,
+                investmentAmount: values.investmentAmount || 0,
+                cashback: values.cashback || 0
+            }
+            if (imageFile) {
+                uploadImage(requestBody, imageFile as FormData)
             } else {
-                data?.levelId && updateLevel(data.levelId, values, (level: LevelInterface) => {
-                    data?.levelId && dispatch(updateLevelById(data.levelId, level))
-                    setIsOpen(false)
-                    showNotification(
-                        <span className='d-flex align-items-center'>
-                            <InfoTwoTone className='me-1' />
-                            <span>{t('level:edit.successfully')}</span>
-                        </span>,
-                        t('level:edit.level.successfully', { levelName: data?.levelName }),
-                    )
-                }, () => {
-                    showNotification(
-                        <span className='d-flex align-items-center'>
-                            <InfoTwoTone className='me-1' />
-                            <span>{t('level:edit.failed')}</span>
-                        </span>,
-                        t('level:edit.level.failed', { levelName: data?.levelName }),
-                    )
-                }).finally(() => setIsLoading(false))
+                const { imageURL, ...restRequestBody } = requestBody
+                if (type === LevelModalType.Add) {
+                    addNewLevel(restRequestBody)
+                } else {
+                    editLevel(restRequestBody)
+                }
             }
 		},
 	})

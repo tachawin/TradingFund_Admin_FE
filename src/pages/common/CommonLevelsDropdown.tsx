@@ -81,11 +81,6 @@ const CommonLevelsDropdown = ({ selectedLevel, setSelectedLevel, disabled = fals
                 setIsOpen={setIsOpenLevelDropdown}
                 disabled={disabled}
             >
-                {selectedLevel !== LEVEL_PLACEHOLDER && 
-                    <span className='p-1'>
-                        <img src={(selectedLevel as LevelInterface).imageURL} alt={(selectedLevel as LevelInterface).levelName} />
-                    </span>
-                }
                 <span
                     style={{ maxWidth: '172px' }}
                     className='mx-3 d-block text-nowrap overflow-hidden text-overflow-ellipsis'
@@ -106,7 +101,6 @@ const CommonLevelsDropdown = ({ selectedLevel, setSelectedLevel, disabled = fals
                             isActive={!multipleSelect && level === selectedLevel }
                             onClick={() => multipleSelect ? handleOnChangeMultipleLevels(level) : setSelectedLevel(level)}
                         >
-                            <img src={(selectedLevel as LevelInterface).imageURL} alt={(selectedLevel as LevelInterface).levelName} />
                             <span className='mx-2 mw-75'>{level.levelName}</span>
                             {(multipleSelect && (selectedLevel as LevelInterface[]).indexOf(level) > -1) && <Check htmlColor={COLORS.PRIMARY.code} />}
                         </Button>

@@ -62,7 +62,7 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
     }
 
     const onSubmit = () => {
-        id && updatePermission(id, permissionsValue).then((response) => {
+        id && updatePermission(id, permissionsValue, () => {
             dispatch(updatePermissionById(id, permissionsValue))
             showNotification(
                 <span className='d-flex align-items-center'>
@@ -71,8 +71,8 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
                 </span>,
                 t('admin:save.admin.successfully', { adminName: name }),
             )
-        }).catch((err) => {
-            const { response } = err
+        }, (error) => {
+            const { response } = error
             const message = response?.data
             console.log(message)
             showNotification(
