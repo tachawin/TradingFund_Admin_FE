@@ -103,7 +103,7 @@ const Withdraw = () => {
 			)
 		})
 
-		banks.length === 0 && getCompanyBankList('?type=withdraw', (companyBankList: CompanyBankInterface[]) => {
+		banks.length === 0 && getCompanyBankList('?type=withdraw,deposit_and_withdraw', (companyBankList: CompanyBankInterface[]) => {
 			dispatch(storeCompanyBank(companyBankList))
 			setIsLoading && setIsLoading(false)
 		}, (error: any) => {

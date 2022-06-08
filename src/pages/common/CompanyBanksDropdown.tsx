@@ -91,7 +91,7 @@ const CompanyBanksDropdown = ({
                 disabled={disabled}
             >
                 {(selectedBank !== BANK_PLACEHOLDER && (selectedBank as CompanyBankInterface).bankName) ? <>
-                    <span className='p-1' style={{ backgroundColor: bankIcons[(selectedBank as CompanyBankInterface).bankName].color, borderRadius: 3 }}>
+                    <span className='p-1' style={{ backgroundColor: bankIcons[(selectedBank as CompanyBankInterface).bankName]?.color, borderRadius: 3 }}>
                         <BankIcon height={20} width={20} />
                     </span>
                     <span
@@ -109,14 +109,14 @@ const CompanyBanksDropdown = ({
                 setIsOpen={setIsOpenBankDropdown}
             >
                 {!isLoading ? companyBankList && companyBankList.map((bank: CompanyBankInterface) => { 
-                    const BankIcon = bankIcons[bank.bankName].icon
+                    const BankIcon = bankIcons[bank.bankName]?.icon
                     return <DropdownItem key={bank.bankId}>
                         <Button
                             color='link'
                             isActive={!multipleSelect && bank === selectedBank}
                             onClick={() => multipleSelect ? handleOnChangeMultipleBanks(bank) : setSelectedBank(bank)}
                         >
-                            <div className='p-1' style={{ backgroundColor: bankIcons[bank.bankName].color, borderRadius: 3 }}>
+                            <div className='p-1' style={{ backgroundColor: bankIcons[bank.bankName]?.color, borderRadius: 3 }}>
                                 <BankIcon height={20} width={20} />
                             </div>
                             <span className='mx-3 mw-75'>{bank.bankName?.toUpperCase()}{' *'}{bank.bankAccountNumber?.slice(-4)}</span>

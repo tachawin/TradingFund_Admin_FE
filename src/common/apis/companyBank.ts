@@ -38,6 +38,13 @@ export interface CompanyBankInterface extends CompanyBankBaseInterface {
     bankId?: string
     createdAt?: Date
     updatedAt?: Date
+    bank?: {
+        id: number
+        officialName: string
+        niceName: string
+        thaiName: string
+        acronym: string
+    }
 }
 
 export const createCompanyBank = async (
@@ -89,6 +96,7 @@ export const updateCompanyBank = async (
 			await axios({
                 method: 'patch',
                 url: `/company_bank/update/${bankId}`,
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
                 data
             })
             next()
@@ -107,6 +115,7 @@ export const deleteCompanyBank = async (
 			await axios({
                 method: 'delete',
                 url: '/company_bank/delete',
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
                 data: { bankId }
             })
             next()
