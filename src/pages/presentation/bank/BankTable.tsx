@@ -79,8 +79,8 @@ const BankTable = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {items.length > 0 ? dataPagination(items, currentPage, perPage).map((bank: CompanyBankInterface, index: number) => (
-                            <tr key={bank.bankId}>
+                        {items.length > 0 ? dataPagination(items, currentPage, perPage).map((companyBank: CompanyBankInterface, index: number) => (
+                            <tr key={companyBank.bankId}>
                                 <td className='text-center'>
                                     <div>{index + 1}</div>
                                 </td>
@@ -88,32 +88,32 @@ const BankTable = ({
                                     <div className='d-flex align-items-center'>
                                         <div className='flex-grow-1'>
                                             <div className='fs-6 fw-bold'>
-                                                *{bank.bankAccountNumber.slice(-4)}
+                                                *{companyBank.bankAccountNumber.slice(-4)}
                                             </div>
                                             <div className='text-muted'>
                                                 <LabelTwoTone fontSize='small' />{' '}
-                                                <small>{bank.bankName.toUpperCase()}</small>
+                                                <small>{companyBank.bank?.acronym.toUpperCase()}</small>
                                             </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <div>{bank.bankAccountName}</div>
+                                    <div>{companyBank.bankAccountName}</div>
                                 </td>
                                 <td>
-                                    <div>{bank.type}</div>
+                                    <div>{companyBank.type}</div>
                                 </td>
                                 <td>
-                                    <div>{moment(bank.createdAt)?.format('ll')}</div>
+                                    <div>{moment(companyBank.createdAt)?.format('ll')}</div>
                                     <div>
                                         <small className='text-muted'>
-                                            {moment(bank.createdAt)?.fromNow()}
+                                            {moment(companyBank.createdAt)?.fromNow()}
                                         </small>
                                     </div>
                                 </td>
                                 <td>
                                     <div className='d-flex align-items-center'>
-                                        { bank.status === CompanyBankStatus.Active ?
+                                        { companyBank.status === CompanyBankStatus.Active ?
                                             <>
                                                 <span className='badge border border-2 border-light rounded-circle bg-success p-2 me-2'>
                                                     <span className='visually-hidden'>
@@ -135,15 +135,15 @@ const BankTable = ({
                                 {(setIsOpenBankModal && setIsOpenDeleteBankModal) && <td>
                                     <div className='row gap-3 w-100'>
                                         {permission.bank[PermissionType.Update] === PermissionValue.Available && <Button
-                                            onClick={() => setIsOpenBankModal({ type: "edit", selectedRow: bank })}
-                                            className='col fit-content'
+                                            onClick={() => setIsOpenBankModal({ type: "edit", selectedRow: companyBank })}
+                                            className='col fit-content text-nowrap'
                                             color='light-dark'
                                         >
                                             {t('edit')}
                                         </Button>}
                                         {permission.bank[PermissionType.Delete] === PermissionValue.Available && <Button
-                                            onClick={() => setIsOpenDeleteBankModal({ type: "delete", selectedRow: bank })}
-                                            className='col fit-content'
+                                            onClick={() => setIsOpenDeleteBankModal({ type: "delete", selectedRow: companyBank })}
+                                            className='col fit-content text-nowrap'
                                             color='light-dark'
                                         >
                                             {t('delete')}

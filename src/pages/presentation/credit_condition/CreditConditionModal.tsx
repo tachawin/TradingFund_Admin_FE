@@ -27,8 +27,8 @@ export enum CreditConditionModalType {
 }
 
 interface CreditConditionInputInterface {
-    point: number
-    credit: number
+    point?: number
+    credit?: number
     quantity?: number
 }
 
@@ -50,8 +50,8 @@ const CreditConditionModal = ({ id, isOpen, setIsOpen, properties }: CreditCondi
 	
 	const formik = useFormik<CreditConditionInputInterface>({
 		initialValues: {
-            point: data?.point || 0,
-            credit: data?.credit || 0,
+            point: data?.point,
+            credit: data?.credit,
             quantity: data?.quantity
 		},
         validationSchema: isLimited ? CreditConditionWithQuantityFormSchema : CreditConditionFormSchema,
@@ -61,7 +61,11 @@ const CreditConditionModal = ({ id, isOpen, setIsOpen, properties }: CreditCondi
                 delete values.quantity
             }
             if (type === CreditConditionModalType.Add) {
-                createCreditCondition(values, (creditCondition: CreditConditionInterface) => {
+                createCreditCondition({
+                    ...values,
+                    point: values.point || 0,
+                    credit: values.credit || 0
+                }, (creditCondition: CreditConditionInterface) => {
                     dispatch(addCreditCondition(creditCondition))
                     setIsOpen(false)
                     showNotification(

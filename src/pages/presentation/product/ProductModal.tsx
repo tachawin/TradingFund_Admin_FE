@@ -13,7 +13,7 @@ import * as Yup from 'yup'
 import Button from 'components/bootstrap/Button'
 import PlaceholderImage from 'components/extras/PlaceholderImage'
 import { ProductModalInterface } from './Product'
-import { createProduct, updateProduct, ProductBaseInterface, uploadProductImage, ProductImageUrlInterface } from 'common/apis/product'
+import { createProduct, updateProduct, ProductBaseInterface, uploadProductImage, ProductImageUrlInterface, ProductInterface } from 'common/apis/product'
 import Spinner from 'components/bootstrap/Spinner'
 import Textarea from '../../../components/bootstrap/forms/Textarea'
 import { useDispatch } from 'react-redux'
@@ -42,15 +42,14 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
     const { selectedRow: data, type } = properties
 
     const productSchema = Yup.object().shape({
-        // imageURL: Yup.string().required('กรุณาอัปโหลดภาพ'),
         name: Yup.string().required('โปรดใส่ชื่อสินค้า'),
         quantity: Yup.string().required('โปรดใส่จำนวนที่มี'),
         point: Yup.string().required('โปรดใส่แต้มที่ใช้แลก'),
 	})
 
     const addNewProduct = (requestBody: ProductBaseInterface) => {
-        createProduct(requestBody).then((response) => {    
-            dispatch(addProduct(response.data))
+        createProduct(requestBody, (product: ProductInterface) => {
+            dispatch(addProduct(product))
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
@@ -58,8 +57,8 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
                 </span>,
                 t('product:save.product.name.successfully', { name: values.name }),
             )
-        }).catch((err) => {
-            const { response } = err
+        }, (error) => {
+            const { response } = error
             const message = response?.data
             console.log(message)
             showNotification(
@@ -76,9 +75,8 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
     }
 
     const editProduct = (requestBody: ProductBaseInterface) => {
-        data?.productId && updateProduct(data.productId, requestBody).then((response) => {    
-            const { data } = response
-            dispatch(updateProductById(data.productId, data))
+        data?.productId && updateProduct(data.productId, requestBody, (product: ProductInterface) => {
+            data.productId && dispatch(updateProductById(data.productId, product))
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
@@ -86,8 +84,8 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
                 </span>,
                 t('product:save.product.name.successfully', { name: values.name }),
             )
-        }).catch((err) => {
-            const { response } = err
+        }, (error) => {
+            const { response } = error
             const message = response?.data
             console.log(message)
             showNotification(
@@ -178,40 +176,40 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
                 <div className='row align-items-start'>
                     <div className='col'>
                         <div className='row g-4'>
-                        <FormGroup id='imageURL' label={t('form.image')}>
-                            <div className='row'>
-                                <div className='col-12 my-3'>
-                                    {values.imageURL ? (
-                                        <img
-                                            src={values.imageURL}
-                                            alt=''
-                                            width={220}
-                                            height={220}
-                                            style={{ minHeight: 220, minWidth: 220, objectFit: 'contain' }}
-                                            className='mx-auto d-block img-fluid mb-3'
-                                        />
-                                    ) : (
-                                        <PlaceholderImage
-                                            width={220}
-                                            height={220}
-                                            className='mx-auto d-block img-fluid mb-3 rounded'
-                                        />
-                                    )}
-                                </div>
-                                <div className='col-12'>
-                                    <div className='row g-4'>
-                                        <Input
-                                            accept="image/*"
-                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleUploadImage(e)}
-                                            type='file' 
-                                            autoComplete='photo'
-                                            isValid={isValid}
-                                            isTouched={touched.imageURL && errors.imageURL}
-                                            invalidFeedback={errors.imageURL}
-                                        />
+                            <FormGroup id='imageURL' label={t('form.image')}>
+                                <div className='row'>
+                                    <div className='col-12 my-3'>
+                                        {values.imageURL ? (
+                                            <img
+                                                src={values.imageURL}
+                                                alt=''
+                                                width={220}
+                                                height={220}
+                                                style={{ minHeight: 220, minWidth: 220, objectFit: 'contain' }}
+                                                className='mx-auto d-block img-fluid mb-3'
+                                            />
+                                        ) : (
+                                            <PlaceholderImage
+                                                width={220}
+                                                height={220}
+                                                className='mx-auto d-block img-fluid mb-3 rounded'
+                                            />
+                                        )}
+                                    </div>
+                                    <div className='col-12'>
+                                        <div className='row g-4'>
+                                            <Input
+                                                accept="image/*"
+                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleUploadImage(e)}
+                                                type='file' 
+                                                autoComplete='photo'
+                                                isValid={isValid}
+                                                isTouched={touched.imageURL && errors.imageURL}
+                                                invalidFeedback={errors.imageURL}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             </FormGroup>
                         </div>
                     </div>

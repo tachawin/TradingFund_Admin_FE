@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
 import Button from 'components/bootstrap/Button'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
-import { createCustomer } from '../../../common/apis/customer'
+import { createCustomer, CustomerInterface } from '../../../common/apis/customer'
 import Spinner from 'components/bootstrap/Spinner'
 import { useDispatch } from 'react-redux'
 import { addCustomer } from '../../../redux/customer/action'
@@ -63,8 +63,8 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
         validationSchema: CustomerAddScheme,
 		onSubmit: (values) => {
             setIsLoading(true)
-            createCustomer(values).then((response) => {    
-                dispatch(addCustomer(response.data))
+            createCustomer(values, (customer: CustomerInterface) => {
+                dispatch(addCustomer(customer))
                 showNotification(
                     <span className='d-flex align-items-center'>
                         <InfoTwoTone className='me-1' />
@@ -72,8 +72,8 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
                     </span>,
                     t('customer:save.customer.successfully', { adminName: values.name }),
                 )
-            }).catch((err) => {
-                const { response } = err
+            }, (error) => {
+                const { response } = error
                 const message = response?.data
                 console.log(message)
                 showNotification(

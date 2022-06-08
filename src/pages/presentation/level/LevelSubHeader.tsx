@@ -25,7 +25,19 @@ import Checks from 'components/bootstrap/forms/Checks'
 
 interface LevelFilterInterface {
 	searchInput: string
-	minimumCredit: {
+	minimumDeposit: {
+		min: string
+		max: string
+	}
+	maximumDeposit: {
+		min: string
+		max: string
+	}
+	investmentAmount: {
+		min: string
+		max: string
+	}
+	cashback: {
 		min: string
 		max: string
 	}
@@ -56,7 +68,19 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 	const formik = useFormik<LevelFilterInterface>({
 		initialValues: {
 			searchInput: '',
-            minimumCredit: {
+            minimumDeposit: {
+                min: '',
+                max: ''
+            },
+			maximumDeposit: {
+                min: '',
+                max: ''
+            },
+			investmentAmount: {
+                min: '',
+                max: ''
+            },
+			cashback: {
                 min: '',
                 max: ''
             },
@@ -80,8 +104,14 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 		onSubmit: (values) => {
 			dispatch(storeLevelQuery({
 				...queryList,
-				minCredit: values.minimumCredit.min ? `minCredit=${values.minimumCredit.min}` : '',
-				maxCredit: values.minimumCredit.max ? `maxCredit=${values.minimumCredit.max}` : '',
+				minMinimumDepositAmount: values.minimumDeposit.min !== '' ? `minMinimumDepositAmount=${values.minimumDeposit.min}` : '',
+				maxMinimumDepositAmount: values.minimumDeposit.max !== '' ? `maxMinimumDepositAmount=${values.minimumDeposit.max}` : '',
+				minMaximumDepositAmount: values.maximumDeposit.min !== '' ? `minMaximumDepositAmount=${values.maximumDeposit.min}` : '',
+				maxMaximumDepositAmount: values.maximumDeposit.max !== '' ? `maxMaximumDepositAmount=${values.maximumDeposit.max}` : '',
+				minInvestment: values.investmentAmount.min !== '' ? `minInvestment=${values.investmentAmount.min}` : '',
+				maxInvestment: values.investmentAmount.max !== '' ? `maxInvestment=${values.investmentAmount.max}` : '',
+				minCashback: values.cashback.min !== '' ? `minCashback=${values.cashback.min}` : '',
+				maxCashback: values.cashback.max !== '' ? `maxCashback=${values.cashback.max}` : '',
 				startCreated: values.isCreatedAtDateChanged ? `startCreated=${moment(values.createdAt[0].startDate).format('YYYY-MM-DD')}` : '',
 				endCreated: values.isCreatedAtDateChanged ?`endCreated=${moment(values.createdAt[0].endDate).format('YYYY-MM-DD')}` : '',
 				startUpdated: values.isUpdatedAtDateChanged ? `startUpdated=${moment(values.updatedAt[0].startDate).format('YYYY-MM-DD')}` : '',
@@ -198,24 +228,97 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 						</div>
 					},
 					{
-						label: t('filter.minimum.credit'),
+						label: t('filter.minimum.deposit.amount'),
 						children: <div>
 							<InputGroup>
 								<Input
-									id='minimumCredit.min'
-									ariaLabel='Minimum credit'
+									id='minimumDeposit.min'
+									ariaLabel='Min minimum deposit'
 									placeholder={t('filter.min')}
 									onChange={handleChange}
-									value={values.minimumCredit.min}
+									value={values.minimumDeposit.min}
 									type='number'
 								/>
 								<InputGroupText>{t('filter.to')}</InputGroupText>
 								<Input
-									id='minimumCredit.max'
-									ariaLabel='Maximum credit'
+									id='minimumDeposit.max'
+									ariaLabel='Max minimum deposit'
 									placeholder={t('filter.max')}
 									onChange={handleChange}
-									value={values.minimumCredit.max}
+									value={values.minimumDeposit.max}
+									type='number'
+								/>
+							</InputGroup>
+						</div>
+					},
+					{
+						label: t('filter.maximum.deposit.amount'),
+						children: <div>
+							<InputGroup>
+								<Input
+									id='maximumDeposit.min'
+									ariaLabel='Min maximum deposit'
+									placeholder={t('filter.min')}
+									onChange={handleChange}
+									value={values.maximumDeposit.min}
+									type='number'
+								/>
+								<InputGroupText>{t('filter.to')}</InputGroupText>
+								<Input
+									id='maximumDeposit.max'
+									ariaLabel='Max maximum deposit'
+									placeholder={t('filter.max')}
+									onChange={handleChange}
+									value={values.maximumDeposit.max}
+									type='number'
+								/>
+							</InputGroup>
+						</div>
+					},
+					{
+						label: t('filter.investment.amount'),
+						children: <div>
+							<InputGroup>
+								<Input
+									id='investmentAmount.min'
+									ariaLabel='Minimum invesment amount'
+									placeholder={t('filter.min')}
+									onChange={handleChange}
+									value={values.investmentAmount.min}
+									type='number'
+								/>
+								<InputGroupText>{t('filter.to')}</InputGroupText>
+								<Input
+									id='investmentAmount.max'
+									ariaLabel='Maximum invesment amount'
+									placeholder={t('filter.max')}
+									onChange={handleChange}
+									value={values.investmentAmount.max}
+									type='number'
+								/>
+							</InputGroup>
+						</div>
+					},
+
+					{
+						label: t('filter.cashback'),
+						children: <div>
+							<InputGroup>
+								<Input
+									id='cashback.min'
+									ariaLabel='Minimum cashback'
+									placeholder={t('filter.min')}
+									onChange={handleChange}
+									value={values.cashback.min}
+									type='number'
+								/>
+								<InputGroupText>{t('filter.to')}</InputGroupText>
+								<Input
+									id='cashback.max'
+									ariaLabel='Maximum cashback'
+									placeholder={t('filter.max')}
+									onChange={handleChange}
+									value={values.cashback.max}
 									type='number'
 								/>
 							</InputGroup>

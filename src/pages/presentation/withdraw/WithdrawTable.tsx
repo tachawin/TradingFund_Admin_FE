@@ -205,7 +205,7 @@ const WithdrawTable = ({
                                                 className='col'
                                                 isLight
                                             >
-                                                {bank.bankName.toLocaleUpperCase()}
+                                                {bank.bank?.acronym.toLocaleUpperCase()}
                                             </Button>
                                         )}
                                         <Button
