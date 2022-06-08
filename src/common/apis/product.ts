@@ -21,21 +21,46 @@ export interface ProductImageUrlInterface {
     productPreviewPictureURL: string
 }
 
-export const createProduct = (data: ProductInterface) => 
-    axios({
-        method: 'post',
-        url: '/product/create',
-        headers: { Authorization: `Bearer ${getAccessToken()}` },
-        data
-    })
-
-export const updateProduct = (productId: string, data: ProductInterface) => 
-    axios({
-        method: 'patch',
-        url: `/product/update/${productId}`,
-        headers: { Authorization: `Bearer ${getAccessToken()}` },
-        data
-    })
+export const createProduct = async (
+    data: ProductInterface,
+    next: (product: ProductInterface) => void,
+    handleError: (error: any) => void
+) => 
+    await authorizationHandler(async () => {
+        try {
+            const res = await axios({
+                method: 'post',
+                url: '/product/create',
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
+                data
+            })        
+            next(res.data)
+        } catch (error: any) {
+            handleError(error)
+        }
+    }
+)
+    
+export const updateProduct = async (
+    productId: string, 
+    data: ProductInterface,
+    next: (product: ProductInterface) => void,
+    handleError: (error: any) => void
+) => 
+    await authorizationHandler(async () => {
+        try {
+            const res = await axios({
+                method: 'patch',
+                url: `/product/update/${productId}`,
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
+                data
+            })      
+            next(res.data)
+        } catch (error: any) {
+            handleError(error)
+        }
+    }
+)
 
 export const getProductList = async (
     query: string,

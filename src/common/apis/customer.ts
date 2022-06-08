@@ -38,13 +38,25 @@ export interface CustomerInterface extends CustomerBaseInterface {
     }
 }
 
-export const createCustomer = (data: CustomerInterface) => 
-    axios({
-        method: 'post',
-        url: '/customer/create',
-        headers: { Authorization: `Bearer ${getAccessToken()}` },
-        data
-    })
+export const createCustomer = async (
+    data: CustomerInterface,
+    next: (customer: CustomerInterface) => void,
+    handleError: (error: any) => void
+) => 
+    await authorizationHandler(async () => {
+        try {
+            const res = await axios({
+                method: 'post',
+                url: '/customer_admin/create',
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
+                data
+            })
+            next(res.data)
+        } catch (error: any) {
+            handleError(error)
+        }
+    }
+)
 
 export const getCustomerList = async (
     query: string,
@@ -55,7 +67,7 @@ export const getCustomerList = async (
         try {
 			const res = await axios({
                 method: 'get',
-                url: `/customer/list${query}`,
+                url: `/customer_admin/list${query}`,
                 headers: { Authorization: `Bearer ${getAccessToken()}` },
             })
             next(res.data)

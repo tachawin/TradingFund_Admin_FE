@@ -15,7 +15,7 @@ import Input from 'components/bootstrap/forms/Input'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 import Checks from 'components/bootstrap/forms/Checks'
 import { BankModalInterface } from './Bank'
-import { CompanyBankBaseInterface, CompanyBankStatus, CompanyBankType, createCompanyBank, updateCompanyBank } from 'common/apis/companyBank'
+import { CompanyBankBaseInterface, CompanyBankInterface, CompanyBankStatus, CompanyBankType, createCompanyBank, updateCompanyBank } from 'common/apis/companyBank'
 import Spinner from 'components/bootstrap/Spinner'
 import { useDispatch } from 'react-redux'
 import { addCompanyBank, updateCompanyBankById } from 'redux/companyBank/action'
@@ -69,8 +69,8 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
                 status: statusInString
             }
             if (type === BankModalType.Add) {
-                createCompanyBank(requestBody).then(() => {
-                    dispatch(addCompanyBank(requestBody))
+                createCompanyBank(requestBody, (companyBank: CompanyBankInterface) => {
+                    dispatch(addCompanyBank(companyBank))
                     showNotification(
                         <span className='d-flex align-items-center'>
                             <InfoTwoTone className='me-1' />
@@ -78,8 +78,8 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
                         </span>,
                         t('bank:added.bank.successfully', { bankName: values.bankName.toUpperCase() }),
                     )
-                }).catch((err) => {
-                    const { response } = err
+                }, (error) => {
+                    const { response } = error
                     const message = response?.data
                     console.log(message)
                     showNotification(

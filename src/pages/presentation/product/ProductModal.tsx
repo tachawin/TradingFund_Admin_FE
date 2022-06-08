@@ -13,7 +13,7 @@ import * as Yup from 'yup'
 import Button from 'components/bootstrap/Button'
 import PlaceholderImage from 'components/extras/PlaceholderImage'
 import { ProductModalInterface } from './Product'
-import { createProduct, updateProduct, ProductBaseInterface, uploadProductImage, ProductImageUrlInterface } from 'common/apis/product'
+import { createProduct, updateProduct, ProductBaseInterface, uploadProductImage, ProductImageUrlInterface, ProductInterface } from 'common/apis/product'
 import Spinner from 'components/bootstrap/Spinner'
 import Textarea from '../../../components/bootstrap/forms/Textarea'
 import { useDispatch } from 'react-redux'
@@ -48,8 +48,8 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
 	})
 
     const addNewProduct = (requestBody: ProductBaseInterface) => {
-        createProduct(requestBody).then((response) => {    
-            dispatch(addProduct(response.data))
+        createProduct(requestBody, (product: ProductInterface) => {
+            dispatch(addProduct(product))
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
@@ -57,8 +57,8 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
                 </span>,
                 t('product:save.product.name.successfully', { name: values.name }),
             )
-        }).catch((err) => {
-            const { response } = err
+        }, (error) => {
+            const { response } = error
             const message = response?.data
             console.log(message)
             showNotification(
@@ -75,9 +75,8 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
     }
 
     const editProduct = (requestBody: ProductBaseInterface) => {
-        data?.productId && updateProduct(data.productId, requestBody).then((response) => {    
-            const { data } = response
-            dispatch(updateProductById(data.productId, data))
+        data?.productId && updateProduct(data.productId, requestBody, (product: ProductInterface) => {
+            data.productId && dispatch(updateProductById(data.productId, product))
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
@@ -85,8 +84,8 @@ const ProductModal = ({ isOpen, setIsOpen, properties }: ProductModalInterface) 
                 </span>,
                 t('product:save.product.name.successfully', { name: values.name }),
             )
-        }).catch((err) => {
-            const { response } = err
+        }, (error) => {
+            const { response } = error
             const message = response?.data
             console.log(message)
             showNotification(
