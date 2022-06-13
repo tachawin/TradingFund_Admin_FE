@@ -92,7 +92,7 @@ const BankTable = ({
                                             </div>
                                             <div className='text-muted'>
                                                 <LabelTwoTone fontSize='small' />{' '}
-                                                <small>{companyBank.bank?.acronym.toUpperCase()}</small>
+                                                <small>{companyBank.bankName?.acronym.toUpperCase()}</small>
                                             </div>
                                         </div>
                                     </div>

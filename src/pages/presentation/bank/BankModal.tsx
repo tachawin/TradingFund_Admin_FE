@@ -52,7 +52,7 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
 		initialValues: {
             bankAccountNumber: data?.bankAccountNumber || '',
             bankAccountName: data?.bankAccountName || '',
-            bankName: data?.bankName || 'scb',
+            bankName: data?.bankName?.acronym || 'scb',
             balance: data?.balance || '',
             type: data?.type ? (data?.type === CompanyBankType.DepositAndWithdraw ? [CompanyBankType.Deposit, CompanyBankType.Withdraw] : [data?.type]) : [],
             status: data?.status === CompanyBankStatus.Active || true

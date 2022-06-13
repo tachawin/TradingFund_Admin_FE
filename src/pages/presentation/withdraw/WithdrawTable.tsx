@@ -200,12 +200,12 @@ const WithdrawTable = ({
                                         {banks.map((bank) => 
                                             <Button
                                                 key={bank.bankId}
-                                                onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.System, bank: bank.bankName, selectedRow: transaction})}
+                                                onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.System, bank: bank.bankName?.acronym, selectedRow: transaction})}
                                                 color='primary'
                                                 className='col'
                                                 isLight
                                             >
-                                                {bank.bank?.acronym.toLocaleUpperCase()}
+                                                {bank.bankName?.acronym.toLocaleUpperCase()}
                                             </Button>
                                         )}
                                         <Button

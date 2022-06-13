@@ -19,7 +19,6 @@ export const TYPE = [CompanyBankType.Deposit, CompanyBankType.Withdraw, CompanyB
 export interface CompanyBankBaseInterface {
     bankAccountName: string
     bankAccountNumber: string
-    bankName: string
     balance: number
     type: CompanyBankType
     status: CompanyBankStatus
@@ -28,7 +27,6 @@ export interface CompanyBankBaseInterface {
 export interface CompanyBankUpdateBodyInterface {
     bankAccountName?: string
     bankAccountNumber?: string
-    bankName?: string
     balance?: number
     type?: CompanyBankType
     status?: CompanyBankStatus
@@ -38,13 +36,14 @@ export interface CompanyBankInterface extends CompanyBankBaseInterface {
     bankId?: string
     createdAt?: Date
     updatedAt?: Date
-    bank?: {
+    bankName?: {
         id: number
         officialName: string
         niceName: string
         thaiName: string
         acronym: string
     }
+    totalWithdrawToday?: number
 }
 
 export const createCompanyBank = async (

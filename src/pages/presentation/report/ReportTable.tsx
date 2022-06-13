@@ -119,7 +119,7 @@ const ReportTable = ({ data }: ReportTableInterface) => {
                                         </div>
                                         <div className='text-muted'>
                                             <LabelTwoTone fontSize='small' />{' '}
-                                            <small>{transaction.transactionType === TransactionType.Deposit ? transaction.recipientBankName.toUpperCase() : transaction.payerBankName.toUpperCase()}</small>
+                                            <small>{transaction.transactionType === TransactionType.Deposit ? transaction.recipientBank?.acronym.toUpperCase() : transaction.payerBank?.acronym.toUpperCase()}</small>
                                         </div>
                                     </div>
                                 </div>

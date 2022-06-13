@@ -32,7 +32,8 @@ const CompanyBanksDropdown = ({
     const [isLoading, setIsLoading] = useState(false)
     const BANK_PLACEHOLDER = 'เลือกชื่อธนาคาร'
 
-    const BankIcon = bankIcons[(selectedBank as CompanyBankInterface).bankName]?.icon
+    const displayedBank = selectedBank as CompanyBankInterface
+    const BankIcon = displayedBank.bankName ? bankIcons[displayedBank.bankName?.acronym]?.icon : bankIcons.undefined.icon
 
     const companyBankList = useSelector(selectCompanyBankList)
     
@@ -80,7 +81,7 @@ const CompanyBanksDropdown = ({
                     style={{ maxWidth: '172px' }}
                     className={`${ multipleSelect ? 'm-0' : 'mx-3' } d-block text-nowrap overflow-hidden text-overflow-ellipsis`}
                 >
-                    {(selectedBank as CompanyBankInterface[]).map((bank) => bank.bankName.toUpperCase()).join(', ') || BANK_PLACEHOLDER}
+                    {(selectedBank as CompanyBankInterface[]).map((bank) => bank.bankName?.acronym.toUpperCase()).join(', ') || BANK_PLACEHOLDER}
                 </span>
             </DropdownToggle> : <DropdownToggle
                 className={{ 'd-flex': true, 'align-items-center': true, 'w-100': true, 'border-danger': error && touched }}
@@ -90,15 +91,15 @@ const CompanyBanksDropdown = ({
                 setIsOpen={setIsOpenBankDropdown}
                 disabled={disabled}
             >
-                {(selectedBank !== BANK_PLACEHOLDER && (selectedBank as CompanyBankInterface).bankName) ? <>
-                    <span className='p-1' style={{ backgroundColor: bankIcons[(selectedBank as CompanyBankInterface).bankName]?.color, borderRadius: 3 }}>
+                {(selectedBank !== BANK_PLACEHOLDER && displayedBank.bankName?.acronym) ? <>
+                    <span className='p-1' style={{ backgroundColor: bankIcons[displayedBank.bankName?.acronym]?.color, borderRadius: 3 }}>
                         <BankIcon height={20} width={20} />
                     </span>
                     <span
                         style={{ maxWidth: '172px' }}
                         className='mx-3 d-block text-nowrap overflow-hidden text-overflow-ellipsis'
                     >
-                        {(selectedBank as CompanyBankInterface).bankName?.toUpperCase()}{' *'}{(selectedBank as CompanyBankInterface).bankAccountNumber?.slice(-4)}
+                        {(selectedBank as CompanyBankInterface).bankName?.acronym.toUpperCase()}{' *'}{(selectedBank as CompanyBankInterface).bankAccountNumber?.slice(-4)}
                     </span>
                 </> : BANK_PLACEHOLDER}
             </DropdownToggle>}
@@ -108,18 +109,18 @@ const CompanyBanksDropdown = ({
                 isOpen={Boolean(isOpenBankDropdown)} 
                 setIsOpen={setIsOpenBankDropdown}
             >
-                {!isLoading ? companyBankList && companyBankList.map((bank: CompanyBankInterface) => { 
-                    const BankIcon = bankIcons[bank.bankName]?.icon
+                {!isLoading ? companyBankList && companyBankList.map((bank: CompanyBankInterface) => {
+                    const BankIcon = bank.bankName ? bankIcons[bank.bankName.acronym]?.icon : bankIcons.undefined.icon
                     return <DropdownItem key={bank.bankId}>
                         <Button
                             color='link'
                             isActive={!multipleSelect && bank === selectedBank}
                             onClick={() => multipleSelect ? handleOnChangeMultipleBanks(bank) : setSelectedBank(bank)}
                         >
-                            <div className='p-1' style={{ backgroundColor: bankIcons[bank.bankName]?.color, borderRadius: 3 }}>
+                            <div className='p-1' style={{ backgroundColor: bank.bankName && bankIcons[bank.bankName.acronym]?.color, borderRadius: 3 }}>
                                 <BankIcon height={20} width={20} />
                             </div>
-                            <span className='mx-3 mw-75'>{bank.bankName?.toUpperCase()}{' *'}{bank.bankAccountNumber?.slice(-4)}</span>
+                            <span className='mx-3 mw-75'>{bank.bankName?.acronym.toUpperCase()}{' *'}{bank.bankAccountNumber?.slice(-4)}</span>
                             {(multipleSelect && (selectedBank as CompanyBankInterface[]).indexOf(bank) > -1) && <Check htmlColor={COLORS.PRIMARY.code} />}
                         </Button>
                     </DropdownItem>

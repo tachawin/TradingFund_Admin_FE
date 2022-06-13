@@ -5,8 +5,9 @@ import { renewToken } from './auth'
 const REACT_APP_BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:8080';
 
 const axiosInstance = axios.create({
-	baseURL: REACT_APP_BASE_URL,
-	// baseURL: 'http://localhost:8080'
+	// baseURL: REACT_APP_BASE_URL,
+	// baseURL: 'http://api.luckynobug.com',
+	baseURL: 'http://localhost:8080',
   	withCredentials: true,
 })
 

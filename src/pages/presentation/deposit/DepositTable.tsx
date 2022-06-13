@@ -114,7 +114,7 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                                             </div>
                                             <div className='text-muted'>
                                                 <LabelTwoTone fontSize='small' />{' '}
-                                                <small>{transaction.recipientBankName.toUpperCase()}</small>
+                                                <small>{transaction.recipientBank?.acronym.toUpperCase()}</small>
                                             </div>
                                         </div>
                                     </div>
@@ -138,21 +138,21 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                                             <Button
                                                 onClick={() => setIsOpenDepositModal({ type: DepositModalType.Refund, selectedRow: transaction})}
                                                 color='light-dark'
-                                                className='col fit-content'
+                                                className='col fit-content text-nowrap'
                                             >
                                                 {t('refund')}
                                             </Button>
                                             : transaction.status === TransactionStatus.NotFound ? <Button
                                                 onClick={() => setIsOpenDepositModal({ type: DepositModalType.SelectPayer, selectedRow: transaction})}
                                                 color='light-dark'
-                                                className='col fit-content'
+                                                className='col fit-content text-nowrap'
                                             >
                                                 {t('select.payer')}
                                             </Button> : <></>
                                         } {(transaction.status === TransactionStatus.Success || transaction.status === TransactionStatus.Cancel) && <Button
                                                 onClick={() => setIsOpenDepositModal({ type: DepositModalType.Edit, selectedRow: transaction})}
                                                 color='light-dark'
-                                                className='col fit-content'
+                                                className='col fit-content text-nowrap'
                                             >
                                             {t('edit')}
                                         </Button>}

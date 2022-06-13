@@ -174,7 +174,14 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
                 bankId: data?.companyBankId || '',
                 bankAccountNumber: data?.recipientBankAccountNumber || '',
                 bankAccountName: '',
-                bankName: data?.recipientBankName || '',
+                bankName: {
+                    id: data?.recipientBank?.id || 0,
+                    officialName: data?.recipientBank?.officialName || '',
+                    niceName: data?.recipientBank?.niceName || '',
+                    thaiName: data?.recipientBank?.thaiName || '',
+                    acronym: data?.recipientBank?.acronym || '',
+
+                },
                 balance: 0,
                 type: CompanyBankType.Deposit,
                 status: CompanyBankStatus.Active
