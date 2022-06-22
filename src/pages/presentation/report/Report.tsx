@@ -35,6 +35,8 @@ import { useNavigate } from 'react-router-dom'
 import Spinner from 'components/bootstrap/Spinner'
 import { ArticleTwoTone, InfoTwoTone, PrintTwoTone, Search } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { CommonString } from 'common/data/enumStrings'
 
 interface ReportFilterInterface {
 	searchInput: string
@@ -64,6 +66,8 @@ const Report = () => {
 	const transactions = useSelector(selectTransactionsList)
 	const transactionQueryList = useSelector(selectTransactionQuery)
 
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
+
 	useEffect(() => {
 		let queryString = Object.values(transactionQueryList).filter(Boolean).join('&')
 		let query = queryString ? `?${queryString}` : ''
@@ -78,9 +82,9 @@ const Report = () => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.transaction.failed')}</span>
+					<span>ไม่สามารถเรียกดูธุรกรรมได้</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -207,7 +211,7 @@ const Report = () => {
 						value={searchInput}
 					/>
 				</SubHeaderLeft>
-				<SubHeaderRight>
+				{permission.report[PermissionType.Read] === PermissionValue.Available && <SubHeaderRight>
 					<CommonTableFilter
 						resetLabel={t('filter.reset')}
 						onReset={resetForm}
@@ -312,7 +316,7 @@ const Report = () => {
 					>
 						{t('print')}
 					</Button>
-				</SubHeaderRight>
+				</SubHeaderRight>}
 			</SubHeader>
 			<Page>
 				<div className='row h-100'>

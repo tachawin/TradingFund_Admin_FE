@@ -20,6 +20,7 @@ import { storeCreditConditionQuery } from 'redux/creditCondition/action'
 import 'moment/locale/th'
 import Checks from 'components/bootstrap/forms/Checks'
 import { selectCreditConditionQuery } from 'redux/creditCondition/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
 
 interface CreditConditionFilterInterface {
 	searchInput: string
@@ -56,6 +57,9 @@ const CreditConditionSubHeader = ({ setIsOpenCreditConditionModal }: CreditCondi
 
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
     const [isOpenUpdatedAtDatePicker, setIsOpenUpdatedAtDatePicker] = useState(false)
+
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
+    const createPermission = permission.creditCondition[PermissionType.Create] === PermissionValue.Available
 
 	const queryList = useSelector(selectCreditConditionQuery)
 
@@ -272,16 +276,18 @@ const CreditConditionSubHeader = ({ setIsOpenCreditConditionModal }: CreditCondi
 					}
 				]} 
 			/>
-			<SubheaderSeparator />
-			<Button
-				className='text-nowrap'
-				icon={Add}
-				color='primary'
-				isLight
-				onClick={() => setIsOpenCreditConditionModal({ type: CreditConditionModalType.Add, selectedRow: undefined})}
-			>
-				{t('creditCondition:add.creditCondition')}
-			</Button>
+			{createPermission && <>
+				<SubheaderSeparator />
+				<Button
+					className='text-nowrap'
+					icon={Add}
+					color='primary'
+					isLight
+					onClick={() => setIsOpenCreditConditionModal({ type: CreditConditionModalType.Add, selectedRow: undefined})}
+				>
+					{t('creditCondition:add.creditCondition')}
+				</Button>
+			</>}
 		</SubHeaderRight>
 	</SubHeader>)
 }

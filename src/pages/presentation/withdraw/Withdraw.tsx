@@ -38,6 +38,8 @@ import { selectCompanyBankList } from 'redux/companyBank/selector'
 import { storeCompanyBank } from 'redux/companyBank/action'
 import { InfoTwoTone, Search } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { CommonString } from 'common/data/enumStrings'
 
 interface WithdrawFilterInterface {
 	searchInput: string
@@ -83,6 +85,9 @@ const Withdraw = () => {
 	const withdrawList = useSelector(selectWithdrawList)
 	const withdrawQueryList = useSelector(selectWithdrawQuery)
 
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
+	const readPermission = permission.withdraw[PermissionType.Read] === PermissionValue.Available
+
 	useEffect(() => {
 		let queryString = Object.values(withdrawQueryList).filter(Boolean).join('&')
 		let query = queryString ? `?${queryString}` : ''
@@ -97,12 +102,15 @@ const Withdraw = () => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.withdraw.failed')}</span>
+					<span>ไม่สามารถเรียกดูรายการถอนเงินได้</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		})
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [withdrawQueryList, withdrawTableState])
 
+	useEffect(() => {
 		banks.length === 0 && getCompanyBankList('?type=withdraw,deposit_and_withdraw', (companyBankList: CompanyBankInterface[]) => {
 			dispatch(storeCompanyBank(companyBankList))
 			setIsLoading && setIsLoading(false)
@@ -113,13 +121,13 @@ const Withdraw = () => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.company.bank.failed')}</span>
+					<span>ไม่สามารถเรียกดูธนาคารได้</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [withdrawQueryList, withdrawTableState])
+	}, [])
 
 	const formik = useFormik<WithdrawFilterInterface>({
 		initialValues: {
@@ -220,7 +228,7 @@ const Withdraw = () => {
 					/>
 				</SubHeaderLeft>
 				<SubHeaderRight>
-					<CommonTableFilter
+					{readPermission && <CommonTableFilter
 						resetLabel={t('filter.reset')}
 						onReset={resetForm}
 						submitLabel={t('filter')}
@@ -309,7 +317,7 @@ const Withdraw = () => {
 								/>
 							},
 						]} 
-					/>
+					/>}
 				</SubHeaderRight>
 			</SubHeader>
 			<Page>

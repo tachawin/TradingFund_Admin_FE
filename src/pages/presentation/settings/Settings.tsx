@@ -21,6 +21,8 @@ import { InfoTwoTone } from '@mui/icons-material'
 import { useDispatch } from 'react-redux'
 import { storeSetting } from 'redux/setting/action'
 import CreditCondition, { CreditConditionModalProperties } from '../credit_condition/CreditCondition'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { CommonString } from 'common/data/enumStrings'
 
 enum SettingPanel {
     Product = 'product',
@@ -39,18 +41,11 @@ const Settings = () => {
 
 	const dispatch = useDispatch()
 
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
+	const productReadPermission = permission.product[PermissionType.Read] === PermissionValue.Available
+	const bankReadPermission = permission.bank[PermissionType.Read] === PermissionValue.Available
+
 	const SETTING_PANELS = [
-		{
-			container: 'fluid',
-			id: SettingPanel.Product,
-			subHeader: <ProductSubHeader isOpenProductModal={isOpenProductModal} setIsOpenProductModal={setIsOpenProductModal} />,
-			body:  <Product isOpenProductModal={isOpenProductModal} setIsOpenProductModal={setIsOpenProductModal} />
-		},
-		{
-			id: SettingPanel.Bank,
-			subHeader: <BankSubHeader isOpenBankModal={isOpenBankModal} setIsOpenBankModal={setIsOpenBankModal} />,
-			body:  <Bank isOpenBankModal={isOpenBankModal} setIsOpenBankModal={setIsOpenBankModal} />
-		},
 		{
 			id: SettingPanel.Common,
 			subHeader: <></>,
@@ -62,6 +57,17 @@ const Settings = () => {
 				<Level isOpenLevelModal={isOpenLevelModal} setIsOpenLevelModal={setIsOpenLevelModal} />
 				<CreditCondition isOpenCreditConditionModal={isOpenCreditConditionModal} setIsOpenCreditConditionModal={setIsOpenCreditConditionModal} />
 			</div>
+		},
+		{
+			container: 'fluid',
+			id: SettingPanel.Product,
+			subHeader: productReadPermission && <ProductSubHeader isOpenProductModal={isOpenProductModal} setIsOpenProductModal={setIsOpenProductModal} />,
+			body: <Product isOpenProductModal={isOpenProductModal} setIsOpenProductModal={setIsOpenProductModal} />
+		},
+		{
+			id: SettingPanel.Bank,
+			subHeader: bankReadPermission && <BankSubHeader isOpenBankModal={isOpenBankModal} setIsOpenBankModal={setIsOpenBankModal} />,
+			body: <Bank isOpenBankModal={isOpenBankModal} setIsOpenBankModal={setIsOpenBankModal} />
 		}
 	]
 
@@ -92,8 +98,9 @@ const Settings = () => {
 				showNotification(
 					<span className='d-flex align-items-center'>
 						<InfoTwoTone className='me-1' />
-						<span>{t('get.otp.setting.failed')}</span>
-					</span>, t('try.again')
+						<span>ไม่สามารถเรียกดูการตั้งค่าได้</span>
+					</span>,
+					CommonString.TryAgain,
 				)
 			}).finally(() => setIsLoading(false))
 		}
@@ -106,6 +113,15 @@ const Settings = () => {
 				page.id === panel && <Fragment key={page.id}>
 					<SubHeader className='g-3 pb-3'>
 						<SubHeaderLeft className='col-md'>
+							<Button
+								color='primary'
+								isLight
+								isActive={panel === SettingPanel.Common}
+								onClick={() => setPanel(SettingPanel.Common)}
+								className='text-nowrap'
+							>
+								{t('common')}
+							</Button>
 							<Button
 								color='primary'
 								isLight
@@ -123,15 +139,6 @@ const Settings = () => {
 								className='text-nowrap'
 							>
 								{t('bank')}
-							</Button>
-							<Button
-								color='primary'
-								isLight
-								isActive={panel === SettingPanel.Common}
-								onClick={() => setPanel(SettingPanel.Common)}
-								className='text-nowrap'
-							>
-								{t('common')}
 							</Button>
 						</SubHeaderLeft>
 						<SubHeaderRight className='col-md' style={{ minWidth: '400px' }}>

@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next'
 import Spinner from 'components/bootstrap/Spinner'
 import { Check, InfoTwoTone } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
+import { CommonString } from 'common/data/enumStrings'
 
 interface CommonBanksDropdownInterface {
     selectedBankName: string | string[]
@@ -53,12 +54,12 @@ const CommonBanksDropdown = ({ selectedBankName, setSelectedBankName, disabled =
             const { response } = error
             console.log(response.data)
             showNotification(
-                <span className='d-flex align-items-center'>
-                    <InfoTwoTone className='me-1' />
-                    <span>{t('get.bank.failed')}</span>
-                </span>,
-                t('please.refresh.again'),
-            )
+				<span className='d-flex align-items-center'>
+					<InfoTwoTone className='me-1' />
+					<span>ไม่สามารถเรียกดูธนาคารได้</span>
+				</span>,
+				CommonString.TryAgain,
+			)
         }).finally(() => setIsLoading(false))
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])

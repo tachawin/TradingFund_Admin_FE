@@ -81,7 +81,6 @@ export const renewToken = async () => {
             method: 'post',
             url: '/auth/admin/2fa/token/refresh',
         })
-        console.log(res)
         const { accessToken } = res.data
         setAccessToken(accessToken)
         return accessToken

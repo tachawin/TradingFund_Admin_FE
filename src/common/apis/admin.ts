@@ -1,5 +1,4 @@
 import { getAccessToken } from 'common/utils/auth'
-import { Status } from 'pages/common/CommonEnums'
 import axios, { authorizationHandler } from './axios'
 
 interface PermissionInterface {
@@ -58,6 +57,7 @@ export const createAdmin = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     }
 )
@@ -80,6 +80,7 @@ export const updateAdmin = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     }
 )
@@ -101,6 +102,7 @@ export const updatePermission = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     }
 )
@@ -120,6 +122,7 @@ export const getAdminList = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })
 
@@ -139,5 +142,6 @@ export const deleteAdmin = async (
             next()
 		} catch (error: any) {
 			handleError(error)
+            throw error
 		}
     })

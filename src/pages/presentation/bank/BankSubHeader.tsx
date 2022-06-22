@@ -14,7 +14,6 @@ import moment from 'moment'
 import { CompanyBankStatus, CompanyBankType, STATUS, TYPE } from 'common/apis/companyBank'
 import { selectCompanyBankQuery } from 'redux/companyBank/selector'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { SavingsTwoTone, Search } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
@@ -39,7 +38,7 @@ interface BankSubHeaderInterface {
 const BankSubHeader = ({ setIsOpenBankModal }: BankSubHeaderInterface) => {
 	const { t } = useTranslation(['common', 'bank'])
 	const dispatch = useDispatch()
-	const permission = useSelector(selectPermission)
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
 
 	const [searchInput, setSearchInput] = useState('')
 	const companyBankQuery = useSelector(selectCompanyBankQuery)

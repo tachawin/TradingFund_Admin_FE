@@ -6,7 +6,6 @@ import PaginationButtons, { dataPagination, PER_COUNT } from 'components/Paginat
 import Button from 'components/bootstrap/Button'
 import { WithdrawModalType } from './WithdrawModal'
 import { useSelector } from 'react-redux'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { TransactionInterface, TransactionType } from 'common/apis/transaction'
 import moment from 'moment'
@@ -35,7 +34,8 @@ const WithdrawTable = ({
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
 
-    const permission = useSelector(selectPermission)
+    const permission = JSON.parse(localStorage.getItem('features') ?? '')
+    const updatePermission = permission.withdraw[PermissionType.Update] === PermissionValue.Available
     const banks = useSelector(selectCompanyBankList)
 
     const getStatusText = (status: string): ReactNode => {
@@ -118,7 +118,7 @@ const WithdrawTable = ({
                                     <FilterList fontSize='small' className={getClassNamesFor('operator')} />
                                 </th>
                             }
-                            {setIsOpenCancelWithdrawModal && <td />}
+                            {(setIsOpenCancelWithdrawModal && updatePermission) && <td />}
                         </tr>
                     </thead>
                     <tbody>
@@ -196,7 +196,7 @@ const WithdrawTable = ({
                                         <div>{transaction.adminName}</div>
                                     </td>
                                 }
-                                {(setIsOpenWithdrawModal && setIsOpenCancelWithdrawModal) && <td>
+                                {(setIsOpenWithdrawModal && setIsOpenCancelWithdrawModal && updatePermission) && <td>
                                     {transaction.transactionType === TransactionType.RequestWithdraw ? <div className='row gap-3'>
                                         {banks.map((bank) => 
                                             <Button

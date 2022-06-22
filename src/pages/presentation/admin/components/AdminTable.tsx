@@ -9,7 +9,6 @@ import { AdminModalType } from './AdminEditModal'
 import { AdminInterface, AdminRole, AdminStatus } from 'common/apis/admin'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { DeleteTwoTone, EditTwoTone, FilterList, LabelTwoTone, MoreHoriz, VisibilityTwoTone } from '@mui/icons-material'
 
@@ -37,7 +36,7 @@ const AdminTable = ({
     cardHeader 
 }: AdminTableInterface) => {
     const { t } = useTranslation('common')
-    const permission = useSelector(selectPermission)
+    const permission = JSON.parse(localStorage.getItem('features') ?? '')
 
     const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])

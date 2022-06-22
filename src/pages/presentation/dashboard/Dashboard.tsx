@@ -14,6 +14,7 @@ import { getLabel } from 'components/extras/calendarHelper'
 import { Views } from 'react-big-calendar'
 import moment from 'moment'
 import { InfoTwoTone } from '@mui/icons-material'
+import { CommonString } from 'common/data/enumStrings'
 
 const Dashboard = () => {
 	const { t } = useTranslation('dashboard')
@@ -40,9 +41,9 @@ const Dashboard = () => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.deposit.failed')}</span>
+					<span>{CommonString.UnableToGetData}</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps

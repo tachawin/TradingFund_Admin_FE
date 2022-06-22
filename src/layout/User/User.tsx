@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import classNames from 'classnames'
 import USERS from '../../common/data/userDummyData'
@@ -9,52 +9,51 @@ import { useTranslation } from 'react-i18next'
 import { didLogout } from 'common/utils/auth'
 import { logout } from 'common/apis/auth'
 import showNotification from 'components/extras/showNotification'
-import { AccountBoxTwoTone } from '@mui/icons-material'
+import { AccountBoxTwoTone, InfoTwoTone } from '@mui/icons-material'
 
 const User = () => {
 	const { t } = useTranslation('login')
 	const navigate = useNavigate()
 
 	const [collapseStatus, setCollapseStatus] = useState(false)
+	const [user, setUser] = useState({
+		name: '',
+		role: ''
+	})
 	
 	const handleLogout = () => {
-		setCollapseStatus(false)
-		didLogout()
-		navigate(`/${pages.login.path}`)
-		// logout().then(() => {
-		// 	didLogout()
-		// 	navigate(`/${pages.login.path}`)
-		// }).catch(() => {
-		// 	showNotification(
-		// 		<span className='d-flex align-items-center'>
-		// 			<InfoTwoTone className='me-1' />
-		// 			<span>{t('logout.failed')}</span>
-		// 		</span>,
-		// 		t('please.try.again'),
-		// 	)
-		// }).finally(() => setCollapseStatus(false))
+		logout(() => {
+			didLogout()
+			setCollapseStatus(false)
+			navigate(`/${pages.login.path}`)
+		}, () => {
+			showNotification(
+				<span className='d-flex align-items-center'>
+					<InfoTwoTone className='me-1' />
+					<span>{t('logout.failed')}</span>
+				</span>,
+				t('please.try.again'),
+			)
+		}).finally(() => setCollapseStatus(false))
 	}
 
+	useEffect(() => {
+		const name = localStorage.getItem('name') ?? ''
+		const role = localStorage.getItem('role') ?? ''
+		setUser({ name, role })
+	}, [])
+
 	return (
-		<>
+		<div>
 			<div
 				className={classNames('user', { open: collapseStatus })}
 				role='presentation'
 				onClick={() => setCollapseStatus(!collapseStatus)}>
-				<div className='user-avatar'>
-					<img
-						srcSet={USERS[1].srcSet}
-						src={USERS[1].src}
-						alt='Avatar'
-						width={128}
-						height={128}
-					/>
-				</div>
 				<div className='user-info'>
 					<div className='user-name d-flex align-items-center'>
-						{`${USERS[1].name} ${USERS[1].surname}`}
+						{user.name}
 					</div>
-					<div className='user-sub-title'>{USERS[1].position}</div>
+					<div className='user-sub-title'>{user.role}</div>
 				</div>
 			</div>
 			<DropdownMenu isOpen={collapseStatus} setIsOpen={setCollapseStatus}>
@@ -75,7 +74,7 @@ const User = () => {
 					</Button>
 				</DropdownItem>
 			</DropdownMenu>
-		</>
+		</div>
 	)
 }
 

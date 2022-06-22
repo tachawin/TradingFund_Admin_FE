@@ -4,11 +4,16 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { selectCompanyBankList } from 'redux/companyBank/selector'
 import { CompanyBankInterface } from 'common/apis/companyBank'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { CommonString } from 'common/data/enumStrings'
 
 const BankBalanceCard = () => {
     const { t } = useTranslation('common')
 
     const banks = useSelector(selectCompanyBankList)
+
+    const permission = JSON.parse(localStorage.getItem('features') ?? '')
+	const readPermission = permission.bank[PermissionType.Read] === PermissionValue.Available
 
     return (
         <Card stretch className='col-3 w-100 h-auto'>
@@ -19,7 +24,7 @@ const BankBalanceCard = () => {
             </CardHeader>
             <CardBody>
                 <div className='row g-5'>
-                    {banks.map((bank: CompanyBankInterface) => {
+                    {readPermission ? banks.map((bank: CompanyBankInterface) => {
                         let BankIcon = bank.bankName ? bankIcons[bank.bankName?.acronym]?.icon : bankIcons.undefined.icon
                         return (BankIcon && <div className='col mt-4' key={bank.bankId}>
                             <div className='row'>
@@ -51,7 +56,7 @@ const BankBalanceCard = () => {
                                 </div>
                             </div>
                         </div>)})
-                    }
+                    : <div className='text-center'>{CommonString.NoPermission}</div>}
                 </div>
             </CardBody>
         </Card>

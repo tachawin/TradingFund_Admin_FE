@@ -40,6 +40,8 @@ import { selectCustomerQuery } from '../../../redux/customer/selector'
 import { FilterList, InfoTwoTone, LabelTwoTone, PersonAddAlt1TwoTone, Search, VisibilityTwoTone } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
 import PlaceholderImage from 'components/extras/PlaceholderImage'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { CommonString } from 'common/data/enumStrings'
 
 interface DepositFilterInterface {
 	searchInput: string
@@ -72,6 +74,10 @@ const Customer = () => {
 	const [searchInput, setSearchInput] = useState('')
 	const [isOpenCustomerModal, setIsOpenCustomerModal] = useState<"add" | "edit">()
 	const [isLoading, setIsLoading] = useState(false)
+
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
+	const readPermission = permission.customer[PermissionType.Read] === PermissionValue.Available
+	const createPermission = permission.customer[PermissionType.Create] === PermissionValue.Available
 
 	const formik = useFormik<DepositFilterInterface>({
 		initialValues: {
@@ -155,9 +161,9 @@ const Customer = () => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.admin.failed')}</span>
+					<span>ไม่สามารถเรียกดูลูกค้า</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		}).finally(() => setIsLoading(false))
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -182,7 +188,7 @@ const Customer = () => {
 					/>
 				</SubHeaderLeft>
 				<SubHeaderRight>
-					<CommonTableFilter
+					{readPermission && <CommonTableFilter
 						resetLabel={t('filter.reset')}
 						onReset={resetForm}
 						submitLabel={t('filter')}
@@ -237,16 +243,16 @@ const Customer = () => {
 								</div>
 							},
 						]} 
-					/>
-					<SubheaderSeparator />
-					<Button
+					/>}
+					{(readPermission && createPermission) && <SubheaderSeparator />}
+					{createPermission && <Button
 						icon={PersonAddAlt1TwoTone}
 						color='primary'
 						isLight
 						onClick={() => setIsOpenCustomerModal('add')}
 					>
 						{t('customer:new.customer')}
-					</Button>
+					</Button>}
 				</SubHeaderRight>
 			</SubHeader>
 			<Page>
@@ -291,7 +297,7 @@ const Customer = () => {
 											</tr>
 										</thead>
 										<tbody>
-											{dataPagination(items, currentPage, perPage).map((customer: CustomerInterface, index: number) => (
+											{items.length > 0 ? dataPagination(items, currentPage, perPage).map((customer: CustomerInterface, index: number) => (
 												<tr key={customer.customerId}>
 													<td className='text-center'>
 														<div>{index + 1}</div>
@@ -366,7 +372,13 @@ const Customer = () => {
 														</Button>
 													</td>
 												</tr>
-											))}
+											)) : readPermission ?
+											<tr>
+												<td colSpan={8} className='text-center'>ไม่พบข้อมูล</td>
+											</tr>
+											: <tr>
+												<td colSpan={8} className='text-center'>ไม่มีสิทธิ์เข้าถึง</td>
+											</tr>}
 										</tbody>
 									</table>
 								</CardBody>

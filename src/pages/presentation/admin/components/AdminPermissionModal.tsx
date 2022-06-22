@@ -38,18 +38,19 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
     }, [permissions])
 
     const featureTitle: Permission = {
-        report: t("report"),
-        customer: t("customer"),
-        deposit: t("deposit"),
-        withdraw: t("withdraw"),
-        bank: t("bank"),
-        reward: t("reward"),
-        credit: t("credit"),  
-        chat: t("chat"),
-        product: t("product"),
-        adminManage: t('admin'),
-        level: t('level'),
-        systemSetting: t('system.setting'),
+        report: 'รายงาน',
+        customer: 'ลูกค้า',
+        deposit: 'ฝากเงิน',
+        withdraw: 'ถอนเงิน',
+        bank: 'ธนาคารบริษัท',
+        reward: 'แลกรางวัล',
+        credit: 'แลกเครดิต',  
+        creditCondition: 'เงื่อนไขแลกเครดิต',
+        chat: 'แชทสนทนา',
+        product: 'สินค้า',
+        adminManage: 'แอดมิน',
+        level: 'ระดับขั้น',
+        systemSetting: 'การตั้งค่า',
     }
 
     const onSelectCheckbox = (event: ChangeEvent<HTMLInputElement>) => {

@@ -6,7 +6,6 @@ import PaginationButtons, { dataPagination, PER_COUNT } from 'components/Paginat
 import Button from 'components/bootstrap/Button'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { useSelector } from 'react-redux'
-import { selectPermission } from 'redux/user/selector'
 import { RedeemInterface, RedeemStatus } from 'common/apis/redeem'
 import 'moment/locale/th'
 import moment from 'moment'
@@ -32,7 +31,8 @@ const CreditTable = ({
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
 
-    const permission = useSelector(selectPermission)
+    const permission = JSON.parse(localStorage.getItem('features') ?? '')
+    const updatePermission = permission.credit[PermissionType.Update] === PermissionValue.Available
 
     const getStatusText = (status: string): ReactNode => {
         if (status === 'success') {
@@ -91,7 +91,7 @@ const CreditTable = ({
                                     <FilterList fontSize='small' className={getClassNamesFor('operator')} />
                                 </th>
                             }
-                            {setIsOpenCreditModal && <td />}
+                            {(setIsOpenCreditModal && updatePermission) && <td />}
                         </tr>
                     </thead>
                     <tbody>
@@ -129,7 +129,7 @@ const CreditTable = ({
                                         <div>{item.adminName}</div>
                                     </td>
                                 }
-                                {setIsOpenCreditModal && <td>
+                                {(setIsOpenCreditModal && updatePermission) && <td>
                                     {item.status === RedeemStatus.Request ?
                                         <div className='row gap-3'><Button
                                         onClick={() => setIsOpenCreditModal({ type: CreditModalType.Approve, selectedRow: item})}

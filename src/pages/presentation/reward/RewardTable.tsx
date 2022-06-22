@@ -4,8 +4,6 @@ import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
-import { useSelector } from 'react-redux'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { RedeemInterface, RedeemStatus } from 'common/apis/redeem'
 import moment from 'moment'
@@ -32,7 +30,8 @@ const RewardTable = ({
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
 
-    const permission = useSelector(selectPermission)
+    const permission = JSON.parse(localStorage.getItem('features') ?? '')
+    const updatePermission = permission.reward[PermissionType.Update] === PermissionValue.Available
 
     const getStatusText = (status: RedeemStatus): ReactNode => {
         if (status === RedeemStatus.Success) {
@@ -93,7 +92,7 @@ const RewardTable = ({
                                     <FilterList fontSize='small' className={getClassNamesFor('operator')} />
                                 </th>
                             }
-                            {setIsOpenRewardModal && <td />}
+                            {(setIsOpenRewardModal && updatePermission) && <td />}
                         </tr>
                     </thead>
                     <tbody>
@@ -139,7 +138,7 @@ const RewardTable = ({
                                         <div>{item.adminName}</div>
                                     </td>
                                 }
-                                {setIsOpenRewardModal && <td>
+                                {(setIsOpenRewardModal && updatePermission) && <td>
                                     {item.status === RedeemStatus.Request || item.status === RedeemStatus.Sending ? 
                                         <div className='row gap-3'><Button
                                             onClick={() => setIsOpenRewardModal({ type: RewardModalType.Approve, selectedRow: item})}

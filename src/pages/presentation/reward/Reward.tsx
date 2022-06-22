@@ -31,6 +31,8 @@ import showNotification from 'components/extras/showNotification'
 import Spinner from 'components/bootstrap/Spinner'
 import { InfoTwoTone, Search } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { CommonString } from 'common/data/enumStrings'
 
 interface RewardFilterInterface {
 	searchInput: string
@@ -71,6 +73,9 @@ const Reward = () => {
 	const redeemProductList = useSelector(selectRedeemProductList)
 	const queryList = useSelector(selectRedeemProductQuery)
 
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
+	const readPermission = permission.reward[PermissionType.Read] === PermissionValue.Available
+
 	useEffect(() => {
 		let queryString = Object.values(queryList).filter(Boolean).join('&')
 		let query = queryString ? `?${queryString}` : ''
@@ -87,7 +92,7 @@ const Reward = () => {
 					<InfoTwoTone className='me-1' />
 					<span>เรียกดูรายการแลกสินค้าไม่สำเร็จ</span>
 				</span>,
-				'กรุณาลองใหม่อีกครั้ง',
+				CommonString.NoPermission,
 			)
 		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -191,7 +196,7 @@ const Reward = () => {
 					/>
 				</SubHeaderLeft>
 				<SubHeaderRight>
-					<CommonTableFilter
+					{readPermission && <CommonTableFilter
 						resetLabel={t('filter.reset')}
 						onReset={resetForm}
 						submitLabel={t('filter')}
@@ -266,7 +271,7 @@ const Reward = () => {
 								</div>
 							}
 						]} 
-					/>
+					/>}
 				</SubHeaderRight>
 			</SubHeader>
 			<Page>

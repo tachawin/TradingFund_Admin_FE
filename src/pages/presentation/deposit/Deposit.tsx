@@ -34,6 +34,8 @@ import { CompanyBankInterface } from 'common/apis/companyBank'
 import { STATUS, TransactionInterface, TransactionStatus } from 'common/apis/transaction'
 import { AttachMoney, InfoTwoTone, Search } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
+import { CommonString } from 'common/data/enumStrings'
+import { PermissionType, PermissionValue } from 'common/apis/user'
 
 interface DepositFilterInterface {
 	searchInput: string
@@ -63,6 +65,10 @@ const Deposit = () => {
 	const depositList = useSelector(selectDepositList)
 	const depositQueryList = useSelector(selectDepositQuery)
 
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
+	const readPermission = permission.deposit[PermissionType.Read] === PermissionValue.Available
+	const createPermission = permission.deposit[PermissionType.Create] === PermissionValue.Available
+
 	useEffect(() => {
 		let queryString = Object.values(depositQueryList).filter(Boolean).join('&')
 		let query = queryString ? `?${queryString}` : ''
@@ -77,9 +83,9 @@ const Deposit = () => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.deposit.failed')}</span>
+					<span>ไม่สามารถเรียกดูรายการฝากเงินได้</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -183,7 +189,7 @@ const Deposit = () => {
 					/>
 				</SubHeaderLeft>
 				<SubHeaderRight>
-					<CommonTableFilter
+					{readPermission && <CommonTableFilter
 						resetLabel={t('filter.reset')}
 						onReset={resetForm}
 						submitLabel={t('filter')}
@@ -269,16 +275,17 @@ const Deposit = () => {
 								/>
 							},
 						]} 
-					/>
-					<SubheaderSeparator />
-					<Button
+						/>
+					}
+					{(readPermission && createPermission) && <SubheaderSeparator />}
+					{createPermission && <Button
 						icon={AttachMoney}
 						color='primary'
 						isLight
 						onClick={() => setIsOpenDepositModal({ type: DepositModalType.Add, selectedRow: undefined})}
 					>
 						{t('deposit')}
-					</Button>
+					</Button>}
 				</SubHeaderRight>
 			</SubHeader>
 			<Page>

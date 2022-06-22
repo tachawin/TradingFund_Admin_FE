@@ -32,10 +32,10 @@ import 'moment/locale/th'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectAdmins } from 'redux/admin/selector'
 import { storeAdmins } from 'redux/admin/action'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { InfoTwoTone, PersonAddAlt1TwoTone, Search } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
+import { CommonString } from 'common/data/enumStrings'
 
 interface AdminModalProperties {
 	type?: AdminModalType
@@ -63,7 +63,7 @@ const Admin = () => {
     const { t } = useTranslation(['common', 'admin'])
 	const dispatch = useDispatch()
 	const admins = useSelector(selectAdmins)
-	const permission = useSelector(selectPermission)
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
 
 	const [isLoading, setIsLoading] = useState(true)
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
@@ -176,9 +176,9 @@ const Admin = () => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.admin.failed')}</span>
+					<span>ไม่สามารถเรียกดูแอดมินได้</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps

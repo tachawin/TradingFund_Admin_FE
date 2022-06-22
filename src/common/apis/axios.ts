@@ -21,7 +21,7 @@ export const authorizationHandler = async (fetcher: any) => {
 		const response = await fetcher()
 		return response
 	} catch (error: any) {
-		if (error.response?.status === 401) {
+		if (error.response.data.error.errorCode === 'ERR.ADMIN.AUTH.ACCESS_TOKEN.1') {
 			const tokenResponse = await renewToken()
 			if (tokenResponse) {
 				try {

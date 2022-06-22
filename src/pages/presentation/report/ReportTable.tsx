@@ -4,8 +4,6 @@ import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import moment from 'moment'
-import { useSelector } from 'react-redux'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { TransactionInterface, TransactionStatus, TransactionType } from 'common/apis/transaction'
 import { FilterList, LabelTwoTone } from '@mui/icons-material'
@@ -16,7 +14,7 @@ interface ReportTableInterface {
 
 const ReportTable = ({ data }: ReportTableInterface) => {
     const { t } = useTranslation('common')
-    const permission = useSelector(selectPermission)
+    const permission = JSON.parse(localStorage.getItem('features') ?? '')
 
     const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])

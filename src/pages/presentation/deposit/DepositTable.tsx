@@ -9,7 +9,6 @@ import moment from 'moment'
 import 'moment/locale/th'
 import { DepositModalProperties, DepositModalType } from './DepositModal'
 import { useSelector } from 'react-redux'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { FilterList, LabelTwoTone } from '@mui/icons-material'
 
@@ -27,7 +26,8 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
 
-    const permission = useSelector(selectPermission)
+    const permission = JSON.parse(localStorage.getItem('features') ?? '')
+    const updatePermission = permission.deposit[PermissionType.Update] === PermissionValue.Available
 
     const getStatusText = (status: string): ReactNode => {
         if (status === TransactionStatus.Success) {
@@ -83,7 +83,7 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                             </th>
                             {!disabledColumns?.includes('mobile-number') && <th>{t('column.mobile.number')}</th>}
                             {!disabledColumns?.includes('notes') && <th>{t('column.notes')}</th>}
-                            {setIsOpenDepositModal && <td />}
+                            {(setIsOpenDepositModal && updatePermission) && <td />}
                         </tr>
                     </thead>
                     <tbody>
@@ -132,7 +132,7 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                                         <div>{transaction.notes}</div>
                                     </td>
                                 }
-                                {setIsOpenDepositModal && <td>
+                                {(setIsOpenDepositModal && updatePermission) && <td>
                                     <div className='row gap-3 w-100'>
                                         {transaction.status === TransactionStatus.Success ? 
                                             <Button

@@ -22,6 +22,7 @@ import { storeLevelQuery } from 'redux/level/action'
 import { selectCompanyLevelQuery } from 'redux/level/selector'
 import 'moment/locale/th'
 import Checks from 'components/bootstrap/forms/Checks'
+import { PermissionType, PermissionValue } from 'common/apis/user'
 
 interface LevelFilterInterface {
 	searchInput: string
@@ -62,6 +63,9 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
     const [isOpenUpdatedAtDatePicker, setIsOpenUpdatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
+
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
+    const createPermission = permission.level[PermissionType.Create] === PermissionValue.Available
 
 	const queryList = useSelector(selectCompanyLevelQuery)
 
@@ -326,16 +330,18 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 					}
 				]} 
 			/>
-			<SubheaderSeparator />
-			<Button
-				className='text-nowrap'
-				icon={Add}
-				color='primary'
-				isLight
-				onClick={() => setIsOpenLevelModal({ type: LevelModalType.Add, selectedRow: undefined})}
-			>
-				{t('level:add.level')}
-			</Button>
+			{createPermission && <>
+				<SubheaderSeparator />
+				<Button
+					className='text-nowrap'
+					icon={Add}
+					color='primary'
+					isLight
+					onClick={() => setIsOpenLevelModal({ type: LevelModalType.Add, selectedRow: undefined})}
+				>
+					{t('level:add.level')}
+				</Button>
+			</>}
 		</SubHeaderRight>
 	</SubHeader>)
 }

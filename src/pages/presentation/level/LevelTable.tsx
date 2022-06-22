@@ -4,8 +4,6 @@ import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
-import { useSelector } from 'react-redux'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { FilterList } from '@mui/icons-material'
 import { LevelInterface } from 'common/apis/level'
@@ -33,7 +31,9 @@ const LevelTable = ({
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
 
-    const permission = useSelector(selectPermission)
+    const permission = JSON.parse(localStorage.getItem('features') ?? '')
+    const updatePermission = permission.level[PermissionType.Update] === PermissionValue.Available
+    const deletePermission = permission.level[PermissionType.Delete] === PermissionValue.Available
 
     return (
         <Card stretch className='mx-3' style={{ height: 500 }}>
@@ -148,20 +148,20 @@ const LevelTable = ({
                                 </td>
                                 {(setIsOpenLevelModal && setIsOpenDeleteLevelModal) && <td>
                                     <div className='row gap-3 w-100'>
-                                        <Button
+                                        {updatePermission && <Button
                                             onClick={() => setIsOpenLevelModal({ type: LevelModalType.Edit, selectedRow: item })}
                                             color='light-dark'
                                             className='col'
                                         >
                                             {t('edit')}
-                                        </Button>
-                                        <Button
+                                        </Button>}
+                                        {deletePermission && <Button
                                             onClick={() => setIsOpenDeleteLevelModal({ type: LevelModalType.Delete, selectedRow: item })}
                                             color='light-dark'
                                             className='col'
                                         >
                                             {t('delete')}
-                                        </Button>
+                                        </Button>}
                                     </div>
                                 </td>}
                             </tr>

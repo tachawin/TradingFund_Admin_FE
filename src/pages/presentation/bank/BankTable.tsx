@@ -7,7 +7,6 @@ import Button from 'components/bootstrap/Button'
 import { CompanyBankInterface, CompanyBankStatus } from 'common/apis/companyBank'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { FilterList, LabelTwoTone } from '@mui/icons-material'
 
@@ -27,7 +26,7 @@ const BankTable = ({
     cardHeader 
 }: BankTableInterface) => {
     const { t } = useTranslation('common')
-    const permission = useSelector(selectPermission)
+    const permission = JSON.parse(localStorage.getItem('features') ?? '')
 
     const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
