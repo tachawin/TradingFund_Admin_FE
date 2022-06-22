@@ -24,5 +24,6 @@ export const getCommonBanks = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })

@@ -1,5 +1,6 @@
 import { getAccessToken } from 'common/utils/auth'
 import axios, { authorizationHandler } from './axios'
+import { BankNameInterface } from './companyBank'
 
 export enum CustomerStatus {
     Active = 'active',
@@ -30,12 +31,7 @@ export interface CustomerInterface extends CustomerBaseInterface {
         levelName?: string
         imageURL?: string
     }
-    bank?: {
-        id: number
-        niceName: string
-        officialName: string
-        acronym: string
-    }
+    bank?: BankNameInterface
 }
 
 export const createCustomer = async (
@@ -54,6 +50,7 @@ export const createCustomer = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     }
 )
@@ -73,6 +70,7 @@ export const getCustomerList = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })
 
@@ -91,6 +89,7 @@ export const getCustomer = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })
 
@@ -108,5 +107,6 @@ export const getMobileNumberList = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })

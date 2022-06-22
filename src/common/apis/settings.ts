@@ -48,6 +48,7 @@ export const getSystemSetting = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     })
 
@@ -68,6 +69,7 @@ export const updateOTPSetting = async (
             next()
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     })
     
@@ -87,6 +89,7 @@ export const updateInviteFriendSetting = async (
             next()
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     })
         

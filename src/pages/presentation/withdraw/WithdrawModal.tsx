@@ -14,14 +14,19 @@ import Button, { ButtonGroup } from 'components/bootstrap/Button'
 import PlaceholderImage from 'components/extras/PlaceholderImage'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 import CompanyBanksDropdown from 'pages/common/CompanyBanksDropdown'
-import { CompanyBankInterface, CompanyBankStatus, CompanyBankType } from 'common/apis/companyBank'
+import { BankNameInterface, CompanyBankInterface, CompanyBankStatus, CompanyBankType } from 'common/apis/companyBank'
 import { InfoTwoTone } from '@mui/icons-material'
+import { SlipImageInterface, uploadSlipImage, withdraw, WithdrawCreateInterface, WithdrawType } from 'common/apis/withdraw'
+import { TransactionInterface } from 'common/apis/transaction'
+import Spinner from 'components/bootstrap/Spinner'
+import { removeWithdrawById } from 'redux/withdraw/action'
+import { useDispatch } from 'react-redux'
 
 interface WithdrawForm {
-    slipImage: string
+    slipImageURL: string
+    slipImageFile: FormData | string
     bankAccountNumber: string
-    bankAccountName: string
-    bankName: string
+    recipientBankName: BankNameInterface
     payerBank: CompanyBankInterface
 }
 
@@ -40,54 +45,114 @@ export enum WithdrawModalType {
 
 interface WithdrawModalProperties {
     type: WithdrawModalType
-    bank?: string
-	selectedRow: any
+    bank?: CompanyBankInterface
+	selectedRow: TransactionInterface
 }
 
 const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInterface) => {
     const { t } = useTranslation(['common', 'withdraw'])
     const { type, bank, selectedRow: data } = properties
     const [withdrawModalState, setWithdrawModalState] = useState(type)
+    const [isLoading, setIsLoading] = useState(false)
+    const dispatch = useDispatch()
 
-    const WithdrawSchema = Yup.object().shape({
-		slipImage: Yup.string().required('กรุณาอัปโหลดภาพ'),
-        bankAccountNumber: Yup.string().required('โปรดใส่เลขบัญชี'),
-        bankAccountName: Yup.string().required('โปรดใส่ชื่อบัญชี'),
-        bankName: Yup.string().uppercase().required('โปรดระบุบัญชีธนาคาร'),
-        recipientBank: Yup.object().shape({
+    const withdrawCredit = (requestBody: WithdrawCreateInterface, withdrawType: WithdrawType) => {
+        withdraw(requestBody, withdrawType, (response) => {
+            console.log(response)
+            data.transactionId && dispatch(removeWithdrawById(data.transactionId))
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <InfoTwoTone className='me-1' />
+                    <span>{t('withdraw:withdraw.successfully')}</span>
+                </span>,
+                t('withdraw:withdraw.to.account.successfully'),
+            )
+        }, () => {
+            showNotification(
+                <span className='d-flex align-items-center'>
+                    <InfoTwoTone className='me-1' />
+                    <span>{t('withdraw:withdraw.failed')}</span>
+                </span>,
+                t('withdraw:withdraw.to.account.failed'),
+            )
+        }).finally(() => {
+            setIsLoading(false)
+            setIsOpen(false)
+        })
+    }
+
+    const ManualWithdrawSchema = Yup.object().shape({
+		slipImageURL: Yup.string().required('กรุณาอัปโหลดภาพ'),
+        payerBank: Yup.object().shape({
+            bankId: Yup.string().required('โปรดเลือกบัญชีบริษัท'),
+        })
+	})
+
+    const AutoWithdrawSchema = Yup.object().shape({
+        payerBank: Yup.object().shape({
             bankId: Yup.string().required('โปรดเลือกบัญชีบริษัท'),
         })
 	})
 
 	const formik = useFormik<WithdrawForm>({
 		initialValues: {
-			slipImage: '',
+			slipImageURL: '',
+            slipImageFile: '',
             bankAccountNumber: data?.recipientBankAccountNumber || '',
-            bankAccountName: data?.recipientBankAccountName || '',
-            bankName: data?.recipientBankName || '',
+            recipientBankName: {
+                id: data?.recipientBank?.id || 0,
+                officialName: data?.recipientBank?.officialName || '',
+                niceName: data?.recipientBank?.niceName || '',
+                thaiName: data?.recipientBank?.thaiName || '',
+                acronym: data?.recipientBank?.acronym || '',
+            },
             payerBank: {
-                bankId: data?.companyBankId || '',
-                bankAccountNumber: data?.recipientBankAccountNumber || '',
-                bankAccountName: '',
-                bankName: data?.recipientBankName || '',
-                balance: 0,
-                type: CompanyBankType.Deposit,
-                status: CompanyBankStatus.Active
+                bankId: bank?.bankId || '',
+                bankAccountNumber: bank?.bankAccountNumber || '',
+                bankAccountName: bank?.bankAccountName || '',
+                bankName: bank?.bankName || {
+                    id: 0,
+                    officialName: '',
+                    niceName: '',
+                    thaiName: '',
+                    acronym: '',
+                },
+                balance: bank?.balance || 0,
+                type: bank?.type || CompanyBankType.Deposit,
+                status: bank?.status || CompanyBankStatus.Active
             },
 		},
-        validationSchema: WithdrawSchema,
+        validationSchema: type === WithdrawModalType.Manual ? ManualWithdrawSchema : AutoWithdrawSchema,
 		onSubmit: (values) => {
-            // EDIT
-            console.log(values)
-
-			setIsOpen(false)
-			showNotification(
-				<span className='d-flex align-items-center'>
-					<InfoTwoTone className='me-1' />
-					<span>{t('withdraw:withdraw.successfully')}</span>
-				</span>,
-				t('withdraw:withdraw.to.account.successfully', { accountName: values.bankAccountName }),
-			)
+            const { slipImageFile } = values
+            if (data.mobileNumber && data.amount && values.payerBank.bankId) {
+                const requestBody: WithdrawCreateInterface = {
+                    mobileNumber: data.mobileNumber,
+                    companyBankId: values.payerBank.bankId,
+                    amount: parseInt(data.amount),
+                }
+                setIsLoading(true)
+                if (withdrawModalState === WithdrawModalType.Manual) {
+                    uploadSlipImage(slipImageFile as FormData, (imageURL: SlipImageInterface) => {
+                        withdrawCredit({ ...requestBody, payslipPictureURL: imageURL.payslipPictureURL }, WithdrawType.Manual)
+                    }, (err) => {
+                        const { response } = err
+                        const message = response?.data
+                        console.log(message)
+                        showNotification(
+                            <span className='d-flex align-items-center'>
+                                <InfoTwoTone className='me-1' />
+                                <span>{t('withdraw:upload.withdraw.failed')}</span>
+                            </span>,
+                            t('withdraw:upload.withdraw.to.account.failed'),
+                        )
+                    }).finally(() => setIsLoading(false))
+                } else if (withdrawModalState === WithdrawModalType.System) {
+                    withdrawCredit(requestBody, WithdrawType.Auto)
+                } else {
+                    // DELETE
+                }
+            }
 		},
 	})
 
@@ -97,7 +162,8 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
             const formData = new FormData()
             formData.append('file', uploadedFile)
     
-            setFieldValue('slipImage', URL.createObjectURL(uploadedFile))
+            setFieldValue('slipImageFile', formData)
+            setFieldValue('slipImageURL', URL.createObjectURL(uploadedFile))
         }
     }
 
@@ -113,12 +179,12 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                     {withdrawModalState === WithdrawModalType.Manual &&
                         <div className='col'>
                             <div className='row g-4'>
-                            <FormGroup id='slipImage' label={t('form.slip.image')}>
+                            <FormGroup id='slipImageURL' label={t('form.slip.image')}>
                                 <div className='row'>
                                     <div className='col-12'>
-                                        {values.slipImage ? (
+                                        {values.slipImageURL ? (
                                             <img
-                                                src={values.slipImage}
+                                                src={values.slipImageURL}
                                                 alt=''
                                                 width={220}
                                                 height={300}
@@ -140,6 +206,9 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleUploadImage(e)}
                                                 type='file' 
                                                 autoComplete='photo' 
+                                                isValid={isValid}
+                                                isTouched={touched.slipImageURL && errors.slipImageURL}
+                                                invalidFeedback={errors.slipImageURL}
                                             />
                                         </div>
                                     </div>
@@ -176,40 +245,24 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                                     disabled
                                 />
                             </FormGroup>
-                            <FormGroup id='bankAccountName' label={t('form.bank.account.name')}>
-                                <Input 
-                                    onChange={handleChange} 
-                                    value={values.bankAccountName}
-                                    isValid={isValid}
-                                    isTouched={touched.bankAccountName && errors.bankAccountName}
-                                    invalidFeedback={errors.bankAccountName}
-                                    disabled
-                                />
-                            </FormGroup>
-                            <FormGroup id='bankName' label={t('form.bank.name')}>
+                            <FormGroup id='recipientBankName' label={t('form.bank.name')}>
                                 <CommonBanksDropdown
-                                    selectedBankName={values.bankName} 
-                                    setSelectedBankName={(bank: string | string[]) => setFieldValue('bankName', bank)}
+                                    selectedBankName={values.recipientBankName.acronym} 
+                                    setSelectedBankName={(bank: string | string[]) => setFieldValue('recipientBankName', bank)}
                                     disabled
                                 />
                             </FormGroup>
                             <FormGroup id='payerBank' label={t('form.withdraw.bank')}>
-                                {type === WithdrawModalType.System ? 
-                                    <CommonBanksDropdown
-                                        selectedBankName={bank ?? 'scb'} 
-                                        setSelectedBankName={(bank: string | string[]) => setFieldValue('bankName', bank)} 
-                                        disabled
-                                    /> : <CompanyBanksDropdown 
-                                        selectedBank={values.payerBank}
-                                        setSelectedBank={(bank: CompanyBankInterface | CompanyBankInterface[]) => setFieldValue('payerBank', bank)}
-                                        isValid={isValid}
-                                        touched={touched.payerBank?.bankId}
-                                        error={errors.payerBank?.bankId}
-                                    />
-                                }
+                                <CompanyBanksDropdown 
+                                    selectedBank={values.payerBank}
+                                    setSelectedBank={(bank: CompanyBankInterface | CompanyBankInterface[]) => setFieldValue('payerBank', bank)}
+                                    isValid={isValid}
+                                    touched={touched.payerBank?.bankId}
+                                    error={errors.payerBank?.bankId}
+                                />
                             </FormGroup>
                             <Button color='info' className='w-auto mx-3' onClick={handleSubmit}>
-                                {t('save')}
+                                {isLoading ? <Spinner size={16} /> : t('save')}
                             </Button>
                         </div>
                     </div>

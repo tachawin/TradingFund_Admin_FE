@@ -49,7 +49,6 @@ const Product = ({ isOpenProductModal, setIsOpenProductModal }: ProductProps) =>
 		let query = queryString ? `?${queryString}` : ''
 		setIsLoading(true)
 		getProductList(query, (productList: ProductInterface[]) => {
-			console.log(productList)
 			dispatch(storeProducts(productList))
 		}, (error: any) => {
 			const { response } = error

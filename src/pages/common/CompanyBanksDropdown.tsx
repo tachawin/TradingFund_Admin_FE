@@ -51,7 +51,7 @@ const CompanyBanksDropdown = ({
 	}
 
     useEffect(() => {
-        getCompanyBankList('', (companyBankList: CompanyBankInterface[]) => {
+        companyBankList.length === 0 && getCompanyBankList('', (companyBankList: CompanyBankInterface[]) => {
             dispatch(storeCompanyBank(companyBankList))
         }, (error: any) => {
             const { response } = error
@@ -99,7 +99,7 @@ const CompanyBanksDropdown = ({
                         style={{ maxWidth: '172px' }}
                         className='mx-3 d-block text-nowrap overflow-hidden text-overflow-ellipsis'
                     >
-                        {(selectedBank as CompanyBankInterface).bankName?.acronym.toUpperCase()}{' *'}{(selectedBank as CompanyBankInterface).bankAccountNumber?.slice(-4)}
+                        {displayedBank.bankName?.acronym.toUpperCase()}{' *'}{displayedBank.bankAccountNumber?.slice(-4)}
                     </span>
                 </> : BANK_PLACEHOLDER}
             </DropdownToggle>}

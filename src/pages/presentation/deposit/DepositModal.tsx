@@ -193,7 +193,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             if (type === DepositModalType.Refund) {
                 data?.transactionId && refundDeposit(data.transactionId, { notes: values.notes })
             } else if (type === DepositModalType.Edit) {
-                data?.transactionId && editDeposit(data.transactionId, { notes: values.notes })
+                data?.transactionId && editDeposit(data.transactionId, { notes: values.notes ?? '' })
             } else if (type === DepositModalType.SelectPayer) {
                 data?.transactionId && pickCustomer(data.transactionId, { 
                     mobileNumber: values.mobileNumber,
@@ -203,7 +203,8 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
                 values.recipientBank.bankId && addDeposit({
                     mobileNumber: values.mobileNumber,
                     companyBankId: values.recipientBank.bankId,
-                    amount: values.amount
+                    amount: values.amount,
+                    notes: values.notes
                 })
             }
 			

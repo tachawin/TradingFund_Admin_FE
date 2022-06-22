@@ -16,6 +16,7 @@ export interface DepositCreateInterface {
     mobileNumber: string
     companyBankId: string
     amount: string
+    notes?: string
 }
 
 export const deposit = async (
@@ -34,6 +35,7 @@ export const deposit = async (
             next()
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     })
  
@@ -55,6 +57,7 @@ export const updateDeposit = async (
             next()
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     })
 
@@ -75,6 +78,7 @@ export const updateDepositCustomer = async (
             next()
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     })
 
@@ -95,6 +99,7 @@ export const waiveDeposit = async (
             next()
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     })
 
@@ -113,6 +118,7 @@ export const getDepositList = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })
 
@@ -132,5 +138,6 @@ export const deleteTransaction = async (
             next()
 		} catch (error: any) {
 			handleError(error)
+            throw error
 		}
     })

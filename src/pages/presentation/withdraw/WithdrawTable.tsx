@@ -12,10 +12,11 @@ import { TransactionInterface, TransactionType } from 'common/apis/transaction'
 import moment from 'moment'
 import { selectCompanyBankList } from 'redux/companyBank/selector'
 import { FilterList, LabelTwoTone } from '@mui/icons-material'
+import { CompanyBankInterface } from 'common/apis/companyBank'
 
 interface WithdrawTableInterface {
     data: TransactionInterface[]
-    setIsOpenWithdrawModal?: (value: { type: WithdrawModalType, bank?: string, selectedRow: any }) => void
+    setIsOpenWithdrawModal?: (value: { type: WithdrawModalType, bank?: CompanyBankInterface, selectedRow: any }) => void
     setIsOpenCancelWithdrawModal?: (value: { type: WithdrawModalType, selectedRow: any }) => void
     columns?: any
     cardHeader?: ReactNode
@@ -153,7 +154,7 @@ const WithdrawTable = ({
                                                 </div>
                                                 <div className='text-muted text-nowrap'>
                                                     <LabelTwoTone fontSize='small' />{' '}
-                                                    <small>{transaction.payerBankName.toUpperCase()}</small>
+                                                    <small>{transaction.payerBank?.acronym.toUpperCase()}</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -167,7 +168,7 @@ const WithdrawTable = ({
                                             </div>
                                             <div className='text-muted text-nowrap'>
                                                 <LabelTwoTone fontSize='small' />{' '}
-                                                <small>{transaction.recipientBankName.split(' ')[0].toUpperCase()}</small>
+                                                <small>{transaction.recipientBank?.acronym.toUpperCase()}</small>
                                             </div>
                                         </div>
                                     </div>
@@ -192,7 +193,7 @@ const WithdrawTable = ({
                                 }
                                 {columns?.operator &&
                                     <td>
-                                        <div>{transaction.adminId}</div>
+                                        <div>{transaction.adminName}</div>
                                     </td>
                                 }
                                 {(setIsOpenWithdrawModal && setIsOpenCancelWithdrawModal) && <td>
@@ -200,12 +201,12 @@ const WithdrawTable = ({
                                         {banks.map((bank) => 
                                             <Button
                                                 key={bank.bankId}
-                                                onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.System, bank: bank.bankName?.acronym, selectedRow: transaction})}
+                                                onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.System, bank: bank, selectedRow: transaction})}
                                                 color='primary'
                                                 className='col'
                                                 isLight
                                             >
-                                                {bank.bankName?.acronym.toLocaleUpperCase()}
+                                                {bank.bankName?.acronym.toLocaleUpperCase()}{' *'}{bank.bankAccountNumber.slice(-4)}
                                             </Button>
                                         )}
                                         <Button

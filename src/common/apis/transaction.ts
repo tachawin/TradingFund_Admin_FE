@@ -38,5 +38,6 @@ export interface TransactionInterface {
     createdAt?: Date
     updatedAt?: Date
     payerBank?: Bank
-    recipientBank?: Bank 
+    recipientBank?: Bank
+    adminName?: string 
 }

@@ -17,6 +17,7 @@ import { useDispatch } from 'react-redux'
 import { removeRedeemProductById } from 'redux/redeemProduct/action'
 import Spinner from 'components/bootstrap/Spinner'
 import { InfoTwoTone } from '@mui/icons-material'
+import { ErrorResponse } from 'common/apis/axios'
 
 export enum RewardModalType {
     Approve = 'approve',
@@ -43,15 +44,25 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
 
     const handleAccept = () => {
         setIsLoading(true)
-        data.redeemId && updateRedeem(data.redeemId, RedeemAction.Accept, {}, () => {
-            data.redeemId && dispatch(removeRedeemProductById(data.redeemId))
-            showNotification(
-                <span className='d-flex align-items-center'>
-                    <InfoTwoTone className='me-1' />
-                    <span>{t('reward:approve.successfully')}</span>
-                </span>,
-                t('reward:approve.request.successfully', { mobileNumber: data?.mobileNumber }),
-            )
+        data.redeemId && updateRedeem(data.redeemId, RedeemAction.Accept, {}, (response: ErrorResponse) => {
+            if (response.code === 204) {
+                showNotification(
+                    <span className='d-flex align-items-center'>
+                        <InfoTwoTone className='me-1' />
+                        <span>ยืนยันไม่สำเร็จ</span>
+                    </span>,
+                    'ไม่พบข้อมูลลูกค้าหรือจำนวนแต้มไม่เพียงพอ กรุณายกเลิกรายการ',
+                )
+            } else {
+                data.redeemId && dispatch(removeRedeemProductById(data.redeemId))
+                showNotification(
+                    <span className='d-flex align-items-center'>
+                        <InfoTwoTone className='me-1' />
+                        <span>{t('reward:approve.successfully')}</span>
+                    </span>,
+                    t('reward:approve.request.successfully', { mobileNumber: data?.mobileNumber }),
+                )
+            }
         }, (error) => {
             const { response } = error
             console.log(response)

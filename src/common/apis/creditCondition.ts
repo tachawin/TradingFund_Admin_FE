@@ -35,6 +35,7 @@ export const createCreditCondition = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     }
 )
@@ -54,6 +55,7 @@ export const getCreditConditionList = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })
  
@@ -74,6 +76,7 @@ export const updateCreditCondition = async (
             next(res.data)
 		} catch (error: any) {
 			handleError(error)
+            throw error
 		}
     })
 
@@ -93,5 +96,6 @@ export const deleteCreditCondition = async (
             next()
 		} catch (error: any) {
 			handleError(error)
+            throw error
 		}
     })

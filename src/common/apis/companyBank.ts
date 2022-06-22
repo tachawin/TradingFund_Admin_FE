@@ -32,17 +32,19 @@ export interface CompanyBankUpdateBodyInterface {
     status?: CompanyBankStatus
 }
 
+export interface BankNameInterface {
+    id: number
+    officialName: string
+    niceName: string
+    thaiName: string
+    acronym: string
+}
+
 export interface CompanyBankInterface extends CompanyBankBaseInterface {
     bankId?: string
     createdAt?: Date
     updatedAt?: Date
-    bankName?: {
-        id: number
-        officialName: string
-        niceName: string
-        thaiName: string
-        acronym: string
-    }
+    bankName?: BankNameInterface
     totalWithdrawToday?: number
 }
 
@@ -62,6 +64,7 @@ export const createCompanyBank = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     }
 )
@@ -81,6 +84,7 @@ export const getCompanyBankList = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })
  
@@ -101,6 +105,7 @@ export const updateCompanyBank = async (
             next()
 		} catch (error: any) {
 			handleError(error)
+            throw error
 		}
     })
 
@@ -120,5 +125,6 @@ export const deleteCompanyBank = async (
             next()
 		} catch (error: any) {
 			handleError(error)
+            throw error
 		}
     })

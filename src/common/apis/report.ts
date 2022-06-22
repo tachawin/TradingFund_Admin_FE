@@ -19,6 +19,7 @@ export const getTransactionList = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })
 
@@ -40,5 +41,6 @@ export const exportExcel = async (
             next()
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })

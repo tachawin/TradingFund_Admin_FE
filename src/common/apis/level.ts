@@ -54,6 +54,7 @@ export const createLevel = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     }
 )
@@ -73,6 +74,7 @@ export const getLevelList = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })
  
@@ -93,6 +95,7 @@ export const updateLevel = async (
             next(res.data)
 		} catch (error: any) {
 			handleError(error)
+            throw error
 		}
     })
 
@@ -112,6 +115,7 @@ export const deleteLevel = async (
             next()
 		} catch (error: any) {
 			handleError(error)
+            throw error
 		}
     })
 
@@ -134,5 +138,6 @@ export const uploadLevelImage = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     })
