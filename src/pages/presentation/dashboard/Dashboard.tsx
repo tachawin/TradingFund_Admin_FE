@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper'
 import Page from '../../../layout/Page/Page'
-import { demoPages } from '../../../menu'
 import CustomerTrafficBoard from './CustomerTrafficBoard'
 import MetricBoard, { MetricBoardType } from './MetricBoard'
 import { useTranslation } from 'react-i18next'
@@ -15,10 +14,9 @@ import { Views } from 'react-big-calendar'
 import moment from 'moment'
 import { InfoTwoTone } from '@mui/icons-material'
 import { CommonString } from 'common/data/enumStrings'
+import { pages } from 'menu'
 
 const Dashboard = () => {
-	const { t } = useTranslation('dashboard')
-
 	const [date, setDate] = useState<Date>(new Date())
     const [isOpenCalendar, setIsOpenCalendar] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
@@ -50,7 +48,7 @@ const Dashboard = () => {
 	}, [date])
 
 	return (
-		<PageWrapper title={demoPages.crm.subMenu.dashboard.text}>
+		<PageWrapper title={pages.dashboard.text}>
 			<Page className='pt-0'>
 				<div className='col px-4'>
                     <div className='d-flex flex-column'>

@@ -1,0 +1,15 @@
+{
+    "first.level": "ขั้นที่ 1",
+    "second.level": "ขั้นที่ 2",
+    "first.level.desc": "ส่วนแบ่งเชิญเพื่อนขั้นที่ 1",
+    "second.level.desc": "ส่วนแบ่งเชิญเพื่อนขั้นที่ 2",
+
+    "otp.customer.desc": "เปิด - ปิดระบบ OTP ขณะลูกค้าสมัครสมาชิก",
+    "otp.admin.desc": "เปิด - ปิดระบบ OTP ขณะแอดมินเข้าสู่ระบบ",
+    "update.otp.setting.successfully": "ตั้งค่า OTP สำเร็จ",
+    "update.otp.setting.customer.successfully": "ตั้งค่า OTP สำหรับลูกค้าสำเร็จ",
+    "update.otp.setting.admin.successfully": "ตั้งค่า OTP สำหรับแอดมินสำเร็จ",
+    "update.otp.setting.failed": "ตั้งค่า OTP ไม่สำเร็จ",
+    "update.otp.setting.customer.failed": "ตั้งค่า OTP สำหรับลูกค้าไม่สำเร็จ",
+    "update.otp.setting.admin.failed": "ตั้งค่า OTP สำหรับแอดมินไม่สำเร็จ"
+}

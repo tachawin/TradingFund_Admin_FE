@@ -47,15 +47,6 @@
 	@at-root .header + .content & {
 		top: map.get($header, height);
 	}
-
-	@include media-breakpoint-down(map.get($aside, mobile-breakpoint)) {
-		min-height: fit-content;
-
-		> * {
-			@include padding-top($spacer);
-			@include padding-bottom($spacer);
-		}
-	}
 }
 
 // If header is fly

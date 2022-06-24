@@ -74,7 +74,6 @@ const LevelModal = ({ id, isOpen, setIsOpen, properties }: LevelModalInterface) 
     }
 
     const editLevel = (requestBody: LevelBaseInterface) => {
-        console.log(requestBody)
         data?.levelId && updateLevel(data.levelId, requestBody, (level: LevelInterface) => {
             data?.levelId && dispatch(updateLevelById(data.levelId, level))
             setIsOpen(false)

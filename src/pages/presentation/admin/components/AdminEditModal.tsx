@@ -96,10 +96,11 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
     const handleAddAdmin = (adminData: AdminInterface) => {
         createAdmin(adminData, (admin: AdminInterface) => {
             dispatch(addAdmin(admin))
+            setIsOpen(false)
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('admin:save.successfully')}</span>
+                    <span>{t('save.successfully')}</span>
                 </span>,
                 t('admin:save.admin.successfully', { adminName: values.name }),
             )
@@ -110,14 +111,11 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('admin:save.failed')}</span>
+                    <span>{t('save.failed')}</span>
                 </span>,
                 t('admin:save.admin.failed', { adminName: values.name }),
             )
-        }).finally(() => {
-            setIsLoading(false)
-            setIsOpen(false)
-        })
+        }).finally(() => setIsLoading(false))
     }
 
     const editAdmin = (adminData: AdminInterface) => {
@@ -133,11 +131,12 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
             }
         }
         data?.adminId && updateAdmin(data.adminId, dataToUpdate, () => {
-            data.adminId && dispatch(updateAdminById(data.adminId, dataToUpdate))
+            data.adminId && dispatch(updateAdminById(data.adminId, { ...dataToUpdate, updatedAt: new Date() }))
+            setIsOpen(false)
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('admin:save.successfully')}</span>
+                    <span>{t('save.successfully')}</span>
                 </span>,
                 t('admin:save.admin.successfully', { adminName: values.name }),
             )
@@ -148,14 +147,11 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('admin:save.failed')}</span>
+                    <span>{t('save.failed')}</span>
                 </span>,
                 t('admin:save.admin.failed', { adminName: values.name }),
             )
-        }).finally(() => {
-            setIsLoading(false)
-            setIsOpen(false)
-        })
+        }).finally(() => setIsLoading(false))
     }
 
     useEffect(() => {
@@ -171,7 +167,7 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
         <FormGroup id='password' label={t('form.password')}>
             <Input 
                 type='password'
-                placeholder={t('admin:form.password.placeholder')}
+                placeholder={t('form.password.placeholder')}
                 onChange={handleChange} 
                 value={values.password}
                 isValid={isValid}
@@ -182,6 +178,7 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
         <FormGroup id='confirmPassword' label={t('form.confirm.password')}>
             <Input 
                 type='password'
+                placeholder={t('form.confirm.password.placeholder')}
                 onChange={handleChange} 
                 value={values.confirmPassword}
                 isValid={isValid}
@@ -204,21 +201,21 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
                             isLight={adminModalState !== AdminModalState.Profile}
                             onClick={() => setAdminModalState(AdminModalState.Profile)}
                         >
-                            {t('admin:profile')}
+                            {t('profile')}
                         </Button>
                         <Button
                             color={adminModalState === AdminModalState.Password ? 'success' : 'dark'}
                             isLight={adminModalState !== AdminModalState.Password}
                             onClick={() => setAdminModalState(AdminModalState.Password)}
                         >
-                            {t('admin:password')}
+                            {t('password')}
                         </Button>
                     </ButtonGroup>}
                     { adminModalState === AdminModalState.Profile ? <>
                         { type === AdminModalType.Add && <>
                             <FormGroup id='username' label={t('form.username')}>
                                 <Input
-                                    placeholder={t('admin:form.username.placeholder')}
+                                    placeholder={t('form.username.placeholder')}
                                     onChange={handleChange} 
                                     value={values.username}
                                     isValid={isValid}
@@ -230,7 +227,8 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
                         </>}
                         <div className='row mt-4'>
                             <FormGroup id='name' label={t('form.name')} className='col'>
-                                <Input 
+                                <Input
+                                    placeholder={t('form.name.placeholder')}
                                     onChange={handleChange} 
                                     value={values.name}
                                     isValid={isValid}
@@ -239,7 +237,8 @@ const AdminEditModal = ({ id, isOpen, setIsOpen, properties }: AdminEditModalInt
                                 />
                             </FormGroup>
                             <FormGroup id='mobileNumber' label={t('form.mobile.number')} className='col'>
-                                <Input 
+                                <Input
+                                    placeholder={t('form.mobile.number.placeholder')}
                                     onChange={handleChange} 
                                     value={values.mobileNumber}
                                     isValid={isValid}

@@ -11,10 +11,6 @@
 	transition: $transition-base;
 
 	@include aside-close-wrapper {
-		@include media-breakpoint-down(map-get($aside, mobile-breakpoint)) {
-			top: 0;
-		}
-
 		@include media-breakpoint-up(map-get($aside, mobile-breakpoint)) {
 			padding-top: map-deep-get($aside, minimize, width);
 		}
@@ -29,20 +25,6 @@
 	@include aside-touch-close-wrapper {
 		@include media-breakpoint-up(map-get($aside, mobile-breakpoint)) {
 			padding-top: $modern-design-size * 0.5;
-		}
-	}
-
-	// If before aside
-	.aside ~ & {
-		padding-top: map.get($aside, width);
-
-		@include media-breakpoint-down(map-get($aside, mobile-breakpoint)) {
-			position: relative;
-			top: map-deep-get($aside, width);
-		}
-		// Mobile Status
-		@include media-breakpoint-down(map-get($aside, mobile-breakpoint)) {
-			padding-top: 0;
 		}
 	}
 

@@ -20,6 +20,11 @@ const User = () => {
 		name: '',
 		role: ''
 	})
+
+	const roleToString: { [key: string]: string } = {
+		admin: 'Admin',
+		super_admin: 'Super Admin'
+	}
 	
 	const handleLogout = () => {
 		logout(() => {
@@ -53,7 +58,7 @@ const User = () => {
 					<div className='user-name d-flex align-items-center'>
 						{user.name}
 					</div>
-					<div className='user-sub-title'>{user.role}</div>
+					<div className='user-sub-title'>{roleToString[user.role]}</div>
 				</div>
 			</div>
 			<DropdownMenu isOpen={collapseStatus} setIsOpen={setCollapseStatus}>

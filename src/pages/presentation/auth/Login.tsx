@@ -56,7 +56,6 @@ const Login = () => {
 			const { username, password } = values
 			setIsLoading(true)
 			login(username, password, (data: LoginResponse & OTPResponse) => {
-				console.log(data)
 				const { useOTP, accessToken, refreshToken } = data
 				if (useOTP) {
 					setLoginState(LoginState.OTP)

@@ -8,7 +8,6 @@ import SubHeader, {
 	SubheaderSeparator,
 } from '../../../layout/SubHeader/SubHeader'
 import Page from '../../../layout/Page/Page'
-import { demoPages } from '../../../menu'
 import { CardHeader, CardLabel, CardTitle } from '../../../components/bootstrap/Card'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
@@ -36,6 +35,7 @@ import { PermissionType, PermissionValue } from 'common/apis/user'
 import { InfoTwoTone, PersonAddAlt1TwoTone, Search } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
 import { CommonString } from 'common/data/enumStrings'
+import { pages } from 'menu'
 
 interface AdminModalProperties {
 	type?: AdminModalType
@@ -118,10 +118,13 @@ const Admin = () => {
 	const { 
 		values,
 		setFieldValue,
-		resetForm,
+		initialValues,
 		handleSubmit,
-		handleChange
+		handleChange,
+		setValues
 	} = formik
+
+	console.log(values)
 
 	const datePicker = (selectedDate: any, field: string) => (
 		<DateRange
@@ -185,7 +188,7 @@ const Admin = () => {
 	}, [queryList])
 
 	return (
-		<PageWrapper title={demoPages.crm.subMenu.customersList.text}>
+		<PageWrapper title={pages.admin.text}>
 			<SubHeader>
 				<SubHeaderLeft>
 					<label
@@ -205,7 +208,7 @@ const Admin = () => {
 				<SubHeaderRight>
 					<CommonTableFilter
 						resetLabel={t('filter.reset')}
-						onReset={resetForm}
+						onReset={() => setValues({ ...initialValues, roles: [], status: [] })}
 						submitLabel={t('filter')}
 						onSubmit={handleSubmit}
 						filters={[

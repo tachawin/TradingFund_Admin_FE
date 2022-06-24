@@ -8,7 +8,6 @@ import SubHeader, {
 	SubheaderSeparator,
 } from '../../../layout/SubHeader/SubHeader'
 import Page from '../../../layout/Page/Page'
-import { demoPages } from '../../../menu'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
 import Button from '../../../components/bootstrap/Button'
@@ -37,6 +36,7 @@ import { ArticleTwoTone, InfoTwoTone, PrintTwoTone, Search } from '@mui/icons-ma
 import COLORS from 'common/data/enumColors'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { CommonString } from 'common/data/enumStrings'
+import { pages } from 'menu'
 
 interface ReportFilterInterface {
 	searchInput: string
@@ -194,7 +194,7 @@ const Report = () => {
 
 
 	return (
-		<PageWrapper title={demoPages.crm.subMenu.customersList.text}>
+		<PageWrapper title={pages.report.text}>
 			<SubHeader>
 				<SubHeaderLeft>
 					<label

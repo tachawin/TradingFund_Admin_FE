@@ -30,20 +30,15 @@ export const HeaderRight = ({ children, className }: HeaderCommonInterface) => {
 };
 
 interface HeaderInterface {
-	hasLeftMobileMenu?: boolean
-	hasRightMobileMenu?: boolean
 	children?: ReactNode
 }
 
-const Header = ({ children, hasLeftMobileMenu = true, hasRightMobileMenu = true }: HeaderInterface) => {
-	const { themeStatus } = useDarkMode();
+const Header = ({ children }: HeaderInterface) => {
 
 	const windowsWidth = useWindowSize().width;
-	const [refMobileHeader, sizeMobileHeader] = useMeasure<any>();
 	const [refHeader, sizeHeader] = useMeasure<any>();
 
 	const root = document.documentElement;
-	root.style.setProperty('--mobile-header-height', `${sizeMobileHeader.height}px`);
 	root.style.setProperty('--header-height', `${sizeHeader.height}px`);
 
 	const {
@@ -67,89 +62,34 @@ const Header = ({ children, hasLeftMobileMenu = true, hasRightMobileMenu = true 
 	});
 
 	return (
-		<>
-			<header ref={refMobileHeader} className='mobile-header'>
-				<div className='container-fluid'>
-					<div className='row'>
-						<div className='col'>
-							<Button
-								aria-label='Toggle Aside'
-								className='mobile-header-toggle'
-								size='lg'
-								color={asideStatus ? 'primary' : themeStatus}
-								isLight={asideStatus}
-								icon={asideStatus ? FirstPageTwoTone : LastPageTwoTone}
+		<header
+			ref={refHeader}
+			className={classNames('header', {
+				'header-left-open': leftMenuStatus,
+				'header-right-open': rightMenuStatus,
+			})}>
+			<div className='container-fluid'>
+				<div className='row d-flex align-items-center'>
+					{children}
+					{(leftMenuStatus || rightMenuStatus) && (
+						<Portal>
+							<div
+								role='presentation'
+								className={classNames('header-overlay', {
+									'header-overlay-left-menu': leftMenuStatus,
+									'header-overlay-right-menu': rightMenuStatus,
+								})}
 								onClick={() => {
-									setAsideStatus(!asideStatus);
+									setAsideStatus(false);
 									setLeftMenuStatus(false);
 									setRightMenuStatus(false);
 								}}
 							/>
-							{hasLeftMobileMenu && (
-								<Button
-									aria-label='Toggle Left Menu'
-									className='mobile-header-toggle'
-									size='lg'
-									color={leftMenuStatus ? 'primary' : themeStatus}
-									isLight={leftMenuStatus}
-									icon={leftMenuStatus ? MoreVertTwoTone : MoreHorizTwoTone}
-									onClick={() => {
-										setAsideStatus(false);
-										setLeftMenuStatus(!leftMenuStatus);
-										setRightMenuStatus(false);
-									}}
-								/>
-							)}
-						</div>
-						{hasRightMobileMenu && (
-							<div className='col-auto'>
-								<Button
-									aria-label='Toggle Right Menu'
-									className='mobile-header-toggle'
-									size='lg'
-									color={rightMenuStatus ? 'primary' : themeStatus}
-									isLight={rightMenuStatus}
-									icon={rightMenuStatus ? MenuTwoTone : MenuOpenTwoTone}
-									onClick={() => {
-										setAsideStatus(false);
-										setLeftMenuStatus(false);
-										setRightMenuStatus(!rightMenuStatus);
-									}}
-								/>
-							</div>
-						)}
-					</div>
+						</Portal>
+					)}
 				</div>
-			</header>
-			<header
-				ref={refHeader}
-				className={classNames('header', {
-					'header-left-open': leftMenuStatus,
-					'header-right-open': rightMenuStatus,
-				})}>
-				<div className='container-fluid'>
-					<div className='row d-flex align-items-center'>
-						{children}
-						{(leftMenuStatus || rightMenuStatus) && (
-							<Portal>
-								<div
-									role='presentation'
-									className={classNames('header-overlay', {
-										'header-overlay-left-menu': leftMenuStatus,
-										'header-overlay-right-menu': rightMenuStatus,
-									})}
-									onClick={() => {
-										setAsideStatus(false);
-										setLeftMenuStatus(false);
-										setRightMenuStatus(false);
-									}}
-								/>
-							</Portal>
-						)}
-					</div>
-				</div>
-			</header>
-		</>
+			</div>
+		</header>
 	);
 };
 

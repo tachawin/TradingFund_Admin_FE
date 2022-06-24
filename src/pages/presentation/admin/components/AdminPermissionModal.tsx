@@ -65,10 +65,11 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
     const onSubmit = () => {
         id && updatePermission(id, permissionsValue, () => {
             dispatch(updatePermissionById(id, permissionsValue))
+            setIsOpen(false)
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('admin:save.successfully')}</span>
+                    <span>{t('save.successfully')}</span>
                 </span>,
                 t('admin:save.admin.successfully', { adminName: name }),
             )
@@ -79,14 +80,11 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('admin:save.failed')}</span>
+                    <span>{t('save.failed')}</span>
                 </span>,
                 t('admin:save.admin.failed', { adminName: name }),
             )
-        }).finally(() => {
-            setIsLoading(false)
-            setIsOpen(false)
-        })
+        }).finally(() => setIsLoading(false))
     }
 
     return (

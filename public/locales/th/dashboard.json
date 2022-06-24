@@ -1,12 +1,8 @@
 {
-	"customer.traffic": "จำนวนลูกค้า",
-    "day": "วัน",
-    "week": "สัปดาห์",
-    "month": "เดือน",
+	"new.customer.traffic": "จำนวนผู้ใช้ใหม่",
+    "total.new.customer.traffic": "จำนวนผู้ใช้ใหม่ทั้งหมด",
+	"new.customer.traffic.with.transaction": "จำนวนผู้ใช้ใหม่ที่ทำรายการ",
 
     "day.time": "กลางวัน",
-    "night.time": "กลางคืน",
-
-    "deposit": "ฝากเงิน",
-    "withdraw": "ถอนเงิน"
+    "night.time": "กลางคืน"
 }

@@ -3,10 +3,6 @@
     "withdraw.request": "คำขอถอนเงิน",
     "withdraw.history": "ประวัติถอนเงิน",
 
-    "request": "คำขอ",
-    "history": "ประวัติ",
-
-    "reject.request": "ยกเลิกคำขอ",
     "form.reject.request.confirmation": "ต้องการยกเลิกคำขอถอนเงินใช่หรือไม่",
     "reject.successfully": "ยกเลิกคำขอถอนเงินสำเร็จ",
     "reject.request.successfully": "ยกเลิกคำขอถอนเงินของ {{mobileNumber}} สำเร็จ",

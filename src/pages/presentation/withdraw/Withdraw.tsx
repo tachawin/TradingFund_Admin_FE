@@ -7,7 +7,6 @@ import SubHeader, {
 	SubHeaderRight
 } from '../../../layout/SubHeader/SubHeader'
 import Page from '../../../layout/Page/Page'
-import { demoPages } from '../../../menu'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
 import Button, { ButtonGroup } from '../../../components/bootstrap/Button'
@@ -40,6 +39,7 @@ import { InfoTwoTone, Search } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { CommonString } from 'common/data/enumStrings'
+import { pages } from 'menu'
 
 interface WithdrawFilterInterface {
 	searchInput: string
@@ -210,7 +210,7 @@ const Withdraw = () => {
 	}
 
 	return (
-		<PageWrapper title={demoPages.crm.subMenu.customersList.text}>
+		<PageWrapper title={pages.withdraw.text}>
 			<SubHeader>
 				<SubHeaderLeft>
 					<label

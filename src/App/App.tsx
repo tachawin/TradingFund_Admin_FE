@@ -7,7 +7,7 @@ import { ThemeContext } from '../contexts/themeContext'
 
 import Wrapper from '../layout/Wrapper/Wrapper'
 import Portal from '../layout/Portal/Portal'
-import { demoPages, layoutMenu, pages } from '../menu'
+import { layoutMenu, pages } from '../menu'
 import COLORS from '../common/data/enumColors'
 
 const App = () => {
@@ -35,15 +35,11 @@ const App = () => {
 	 * Modern Design
 	 */
 	useLayoutEffect(() => {
-		if (process.env.REACT_APP_MODERN_DESGIN === 'true') {
-			document.body.classList.add('modern-design')
-		} else {
-			document.body.classList.remove('modern-design')
-		}
+		document.body.classList.add('modern-design')
 	})
 
 	//	Add paths to the array that you don't want to be "Aside".
-	const withOutAsidePages = [pages.login.path, pages.otp.path, demoPages.signUp.path, layoutMenu.blank.path]
+	const withOutAsidePages = [pages.login.path, pages.otp.path, layoutMenu.blank.path]
 
 	return (
 		<ThemeProvider theme={theme}>

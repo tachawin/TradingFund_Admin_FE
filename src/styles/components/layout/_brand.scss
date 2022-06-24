@@ -51,11 +51,6 @@
 		cursor: pointer;
 		line-height: 0;
 
-		// Mobile Status
-		@include media-breakpoint-down(map-get($aside, mobile-breakpoint)) {
-			display: none;
-		}
-
 		&:hover {
 			background-color: auto-shade-tint(map-deep-get($aside, background-color), 8%);
 		}

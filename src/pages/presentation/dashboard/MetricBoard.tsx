@@ -19,7 +19,7 @@ export enum MetricBoardType {
 }
 
 const MetricBoard = ({ isLoading, type, deposit, withdraw }: MetricInterface) => {
-    const { t } = useTranslation('dashboard')
+    const { t } = useTranslation('common')
 
     const permission = JSON.parse(localStorage.getItem('features') ?? '')
 

@@ -7,10 +7,4 @@
 
 	display: flex;
 	flex: 1 0 auto;
-
-	.header + & {
-		@include media-breakpoint-down(map-get($aside, mobile-breakpoint)) {
-			padding-top: map-deep-get($header, mobile, height);
-		}
-	}
 }

@@ -39,6 +39,7 @@ export interface AdminUpdateInterface {
     name?: string
     mobileNumber?: string
     password?: string
+    updatedAt?: Date
 }
 
 export const createAdmin = async (

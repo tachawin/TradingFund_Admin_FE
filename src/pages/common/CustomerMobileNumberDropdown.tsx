@@ -31,8 +31,6 @@ const CustomerMobileNumberDropdown = ({
     const [isLoading, setIsLoading] = useState(false)
     const [filteredMobileNumber, setFilteredMobileNumber] = useState(mobileNumberList)
 
-    console.log(isValid, touched, error)
-
     useEffect(() => {
         setFilteredMobileNumber(mobileNumberList)
     }, [mobileNumberList])

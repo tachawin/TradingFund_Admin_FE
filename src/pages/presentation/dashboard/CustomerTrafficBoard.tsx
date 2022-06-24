@@ -24,7 +24,7 @@ enum DateRange {
 }
 
 const CustomerTrafficBoard = () => {
-    const { t } = useTranslation('dashboard')
+    const { t } = useTranslation(['common', 'dashboard'])
 	const [activeDateRangeTab, setActiveDateRangeTab] = useState<DateRange>(DateRange.Week)
 	const [trafficData, setTrafficData] = useState<CustomerMetricInterface>({})
 	const [isLoading, setIsLoading] = useState(true)
@@ -108,11 +108,11 @@ const CustomerTrafficBoard = () => {
 		return { 
 			series: [
 				{
-					name: 'จำนวนผู้ใช้ใหม่',
+					name: t('dashboard:total.new.customer.traffic'),
 					data: totalRegisterList,
 				},
 				{
-					name: 'จำนวนผู้ใช้ใหม่ที่ทำรายการ',
+					name: t('dashboard:new.customer.traffic.with.transaction'),
 					data: totalRegisterAndActionList,
 				},
 			],
@@ -136,7 +136,7 @@ const CustomerTrafficBoard = () => {
 		<Card stretch>
 			<CardHeader>
 				<CardLabel>
-					<CardTitle>{t('customer.traffic')}</CardTitle>
+					<CardTitle>{t('dashboard:new.customer.traffic')}</CardTitle>
 				</CardLabel>
 				<CardActions>
 					<Button

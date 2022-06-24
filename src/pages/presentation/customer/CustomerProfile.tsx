@@ -67,7 +67,6 @@ const CustomerProfile = () => {
 		setIsLoading(true)
 		if (transactionState === TransactionState.Deposit) {
 			getDepositList(`?customerId=${id}`, (depositList: TransactionInterface[]) => {
-				console.log(depositList)
 				dispatch(storeDepositList(depositList))
 			}, (error: any) => {
 				const { response } = error
@@ -209,15 +208,15 @@ const CustomerProfile = () => {
 					</Button>
 				</SubHeaderLeft>
 			</SubHeader>
-			<Page className='p-3 justify-content-center'>
+			<Page className='p-3'>
 				{isCustomerLoading ? <Spinner isGrow color='primary' size={50} className='align-self-center' /> : <>
 					<div className='p-3 d-flex align-items-center'>
 						<span className='display-4 fw-bold me-3'>{customer?.name}</span>
-						<span className='border border-primary border-2 text-primary fw-bold px-3 py-2 rounded'>
+						<span className='text-primary fw-bold mx-3 my-2'>
 							<img 
 								src={customer?.level?.imageURL} alt={customer?.level?.levelName}
-								width={40} 
-								height={40} 
+								width={30} 
+								height={30} 
 								style={{ objectFit: 'contain' }} 
 								className='me-2 rounded-circle'
 							/>{' '}

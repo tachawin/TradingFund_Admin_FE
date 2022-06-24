@@ -90,7 +90,6 @@ export const getWithdrawList = async (
                 url: `/transaction/withdraw/admin/list/${type}${query}`,
                 headers: { Authorization: `Bearer ${getAccessToken()}` },
             })
-            console.log(res)
             next(res.data)
         } catch (error: any) {
             handleError(error)

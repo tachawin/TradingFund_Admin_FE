@@ -8,7 +8,6 @@ import SubHeader, {
 	SubheaderSeparator,
 } from '../../../layout/SubHeader/SubHeader'
 import Page from '../../../layout/Page/Page'
-import { demoPages } from '../../../menu'
 import Card, { CardBody } from '../../../components/bootstrap/Card'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
@@ -42,6 +41,7 @@ import COLORS from 'common/data/enumColors'
 import PlaceholderImage from 'components/extras/PlaceholderImage'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { CommonString } from 'common/data/enumStrings'
+import { pages } from 'menu'
 
 interface DepositFilterInterface {
 	searchInput: string
@@ -153,7 +153,6 @@ const Customer = () => {
 		let query = queryString ? `?${queryString}` : ''
 		setIsLoading(true)
 		getCustomerList(query, (customerList: CustomerInterface[]) => {
-			console.log(customerList)
 			dispatch(storeCustomers(customerList))
 		}, (error: any) => {
 			const { response } = error
@@ -170,7 +169,7 @@ const Customer = () => {
 	}, [customerQueryList])
 
 	return (
-		<PageWrapper title={demoPages.crm.subMenu.customersList.text}>
+		<PageWrapper title={pages.customer.text}>
 			<SubHeader>
 				<SubHeaderLeft>
 					<label
