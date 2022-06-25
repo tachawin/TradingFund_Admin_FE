@@ -316,7 +316,7 @@ const Credit = () => {
 									<CardHeader>
 										<CardLabel>
 										<CardTitle>{creditTableState === CreditTableState.Request ? 
-											t('credit:credit.request') : t('credit:credit.history')}</CardTitle>
+											t('request') : t('history')}</CardTitle>
 										</CardLabel>
 										<ButtonGroup>
 											<Button
@@ -324,14 +324,14 @@ const Credit = () => {
 												isLight={creditTableState !== CreditTableState.Request}
 												onClick={() => setCreditTableState(CreditTableState.Request)}
 											>
-												{t('credit:request')}
+												{t('request')}
 											</Button>
 											<Button
 												color={creditTableState === CreditTableState.History ? 'success' : 'dark'}
 												isLight={creditTableState !== CreditTableState.History}
 												onClick={() => setCreditTableState(CreditTableState.History)}
 											>
-												{t('credit:history')}
+												{t('history')}
 											</Button>
 										</ButtonGroup>
 									</CardHeader>

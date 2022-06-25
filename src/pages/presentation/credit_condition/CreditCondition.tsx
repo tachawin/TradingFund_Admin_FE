@@ -74,7 +74,7 @@ const CreditCondition = ({ isOpenCreditConditionModal, setIsOpenCreditConditionM
 								{readPermission && <CreditConditionSubHeader isOpenCreditConditionModal={isOpenCreditConditionModal} setIsOpenCreditConditionModal={setIsOpenCreditConditionModal} />}
 								<CardHeader>
 									<CardLabel>
-										<CardTitle>{t('creditCondition:creditCondition')}</CardTitle>
+										<CardTitle>{t('credit.condition')}</CardTitle>
 									</CardLabel>
 								</CardHeader>
 							</>

@@ -10,7 +10,6 @@ import CommonTableFilter from 'components/common/CommonTableFilter'
 import { BankModalProperties } from './Bank'
 import { useDispatch, useSelector } from 'react-redux'
 import { storeCompanyBankQuery } from 'redux/companyBank/action'
-import moment from 'moment'
 import { CompanyBankStatus, CompanyBankType, STATUS, TYPE } from 'common/apis/companyBank'
 import { selectCompanyBankQuery } from 'redux/companyBank/selector'
 import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
@@ -23,11 +22,6 @@ interface BankFilterInterface {
     type: string[]
 	status: string[]
 	bank: string[]
-	createdAtDate: {
-		startDate: Date
-		endDate: Date
-		key: string
-	}[]
 }
 
 interface BankSubHeaderInterface {
@@ -48,14 +42,7 @@ const BankSubHeader = ({ setIsOpenBankModal }: BankSubHeaderInterface) => {
 			searchInput: '',
 			type: [],
             status: [],
-			bank: [],
-			createdAtDate: [
-				{
-					startDate: moment().startOf('week').add('-1', 'week').toDate(),
-					endDate: moment().endOf('week').toDate(),
-					key: 'selection',
-				},
-			],
+			bank: []
 		},
 		onSubmit: (values) => {
 			const queryList = { 
@@ -63,8 +50,6 @@ const BankSubHeader = ({ setIsOpenBankModal }: BankSubHeaderInterface) => {
 				type: values.type.length > 0 ? `type=${values.type.join(',')}` : '',
 				status: values.status.length > 0 ? `status=${values.status.join(',')}` : '',
 				bank: values.bank.length > 0 ? `bank=${values.bank.join(',')}` : '',
-				startCreated: `startCreated=${moment(values.createdAtDate[0].startDate).format('YYYY-MM-DD')}`,
-				endCreated: `endCreated=${moment(values.createdAtDate[0].endDate).format('YYYY-MM-DD')}`,
 			}
 			dispatch(storeCompanyBankQuery(queryList))
 		},
@@ -129,10 +114,12 @@ const BankSubHeader = ({ setIsOpenBankModal }: BankSubHeaderInterface) => {
 					label: t('filter.payment.type'),
 					children: <div>
 						{TYPE.map((type: CompanyBankType) => {
-							let index = values.type.indexOf(type)
+							const index = values.type.indexOf(type)
+							const label = type === CompanyBankType.Deposit ? t('deposit') : 
+											type === CompanyBankType.DepositAndWithdraw ? t('deposit.and.withdraw') : t('withdraw')
 							return <Checks
 									key={type}
-									label={type}
+									label={label}
 									name={type}
 									value={index}
 									onChange={(e) => handleOnChangeMultipleSelector(e, 'type')}

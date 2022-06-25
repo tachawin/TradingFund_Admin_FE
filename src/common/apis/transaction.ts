@@ -22,7 +22,7 @@ interface Bank {
 
 export interface TransactionInterface {
     transactionId?: string
-    transactionTimestamp?: Date
+    transactionTimestamp?: string
     status: TransactionStatus
     mobileNumber?: string
     customerId?: string

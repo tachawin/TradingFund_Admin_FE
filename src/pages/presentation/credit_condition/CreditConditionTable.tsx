@@ -24,7 +24,7 @@ const CreditConditionTable = ({
     setIsOpenDeleteCreditConditionModal,
     cardHeader 
 }: CreditConditionTableInterface) => {
-    const { t } = useTranslation('common')
+    const { t } = useTranslation(['common', 'creditCondition'])
 
     const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
@@ -41,15 +41,13 @@ const CreditConditionTable = ({
                 <table className='table table-modern table-hover'>
                     <thead>
                         <tr>
-                            <th 
-                                onClick={() => requestSort('no')}
-                                className='cursor-pointer text-decoration-underline text-center'>
+                            <th className='text-center'>
                                 {t('column.no')}
                             </th>
                             <th
                                 onClick={() => requestSort('point')}
                                 className='cursor-pointer text-decoration-underline'>
-                                {t('column.point')}{' '}
+                                {t('column.points')}{' '}
                                 <FilterList fontSize='small' className={getClassNamesFor('creditConditionName')} />
                             </th>
                             <th
@@ -83,7 +81,7 @@ const CreditConditionTable = ({
                         {items.length > 0 ? dataPagination(items, currentPage, perPage).map((item: CreditConditionInterface, index: number) => (
                             <tr key={item.conditionId}>
                                 <td className='text-center'>
-                                    <div>{index + 1}</div>
+                                    <div>{perPage * (currentPage - 1) + (index + 1)}</div>
                                 </td>
                                 <td>
                                     <div>{item.point.toLocaleString()}</div>
@@ -141,7 +139,6 @@ const CreditConditionTable = ({
             </CardBody>
             <PaginationButtons
                 data={data}
-                label='customers'
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
                 perPage={perPage}

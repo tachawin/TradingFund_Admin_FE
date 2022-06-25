@@ -20,6 +20,8 @@ import { addCustomer } from '../../../redux/customer/action'
 import 'moment/locale/th'
 import { AccountCircleTwoTone, CreditCardTwoTone, InfoTwoTone } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
+import { CustomerModalType } from './Customer'
+import regEx from 'common/utils/commonRegEx'
 
 interface CustomerAddForm {
     mobileNumber: string
@@ -34,7 +36,7 @@ interface CustomerAddModalInterface {
 	id?: string | number
 	isOpen?: boolean
 	setIsOpen: any
-    type: 'add' | 'edit' | undefined
+    type: CustomerModalType | undefined
     data?: any
 }
 
@@ -44,8 +46,8 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
     const [isLoading, setIsLoading] = useState(false)
 
     const CustomerAddScheme = Yup.object().shape({
-		password: Yup.string().required('โปรดใส่รหัสผ่าน'),
-        mobileNumber: Yup.string().required('โปรดใส่เบอร์โทร'),
+        password: Yup.string().required('โปรดใส่รหัสผ่าน').test('length', 'รหัสผ่านต้องยาวกว่า 6 อักษร', val => (val?.length ?? 0) > 5),
+        mobileNumber: Yup.string().matches(regEx.mobileNumber, 'กรุณาใส่เบอร์โทรศัพท์ให้ถูกต้อง').required('กรุณาใส่เบอร์โทรศัพท์'),
         bankAccountNumber: Yup.string().required('โปรดใส่เลขบัญชี'),
         bankAccountName: Yup.string().required('โปรดใส่ชื่อบัญชี'),
         bankName: Yup.string().uppercase().required('โปรดระบุบัญชีธนาคาร'),
@@ -64,11 +66,24 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
 		onSubmit: (values) => {
             setIsLoading(true)
             createCustomer(values, (customer: CustomerInterface) => {
-                dispatch(addCustomer(customer))
+                setIsOpen(false)
+                dispatch(addCustomer({ 
+                    ...customer, 
+                    bank: {
+                        id: 1, 
+                        officialName: '', 
+                        niceName: '', 
+                        thaiName: '',
+                        acronym: values.bankName
+                    },
+                    level: {
+                        levelName: 'Default'
+                    }
+                }))
                 showNotification(
                     <span className='d-flex align-items-center'>
                         <InfoTwoTone className='me-1' />
-                        <span>{t('customer:save.successfully')}</span>
+                        <span>{t('save.successfully')}</span>
                     </span>,
                     t('customer:save.customer.successfully', { adminName: values.name }),
                 )
@@ -79,14 +94,11 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
                 showNotification(
                     <span className='d-flex align-items-center'>
                         <InfoTwoTone className='me-1' />
-                        <span>{t('customer:save.failed')}</span>
+                        <span>{t('save.failed')}</span>
                     </span>,
                     t('customer:save.customer.failed', { adminName: values.name }),
                 )
-            }).finally(() => {
-                setIsLoading(false)
-                setIsOpen(false)
-            })
+            }).finally(() => setIsLoading(false))
 		},
 	})
 
@@ -121,6 +133,7 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
                                     isValid={isValid}
                                     isTouched={touched.mobileNumber && errors.mobileNumber}
                                     invalidFeedback={errors.mobileNumber}
+                                    placeholder={t('form.mobile.number.placeholder')}
                                 />
                             </FormGroup>
                             <FormGroup id='password' label={t('form.password')}>
@@ -131,10 +144,15 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
                                     isValid={isValid}
                                     isTouched={touched.password && errors.password}
                                     invalidFeedback={errors.password}
+                                    placeholder={t('form.password.placeholder')}
                                 />
                             </FormGroup>
                             <FormGroup id='name' label={t('form.name')}>
-                                <Input onChange={handleChange} value={values.name} />
+                                <Input 
+                                    onChange={handleChange} 
+                                    value={values.name}
+                                    placeholder={t('form.name.placeholder')}
+                                />
                             </FormGroup>
                         </div>
                     </div>
@@ -151,6 +169,7 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
                                     isValid={isValid}
                                     isTouched={touched.bankAccountNumber && errors.bankAccountNumber}
                                     invalidFeedback={errors.bankAccountNumber}
+                                    placeholder={t('form.bank.account.number.placeholder')}
                                 />
                             </FormGroup>
                             <FormGroup id='bankAccountName' label={t('form.bank.account.name')}>
@@ -160,6 +179,7 @@ const CustomerAddModal = ({ id, isOpen, setIsOpen, type, data }: CustomerAddModa
                                     isValid={isValid}
                                     isTouched={touched.bankAccountName && errors.bankAccountName}
                                     invalidFeedback={errors.bankAccountName}
+                                    placeholder={t('form.bank.account.name.placeholder')}
                                 />
                             </FormGroup>
                             <FormGroup id='bankName' label={t('form.bank.name')}>

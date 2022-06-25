@@ -96,7 +96,7 @@ const LevelTable = ({
                         {items.length > 0 ? dataPagination(items, currentPage, perPage).map((item: LevelInterface, index: number) => (
                             <tr key={item.levelId}>
                                 <td className='text-center'>
-                                    <div>{index + 1}</div>
+                                    <div>{perPage * (currentPage - 1) + (index + 1)}</div>
                                 </td>
                                 <td>
                                     <div>
@@ -177,7 +177,6 @@ const LevelTable = ({
             </CardBody>
             <PaginationButtons
                 data={data}
-                label='customers'
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
                 perPage={perPage}

@@ -13,6 +13,7 @@ export interface DepositUpdateCustomerInterface {
 }
 
 export interface DepositCreateInterface {
+    transactionTimestamp: string
     mobileNumber: string
     companyBankId: string
     amount: string

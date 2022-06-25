@@ -283,7 +283,7 @@ const Reward = () => {
 									<CardHeader>
 										<CardLabel>
 											<CardTitle>{rewardTableState === RewardTableState.Request ? 
-											t('reward:reward.request') : t('reward:reward.history')}</CardTitle>
+											t('request') : t('history')}</CardTitle>
 										</CardLabel>
 										<ButtonGroup>
 											<Button
@@ -291,21 +291,21 @@ const Reward = () => {
 												isLight={rewardTableState !== RewardTableState.Request}
 												onClick={() => setRewardTableState(RewardTableState.Request)}
 											>
-												{t('reward:request')}
+												{t('request')}
 											</Button>
 											<Button
 												color={rewardTableState === RewardTableState.Sending ? 'success' : 'dark'}
 												isLight={rewardTableState !== RewardTableState.Sending}
 												onClick={() => setRewardTableState(RewardTableState.Sending)}
 											>
-												{t('reward:waitlist')}
+												{t('sending')}
 											</Button>
 											<Button
 												color={rewardTableState === RewardTableState.History ? 'success' : 'dark'}
 												isLight={rewardTableState !== RewardTableState.History}
 												onClick={() => setRewardTableState(RewardTableState.History)}
 											>
-												{t('reward:history')}
+												{t('history')}
 											</Button>
 										</ButtonGroup>
 									</CardHeader>

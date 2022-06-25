@@ -124,8 +124,6 @@ const Admin = () => {
 		setValues
 	} = formik
 
-	console.log(values)
-
 	const datePicker = (selectedDate: any, field: string) => (
 		<DateRange
 			onChange={(item) => setFieldValue(field, [item.selection])}

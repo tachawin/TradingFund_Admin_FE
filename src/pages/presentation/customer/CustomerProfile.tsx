@@ -147,7 +147,7 @@ const CustomerProfile = () => {
 		<CardHeader className='pb-0'>
 			<div className='d-flex justify-content-start align-items-center'>
 				<ReceiptTwoTone className='me-2' fontSize='large' htmlColor={COLORS.PRIMARY.code} />
-				<CardTitle className='mb-0'>{t('customer:transaction.history')}</CardTitle>
+				<CardTitle className='mb-0'>{t('transaction.history')}</CardTitle>
 			</div>
 			<Dropdown>
 				<DropdownToggle isOpen={Boolean(isOpenTransactionDropdown)} setIsOpen={setIsOpenTransactionDropdown}>
@@ -212,16 +212,6 @@ const CustomerProfile = () => {
 				{isCustomerLoading ? <Spinner isGrow color='primary' size={50} className='align-self-center' /> : <>
 					<div className='p-3 d-flex align-items-center'>
 						<span className='display-4 fw-bold me-3'>{customer?.name}</span>
-						<span className='text-primary fw-bold mx-3 my-2'>
-							<img 
-								src={customer?.level?.imageURL} alt={customer?.level?.levelName}
-								width={30} 
-								height={30} 
-								style={{ objectFit: 'contain' }} 
-								className='me-2 rounded-circle'
-							/>{' '}
-							{' ' + customer?.level?.levelName}
-						</span>
 					</div>
 					<div className='row'>
 						<div className='col-lg-4'>
@@ -246,6 +236,21 @@ const CustomerProfile = () => {
 															{t('column.mobile.number')}
 														</div>
 													</div>
+													<img 
+														src={customer?.level?.imageURL} alt={customer?.level?.levelName}
+														width={30} 
+														height={30} 
+														style={{ objectFit: 'contain' }} 
+														className='me-2 rounded-circle border border-2 border-primary'
+													/>
+													<div className='flex-grow-1 ms-3'>
+														<div className='fw-bold fs-5 mb-0'>
+															{customer?.level?.levelName}
+														</div>
+														<div className='text-muted'>
+															{t('level')}
+														</div>
+													</div>
 												</div>
 											</div>
 											<div className='col-12'>
@@ -255,18 +260,10 @@ const CustomerProfile = () => {
 													</div>
 													<div className='flex-grow-1 ms-3'>
 														<div className='fw-bold fs-5 mb-0'>
-															{customer?.bank?.acronym.toLocaleUpperCase()}
+															{customer?.bank?.acronym.toLocaleUpperCase()}{' '}{customer?.bankAccountNumber}
 														</div>
 														<div className='text-muted'>
-															{t('column.bank.account')}
-														</div>
-													</div>
-													<div className='flex-grow-1 ms-3'>
-														<div className='fw-bold fs-5 mb-0'>
-															{customer?.bankAccountNumber}
-														</div>
-														<div className='text-muted'>
-															{customer?.bankAccountName}
+															{t('column.bank.account')}{' '}{customer?.bankAccountName}
 														</div>
 													</div>
 												</div>

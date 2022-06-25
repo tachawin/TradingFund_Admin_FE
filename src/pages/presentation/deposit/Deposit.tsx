@@ -267,7 +267,7 @@ const Deposit = () => {
 								</div>
 							},
 							{
-								label: t('filter.bank'),
+								label: t('filter.recipient.bank'),
 								children: <CompanyBanksDropdown
 									selectedBank={values.bank}
 									setSelectedBank={(bank: CompanyBankInterface | CompanyBankInterface[]) => setFieldValue('bank', bank)}

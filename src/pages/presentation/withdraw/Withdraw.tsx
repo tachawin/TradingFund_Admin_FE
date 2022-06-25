@@ -40,6 +40,8 @@ import COLORS from 'common/data/enumColors'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { CommonString } from 'common/data/enumStrings'
 import { pages } from 'menu'
+import 'moment/locale/th'
+import Checks from 'components/bootstrap/forms/Checks'
 
 interface WithdrawFilterInterface {
 	searchInput: string
@@ -58,6 +60,7 @@ interface WithdrawFilterInterface {
 		endDate: Date
 		key: string
 	}[]
+	isCreatedAtDateChanged: boolean
 }
 
 interface WithdrawModalProperties {
@@ -148,13 +151,14 @@ const Withdraw = () => {
 				},
 			],
             bank: [],
-			companyBank: []
+			companyBank: [],
+			isCreatedAtDateChanged: false
 		},
 		onSubmit: (values) => {
 			const defaultWithdrawQuery = {
 				...withdrawQueryList,
-				startCreated: `startCreated=${moment(values.timestamp[0].startDate).format('YYYY-MM-DD')}`,
-				endCreated: `endCreated=${moment(values.timestamp[0].endDate).format('YYYY-MM-DD')}`,
+				startCreated: values.isCreatedAtDateChanged ? `start=${moment(values.timestamp[0].startDate).format('YYYY-MM-DD')}` : '',
+				endCreated: values.isCreatedAtDateChanged ? `end=${moment(values.timestamp[0].endDate).format('YYYY-MM-DD')}` : '',
 				min: values.amount.min ? `min=${values.amount.min}` : '',
 				max: values.amount.max ? `max=${values.amount.max}` : '',
 			}
@@ -164,7 +168,7 @@ const Withdraw = () => {
 					...defaultWithdrawQuery,
 					minLastDeposit: values.lastDepositAmount.min ? `minLastDeposit=${values.lastDepositAmount.min}` : '',
 					maxLastDeposit: values.lastDepositAmount.max ? `maxLastDeposit=${values.lastDepositAmount.max}` : '',
-					bank: values.bank.length > 0 ? `bank=${values.bank.join(',')}` : '',
+					bank: values.bank.length > 0 ? `bankName=${values.bank.join(',')}` : '',
 				}))
 			} else {
 				dispatch(storeWithdrawQuery({
@@ -236,18 +240,28 @@ const Withdraw = () => {
 						filters={[
                             {
 								label: t('filter.timestamp'),
-								children: <Dropdown >
-									<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										<span data-tour='date-range'>
-											{`${moment(values.timestamp[0].startDate).format('MMM Do YY')} - ${moment(
-												values.timestamp[0].endDate,
-											).format('MMM Do YY')}`}
-										</span>
-									</DropdownToggle>
-									<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										{datePicker(values.timestamp, 'timestamp')}
-									</DropdownMenu>
-								</Dropdown>
+								children: <div>
+									<Checks
+										id='isCreatedAtDateChanged'
+										type='switch'
+										label={t('filter.created.at')}
+										onChange={handleChange}
+										checked={values.isCreatedAtDateChanged}
+										ariaLabel='Filter Created At Date'
+									/>
+									{values.isCreatedAtDateChanged && <Dropdown className='mt-2'>
+										<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
+											<span data-tour='date-range'>
+												{`${moment(values.timestamp[0].startDate).format('MMM Do YY')} - ${moment(
+													values.timestamp[0].endDate,
+												).format('MMM Do YY')}`}
+											</span>
+										</DropdownToggle>
+										<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
+											{datePicker(values.timestamp, 'timestamp')}
+										</DropdownMenu>
+									</Dropdown>}
+								</div>
 							},
 							{
 								label: t('filter.amount'),
@@ -331,7 +345,7 @@ const Withdraw = () => {
 										<CardLabel>
 											<CardTitle>{
 												withdrawTableState === WithdrawTableState.Request ?
-												t('withdraw:withdraw.request') : t('withdraw:withdraw.history')
+												t('request') : t('history')
 											}</CardTitle>
 										</CardLabel>
 										<ButtonGroup>
@@ -340,14 +354,14 @@ const Withdraw = () => {
 												isLight={withdrawTableState !== WithdrawTableState.Request}
 												onClick={() => setWithdrawTableState(WithdrawTableState.Request)}
 											>
-												{t('withdraw:request')}
+												{t('request')}
 											</Button>
 											<Button
 												color={withdrawTableState === WithdrawTableState.History ? 'success' : 'dark'}
 												isLight={withdrawTableState !== WithdrawTableState.History}
 												onClick={() => setWithdrawTableState(WithdrawTableState.History)}
 											>
-												{t('withdraw:history')}
+												{t('history')}
 											</Button>
 										</ButtonGroup>
 									</CardHeader>
@@ -356,7 +370,7 @@ const Withdraw = () => {
 								setIsOpenWithdrawModal={withdrawTableState === WithdrawTableState.Request ? setIsOpenWithdrawModal : undefined} 
 								setIsOpenCancelWithdrawModal={withdrawTableState === WithdrawTableState.Request ? setIsOpenCancelWithdrawModal : undefined}
 								columns={{ 
-									id: false,
+									id: true,
 									status: withdrawTableState === WithdrawTableState.History, 
 									mobileNumber: true, 
 									notes: withdrawTableState === WithdrawTableState.History, 

@@ -73,7 +73,7 @@ const CreditConditionModal = ({ id, isOpen, setIsOpen, properties }: CreditCondi
                             <InfoTwoTone className='me-1' />
                             <span>{t('creditCondition:added.successfully')}</span>
                         </span>,
-                        t('creditCondition:added.credit.condition.successfully', { creditConditionName: data?.point }),
+                        t('creditCondition:added.credit.condition.successfully', { credit: data?.credit, point: data?.point }),
                     )
                 }, () => {
                     showNotification(
@@ -81,7 +81,7 @@ const CreditConditionModal = ({ id, isOpen, setIsOpen, properties }: CreditCondi
                             <InfoTwoTone className='me-1' />
                             <span>{t('creditCondition:added.failed')}</span>
                         </span>,
-                        t('creditCondition:added.credit.condition.failed', { creditConditionName: data?.point }),
+                        t('creditCondition:added.credit.condition.failed', { credit: data?.credit, point: data?.point }),
                     )
                 }).finally(() => setIsLoading(false))
             } else {
@@ -96,7 +96,7 @@ const CreditConditionModal = ({ id, isOpen, setIsOpen, properties }: CreditCondi
                             <InfoTwoTone className='me-1' />
                             <span>{t('creditCondition:edit.successfully')}</span>
                         </span>,
-                        t('creditCondition:edit.credit.condition.successfully', { point: data?.point }),
+                        t('creditCondition:edit.credit.condition.successfully', { credit: data?.credit, point: data?.point }),
                     )
                 }, () => {
                     showNotification(
@@ -104,7 +104,7 @@ const CreditConditionModal = ({ id, isOpen, setIsOpen, properties }: CreditCondi
                             <InfoTwoTone className='me-1' />
                             <span>{t('creditCondition:edit.failed')}</span>
                         </span>,
-                        t('creditCondition:edit.credit.condition.failed', { point: data?.point }),
+                        t('creditCondition:edit.credit.condition.failed', { credit: data?.credit, point: data?.point }),
                     )
                 }).finally(() => setIsLoading(false))
             }
@@ -116,7 +116,7 @@ const CreditConditionModal = ({ id, isOpen, setIsOpen, properties }: CreditCondi
     return (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>
             <ModalHeader setIsOpen={setIsOpen} className='p-4 pb-0'>
-                <ModalTitle id={id}>{type === CreditConditionModalType.Add ? t('creditCondition:add.creditCondition') : t('creditCondition:edit.creditCondition')}</ModalTitle>
+                <ModalTitle id={id}>{type === CreditConditionModalType.Add ? t('creditCondition:add.credit.condition') : t('creditCondition:edit.credit.condition')}</ModalTitle>
             </ModalHeader>
             <ModalBody className='px-4'>
                 <div className='row g-4'>
@@ -128,6 +128,7 @@ const CreditConditionModal = ({ id, isOpen, setIsOpen, properties }: CreditCondi
                             isValid={isValid}
                             isTouched={touched.point && errors.point}
                             invalidFeedback={errors.point}
+                            placeholder={t('form.point.placeholder')}
                         />
                     </FormGroup>
                     <FormGroup id='credit' label={t('form.credit')}>
@@ -138,6 +139,7 @@ const CreditConditionModal = ({ id, isOpen, setIsOpen, properties }: CreditCondi
                             isValid={isValid}
                             isTouched={touched.credit && errors.credit}
                             invalidFeedback={errors.credit}
+                            placeholder={t('form.credit.placeholder')}
                         />
                     </FormGroup>
                     <FormGroup id='quantity' label={t('form.quantity')}>

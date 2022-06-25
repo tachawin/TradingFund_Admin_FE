@@ -19,7 +19,7 @@ export const TYPE = [CompanyBankType.Deposit, CompanyBankType.Withdraw, CompanyB
 export interface CompanyBankBaseInterface {
     bankAccountName: string
     bankAccountNumber: string
-    balance: number
+    balance?: number
     type: CompanyBankType
     status: CompanyBankStatus
 }

@@ -116,18 +116,18 @@ export const updateRedeemCredit = async (
     redeemId: string,
     action: RedeemAction,
     data: RedeemUpdateBodyInterface,
-    next: () => void,
+    next: (res: ErrorResponse) => void,
     handleError: (error: any) => void
 ) =>
     await authorizationHandler(async () => {
         try {
-            await axios({
+            const res = await axios({
                 method: 'patch',
                 url: `/redeem_credit/${action}/${redeemId}`,
                 headers: { Authorization: `Bearer ${getAccessToken()}` },
                 data
             })
-            next()
+            next(res.data)
         } catch (error: any) {
             handleError(error)
             throw error

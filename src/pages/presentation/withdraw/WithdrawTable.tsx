@@ -55,37 +55,27 @@ const WithdrawTable = ({
                 <table className='table table-modern table-hover'>
                     <thead>
                         <tr>
-                            {columns?.id && <th 
-                                onClick={() => requestSort('no')}
-                                className='cursor-pointer text-decoration-underline text-center'>
+                            {columns?.id && <th className='text-center'>
                                 {t('column.no')}
                             </th>}
                             <th
-                                onClick={() => requestSort('timestamp')}
+                                onClick={() => requestSort('createdAt')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.timestamp')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('timestamp')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('createdAt')} />
                             </th>
-                            {columns?.name &&
-                                <th
-                                    onClick={() => requestSort('name')}
-                                    className='cursor-pointer text-decoration-underline'>
-                                    {t('column.name')}{' '}
-                                    <FilterList fontSize='small' className={getClassNamesFor('name')} />
-                                </th>
-                            }
                             {columns?.mobileNumber && <th>{t('column.mobile.number')}</th>}
                             {columns?.from && <th
-                                onClick={() => requestSort('from')}
+                                onClick={() => requestSort('payerBankAccountNumber')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.from')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('from')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('payerBankAccountNumber')} />
                             </th>}
                             <th
-                                onClick={() => requestSort('to')}
+                                onClick={() => requestSort('recipientBankAccountNumber')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.to')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('to')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('recipientBankAccountNumber')} />
                             </th>
                             <th
                                 onClick={() => requestSort('amount')}
@@ -112,10 +102,10 @@ const WithdrawTable = ({
                             }
                             {columns?.operator &&
                                 <th
-                                    onClick={() => requestSort('operator')}
+                                    onClick={() => requestSort('adminName')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.operator')}{' '}
-                                    <FilterList fontSize='small' className={getClassNamesFor('operator')} />
+                                    <FilterList fontSize='small' className={getClassNamesFor('adminName')} />
                                 </th>
                             }
                             {(setIsOpenCancelWithdrawModal && updatePermission) && <td />}
@@ -125,7 +115,7 @@ const WithdrawTable = ({
                         {items.length > 0 ? dataPagination(items, currentPage, perPage).map((transaction: TransactionInterface, index: number) => (
                             <tr key={transaction.transactionId}>
                                 {columns?.id && <td className='text-center'>
-                                    <div>{index + 1}</div>
+                                    <div>{perPage * (currentPage - 1) + (index + 1)}</div>
                                 </td>}
                                 <td>
                                     <div>{moment(transaction.createdAt).format('ll')}</div>
@@ -135,11 +125,6 @@ const WithdrawTable = ({
                                         </small>
                                     </div>
                                 </td>
-                                {columns?.name &&
-                                    <td>
-                                        <div>{transaction.mobileNumber}</div>
-                                    </td>
-                                }
                                 {columns?.mobileNumber &&
                                     <td>
                                         <div>{transaction.mobileNumber}</div>
@@ -238,7 +223,6 @@ const WithdrawTable = ({
             </CardBody>
             <PaginationButtons
                 data={data}
-                label={t('withdraw:withdraw.request')}
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
                 perPage={perPage}

@@ -54,6 +54,7 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
                     'ไม่พบข้อมูลลูกค้าหรือจำนวนแต้มไม่เพียงพอ กรุณายกเลิกรายการ',
                 )
             } else {
+                setIsOpen(false)
                 data.redeemId && dispatch(removeRedeemProductById(data.redeemId))
                 showNotification(
                     <span className='d-flex align-items-center'>
@@ -69,19 +70,17 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('reward:approve.failed')}</span>
+                    <span>ยืนยันไม่สำเร็จ</span>
                 </span>,
-                t('reward:approve.request.failed', { mobileNumber: data?.mobileNumber }),
+                'มีบางอย่างผิดปกติ กรุณาทำรายการใหม่อีกครั้งภายหลัง',
             )
-        }).finally(() => {
-            setIsOpen(false)
-            setIsLoading(false)
-        })
+        }).finally(() => setIsLoading(false))
     }
 
     const handleReject = () => {
         setIsLoading(true)
         data.redeemId && updateRedeem(data.redeemId, RedeemAction.Reject, {}, () => {
+            setIsOpen(false)
             data.redeemId && dispatch(removeRedeemProductById(data.redeemId))
             showNotification(
                 <span className='d-flex align-items-center'>
@@ -96,14 +95,11 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('reward:reject.failed')}</span>
+                    <span>ยกเลิกไม่สำเร็จ</span>
                 </span>,
-                t('reward:reject.request.failed', { mobileNumber: data?.mobileNumber }),
+                'มีบางอย่างผิดปกติ กรุณาทำรายการใหม่อีกครั้งภายหลัง',
             )
-        }).finally(() => {
-            setIsOpen(false)
-            setIsLoading(false)
-        })
+        }).finally(() => setIsLoading(false))
     }
 
     const RewardFormSchema = Yup.object().shape({
@@ -119,6 +115,7 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
             setIsLoading(true)
             data.redeemId && updateRedeem(data.redeemId, RedeemAction.Sending, { notes: values.notes }, () => {
                 data.redeemId && dispatch(removeRedeemProductById(data.redeemId))
+                setIsOpen(false)
                 showNotification(
                     <span className='d-flex align-items-center'>
                         <InfoTwoTone className='me-1' />
@@ -132,14 +129,11 @@ const RewardModal = ({ id, isOpen, setIsOpen, properties }: RewardModalInterface
                 showNotification(
                     <span className='d-flex align-items-center'>
                         <InfoTwoTone className='me-1' />
-                        <span>{t('reward:sending.failed')}</span>
+                        <span>เปลี่ยนสถานะไม่สำเร็จ</span>
                     </span>,
-                    t('reward:sending.reward.failed', { mobileNumber: data?.mobileNumber }),
+                    'มีบางอย่างผิดปกติ กรุณาทำรายการใหม่อีกครั้งภายหลัง',
                 )
-            }).finally(() => {
-                setIsOpen(false)
-                setIsLoading(false)
-            })
+            }).finally(() => setIsLoading(false))
 		},
 	})
 

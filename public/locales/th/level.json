@@ -9,6 +9,8 @@
     "edit.level.successfully": "แก้ไขขั้น {{levelName}} สำเร็จ",
     "delete.successfully": "ลบสำเร็จ",
     "delete.level.successfully": "ลบขั้น {{levelName}} สำเร็จ",
+    "upload.image.failed": "อัปโหลดรูปภาพไม่สำเร็จ",
+    "upload.level.image.failed": "อัปโหลดรูปภาพ {{levelName}} ไม่สำเร็จ",
 
     "form.delete.confirmation": "ต้องการที่จะลบขั้นใช่หรือไม่ ?",
     "delete.level": "ลบขั้น {{levelName}}"

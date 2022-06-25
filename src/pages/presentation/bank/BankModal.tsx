@@ -30,7 +30,6 @@ interface BankFormInterface {
     bankAccountNumber: string
     bankAccountName: string
     bankName: string
-    balance: string | number
     type: CompanyBankType[]
     status: boolean
 }
@@ -44,7 +43,6 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
     const BankFormSchema = Yup.object().shape({
         bankAccountNumber: Yup.string().required('กรุณาใส่หมายเลขบัญชี'),
         bankAccountName: Yup.string().required('กรุณาใส่ชื่อบัญชี'),
-        balance: Yup.number().required('กรุณาใส่ยอดเงินคงเหลือ'),
         type: Yup.array().min(1, 'กรุณาเลือกประเภทธุรกรรม'),
 	})
 	
@@ -53,7 +51,6 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
             bankAccountNumber: data?.bankAccountNumber || '',
             bankAccountName: data?.bankAccountName || '',
             bankName: data?.bankName?.acronym || 'scb',
-            balance: data?.balance || '',
             type: data?.type ? (data?.type === CompanyBankType.DepositAndWithdraw ? [CompanyBankType.Deposit, CompanyBankType.Withdraw] : [data?.type]) : [],
             status: data?.status === CompanyBankStatus.Active || true
 		},
@@ -64,13 +61,21 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
             let statusInString = values.status ? CompanyBankStatus.Active : CompanyBankStatus.Inactive
             let requestBody: CompanyBankBaseInterface = {
                 ...values,
-                balance: values.balance as number,
                 type: typeInString,
                 status: statusInString
             }
             if (type === BankModalType.Add) {
                 createCompanyBank(requestBody, (companyBank: CompanyBankInterface) => {
-                    dispatch(addCompanyBank(companyBank))
+                    dispatch(addCompanyBank({ 
+                        ...companyBank,
+                        bankName: {
+                            id: 1, 
+                            officialName: '', 
+                            niceName: '', 
+                            thaiName: '',
+                            acronym: values.bankName
+                        },
+                    }))
                     showNotification(
                         <span className='d-flex align-items-center'>
                             <InfoTwoTone className='me-1' />
@@ -95,7 +100,16 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
                 })
             } else {
                 data?.bankId && updateCompanyBank(data.bankId, requestBody, () => {
-                    data?.bankId && dispatch(updateCompanyBankById(data.bankId, requestBody))
+                    data?.bankId && dispatch(updateCompanyBankById(data.bankId, {
+                        ...requestBody,
+                        bankName: {
+                            id: 1, 
+                            officialName: '', 
+                            niceName: '', 
+                            thaiName: '',
+                            acronym: values.bankName
+                        },
+                    }))
                     showNotification(
                         <span className='d-flex align-items-center'>
                             <InfoTwoTone className='me-1' />
@@ -170,16 +184,6 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
                         <CommonBanksDropdown 
                             selectedBankName={values.bankName} 
                             setSelectedBankName={(bank: string | string[]) => setFieldValue('bankName', bank)} 
-                        />
-                    </FormGroup>
-                    <FormGroup id='balance' label={t('form.bank.balance')}>
-                        <Input
-                            type='number'
-                            onChange={handleChange} 
-                            value={values.balance}
-                            isValid={isValid}
-                            isTouched={touched.balance && errors.balance}
-                            invalidFeedback={errors.balance}
                         />
                     </FormGroup>
                     <FormGroup 

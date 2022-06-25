@@ -45,35 +45,23 @@ const ReportTable = ({ data }: ReportTableInterface) => {
             <table className='table table-modern table-hover'>
                 <thead>
                     <tr>
-                        <th 
-                            onClick={() => requestSort('no')}
-                            className='cursor-pointer text-decoration-underline text-center'>
+                        <th className='text-center'>
                             {t('column.no')}
                         </th>
                         <th
-                            onClick={() => requestSort('type')}
-                            className='cursor-pointer text-decoration-underline'>
-                            {t('column.type')}{' '}
-                            <FilterList fontSize='small' className={getClassNamesFor('type')} />
-                        </th>
-                        <th
-                            onClick={() => requestSort('mobileNumber')}
-                            className='cursor-pointer text-decoration-underline'>
-                            {t('column.mobile.number')}{' '}
-                            <FilterList fontSize='small' className={getClassNamesFor('mobileNumber')} />
-                        </th>
-                        <th
-                            onClick={() => requestSort('timestamp')}
+                            onClick={() => requestSort('transactionTimestamp')}
                             className='cursor-pointer text-decoration-underline'>
                             {t('column.timestamp')}{' '}
-                            <FilterList fontSize='small' className={getClassNamesFor('timestamp')} />
+                            <FilterList fontSize='small' className={getClassNamesFor('transactionTimestamp')} />
                         </th>
                         <th
-                            onClick={() => requestSort('bank')}
+                            onClick={() => requestSort('transactionType')}
                             className='cursor-pointer text-decoration-underline'>
-                            {t('column.bank')}{' '}
-                            <FilterList fontSize='small' className={getClassNamesFor('bank')} />
+                            {t('column.type')}{' '}
+                            <FilterList fontSize='small' className={getClassNamesFor('transactionType')} />
                         </th>
+                        <th>{t('column.mobile.number')}</th>
+                        <th>{t('column.bank')}</th>
                         <th
                             onClick={() => requestSort('amount')}
                             className='cursor-pointer text-decoration-underline'>
@@ -93,7 +81,15 @@ const ReportTable = ({ data }: ReportTableInterface) => {
                     {items.length > 0 ? dataPagination(items, currentPage, perPage).map((transaction: TransactionInterface, index: number) => (
                         <tr key={transaction.transactionId}>
                             <td className='text-center'>
-                                <div>{index + 1}</div>
+                                <div>{perPage * (currentPage - 1) + (index + 1)}</div>
+                            </td>
+                            <td>
+                                <div>{moment(transaction.transactionTimestamp).format('ll')}</div>
+                                <div>
+                                    <small className='text-muted'>
+                                        {moment(transaction.transactionTimestamp).fromNow()}
+                                    </small>
+                                </div>
                             </td>
                             <td>
                                 <div>{getTypeText(transaction.transactionType)}</div>
@@ -102,18 +98,10 @@ const ReportTable = ({ data }: ReportTableInterface) => {
                                 <div>{transaction.mobileNumber}</div>
                             </td>
                             <td>
-                                <div>{moment(transaction.createdAt).format('ll')}</div>
-                                <div>
-                                    <small className='text-muted'>
-                                        {moment(transaction.createdAt).fromNow()}
-                                    </small>
-                                </div>
-                            </td>
-                            <td>
                                 <div className='d-flex align-items-center'>
                                     <div className='flex-grow-1'>
                                         <div className='fs-6 fw-bold'>
-                                            {transaction.transactionType === TransactionType.Deposit ? `*${transaction.recipientBankAccountNumber}` : `*${transaction.payerBankAccountNumber}`}
+                                            {transaction.transactionType === TransactionType.Deposit ? `*${transaction.recipientBankAccountNumber.slice(-4)}` : `*${transaction.payerBankAccountNumber.slice(-4)}`}
                                         </div>
                                         <div className='text-muted'>
                                             <LabelTwoTone fontSize='small' />{' '}
@@ -144,7 +132,6 @@ const ReportTable = ({ data }: ReportTableInterface) => {
         </CardBody>
         <PaginationButtons
             data={data}
-            label='customers'
             setCurrentPage={setCurrentPage}
             currentPage={currentPage}
             perPage={perPage}

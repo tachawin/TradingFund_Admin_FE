@@ -48,7 +48,7 @@ const BankBalanceCard = () => {
                                 </div>
                                 <div className='col-auto text-end'>
                                     <div>
-                                        <strong>{bank.balance.toLocaleString()}</strong>
+                                        <strong>{bank.balance?.toLocaleString()}</strong>
                                     </div>
                                     <div className='text-muted'>
                                         <small>{bank.totalWithdrawToday?.toLocaleString()}</small>

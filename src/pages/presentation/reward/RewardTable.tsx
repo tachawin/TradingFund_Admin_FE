@@ -36,8 +36,10 @@ const RewardTable = ({
     const getStatusText = (status: RedeemStatus): ReactNode => {
         if (status === RedeemStatus.Success) {
             return <div className='fw-bold text-success'>{t('success')}</div>
-        } else if (status === RedeemStatus.Sending || status === RedeemStatus.Request) {
-            return <div className='fw-bold text-warning'>{status === RedeemStatus.Sending ? t('sending') : t('request')}</div>
+        } else if (status === RedeemStatus.Sending) {
+            return <div className='fw-bold text-warning'>{t('sending')}</div>
+        } else if (status === RedeemStatus.Request) {
+            return <div className='fw-bold text-info'>{t('request')}</div>
         } else {
             return <div className='fw-bold text-danger'>{t('cancel')}</div>
         }
@@ -50,30 +52,23 @@ const RewardTable = ({
                 <table className='table table-modern table-hover'>
                     <thead>
                         <tr>
-                            <th 
-                                onClick={() => requestSort('no')}
-                                className='cursor-pointer text-decoration-underline text-center'>
+                            <th className='text-center'>
                                 {t('column.no')}
                             </th>
                             <th
-                                onClick={() => requestSort('timestamp')}
+                                onClick={() => requestSort('createdAt')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.timestamp')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('timestamp')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('createdAt')} />
                             </th>
                             {columns?.mobileNumber && <th>{t('column.mobile.number')}</th>}
                             <th
-                                onClick={() => requestSort('points')}
+                                onClick={() => requestSort('point')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.points')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('points')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('point')} />
                             </th>
-                            <th
-                                onClick={() => requestSort('product')}
-                                className='cursor-pointer text-decoration-underline'>
-                                {t('column.product')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('product')} />
-                            </th>
+                            <th>{t('column.product')}</th>
                             <th style={{ width: '15%' }}>{t('column.address')}</th>
                             {columns?.notes && <th>{t('column.notes')}</th>}
                             {columns?.status &&
@@ -86,10 +81,10 @@ const RewardTable = ({
                             }
                             {columns?.operator &&
                                 <th
-                                    onClick={() => requestSort('operator')}
+                                    onClick={() => requestSort('adminName')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.operator')}{' '}
-                                    <FilterList fontSize='small' className={getClassNamesFor('operator')} />
+                                    <FilterList fontSize='small' className={getClassNamesFor('adminName')} />
                                 </th>
                             }
                             {(setIsOpenRewardModal && updatePermission) && <td />}
@@ -99,7 +94,7 @@ const RewardTable = ({
                         {items.length > 0 ? dataPagination(items, currentPage, perPage).map((item: RedeemInterface, index: number) => (
                             <tr key={item.redeemId}>
                                 <td className='text-center'>
-                                    <div>{index + 1}</div>
+                                    <div>{perPage * (currentPage - 1) + (index + 1)}</div>
                                 </td>
                                 <td>
                                     <div>{moment(item.createdAt).format('ll')}</div>
@@ -171,7 +166,6 @@ const RewardTable = ({
             </CardBody>
             <PaginationButtons
                 data={data}
-                label='customers'
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
                 perPage={perPage}

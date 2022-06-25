@@ -15,7 +15,7 @@ import { PermissionType, PermissionValue } from 'common/apis/user'
 import { CommonString } from 'common/data/enumStrings'
 
 const InviteFriendSetting = () => {
-    const { t } = useTranslation('common')
+    const { t } = useTranslation(['common', 'setting'])
     const dispatch = useDispatch()
     const [isLoading, setIsLoading] = useState(false)
 
@@ -44,8 +44,8 @@ const InviteFriendSetting = () => {
                 showNotification(
                     <span className='d-flex align-items-center'>
                         <InfoTwoTone className='me-1' />
-                        <span>{t('update.referral.setting.successfully')}</span>
-                    </span>, t(`update.referral.setting.successfully`)
+                        <span>{t('setting:update.referral.setting.successfully')}</span>
+                    </span>, t(`setting:update.referral.setting.successfully`)
                 )
             }, (error) => {
                 const { response } = error
@@ -53,8 +53,8 @@ const InviteFriendSetting = () => {
                 showNotification(
                     <span className='d-flex align-items-center'>
                         <InfoTwoTone className='me-1' />
-                        <span>{t('update.referral.setting.failed')}</span>
-                    </span>, t(`update.referral.setting.failed`)
+                        <span>{t('setting:update.referral.setting.failed')}</span>
+                    </span>, t(`setting:update.referral.setting.failed`)
                 )
             }).finally(() => setIsLoading(false))
 		},
@@ -68,18 +68,18 @@ const InviteFriendSetting = () => {
 				<Card stretch>
                     <CardHeader>
                         <CardLabel>
-                            <CardTitle>{t('invite.friend.setting')}</CardTitle>
+                            <CardTitle>{t('setting:invite.friend.setting')}</CardTitle>
                         </CardLabel>
                     </CardHeader>
                     <CardBody className={readPermission ? '' : 'd-flex justify-content-center align-items-center'}>
                         {readPermission ? <><div className='d-flex justify-content-between align-items-center'>
                             <div>
-                                <h5>{t('first.level')}</h5>
-                                <p>{t('first.level.desc')}</p>
+                                <h5>{t('setting:first.level')}</h5>
+                                <p>{t('setting:first.level.desc')}</p>
                             </div>
                             <div className='d-flex align-items-center justify-content-between w-25'>
                                 <Input
-                                    placeholder={t('first.level')}
+                                    placeholder={t('setting:first.level')}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setFieldValue('firstLevel', e.target.value)}
                                     value={values.firstLevel}
                                     type='number'
@@ -91,12 +91,12 @@ const InviteFriendSetting = () => {
                         </div>
                         <div className='d-flex justify-content-between align-items-center'>
                             <div>
-                                <h5>{t('second.level')}</h5>
-                                <p>{t('second.level.desc')}</p>
+                                <h5>{t('setting:second.level')}</h5>
+                                <p>{t('setting:second.level.desc')}</p>
                             </div>
                             <div className='d-flex align-items-center justify-content-between w-25'>
                                 <Input
-                                    placeholder={t('second.level')}
+                                    placeholder={t('setting:second.level')}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setFieldValue('secondLevel', e.target.value)}
                                     value={values.secondLevel}
                                     type='number' 

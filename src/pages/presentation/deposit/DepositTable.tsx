@@ -8,7 +8,6 @@ import { TransactionInterface, TransactionStatus } from 'common/apis/transaction
 import moment from 'moment'
 import 'moment/locale/th'
 import { DepositModalProperties, DepositModalType } from './DepositModal'
-import { useSelector } from 'react-redux'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { FilterList, LabelTwoTone } from '@mui/icons-material'
 
@@ -46,9 +45,7 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                 <table className='table table-modern table-hover'>
                     <thead>
                         <tr>
-                            <th 
-                                onClick={() => requestSort('no')}
-                                className='cursor-pointer text-decoration-underline text-center'>
+                            <th className='text-center'>
                                 {t('column.no')}
                             </th>
                             <th
@@ -58,22 +55,22 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                                 <FilterList fontSize='small' className={getClassNamesFor('status')} />
                             </th>
                             <th
-                                onClick={() => requestSort('timestamp')}
+                                onClick={() => requestSort('transactionTimestamp')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.timestamp')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('timestamp')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('transactionTimestamp')} />
                             </th>
                             <th
-                                onClick={() => requestSort('from')}
+                                onClick={() => requestSort('payerBankAccountNumber')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.from')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('from')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('payerBankAccountNumber')} />
                             </th>
                             <th
-                                onClick={() => requestSort('to')}
+                                onClick={() => requestSort('payerBankAccountNumber')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.to')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('to')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('payerBankAccountNumber')} />
                             </th>
                             <th
                                 onClick={() => requestSort('amount')}
@@ -90,16 +87,16 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                         {items.length > 0 ? dataPagination(items, currentPage, perPage).map((transaction: TransactionInterface, index: number) => (
                             <tr key={transaction.transactionId}>
                                 <td className='text-center'>
-                                    <div>{index + 1}</div>
+                                    <div>{perPage * (currentPage - 1) + (index + 1)}</div>
                                 </td>
                                 <td>
                                     <div>{getStatusText(transaction.status)}</div>
                                 </td>
                                 <td>
-                                    <div>{moment(transaction.createdAt).format('ll')}</div>
+                                    <div>{moment(transaction.transactionTimestamp).format('ll')}</div>
                                     <div>
                                         <small className='text-muted'>
-                                            {moment(transaction.createdAt).fromNow()}
+                                            {moment(transaction.transactionTimestamp).fromNow()}
                                         </small>
                                     </div>
                                 </td>
@@ -171,7 +168,6 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
             </CardBody>
             <PaginationButtons
                 data={data}
-                label='customers'
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
                 perPage={perPage}

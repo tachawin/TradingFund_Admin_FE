@@ -23,10 +23,9 @@ interface PaginationButtonsInterface {
 	perPage: number,
 	setPerPage: any,
 	data: any[],
-	label?: string,
 }
 
-const PaginationButtons = ({ setCurrentPage, currentPage, perPage, setPerPage, data, label = 'items' }: PaginationButtonsInterface) => {
+const PaginationButtons = ({ setCurrentPage, currentPage, perPage, setPerPage, data }: PaginationButtonsInterface) => {
 	const { t } = useTranslation('common')
 	const totalItems = data.length
 	const totalPage = Math.ceil(totalItems / perPage)
@@ -74,7 +73,7 @@ const PaginationButtons = ({ setCurrentPage, currentPage, perPage, setPerPage, d
 
 		return (
 			<span className='pagination__desc'>
-				{t('table.showing')} {start} {t('table.to')} {end > totalItems ? totalItems : end} {t('table.of')} {totalItems} {label}
+				{t('table.showing')} {start} {t('table.to')} {end > totalItems ? totalItems : end} {t('table.of')} {totalItems} {t('list')}
 			</span>
 		)
 	}
@@ -87,7 +86,7 @@ const PaginationButtons = ({ setCurrentPage, currentPage, perPage, setPerPage, d
 
 			<CardFooterRight className='d-flex'>
 				{totalPage > 1 && (
-					<Pagination ariaLabel={label}>
+					<Pagination ariaLabel={t('list')}>
 						<PaginationItem
 							isFirst
 							isDisabled={!(currentPage - 1 > 0)}

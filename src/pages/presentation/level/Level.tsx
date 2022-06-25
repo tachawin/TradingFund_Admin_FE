@@ -74,7 +74,7 @@ const Level = ({ isOpenLevelModal, setIsOpenLevelModal }: LevelProps) => {
 								{readPermission && <LevelSubHeader isOpenLevelModal={isOpenLevelModal} setIsOpenLevelModal={setIsOpenLevelModal}  />}
 								<CardHeader>
 									<CardLabel>
-										<CardTitle>{t('level:level')}</CardTitle>
+										<CardTitle>{t('level')}</CardTitle>
 									</CardLabel>
 								</CardHeader>
 							</>

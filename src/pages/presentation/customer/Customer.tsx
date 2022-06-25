@@ -42,6 +42,7 @@ import PlaceholderImage from 'components/extras/PlaceholderImage'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { CommonString } from 'common/data/enumStrings'
 import { pages } from 'menu'
+import Checks from 'components/bootstrap/forms/Checks'
 
 interface DepositFilterInterface {
 	searchInput: string
@@ -57,6 +58,13 @@ interface DepositFilterInterface {
 		endDate: Date
 		key: string
 	}[]
+	isCreatedAtDateChanged: boolean
+	isLastLoginAtDateChanged: boolean
+}
+
+export enum CustomerModalType {
+	Add = 'add',
+	Edit = 'edit'
 }
 
 const Customer = () => {
@@ -72,7 +80,7 @@ const Customer = () => {
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [isOpenUpdatedAtDatePicker, setIsOpenUpdatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
-	const [isOpenCustomerModal, setIsOpenCustomerModal] = useState<"add" | "edit">()
+	const [isOpenCustomerModal, setIsOpenCustomerModal] = useState<CustomerModalType >()
 	const [isLoading, setIsLoading] = useState(false)
 
 	const permission = JSON.parse(localStorage.getItem('features') ?? '')
@@ -97,17 +105,19 @@ const Customer = () => {
 					endDate: moment().endOf('week').toDate(),
 					key: 'selection',
 				},
-			]
+			],
+			isCreatedAtDateChanged: false, 
+			isLastLoginAtDateChanged: false
 		},
 		onSubmit: (values) => {
 			dispatch(storeCustomerQuery({
 				...customerQueryList,
 				bank: values.bank.length > 0 ? `bank=${values.bank.join(',')}` : '',
 				level: values.level.length > 0 ? `level=${values.level.map((item) => item.levelId).join(',')}` : '',
-				startCreated: `startCreated=${moment(values.createdAtDate[0].startDate).format('YYYY-MM-DD')}`,
-				endCreated: `endCreated=${moment(values.createdAtDate[0].endDate).format('YYYY-MM-DD')}`,
-				startLastLogin: `startLastLogin=${moment(values.lastLoginAtDate[0].startDate).format('YYYY-MM-DD')}`,
-				endLastLogin: `endLastLogin=${moment(values.lastLoginAtDate[0].endDate).format('YYYY-MM-DD')}`
+				startCreated: values.isCreatedAtDateChanged ? `startCreated=${moment(values.createdAtDate[0].startDate).format('YYYY-MM-DD')}` : '',
+				endCreated: values.isCreatedAtDateChanged ? `endCreated=${moment(values.createdAtDate[0].endDate).format('YYYY-MM-DD')}` : '',
+				startLastLogin: values.isLastLoginAtDateChanged ? `startLastLogin=${moment(values.lastLoginAtDate[0].startDate).format('YYYY-MM-DD')}` : '',
+				endLastLogin: values.isLastLoginAtDateChanged ? `endLastLogin=${moment(values.lastLoginAtDate[0].endDate).format('YYYY-MM-DD')}` : ''
 
 			}))
 		},
@@ -119,7 +129,8 @@ const Customer = () => {
 		values,
 		setFieldValue,
 		resetForm,
-		handleSubmit
+		handleSubmit,
+		handleChange
 	} = formik
 
 	const datePicker = (selectedDate: any, field: string) => (
@@ -203,33 +214,53 @@ const Customer = () => {
 							},
 							{
 								label: t('filter.created.at'),
-								children: <Dropdown >
-									<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										<span data-tour='date-range'>
-											{`${moment(values.createdAtDate[0].startDate).format('MMM Do YY')} - ${moment(
-												values.createdAtDate[0].endDate,
-											).format('MMM Do YY')}`}
-										</span>
-									</DropdownToggle>
-									<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										{datePicker(values.createdAtDate, 'createdAtDate')}
-									</DropdownMenu>
-								</Dropdown>
+								children: <div>
+									<Checks
+										id='isCreatedAtDateChanged'
+										type='switch'
+										label={t('filter.created.at')}
+										onChange={handleChange}
+										checked={values.isCreatedAtDateChanged}
+										ariaLabel='Filter Created At Date'
+									/>
+									{values.isCreatedAtDateChanged && <Dropdown className='mt-2'>
+										<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
+											<span data-tour='date-range'>
+												{`${moment(values.createdAtDate[0].startDate).format('MMM Do YY')} - ${moment(
+													values.createdAtDate[0].endDate,
+												).format('MMM Do YY')}`}
+											</span>
+										</DropdownToggle>
+										<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
+											{datePicker(values.createdAtDate, 'createdAtDate')}
+										</DropdownMenu>
+									</Dropdown>}
+								</div>
 							},
 							{
 								label: t('filter.updated.at'),
-								children: <Dropdown>
-									<DropdownToggle hasIcon={false} color='dark' isLight isOpen={Boolean(isOpenUpdatedAtDatePicker)} setIsOpen={setIsOpenUpdatedAtDatePicker}>
-										<span data-tour='date-range'>
-											{`${moment(values.lastLoginAtDate[0].startDate).format('MMM Do YY')} - ${moment(
-												values.lastLoginAtDate[0].endDate,
-											).format('MMM Do YY')}`}
-										</span>
-									</DropdownToggle>
-									<DropdownMenu isAlignmentEnd isOpen={isOpenUpdatedAtDatePicker} setIsOpen={setIsOpenUpdatedAtDatePicker}>
-										{datePicker(values.lastLoginAtDate, 'lastLoginAtDate')}
-									</DropdownMenu>
-								</Dropdown>
+								children: <div>
+									<Checks
+										id='isLastLoginAtDateChanged'
+										type='switch'
+										label={t('filter.updated.at')}
+										onChange={handleChange}
+										checked={values.isLastLoginAtDateChanged}
+										ariaLabel='Filter Last Login At Date'
+									/>
+									{values.isLastLoginAtDateChanged && <Dropdown>
+										<DropdownToggle hasIcon={false} color='dark' isLight isOpen={Boolean(isOpenUpdatedAtDatePicker)} setIsOpen={setIsOpenUpdatedAtDatePicker}>
+											<span data-tour='date-range'>
+												{`${moment(values.lastLoginAtDate[0].startDate).format('MMM Do YY')} - ${moment(
+													values.lastLoginAtDate[0].endDate,
+												).format('MMM Do YY')}`}
+											</span>
+										</DropdownToggle>
+										<DropdownMenu isAlignmentEnd isOpen={isOpenUpdatedAtDatePicker} setIsOpen={setIsOpenUpdatedAtDatePicker}>
+											{datePicker(values.lastLoginAtDate, 'lastLoginAtDate')}
+										</DropdownMenu>
+									</Dropdown>}
+								</div>
 							},
 							{
 								label: t('filter.bank'),
@@ -248,7 +279,7 @@ const Customer = () => {
 						icon={PersonAddAlt1TwoTone}
 						color='primary'
 						isLight
-						onClick={() => setIsOpenCustomerModal('add')}
+						onClick={() => setIsOpenCustomerModal(CustomerModalType.Add)}
 					>
 						{t('customer:new.customer')}
 					</Button>}
@@ -263,9 +294,7 @@ const Customer = () => {
 									<table className='table table-modern table-hover'>
 										<thead>
 											<tr>
-												<th 
-													onClick={() => requestSort('no')}
-													className='cursor-pointer text-decoration-underline text-center'>
+												<th className='text-center'>
 													{t('column.no')}
 												</th>
 												<th
@@ -275,6 +304,7 @@ const Customer = () => {
 													<FilterList fontSize='small' className={getClassNamesFor('name')} />
 												</th>
 												<th
+													onClick={() => requestSort('bankAccountNumber')}
 													className='cursor-pointer text-decoration-underline'>
 													{t('column.bank.account.number')}{' '}
 													<FilterList fontSize='small' className={getClassNamesFor('bankAccountNumber')} />
@@ -287,10 +317,10 @@ const Customer = () => {
 													<FilterList fontSize='small' className={getClassNamesFor('createdAt')} />
 												</th>
 												<th
-													onClick={() => requestSort('lastActiveAt')}
+													onClick={() => requestSort('lastLoginAt')}
 													className='cursor-pointer text-decoration-underline'>
 													{t('column.last.active.at')}{' '}
-													<FilterList fontSize='small' className={getClassNamesFor('lastActiveAt')} />
+													<FilterList fontSize='small' className={getClassNamesFor('lastLoginAt')} />
 												</th>
 												<td />
 											</tr>
@@ -299,7 +329,7 @@ const Customer = () => {
 											{items.length > 0 ? dataPagination(items, currentPage, perPage).map((customer: CustomerInterface, index: number) => (
 												<tr key={customer.customerId}>
 													<td className='text-center'>
-														<div>{index + 1}</div>
+														<div>{perPage * (currentPage - 1) + (index + 1)}</div>
 													</td>
 													<td>
 														<div className='d-flex align-items-center'>
@@ -312,8 +342,8 @@ const Customer = () => {
 																	style={{ minWidth: 32, minHeight: 32, objectFit: 'cover' }} 
 																	className='me-2 rounded-circle border border-2 border-light'
 																/> : <PlaceholderImage
-																	width={40}
-																	height={40}
+																	width={32}
+																	height={32}
 																	className='me-2 rounded-circle border border-2 border-light'
 																/>
 															}
@@ -383,7 +413,6 @@ const Customer = () => {
 								</CardBody>
 								<PaginationButtons
 									data={customers}
-									label='customers'
 									setCurrentPage={setCurrentPage}
 									currentPage={currentPage}
 									perPage={perPage}

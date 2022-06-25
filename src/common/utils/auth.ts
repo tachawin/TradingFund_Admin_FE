@@ -29,6 +29,7 @@ const didLogin = (accessToken: string, refreshToken: string) => {
 }
 
 const didLogout = () => {
+    window.location.replace('/')
     localStorage.clear()
 }
 

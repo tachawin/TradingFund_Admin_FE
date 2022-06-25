@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useFormik } from 'formik'
 import Modal, {
 	ModalBody,
@@ -21,6 +21,7 @@ import { TransactionInterface, TransactionStatus } from 'common/apis/transaction
 import { useDispatch } from 'react-redux'
 import { addNewDeposit, updateDepositById } from 'redux/deposit/action'
 import { InfoTwoTone } from '@mui/icons-material'
+import Spinner from 'components/bootstrap/Spinner'
 
 export enum DepositModalType {
     Add = 'add',
@@ -44,6 +45,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
     const { t } = useTranslation(['common', 'deposit'])
     const { type, selectedRow: data } = properties
     const dispatch = useDispatch()
+    const [isLoading, setIsLoading] = useState(false)
 
     const AddDepositSchema = Yup.object().shape({
         mobileNumber: Yup.string().required('โปรดใส่เบอร์โทรลูกค้า'),
@@ -76,6 +78,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
 
     const addDeposit = (newData: DepositCreateInterface) => {
         deposit(newData, () => {
+            setIsOpen(false)
             dispatch(addNewDeposit({
                 payerBankAccountNumber: values.payerBankAccountNumber,
                 recipientBankAccountNumber: values.recipientBank.bankAccountNumber,
@@ -85,7 +88,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('deposit:save.deposit.successfully')}</span>
+                    <span>{t('save.successfully')}</span>
                 </span>, t('deposit:save.deposit.from.mobile.number.successfully', { mobileNumber: values.mobileNumber })
             )
         }, (error) => {
@@ -94,19 +97,20 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('deposit:save.deposit.failed')}</span>
+                    <span>{t('save.failed')}</span>
                 </span>, t('deposit:save.deposit.from.mobile.number.failed', { mobileNumber: values.mobileNumber })
             )
-        })
+        }).finally(() => setIsLoading(false))
     }
 
     const editDeposit = (id: string, newData: DepositUpdateInterface) => {
         updateDeposit(id, newData, () => {
+            setIsOpen(false)
             dispatch(updateDepositById(id, newData))
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('deposit:edit.successfully')}</span>
+                    <span>{t('save.successfully')}</span>
                 </span>, t('deposit:edit.deposit.successfully', { mobileNumber: values.mobileNumber })
             )
         }, (error) => {
@@ -115,19 +119,20 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('deposit:edit.failed')}</span>
+                    <span>{t('save.failed')}</span>
                 </span>, t('deposit:edit.deposit.failed', { mobileNumber: values.mobileNumber })
             )
-        })
+        }).finally(() => setIsLoading(false))
     }
 
     const pickCustomer = (id: string, newData: DepositUpdateCustomerInterface) => {
         updateDepositCustomer(id, newData, () => {
+            setIsOpen(false)
             dispatch(updateDepositById(id, { ...newData, status: TransactionStatus.Success }))
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('deposit:edit.successfully')}</span>
+                    <span>{t('save.successfully')}</span>
                 </span>, t('deposit:edit.deposit.successfully', { mobileNumber: values.mobileNumber })
             )
         }, (error) => {
@@ -136,19 +141,20 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('deposit:edit.failed')}</span>
+                    <span>{t('save.failed')}</span>
                 </span>, t('deposit:edit.deposit.failed', { mobileNumber: values.mobileNumber })
             )
-        })
+        }).finally(() => setIsLoading(false))
     }
 
     const refundDeposit = (id: string, newData: DepositUpdateInterface) => {
         waiveDeposit(id, newData, () => {
+            setIsOpen(false)
             dispatch(updateDepositById(id, { ...newData, status: TransactionStatus.Cancel }))
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('deposit:edit.successfully')}</span>
+                    <span>{t('save.successfully')}</span>
                 </span>, t('deposit:edit.deposit.successfully', { mobileNumber: values.mobileNumber })
             )
         }, (error) => {
@@ -157,10 +163,10 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('deposit:edit.failed')}</span>
+                    <span>{t('save.failed')}</span>
                 </span>, t('deposit:edit.deposit.failed', { mobileNumber: values.mobileNumber })
             )
-        })
+        }).finally(() => setIsLoading(false))
     }
 	
 	const formik = useFormik({
@@ -190,6 +196,8 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
 		},
         validationSchema: selectValidationSchema(),
 		onSubmit: (values) => {
+            setIsLoading(true)
+            const transactionTimestamp = moment(`${values.date} ${values.time}`, 'YYYY-MM-DD HH:mm').format()
             if (type === DepositModalType.Refund) {
                 data?.transactionId && refundDeposit(data.transactionId, { notes: values.notes })
             } else if (type === DepositModalType.Edit) {
@@ -204,11 +212,10 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
                     mobileNumber: values.mobileNumber,
                     companyBankId: values.recipientBank.bankId,
                     amount: values.amount,
-                    notes: values.notes
+                    notes: values.notes,
+                    transactionTimestamp,
                 })
-            }
-			
-            setIsOpen(false)
+            }	
 		},
 	})
 
@@ -265,6 +272,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
                                 isValid={isValid}
                                 isTouched={touched.amount && errors.amount}
                                 invalidFeedback={errors.amount}
+                                placeholder={t('form.amount.placeholder')}
                             />
                         </FormGroup>
                         <FormGroup id='payerBankAccountNumber' label={t('form.payer.bank.account.number')}>
@@ -275,6 +283,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
                                 isValid={isValid}
                                 isTouched={touched.payerBankAccountNumber && errors.payerBankAccountNumber}
                                 invalidFeedback={errors.payerBankAccountNumber}
+                                placeholder={t('form.payer.bank.account.number.placeholder')}
                             />
                         </FormGroup>
                         <FormGroup id='recipientBank' label={t('form.recipient.bank.account.number')}>
@@ -292,7 +301,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
                         <Input 
                             onChange={handleChange} 
                             value={values.notes} 
-                            placeholder={type === DepositModalType.Refund ? t("form.notes.refund.reason.placeholder") : ''}
+                            placeholder={type === DepositModalType.Refund ? t('deposit:form.notes.refund.reason.placeholder') : ''}
                             isValid={isValid}
                             isTouched={touched.notes && errors.notes}
                             invalidFeedback={errors.notes}
@@ -302,7 +311,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
             </ModalBody>
             <ModalFooter className='px-4 pb-4'>
                 <Button className='w-100' color='info' onClick={formik.handleSubmit}>
-                    {t('save')}
+                    {isLoading ? <Spinner size={16} /> : t('save')}
                 </Button>
             </ModalFooter>
         </Modal>

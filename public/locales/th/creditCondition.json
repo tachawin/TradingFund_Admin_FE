@@ -1,0 +1,17 @@
+{
+    "add.credit.condition": "เพิ่มเงื่อนไข",
+    "edit.credit.condition": "แก้ไขเงื่อนไข",
+    "delete.credit.condition": "ลบเงื่อนไข",
+
+    "form.delete.confirmation": "ยืนยันการลบเงื่อนไขใช่หรือไม่",
+
+    "added.successfully": "เพิ่มเงื่อนไขสำเร็จ",
+    "added.credit.condition.successfully": "เพิ่มเงื่อนไขแลก {{point}} เป็น {{credit}} สำเร็จ",
+    "added.failed": "เพิ่มเงื่อนไขไม่สำเร็จ",
+    "added.credit.condition.failed": "เพิ่มเงื่อนไขแลก {{point}} เป็น {{credit}} ไม่สำเร็จ",
+
+    "edit.successfully": "แก้ไขเงื่อนไขสำเร็จ",
+    "edit.credit.condition.successfully": "แก้ไขเงื่อนไขแลก {{point}} เป็น {{credit}} สำเร็จ",
+    "edit.failed": "แก้ไขเงื่อนไขไม่สำเร็จ",
+    "edit.credit.condition.failed": "แก้ไขเงื่อนไขแลก {{point}} เป็น {{credit}} สำเร็จ"
+}
