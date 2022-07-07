@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
@@ -16,7 +16,7 @@ import { CompanyBankInterface } from 'common/apis/companyBank'
 interface WithdrawTableInterface {
     data: TransactionInterface[]
     setIsOpenWithdrawModal?: (value: { type: WithdrawModalType, bank?: CompanyBankInterface, selectedRow: any }) => void
-    setIsOpenCancelWithdrawModal?: (value: { type: WithdrawModalType, selectedRow: any }) => void
+    setIsOpenCancelWithdrawModal?: (value: { selectedRow: any }) => void
     columns?: any
     cardHeader?: ReactNode
 }
@@ -33,6 +33,10 @@ const WithdrawTable = ({
     const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
+
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [items])
 
     const permission = JSON.parse(localStorage.getItem('features') ?? '')
     const updatePermission = permission.withdraw[PermissionType.Update] === PermissionValue.Available
@@ -195,14 +199,14 @@ const WithdrawTable = ({
                                             </Button>
                                         )}
                                         <Button
-                                            onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.Manual, selectedRow: transaction})}
+                                            onClick={() => setIsOpenWithdrawModal({ type: WithdrawModalType.Manual, selectedRow: transaction })}
                                             className='text-nowrap col'
                                             color='light-dark'
                                         >
                                             {t('manual')}
                                         </Button>
                                         <Button
-                                            onClick={() => setIsOpenCancelWithdrawModal({ type: WithdrawModalType.Delete, selectedRow: transaction})}
+                                            onClick={() => setIsOpenCancelWithdrawModal({ selectedRow: transaction })}
                                             color='light-dark'
                                             className='col'
                                         >

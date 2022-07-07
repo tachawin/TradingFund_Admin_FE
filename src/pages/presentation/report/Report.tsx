@@ -170,9 +170,9 @@ const Report = () => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('report:download.transaction.failed')}</span>
+					<span>ดาวน์โหลดไฟล์ไม่สำเร็จ</span>
 				</span>,
-				t('report:please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		})
 	}

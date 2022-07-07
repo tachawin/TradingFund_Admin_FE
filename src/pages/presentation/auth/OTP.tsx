@@ -46,7 +46,7 @@ const OTP = ({ adminId, refCode }: OTPInterface) => {
 				showNotification(
 					<span className='d-flex align-items-center'>
 						<InfoTwoTone className='me-1' />
-						<span>{t('otp.failed')}</span>
+						<span>{t('login:otp.failed')}</span>
 					</span>,
 					t('please.try.again'),
 				)
@@ -84,7 +84,7 @@ const OTP = ({ adminId, refCode }: OTPInterface) => {
 				color='info'
 				className='w-100 py-3 mt-5'
 				onClick={handleSubmit}>
-				{isLoading ? <Spinner size={16} /> : t('continue')}
+				{isLoading ? <Spinner size={16} /> : t('next')}
 			</Button>
 		</div>
 	</>)

@@ -63,9 +63,14 @@ interface WithdrawFilterInterface {
 	isCreatedAtDateChanged: boolean
 }
 
-interface WithdrawModalProperties {
+export interface WithdrawModalProperties {
 	type: WithdrawModalType
-	selectedRow: any
+	bank?: CompanyBankInterface
+	selectedRow: TransactionInterface
+}
+
+export interface WithdrawCancelModalProperties {
+	selectedRow: TransactionInterface
 }
 
 export enum WithdrawTableState {
@@ -79,7 +84,7 @@ const Withdraw = () => {
 
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
-    const [isOpenCancelWithdrawModal, setIsOpenCancelWithdrawModal] = useState<WithdrawModalProperties>()
+    const [isOpenCancelWithdrawModal, setIsOpenCancelWithdrawModal] = useState<WithdrawCancelModalProperties>()
 	const [isOpenWithdrawModal, setIsOpenWithdrawModal] = useState<WithdrawModalProperties>()
     const [withdrawTableState, setWithdrawTableState] = useState(WithdrawTableState.Request)
 	const [isLoading, setIsLoading] = useState(false)

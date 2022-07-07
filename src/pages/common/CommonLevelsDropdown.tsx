@@ -6,10 +6,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectLevels } from 'redux/level/selector'
 import { storeLevels } from 'redux/level/action'
 import showNotification from 'components/extras/showNotification'
-import { useTranslation } from 'react-i18next'
 import Spinner from 'components/bootstrap/Spinner'
 import { Check, InfoTwoTone } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
+import { CommonString } from 'common/data/enumStrings'
 
 interface CommonLevelsDropdownInterface {
     selectedLevel: LevelInterface | LevelInterface[] | string
@@ -19,7 +19,6 @@ interface CommonLevelsDropdownInterface {
 }
 
 const CommonLevelsDropdown = ({ selectedLevel, setSelectedLevel, disabled = false, multipleSelect = false }: CommonLevelsDropdownInterface) => {
-    const { t } = useTranslation('level')
     const dispatch = useDispatch()
     const levels = useSelector(selectLevels)
     const [isLoading, setIsLoading] = useState(true)
@@ -49,9 +48,9 @@ const CommonLevelsDropdown = ({ selectedLevel, setSelectedLevel, disabled = fals
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.bank.failed')}</span>
+					<span>เรียกดูระดับขั้นไม่สำเร็จ</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		}).finally(() => setIsLoading(false))
 	// eslint-disable-next-line react-hooks/exhaustive-deps

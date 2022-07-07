@@ -44,6 +44,7 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
         withdraw: 'ถอนเงิน',
         bank: 'ธนาคารบริษัท',
         reward: 'แลกรางวัล',
+        cashback: 'เครดิตเงินคืน',
         credit: 'แลกเครดิต',  
         creditCondition: 'เงื่อนไขแลกเครดิต',
         chat: 'แชทสนทนา',

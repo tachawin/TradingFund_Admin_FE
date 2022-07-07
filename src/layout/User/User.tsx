@@ -12,7 +12,7 @@ import showNotification from 'components/extras/showNotification'
 import { AccountBoxTwoTone, InfoTwoTone } from '@mui/icons-material'
 
 const User = () => {
-	const { t } = useTranslation('login')
+	const { t } = useTranslation(['common', 'login'])
 	const navigate = useNavigate()
 
 	const [collapseStatus, setCollapseStatus] = useState(false)
@@ -35,7 +35,7 @@ const User = () => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('logout.failed')}</span>
+					<span>{t('login:logout.failed')}</span>
 				</span>,
 				t('please.try.again'),
 			)
@@ -67,7 +67,7 @@ const User = () => {
 						icon={AccountBoxTwoTone}
 						onClick={handleLogout}
 					>
-						{t('logout')}
+						{t('login:logout')}
 					</Button>
 				</DropdownItem>
 				<DropdownItem>

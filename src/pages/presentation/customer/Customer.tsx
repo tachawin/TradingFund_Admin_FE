@@ -125,6 +125,10 @@ const Customer = () => {
 
 	const { items, requestSort, getClassNamesFor } = useSortableData(customers)
 
+	useEffect(() => {
+        setCurrentPage(1)
+    }, [items])
+	
 	const { 
 		values,
 		setFieldValue,

@@ -6,11 +6,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectCompanyBankList } from 'redux/companyBank/selector'
 import { getCompanyBankList, CompanyBankInterface } from 'common/apis/companyBank'
 import showNotification from 'components/extras/showNotification'
-import { useTranslation } from 'react-i18next'
 import Spinner from 'components/bootstrap/Spinner'
 import { storeCompanyBank } from 'redux/companyBank/action'
 import { Check, InfoTwoTone } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
+import { CommonString } from 'common/data/enumStrings'
 
 interface CompanyBanksDropdownInterface {
     selectedBank: CompanyBankInterface | CompanyBankInterface[] | string
@@ -25,7 +25,6 @@ interface CompanyBanksDropdownInterface {
 const CompanyBanksDropdown = ({ 
     selectedBank, setSelectedBank, disabled = false, multipleSelect = false, isValid, touched, error
 }: CompanyBanksDropdownInterface) => {
-    const { t } = useTranslation('bank')
     const dispatch = useDispatch()
 
     const [isOpenBankDropdown, setIsOpenBankDropdown] = useState(false)
@@ -59,9 +58,9 @@ const CompanyBanksDropdown = ({
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('get.bank.failed')}</span>
+                    <span>เรียกดูธนาคารไม่สำเร็จ</span>
                 </span>,
-                t('please.refresh.again'),
+                CommonString.TryAgain,
             )
         }).finally(() => setIsLoading(false))
 	// eslint-disable-next-line react-hooks/exhaustive-deps

@@ -17,10 +17,10 @@ import CompanyBanksDropdown from 'pages/common/CompanyBanksDropdown'
 import { BankNameInterface, CompanyBankInterface, CompanyBankStatus, CompanyBankType } from 'common/apis/companyBank'
 import { InfoTwoTone } from '@mui/icons-material'
 import { SlipImageInterface, uploadSlipImage, withdraw, WithdrawCreateInterface, WithdrawType } from 'common/apis/withdraw'
-import { TransactionInterface } from 'common/apis/transaction'
 import Spinner from 'components/bootstrap/Spinner'
 import { removeWithdrawById } from 'redux/withdraw/action'
 import { useDispatch } from 'react-redux'
+import { WithdrawModalProperties } from './Withdraw'
 
 interface WithdrawForm {
     slipImageURL: string
@@ -39,14 +39,7 @@ interface WithdrawModalInterface {
 
 export enum WithdrawModalType {
     Manual = 'manual',
-    System = 'system',
-    Delete = 'delete'
-}
-
-interface WithdrawModalProperties {
-    type: WithdrawModalType
-    bank?: CompanyBankInterface
-	selectedRow: TransactionInterface
+    System = 'system'
 }
 
 const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInterface) => {
@@ -147,10 +140,8 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                             t('withdraw:upload.withdraw.to.account.failed'),
                         )
                     }).finally(() => setIsLoading(false))
-                } else if (withdrawModalState === WithdrawModalType.System) {
-                    withdrawCredit(requestBody, WithdrawType.Auto)
                 } else {
-                    // DELETE
+                    withdrawCredit(requestBody, WithdrawType.Auto)
                 }
             }
 		},

@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
@@ -41,6 +41,10 @@ const AdminTable = ({
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
     const [isOpenDropdown, setIsOpenDropdown] = useState<number | null>(null)
+
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [items])
 
     const ADMIN_ROW_ACTIONS: AdminRowAction[] = [
 		{

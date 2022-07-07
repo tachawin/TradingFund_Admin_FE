@@ -1,5 +1,5 @@
-import { didLogout, setAccessToken } from 'common/utils/auth'
-import axios from './axios'
+import { getAccessToken, setAccessToken } from 'common/utils/auth'
+import axios, { authorizationHandler } from './axios'
 
 export interface OTPResponse {
     accessToken: string
@@ -75,17 +75,18 @@ axios({
     data
 })
 
-export const renewToken = async () => {
-    try {
-        const res = await axios({
-            method: 'post',
-            url: '/auth/admin/2fa/token/refresh',
-        })
-        const { accessToken } = res.data
-        setAccessToken(accessToken)
-        return accessToken
-    } catch (error: any) {
-        console.log(error.response)
-        return false
-    }
-}
+export const renewToken = async () =>
+    await authorizationHandler(async () => {
+        try {
+            const res = await axios({
+                method: 'post',
+                url: '/auth/admin/2fa/token/refresh',
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
+            })
+            const { accessToken } = res.data
+            setAccessToken(accessToken)
+            return accessToken
+        } catch (error: any) {
+            return false
+        }
+})

@@ -96,3 +96,23 @@ export const getWithdrawList = async (
             throw error
         }
 })
+
+export const rejectWithdraw = async (
+    transactionId: string,
+    next: (response: TransactionInterface | ErrorResponse) => void,
+    handleError: (error: any) => void
+) =>
+    await authorizationHandler(async () => {
+        try {
+            const res = await axios({
+                method: 'post',
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
+                url: '/transaction/withdraw/request/cancel',
+                data: { transactionId }
+            })
+            next(res.data)
+        } catch (error: any) {
+            handleError(error)
+            throw error
+        }
+    })

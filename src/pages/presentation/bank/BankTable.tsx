@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
@@ -30,6 +30,10 @@ const BankTable = ({
     const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
+
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [items])
 
     return (
         <Card stretch>

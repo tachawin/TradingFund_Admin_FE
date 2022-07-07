@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { didLogout, getAccessToken } from 'common/utils/auth'
+import { didLogout } from 'common/utils/auth'
 import { logout, renewToken } from './auth'
 
 const REACT_APP_BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:8080';
@@ -23,16 +23,17 @@ export const authorizationHandler = async (fetcher: any) => {
 	} catch (error: any) {
 		if (error.response.data.error.errorCode === 'ERR.ADMIN.AUTH.ACCESS_TOKEN.1') {
 			const tokenResponse = await renewToken()
+			console.log(tokenResponse)
 			if (tokenResponse) {
 				try {
 					const response = await fetcher()
 					return response	
 				} catch (error: any) {
-					logout(() => {
-						didLogout()
-					}, (error) => {
-						console.log(error.response)
-					})
+					// logout(() => {
+					// 	didLogout()
+					// }, (error) => {
+					// 	console.log(error.response)
+					// })
 				}
 			}
 		} else {
