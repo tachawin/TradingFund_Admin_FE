@@ -12,10 +12,10 @@ const useSortableData = (items: any, config: ConfigInterface | null = null) => {
 		const sortableItems = [...items];
 		if (sortConfig !== null) {
 			sortableItems.sort((a, b) => {
-				if (a[sortConfig.key] < b[sortConfig.key]) {
+				if (String(a[sortConfig.key]).toLowerCase() < String(b[sortConfig.key]).toLowerCase()) {
 					return sortConfig.direction === 'ascending' ? -1 : 1;
 				}
-				if (a[sortConfig.key] > b[sortConfig.key]) {
+				if (String(a[sortConfig.key]).toLowerCase() > String(b[sortConfig.key]).toLowerCase()) {
 					return sortConfig.direction === 'ascending' ? 1 : -1;
 				}
 				return 0;

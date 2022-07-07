@@ -32,7 +32,7 @@ const BankDeleteModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterfa
                         <InfoTwoTone className='me-1' />
                         <span>{t('bank:delete.successfully')}</span>
                     </span>,
-                    t('bank:delete.bank.successfully', { bankName: data?.bankName }),
+                    t('bank:delete.bank.successfully', { bankName: data?.bankName?.acronym?.toUpperCase() }),
                 )
             }, (error: any) => {
                 const { response } = error
@@ -42,7 +42,7 @@ const BankDeleteModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterfa
                         <InfoTwoTone className='me-1' />
                         <span>{t('bank:delete.failed')}</span>
                     </span>,
-                    t('bank:delete.bank.failed', { bankName: data?.bankName }),
+                    t('bank:delete.bank.failed', { bankName: data?.bankName?.acronym?.toUpperCase() }),
                 )
             }
         ).finally(() => {
@@ -54,7 +54,7 @@ const BankDeleteModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterfa
     return (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} size='l' titleId={id} isCentered>
             <ModalHeader setIsOpen={setIsOpen} className='p-4'>
-                <ModalTitle id={id}>{t('bank:delete.bank', { bankName: data?.bankName })}</ModalTitle>
+                <ModalTitle id={id}>{t('bank:delete.bank', { bankName: data?.bankName?.acronym?.toUpperCase() })}</ModalTitle>
             </ModalHeader>
             <ModalBody className='px-4'>
                 {t('bank:form.delete.confirmation')}

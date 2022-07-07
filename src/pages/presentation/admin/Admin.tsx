@@ -8,7 +8,6 @@ import SubHeader, {
 	SubheaderSeparator,
 } from '../../../layout/SubHeader/SubHeader'
 import Page from '../../../layout/Page/Page'
-import { demoPages } from '../../../menu'
 import { CardHeader, CardLabel, CardTitle } from '../../../components/bootstrap/Card'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
@@ -32,10 +31,11 @@ import 'moment/locale/th'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectAdmins } from 'redux/admin/selector'
 import { storeAdmins } from 'redux/admin/action'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { InfoTwoTone, PersonAddAlt1TwoTone, Search } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
+import { CommonString } from 'common/data/enumStrings'
+import { pages } from 'menu'
 
 interface AdminModalProperties {
 	type?: AdminModalType
@@ -63,7 +63,7 @@ const Admin = () => {
     const { t } = useTranslation(['common', 'admin'])
 	const dispatch = useDispatch()
 	const admins = useSelector(selectAdmins)
-	const permission = useSelector(selectPermission)
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
 
 	const [isLoading, setIsLoading] = useState(true)
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
@@ -118,9 +118,10 @@ const Admin = () => {
 	const { 
 		values,
 		setFieldValue,
-		resetForm,
+		initialValues,
 		handleSubmit,
-		handleChange
+		handleChange,
+		setValues
 	} = formik
 
 	const datePicker = (selectedDate: any, field: string) => (
@@ -176,16 +177,16 @@ const Admin = () => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.admin.failed')}</span>
+					<span>ไม่สามารถเรียกดูแอดมินได้</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [queryList])
 
 	return (
-		<PageWrapper title={demoPages.crm.subMenu.customersList.text}>
+		<PageWrapper title={pages.admin.text}>
 			<SubHeader>
 				<SubHeaderLeft>
 					<label
@@ -205,7 +206,7 @@ const Admin = () => {
 				<SubHeaderRight>
 					<CommonTableFilter
 						resetLabel={t('filter.reset')}
-						onReset={resetForm}
+						onReset={() => setValues({ ...initialValues, roles: [], status: [] })}
 						submitLabel={t('filter')}
 						onSubmit={handleSubmit}
 						filters={[

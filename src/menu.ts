@@ -33,49 +33,49 @@ export const homeMenu = {
 export const dashboardMenu = {
 	dashboard: {
 		id: 'dashboard',
-		text: 'Dashboard',
+		text: 'แดชบอร์ด',
 		path: '/',
 		subMenu: null,
 	},
 	admin: {
 		id: 'admin',
-		text: 'Admin',
+		text: 'แอดมิน',
 		path: 'admin',
 		subMenu: null,
 	},
 	report: {
 		id: 'report',
-		text: 'Report',
+		text: 'รายงาน',
 		path: 'report',
 		subMenu: null,
 	},
 	deposit: {
 		id: 'deposit',
-		text: 'Deposit',
+		text: 'ฝากเงิน',
 		path: 'deposit',
 		subMenu: null,
 	},
 	customer: {
 		id: 'customer',
-		text: 'Customer',
+		text: 'ลูกค้า',
 		path: 'customer',
 		subMenu: null,
 	},
 	withdraw: {
 		id: 'withdraw',
-		text: 'Withdraw',
+		text: 'ถอนเงิน',
 		path: 'withdraw',
 		subMenu: null,
 	},
 	reward: {
 		id: 'reward',
-		text: 'Reward',
+		text: 'แลกสินค้า',
 		path: 'reward',
 		subMenu: null,
 	},
 	credit: {
 		id: 'credit',
-		text: 'Credit',
+		text: 'แลกเครดิต',
 		path: 'credit',
 		subMenu: null,
 	}
@@ -94,429 +94,103 @@ export const pages = {
 		path: 'auth-pages/otp',
 		icon: 'OTP',
 	},
-	admin: {
-		id: 'admin',
-		text: 'Admin',
-		path: 'admin',
-		icon: 'ADMIN',
-	},
-	report: {
-		id: 'report',
-		text: 'Report',
-		path: 'report',
-		icon: 'REPORT',
-	},
-	printReport: {
-		id: 'printReport',
-		text: 'Print Report',
-		path: 'print_report',
-		icon: 'REPORT',
-	},
-	deposit: {
-		id: 'deposit',
-		text: 'Deposit',
-		path: 'deposit',
-		icon: 'DEPOSIT',
-	},
-	customer: {
-		id: 'customer',
-		text: 'Customer',
-		path: 'customer',
-		icon: 'CUSTOMER',
-	},
-	customerID: {
-		id: 'customerID',
-		text: 'customerID',
-		path: 'customer',
-		hide: true,
-	},
-	withdraw: {
-		id: 'withdraw',
-		text: 'withdraw',
-		path: 'withdraw',
-		icon: 'WITHDRAW',
-	},
-	reward: {
-		id: 'reward',
-		text: 'reward',
-		path: 'reward',
-		icon: 'reward',
-	},
-	credit: {
-		id: 'credit',
-		text: 'credit',
-		path: 'credit',
-		icon: 'credit',
-	},
-	bank: {
-		id: 'bank',
-		text: 'bank',
-		path: 'bank',
-		icon: 'bank',
-	},
-	product: {
-		id: 'product',
-		text: 'product',
-		path: 'product',
-		icon: 'product',
-	},
-	level: {
-		id: 'level',
-		text: 'level',
-		path: 'level',
-		icon: 'level',
-	},
-	settings: {
-		id: 'settings',
-		text: 'settings',
-		path: 'settings',
-		icon: 'settings',
-	},
-}
-
-export const demoPages = {
-	pages: {
-		id: 'pages',
-		text: 'Pages',
-		icon: 'Extension',
-	},
-	singlePages: {
-		id: 'singlePages',
-		text: 'Single Pages',
-		path: 'single-pages',
-		icon: 'Article',
-		subMenu: {
-			boxedSingle: {
-				id: 'boxedSingle',
-				text: 'Boxed',
-				path: 'single-pages/boxed',
-				icon: 'ViewArray',
-			},
-			fluidSingle: {
-				id: 'fluidSingle',
-				text: 'Fluid',
-				path: 'single-pages/fluid',
-				icon: 'ViewDay',
-			},
-		},
-	},
-	listPages: {
-		id: 'listPages',
-		text: 'List Pages',
-		path: 'list-pages',
-		icon: 'Dvr',
-		subMenu: {
-			listBoxed: {
-				id: 'listBoxed',
-				text: 'Boxed List',
-				path: 'list-pages/boxed-list',
-				icon: 'ViewArray',
-			},
-			listFluid: {
-				id: 'listFluid',
-				text: 'Fluid List',
-				path: 'list-pages/fluid-list',
-				icon: 'ViewDay',
-			},
-		},
-	},
-	gridPages: {
-		id: 'gridPages',
-		text: 'Grid Pages',
-		path: 'grid-pages',
-		icon: 'Window',
-		subMenu: {
-			gridBoxed: {
-				id: 'gridBoxed',
-				text: 'Boxed Grid',
-				path: 'grid-pages/boxed',
-				icon: 'ViewArray',
-			},
-			gridFluid: {
-				id: 'gridFluid',
-				text: 'Fluid Grid',
-				path: 'grid-pages/fluid',
-				icon: 'ViewDay',
-			},
-		},
-	},
-	editPages: {
-		id: 'editPages',
-		text: 'Edit Pages',
-		path: 'edit-pages',
-		icon: 'drive_file_rename_outline ',
-		subMenu: {
-			editBoxed: {
-				id: 'editBoxed',
-				text: 'Boxed Edit',
-				path: 'edit-pages/boxed',
-				icon: 'ViewArray',
-			},
-			editFluid: {
-				id: 'editFluid',
-				text: 'Fluid Edit',
-				path: 'edit-pages/fluid',
-				icon: 'ViewDay',
-			},
-			editWizard: {
-				id: 'editWizard',
-				text: 'Wizard Edit',
-				path: 'edit-pages/wizard',
-				icon: 'LinearScale',
-			},
-			editInCanvas: {
-				id: 'editInCanvas',
-				text: 'In Canvas Edit',
-				path: 'edit-pages/in-canvas',
-				icon: 'VerticalSplit',
-			},
-			editInModal: {
-				id: 'editInModal',
-				text: 'In Modal Edit',
-				path: 'edit-pages/in-modal',
-				icon: 'PictureInPicture',
-			},
-		},
-	},
-	pricingTable: {
-		id: 'pricingTable',
-		text: 'Pricing Table',
-		path: 'pricing-table',
-		icon: 'Local Offer',
-	},
-
-	auth: {
-		id: 'auth',
-		text: 'Auth Pages',
-		icon: 'Extension',
-	},
-	login: {
-		id: 'login',
-		text: 'Login',
-		path: 'auth-pages/login',
-		icon: 'Login',
-	},
-	signUp: {
-		id: 'signUp',
-		text: 'Sign Up',
-		path: 'auth-pages/sign-up',
-		icon: 'PersonAdd',
-	},
-
 	page404: {
 		id: 'Page404',
 		text: '404 Page',
 		path: 'auth-pages/404',
 		icon: 'ReportGmailerrorred',
 	},
-
-	app: {
-		id: 'app',
-		text: 'Apps',
-		icon: 'Extension',
+	dashboard: {
+		id: 'dashboard',
+		text: 'แดชบอร์ด',
+		path: '/',
+		subMenu: null,
 	},
-	projectManagement: {
-		id: 'projectManagement',
-		text: 'Project Management',
-		path: 'project-management',
-		icon: 'AutoStories',
-		subMenu: {
-			list: {
-				id: 'list',
-				text: 'Projects',
-				path: 'project-management/list',
-				icon: 'AutoStories',
-			},
-			itemID: {
-				id: 'projectID',
-				text: 'projectID',
-				path: 'project-management/project',
-				hide: true,
-			},
-			item: {
-				id: 'item',
-				text: 'Project',
-				path: 'project-management/project/1',
-				icon: 'Book',
-			},
-		},
+	admin: {
+		id: 'admin',
+		text: 'แอดมิน',
+		path: 'admin',
+		subMenu: null,
 	},
-	knowledge: {
-		id: 'knowledge',
-		text: 'Knowledge',
-		path: 'knowledge',
-		icon: 'AutoStories',
-		subMenu: {
-			grid: {
-				id: 'grid',
-				text: 'Knowledge Grid',
-				path: 'knowledge/grid',
-				icon: 'AutoStories',
-			},
-			itemID: {
-				id: 'itemID',
-				text: 'itemID',
-				path: 'knowledge/item',
-				hide: true,
-			},
-			item: {
-				id: 'item',
-				text: 'Item',
-				path: 'knowledge/item/1',
-				icon: 'Book',
-			},
-		},
+	report: {
+		id: 'report',
+		text: 'รายงาน',
+		path: 'report',
+		subMenu: null,
 	},
-	sales: {
-		id: 'sales',
-		text: 'Sales',
-		path: 'sales',
-		icon: 'Store',
-		subMenu: {
-			dashboard: dashboardMenu.dashboard,
-			salesList: {
-				id: 'products',
-				text: 'Sales List',
-				path: 'sales/sales-list',
-				icon: 'FactCheck',
-			},
-			productsGrid: {
-				id: 'productsGrid',
-				text: 'Products Grid',
-				path: 'sales/grid',
-				icon: 'CalendarViewMonth',
-			},
-			productID: {
-				id: 'productID',
-				text: 'productID',
-				path: 'sales/product',
-				hide: true,
-			},
-			product: {
-				id: 'product',
-				text: 'Product',
-				path: 'sales/product/1',
-				icon: 'QrCode2',
-			},
-			transactions: {
-				id: 'transactions',
-				text: 'Transactions',
-				path: 'sales/transactions',
-				icon: 'PublishedWithChanges',
-			},
-		},
+	deposit: {
+		id: 'deposit',
+		text: 'ฝากเงิน',
+		path: 'deposit',
+		subMenu: null,
 	},
-	appointment: {
-		id: 'appointment',
-		text: 'Appointment',
-		path: 'appointment',
-		icon: 'Today',
-		subMenu: {
-			dashboard: dashboardMenu.admin,
-			calendar: {
-				id: 'calendar',
-				text: 'Calendar',
-				path: 'appointment/calendar',
-				icon: 'EditCalendar',
-				notification: true,
-			},
-			employeeList: {
-				id: 'employeeList',
-				text: 'Employee List',
-				path: 'appointment/employee-list',
-				icon: 'PersonSearch',
-			},
-			employeeID: {
-				id: 'employeeID',
-				text: 'employeeID',
-				path: 'appointment/employee',
-				hide: true,
-			},
-			employee: {
-				id: 'employee',
-				text: 'Employee',
-				path: 'appointment/employee/1',
-				icon: 'QrCode2',
-			},
-			appointmentList: {
-				id: 'appointmentList',
-				text: 'Appointment List',
-				path: 'appointment/appointment-list',
-				icon: 'Event',
-			},
-		},
+	customer: {
+		id: 'customer',
+		text: 'ลูกค้า',
+		path: 'customer',
+		subMenu: null,
 	},
-	crm: {
-		id: 'crm',
-		text: 'CRM',
-		path: 'crm',
-		icon: 'Contacts',
-		subMenu: {
-			dashboard: {
-				id: 'dashboard',
-				text: 'CRM Dashboard',
-				path: 'crm/dashboard',
-				icon: 'RecentActors',
-			},
-			customersList: {
-				id: 'customersList',
-				text: 'Customers',
-				path: 'crm/customers',
-				icon: 'PersonSearch',
-			},
-			customerID: {
-				id: 'customerID',
-				text: 'customerID',
-				path: 'crm/customer',
-				hide: true,
-			},
-			customer: {
-				id: 'customer',
-				text: 'Customer',
-				path: 'crm/customer/1',
-				icon: 'Badge',
-			},
-			sales: {
-				id: 'sales',
-				text: 'Sales',
-				path: 'crm/sales',
-				icon: 'Storefront',
-			},
-			invoiceID: {
-				id: 'invoiceID',
-				text: 'invoiceID',
-				path: 'crm/invoice',
-				hide: true,
-			},
-			invoice: {
-				id: 'invoice',
-				text: 'Invoice',
-				path: 'crm/invoice/1',
-				icon: 'Receipt',
-			},
-		},
+	withdraw: {
+		id: 'withdraw',
+		text: 'ถอนเงิน',
+		path: 'withdraw',
+		subMenu: null,
+	},
+	reward: {
+		id: 'reward',
+		text: 'แลกสินค้า',
+		path: 'reward',
+		subMenu: null,
+	},
+	credit: {
+		id: 'credit',
+		text: 'แลกเครดิต',
+		path: 'credit',
+		subMenu: null,
 	},
 	chat: {
 		id: 'chat',
-		text: 'Chat',
+		text: 'แชทสนทนา',
 		path: 'chat',
-		icon: 'Forum',
-		subMenu: {
-			withListChat: {
-				id: 'withListChat',
-				text: 'With List',
-				path: 'chat/with-list',
-				icon: 'Quickreply',
-			},
-			onlyListChat: {
-				id: 'onlyListChat',
-				text: 'Only List',
-				path: 'chat/only-list',
-				icon: 'Dns',
-			},
-		},
+		subMenu: null,
 	},
-};
+	printReport: {
+		id: 'printReport',
+		text: 'พิมพ์รายงาน',
+		path: 'print_report',
+		icon: 'REPORT',
+	},
+	customerID: {
+		id: 'customerID',
+		text: 'ลูกค้า',
+		path: 'customer',
+		hide: true,
+	},
+	bank: {
+		id: 'bank',
+		text: 'ธนาคาร',
+		path: 'bank',
+		icon: 'bank',
+	},
+	product: {
+		id: 'product',
+		text: 'สินค้า',
+		path: 'product',
+		icon: 'product',
+	},
+	level: {
+		id: 'level',
+		text: 'ระดับขั้น',
+		path: 'level',
+		icon: 'level',
+	},
+	settings: {
+		id: 'settings',
+		text: 'การตั้งค่า',
+		path: 'settings',
+		icon: 'settings',
+	},
+}
 
 export const layoutMenu = {
 	layoutTypes: {

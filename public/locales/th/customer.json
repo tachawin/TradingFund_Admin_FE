@@ -6,7 +6,5 @@
     "save.customer.successfully": "ทำการบันทึก {{customerName}} สำเร็จ",
 
     "save.failed": "บันทึกไม่สำเร็จ",
-    "save.customer.failed": "ทำการบันทึก {{customerName}} ไม่สำเร็จ",
-
-    "transaction.history": "ประวัติธุรกรรม"
+    "save.customer.failed": "ทำการบันทึก {{customerName}} ไม่สำเร็จ"
 }

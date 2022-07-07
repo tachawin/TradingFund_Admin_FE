@@ -11,10 +11,10 @@ import { selectProductQuery } from '../../../redux/product/selector'
 import showNotification from 'components/extras/showNotification'
 import Spinner from 'components/bootstrap/Spinner'
 import CommonTableNotFound from 'pages/common/CommonTableNotFound'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import CommonUnauthorized from 'pages/common/CommonUnauthorized'
 import { InfoTwoTone } from '@mui/icons-material'
+import { CommonString } from 'common/data/enumStrings'
 
 export interface ProductModalProperties {
 	type: string
@@ -36,7 +36,7 @@ export interface ProductProps {
 const Product = ({ isOpenProductModal, setIsOpenProductModal }: ProductProps) => {
     const { t } = useTranslation(['common', 'product'])
 	const dispatch = useDispatch()
-	const permission = useSelector(selectPermission)
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
 
 	const [isOpenDeleteProductModal, setIsOpenDeleteProductModal] = useState<ProductModalProperties>()
 	const [isLoading, setIsLoading] = useState(false)
@@ -49,7 +49,6 @@ const Product = ({ isOpenProductModal, setIsOpenProductModal }: ProductProps) =>
 		let query = queryString ? `?${queryString}` : ''
 		setIsLoading(true)
 		getProductList(query, (productList: ProductInterface[]) => {
-			console.log(productList)
 			dispatch(storeProducts(productList))
 		}, (error: any) => {
 			const { response } = error
@@ -57,9 +56,9 @@ const Product = ({ isOpenProductModal, setIsOpenProductModal }: ProductProps) =>
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.product.failed')}</span>
+					<span>ไม่สามารถเรียกดูสินค้าได้</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		}).finally(() => setIsLoading(false))
 	// eslint-disable-next-line react-hooks/exhaustive-deps

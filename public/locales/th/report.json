@@ -1,27 +1,6 @@
 {
     "search.transaction": "ค้นหาธุรกรรม",
 
-    "filter": "กรอง",
-    "filter.reset": "ล้าง",
-    "filter.type": "ประเภทธุรกรรม",
-    "filter.timestamp": "วันที่ทำรายการ",
-    "filter.amount": "จำนวนเงิน",
-    "filter.min": "ขั้นต่ำ",
-    "filter.to": "ถึง",
-    "filter.max": "สูงสุด",
-    "filter.bank": "ธนาคารปลายทาง",
-
-    "column.no": "ลำดับ",
-    "column.type": "ประเภทธุรกรรม",
-    "column.timestamp": "วันที่ทำรายการ",
-    "column.bank": "ธนาคาร",
-    "column.amount": "จำนวนเงิน",
-    "column.notes": "หมายเหตุ",
-    
-    "deposit": "ฝาก",
-    "withdraw": "ถอน",
-    "request.withdraw": "คำขอถอน",
-
     "export.excel": "ดาวน์โหลด Excel",
     "print": "พิมพ์"
 }

@@ -1,13 +1,11 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
-import { CompanyBankInterface, CompanyBankStatus } from 'common/apis/companyBank'
+import { CompanyBankInterface, CompanyBankStatus, CompanyBankType } from 'common/apis/companyBank'
 import moment from 'moment'
-import { useSelector } from 'react-redux'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { FilterList, LabelTwoTone } from '@mui/icons-material'
 
@@ -23,15 +21,19 @@ const BankTable = ({
     data, 
     setIsOpenBankModal, 
     setIsOpenDeleteBankModal,
-    columns, 
+    columns,
     cardHeader 
 }: BankTableInterface) => {
     const { t } = useTranslation('common')
-    const permission = useSelector(selectPermission)
+    const permission = JSON.parse(localStorage.getItem('features') ?? '')
 
     const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
+
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [items])
 
     return (
         <Card stretch>
@@ -40,16 +42,14 @@ const BankTable = ({
                 <table className='table table-modern table-hover'>
                     <thead>
                         <tr>
-                            <th 
-                                onClick={() => requestSort('no')}
-                                className='cursor-pointer text-decoration-underline text-center'>
+                            <th className='text-center'>
                                 {t('column.no')}
                             </th>
                             <th
-                                onClick={() => requestSort('bankAccount')}
+                                onClick={() => requestSort('bankAccountNumber')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.bank.account')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('bankAccount')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('bankAccountNumber')} />
                             </th>
                             <th
                                 onClick={() => requestSort('bankAccountName')}
@@ -58,16 +58,16 @@ const BankTable = ({
                                 <FilterList fontSize='small' className={getClassNamesFor('bankAccountName')} />
                             </th>
                             <th
-                                onClick={() => requestSort('paymentType')}
+                                onClick={() => requestSort('type')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.payment.type')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('paymentType')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('type')} />
                             </th>
                             <th
-                                onClick={() => requestSort('addedAt')}
+                                onClick={() => requestSort('createdAt')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.added.at')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('addedAt')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('createdAt')} />
                             </th>
                             <th
                                 onClick={() => requestSort('status')}
@@ -82,7 +82,7 @@ const BankTable = ({
                         {items.length > 0 ? dataPagination(items, currentPage, perPage).map((companyBank: CompanyBankInterface, index: number) => (
                             <tr key={companyBank.bankId}>
                                 <td className='text-center'>
-                                    <div>{index + 1}</div>
+                                    <div>{perPage * (currentPage - 1) + (index + 1)}</div>
                                 </td>
                                 <td>
                                     <div className='d-flex align-items-center'>
@@ -92,7 +92,7 @@ const BankTable = ({
                                             </div>
                                             <div className='text-muted'>
                                                 <LabelTwoTone fontSize='small' />{' '}
-                                                <small>{companyBank.bank?.acronym.toUpperCase()}</small>
+                                                <small>{companyBank.bankName?.acronym?.toUpperCase()}</small>
                                             </div>
                                         </div>
                                     </div>
@@ -101,7 +101,11 @@ const BankTable = ({
                                     <div>{companyBank.bankAccountName}</div>
                                 </td>
                                 <td>
-                                    <div>{companyBank.type}</div>
+                                    <div>
+                                        {companyBank.type === CompanyBankType.Deposit ? t('deposit') : 
+                                            companyBank.type === CompanyBankType.DepositAndWithdraw ? t('deposit.and.withdraw') :
+                                                t('withdraw')}
+                                    </div>
                                 </td>
                                 <td>
                                     <div>{moment(companyBank.createdAt)?.format('ll')}</div>
@@ -113,7 +117,7 @@ const BankTable = ({
                                 </td>
                                 <td>
                                     <div className='d-flex align-items-center'>
-                                        { companyBank.status === CompanyBankStatus.Active ?
+                                        {companyBank.status === CompanyBankStatus.Active ?
                                             <>
                                                 <span className='badge border border-2 border-light rounded-circle bg-success p-2 me-2'>
                                                     <span className='visually-hidden'>
@@ -164,7 +168,6 @@ const BankTable = ({
             </CardBody>
             <PaginationButtons
                 data={data}
-                label='customers'
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
                 perPage={perPage}

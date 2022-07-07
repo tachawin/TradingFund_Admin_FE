@@ -32,13 +32,6 @@ const SubHeader = ({ children, className, style }: SubHeaderCommonInterface) => 
 	const root = document.documentElement;
 	root.style.setProperty('--subheader-height', `${height}px`);
 
-	useLayoutEffect(() => {
-		document.body.classList.add('subheader-enabled');
-		return () => {
-			document.body.classList.remove('subheader-enabled');
-		};
-	});
-
 	return (
 		<div ref={ref} className={classNames('subheader', 'row', className)} style={style}>
 			{children}

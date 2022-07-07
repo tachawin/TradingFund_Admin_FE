@@ -1,5 +1,5 @@
 import React, { lazy } from 'react'
-import { dashboardMenu, pages } from '../menu'
+import { pages } from '../menu'
 
 const LANDING = {
 	DASHBOARD: lazy(() => import('../pages/presentation/dashboard/Dashboard')),
@@ -28,12 +28,12 @@ const presentation = [
 	 * Landing
 	 */
 	{
-		path: dashboardMenu.dashboard.path,
+		path: pages.dashboard.path,
 		element: <LANDING.DASHBOARD />,
 		exact: true,
 	},
 	{
-		path: dashboardMenu.admin.path,
+		path: pages.admin.path,
 		element: <LANDING.ADMIN />,
 		exact: true,
 	},

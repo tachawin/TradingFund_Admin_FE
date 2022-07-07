@@ -28,7 +28,7 @@ enum LoginState {
 }
 
 const Login = () => {
-	const { t } = useTranslation('login')
+	const { t } = useTranslation(['common', 'login'])
 	const navigate = useNavigate()
 	const [loginState, setLoginState] = useState(LoginState.Login)
 	const [otp, setOTP] = useState({ adminId: '', refCode: '' })
@@ -56,7 +56,6 @@ const Login = () => {
 			const { username, password } = values
 			setIsLoading(true)
 			login(username, password, (data: LoginResponse & OTPResponse) => {
-				console.log(data)
 				const { useOTP, accessToken, refreshToken } = data
 				if (useOTP) {
 					setLoginState(LoginState.OTP)
@@ -73,7 +72,7 @@ const Login = () => {
 				showNotification(
 					<span className='d-flex align-items-center'>
 						<InfoTwoTone className='me-1' />
-						<span>{t('login.failed')}</span>
+						<span>{t('login:login.failed')}</span>
 					</span>,
 					t('please.try.again'),
 				)
@@ -97,14 +96,14 @@ const Login = () => {
 						<CardBody className='m-4'>
 							{loginState === LoginState.Login ? <>
 								<div className='mb-5'>
-									<div className='text-center h1 fw-bold'>{t('welcome')}</div>
-									<div className='text-center h4 text-muted'>{t('sign.in.to.continue')}</div>
+									<div className='text-center h1 fw-bold'>{t('login:welcome')}</div>
+									<div className='text-center h4 text-muted'>{t('login:sign.in.to.continue')}</div>
 								</div>
 								<div className='col-12'>
 									<FormGroup
 										id='username'
 										isFloating
-										label={t('username')}>
+										label={t('form.username')}>
 										<Input 
 											autoComplete='username' 
 											isValid={isValid}
@@ -117,7 +116,7 @@ const Login = () => {
 										className='mt-4'
 										id='password'
 										isFloating
-										label={t('password')}>
+										label={t('form.password')}>
 										<Input
 											type='password'
 											autoComplete='password'
@@ -133,7 +132,7 @@ const Login = () => {
 									className='w-100 py-3 mt-5'
 									onClick={handleSubmit}
 								>
-									{isLoading ? <Spinner size={16} /> : t('continue')}
+									{isLoading ? <Spinner size={16} /> : t('next')}
 								</Button>
 							</> : <OTP adminId={otp.adminId} refCode={otp.refCode} />}
 						</CardBody>

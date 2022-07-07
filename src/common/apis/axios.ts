@@ -1,23 +1,43 @@
 import axios from 'axios'
-import { didLogout, getAccessToken } from 'common/utils/auth'
-import { renewToken } from './auth'
+import { didLogout } from 'common/utils/auth'
+import { logout, renewToken } from './auth'
 
 const REACT_APP_BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:8080';
 
 const axiosInstance = axios.create({
+	// baseURL: REACT_APP_BASE_URL,
+	// baseURL: 'http://api.luckynobug.com',
 	baseURL: REACT_APP_BASE_URL,
-	// baseURL: 'http://localhost:8080'
   	withCredentials: true,
 })
 
+export interface ErrorResponse {
+	code?: number
+	err?: string
+}
+
 export const authorizationHandler = async (fetcher: any) => {
 	try {
-		await fetcher()
+		const response = await fetcher()
+		return response
 	} catch (error: any) {
-		if (error.response?.status === 401) {
-			didLogout()
+		if (error.response.data.error.errorCode === 'ERR.ADMIN.AUTH.ACCESS_TOKEN.1') {
+			const tokenResponse = await renewToken()
+			console.log(tokenResponse)
+			if (tokenResponse) {
+				try {
+					const response = await fetcher()
+					return response	
+				} catch (error: any) {
+					// logout(() => {
+					// 	didLogout()
+					// }, (error) => {
+					// 	console.log(error.response)
+					// })
+				}
+			}
 		} else {
-			console.log('error')
+			console.log(error.response)
 			return error
 		}
 	}

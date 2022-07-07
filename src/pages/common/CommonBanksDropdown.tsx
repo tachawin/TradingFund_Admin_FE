@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next'
 import Spinner from 'components/bootstrap/Spinner'
 import { Check, InfoTwoTone } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
+import { CommonString } from 'common/data/enumStrings'
 
 interface CommonBanksDropdownInterface {
     selectedBankName: string | string[]
@@ -27,7 +28,8 @@ const CommonBanksDropdown = ({ selectedBankName, setSelectedBankName, disabled =
     const [isLoading, setIsLoading] = useState(false)
     const BANK_PLACEHOLDER = 'เลือกชื่อธนาคาร'
 
-    const BankIcon = bankIcons[selectedBankName as string]?.icon
+    const displayedBank = selectedBankName as string
+    const BankIcon = bankIcons[displayedBank]?.icon || bankIcons.undefined.icon
 
     const commonBankList = useSelector(selectCommonBanksList)
     
@@ -45,18 +47,19 @@ const CommonBanksDropdown = ({ selectedBankName, setSelectedBankName, disabled =
 	}
 
     useEffect(() => {
+        setIsLoading(true)
         getCommonBanks((commonBankList: CommonBankInterface) => {
             dispatch(storeBank(commonBankList))
         }, (error: any) => {
             const { response } = error
             console.log(response.data)
             showNotification(
-                <span className='d-flex align-items-center'>
-                    <InfoTwoTone className='me-1' />
-                    <span>{t('get.bank.failed')}</span>
-                </span>,
-                t('please.refresh.again'),
-            )
+				<span className='d-flex align-items-center'>
+					<InfoTwoTone className='me-1' />
+					<span>ไม่สามารถเรียกดูธนาคารได้</span>
+				</span>,
+				CommonString.TryAgain,
+			)
         }).finally(() => setIsLoading(false))
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
@@ -86,14 +89,14 @@ const CommonBanksDropdown = ({ selectedBankName, setSelectedBankName, disabled =
                 disabled={disabled}
             >
                 {selectedBankName !== BANK_PLACEHOLDER && <>
-                    <span className='p-1' style={{ backgroundColor: bankIcons[selectedBankName as string].color, borderRadius: 3 }}>
+                    <span className='p-1' style={{ backgroundColor: bankIcons[selectedBankName as string]?.color, borderRadius: 3 }}>
                         <BankIcon height={20} width={20} />
                     </span>
                     <span
                         style={{ maxWidth: '172px' }}
                         className='mx-3 d-block text-nowrap overflow-hidden text-overflow-ellipsis'
                     >
-                        {commonBankList && commonBankList[selectedBankName as string]?.thaiName}
+                        {!isLoading ? commonBankList[selectedBankName as string]?.thaiName : ''}
                     </span>
                 </>}
             </DropdownToggle>}
@@ -111,7 +114,7 @@ const CommonBanksDropdown = ({ selectedBankName, setSelectedBankName, disabled =
                             isActive={!multipleSelect && bank === selectedBankName}
                             onClick={() => multipleSelect ? handleOnChangeMultipleBanks(bank) : setSelectedBankName(bank)}
                         >
-                            <div className='p-1' style={{ backgroundColor: bankIcons[bank].color, borderRadius: 3 }}>
+                            <div className='p-1' style={{ backgroundColor: bankIcons[bank]?.color, borderRadius: 3 }}>
                                 <BankIcon height={20} width={20} />
                             </div>
                             <span className='mx-3 mw-75'>{commonBankList[bank].thaiName}</span>

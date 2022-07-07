@@ -1,4 +1,5 @@
-import axios from './axios'
+import { getAccessToken, setAccessToken } from 'common/utils/auth'
+import axios, { authorizationHandler } from './axios'
 
 export interface OTPResponse {
     accessToken: string
@@ -35,12 +36,20 @@ export const login = async (
     }
 }
 
-export const logout = () => 
-    axios({
-        method: 'post',
-        url: '/auth/admin/logout'
-    })
-
+export const logout = async (
+    next: () => void,
+    handleError: (error: any) => void
+) => {
+    try {
+        await axios({
+            method: 'post',
+            url: '/auth/admin/logout'
+        })
+        next()
+    } catch (error) {
+        handleError(error)
+    }
+}
 
 export const sendOTP = async (
     data: OTPRequest,
@@ -66,19 +75,18 @@ axios({
     data
 })
 
-export const renewToken = async () => {
-    try {
-        const res = await axios({
-            method: 'post',
-            url: '/auth/admin/2fa/token/refresh',
-        })
-        console.log(res)
-        // const { access_token } = res.data
-        // localStorage.setItem("access_token", access_token)
-        // return access_token
-    } catch (error: any) {
-        console.log(error.response)
-        // await logout()
-        return false
-    }
-}
+export const renewToken = async () =>
+    await authorizationHandler(async () => {
+        try {
+            const res = await axios({
+                method: 'post',
+                url: '/auth/admin/2fa/token/refresh',
+                headers: { Authorization: `Bearer ${getAccessToken()}` },
+            })
+            const { accessToken } = res.data
+            setAccessToken(accessToken)
+            return accessToken
+        } catch (error: any) {
+            return false
+        }
+})

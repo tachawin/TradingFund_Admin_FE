@@ -1,5 +1,7 @@
 import { AttachMoneyOutlined, DarkModeOutlined, LightModeOutlined, MoneyOffOutlined } from '@mui/icons-material'
+import { PermissionType, PermissionValue } from 'common/apis/user'
 import COLORS from 'common/data/enumColors'
+import { CommonString } from 'common/data/enumStrings'
 import Card, { CardBody, CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 import Spinner from 'components/bootstrap/Spinner'
 import { useTranslation } from 'react-i18next'
@@ -17,7 +19,9 @@ export enum MetricBoardType {
 }
 
 const MetricBoard = ({ isLoading, type, deposit, withdraw }: MetricInterface) => {
-    const { t } = useTranslation('dashboard')
+    const { t } = useTranslation('common')
+
+    const permission = JSON.parse(localStorage.getItem('features') ?? '')
 
     return (
         <Card className='col'>
@@ -43,11 +47,14 @@ const MetricBoard = ({ isLoading, type, deposit, withdraw }: MetricInterface) =>
                                 <span className='col align-self-center text-nowrap'>{t('deposit')}</span>
                             </div>
                         </CardLabel>
-                        <CardBody className="pt-0 align-self-center">
-                            <span color='success' className='fs-3 fw-bold text-success'>
-                                {isLoading ? <Spinner color='primary' size={12} /> : deposit?.toLocaleString()}
-							</span>
-                        </CardBody>
+                        {permission.deposit[PermissionType.Read] === PermissionValue.Available ?
+                            <CardBody className="pt-0 align-self-center">
+                                <span color='success' className='fs-3 fw-bold text-success'>
+                                    {isLoading ? <Spinner color='primary' size={12} /> : deposit?.toLocaleString()}
+                                </span>
+                            </CardBody>
+                            : <div className='m-4 text-center'>{CommonString.NoPermission}</div>
+                        }
                     </Card>
                 </div>
                 <div className='col'>
@@ -58,11 +65,14 @@ const MetricBoard = ({ isLoading, type, deposit, withdraw }: MetricInterface) =>
                                 <span className='col align-self-center text-nowrap'>{t('withdraw')}</span>
                             </div>
                         </CardLabel>
-                        <CardBody className="pt-0 align-self-center">
-                            <span color='success' className='fs-3 fw-bold text-danger'>
-                                {isLoading ? <Spinner color='primary' size={14} /> : withdraw?.toLocaleString()}
-							</span>
-                        </CardBody>
+                        {permission.withdraw[PermissionType.Read] === PermissionValue.Available ?
+                            <CardBody className="pt-0 align-self-center">
+                                <span color='success' className='fs-3 fw-bold text-danger'>
+                                    {isLoading ? <Spinner color='primary' size={14} /> : withdraw?.toLocaleString()}
+                                </span>
+                            </CardBody>
+                            : <div className='m-4 text-center'>{CommonString.NoPermission}</div>
+                        }
                     </Card>
                 </div>
 			</CardBody>

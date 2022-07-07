@@ -15,6 +15,8 @@ import { CustomerMetricInterface, getCustomerRegisterAndActionMetric } from 'com
 import showNotification from 'components/extras/showNotification'
 import Spinner from 'components/bootstrap/Spinner'
 import { InfoTwoTone } from '@mui/icons-material'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { CommonString } from 'common/data/enumStrings'
 
 enum DateRange {
 	Week = 'week',
@@ -22,10 +24,12 @@ enum DateRange {
 }
 
 const CustomerTrafficBoard = () => {
-    const { t } = useTranslation('dashboard')
+    const { t } = useTranslation(['common', 'dashboard'])
 	const [activeDateRangeTab, setActiveDateRangeTab] = useState<DateRange>(DateRange.Week)
 	const [trafficData, setTrafficData] = useState<CustomerMetricInterface>({})
 	const [isLoading, setIsLoading] = useState(true)
+
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
 
 	const dateRange = {
 		week: {
@@ -49,9 +53,9 @@ const CustomerTrafficBoard = () => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.dashboard.failed')}</span>
+					<span>{CommonString.UnableToGetData}</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		}).finally(() => setIsLoading(false))
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -104,11 +108,11 @@ const CustomerTrafficBoard = () => {
 		return { 
 			series: [
 				{
-					name: 'จำนวนผู้ใช้ใหม่',
+					name: t('dashboard:total.new.customer.traffic'),
 					data: totalRegisterList,
 				},
 				{
-					name: 'จำนวนผู้ใช้ใหม่ที่ทำรายการ',
+					name: t('dashboard:new.customer.traffic.with.transaction'),
 					data: totalRegisterAndActionList,
 				},
 			],
@@ -132,7 +136,7 @@ const CustomerTrafficBoard = () => {
 		<Card stretch>
 			<CardHeader>
 				<CardLabel>
-					<CardTitle>{t('customer.traffic')}</CardTitle>
+					<CardTitle>{t('dashboard:new.customer.traffic')}</CardTitle>
 				</CardLabel>
 				<CardActions>
 					<Button
@@ -153,13 +157,13 @@ const CustomerTrafficBoard = () => {
 			</CardHeader>
 			<CardBody className='w-100 d-flex justify-content-center'>
 				{isLoading ? <Spinner color='primary' isGrow size={50} />
-					: <Chart
+					: permission.customer[PermissionType.Read] === PermissionValue.Available ? <Chart
 						className='w-100'
 						series={getLineChartData().series}
 						options={getLineChartData().options}
 						type={getLineChartData().options.chart.type}
 						height={getLineChartData().options.chart.height}
-					/>
+					/> : <div className='d-flex align-items-center fs-5' style={{ minHeight: 300 }}>{CommonString.NoPermission}</div>
 				}
 			</CardBody>
 		</Card>

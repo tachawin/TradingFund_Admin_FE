@@ -1445,6 +1445,8 @@ const UOB = ({ height, width }) =>
             s5.5,2.6,5.5,5.7v45.8h10V12.7c0-3.1,2.5-5.7,5.5-5.7C56.6,7,59,9.6,59,12.7"/>
     </svg>
 
+const UndefinedBank = ({ height, width }) =>
+    <div style={{ minHeight: height, minWidth: width, height, width }} className='bg-l10'></div>
 
 interface BankIconType {
     [key: string]: {
@@ -1454,6 +1456,10 @@ interface BankIconType {
 }
 
 const bankIcons: BankIconType = {
+    undefined: {
+        icon: UndefinedBank,
+        color: ''
+    },
     baac: {
         icon: BAAC,
         color: '#4b9b1d'

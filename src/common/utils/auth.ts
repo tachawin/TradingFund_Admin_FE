@@ -1,5 +1,21 @@
+import jwt from 'jwt-decode'
+
+interface TokenPayload {
+    adminId: string
+    features: { [key: string]: string }
+    mobileNumber: string
+    name: string
+    role: string
+    status: string
+    username: string
+}
+
 const setAccessToken = (token: string) => {
+    const decodedToken: TokenPayload = jwt(token)
     localStorage.setItem('accessToken', token)
+    localStorage.setItem('features', JSON.stringify(decodedToken.features))
+    localStorage.setItem('name', decodedToken.name)
+    localStorage.setItem('role', decodedToken.role)
 }
 
 const setRefreshToken = (token: string) => {
@@ -13,6 +29,7 @@ const didLogin = (accessToken: string, refreshToken: string) => {
 }
 
 const didLogout = () => {
+    window.location.replace('/')
     localStorage.clear()
 }
 

@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectCompanyBankList, selectCompanyBankQuery } from 'redux/companyBank/selector'
 import { storeCompanyBank } from 'redux/companyBank/action'
 import { InfoTwoTone } from '@mui/icons-material'
+import { CommonString } from 'common/data/enumStrings'
 
 export interface BankModalProperties {
 	type: string
@@ -53,9 +54,9 @@ const Bank = ({ isOpenBankModal, setIsOpenBankModal }: BankProps) => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.company.bank.failed')}</span>
+					<span>ไม่สามารถเรียกดูธนาคารได้</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps

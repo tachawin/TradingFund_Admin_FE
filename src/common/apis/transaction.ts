@@ -12,8 +12,17 @@ export enum TransactionType {
 }
 export const TYPE = [TransactionType.Withdraw, TransactionType.RequestWithdraw, TransactionType.Deposit]
 
+interface Bank {
+    id: number
+    niceName: string
+    officialName: string
+    thaiName: string
+    acronym: string
+}
+
 export interface TransactionInterface {
     transactionId?: string
+    transactionTimestamp?: string
     status: TransactionStatus
     mobileNumber?: string
     customerId?: string
@@ -28,4 +37,7 @@ export interface TransactionInterface {
     notes?: string
     createdAt?: Date
     updatedAt?: Date
+    payerBank?: Bank
+    recipientBank?: Bank
+    adminName?: string 
 }

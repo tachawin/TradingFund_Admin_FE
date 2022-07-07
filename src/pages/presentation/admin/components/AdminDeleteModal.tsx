@@ -36,26 +36,23 @@ const AdminDeleteModal = ({ id, isOpen, setIsOpen, data }: AdminEditModalInterfa
                     showNotification(
                         <span className='d-flex align-items-center'>
                             <InfoTwoTone className='me-1' />
-                            <span>{t('admin:delete.successfully')}</span>
+                            <span>{t('delete.successfully')}</span>
                         </span>,
                         t('admin:delete.admin.successfully', { adminName: data?.name }),
                     )
                     setIsOpen(false)
-                    setIsLoading(false)
                 }, (error: any) => {
                     const { response } = error
                     console.log(response.data)
                     showNotification(
                         <span className='d-flex align-items-center'>
                             <InfoTwoTone className='me-1' />
-                            <span>{t('admin:delete.failed')}</span>
+                            <span>{t('delete.failed')}</span>
                         </span>,
                         t('admin:delete.admin.failed', { adminName: data?.name }),
                     )
-                    setIsOpen(false)
-                    setIsLoading(false)
                 }
-            )
+            ).finally(() => setIsLoading(false))
         }
     }
 

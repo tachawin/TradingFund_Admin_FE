@@ -19,6 +19,7 @@ export const getTransactionList = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })
 
@@ -35,10 +36,10 @@ export const exportExcel = async (
                 headers: { Authorization: `Bearer ${getAccessToken()}` },
                 responseType: 'blob',
             })
-            console.log(res.data)
             saveAs(new Blob([res.data]), `report-${moment().format()}.xlsx`)
             next()
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })

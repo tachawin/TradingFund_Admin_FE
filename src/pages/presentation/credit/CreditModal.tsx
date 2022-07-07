@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux'
 import { removeRedeemCreditById } from 'redux/redeemCredit/action'
 import Spinner from 'components/bootstrap/Spinner'
 import { InfoTwoTone } from '@mui/icons-material'
+import { ErrorResponse } from 'common/apis/axios'
 
 export enum CreditModalType {
     Approve = 'approve',
@@ -38,34 +39,43 @@ const CreditModal = ({ id, isOpen, setIsOpen, properties }: CreditModalInterface
 
     const handleApprove = () => {
         setIsLoading(true)
-        data.redeemId && updateRedeemCredit(data.redeemId, RedeemAction.Accept, {}, () => {
-            data.redeemId && dispatch(removeRedeemCreditById(data.redeemId))
-            showNotification(
-                <span className='d-flex align-items-center'>
-                    <InfoTwoTone className='me-1' />
-                    <span>{t('credit:approve.successfully')}</span>
-                </span>,
-                t('credit:approve.request.successfully', { mobileNumber: data?.mobileNumber }),
-            )
+        data.redeemId && updateRedeemCredit(data.redeemId, RedeemAction.Accept, {}, (response: ErrorResponse) => {
+            if (response.code === 204) {
+                showNotification(
+                    <span className='d-flex align-items-center'>
+                        <InfoTwoTone className='me-1' />
+                        <span>ยืนยันไม่สำเร็จ</span>
+                    </span>,
+                    'ไม่พบข้อมูลลูกค้าหรือจำนวนแต้มไม่เพียงพอ กรุณายกเลิกรายการ',
+                )
+            } else {
+                setIsOpen(false)
+                data.redeemId && dispatch(removeRedeemCreditById(data.redeemId))
+                showNotification(
+                    <span className='d-flex align-items-center'>
+                        <InfoTwoTone className='me-1' />
+                        <span>{t('credit:approve.successfully')}</span>
+                    </span>,
+                    t('credit:approve.request.successfully', { mobileNumber: data?.mobileNumber }),
+                )
+            }
         }, (error) => {
             const { response } = error
             console.log(response)
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('credit:approve.failed')}</span>
+                    <span>ยืนยันไม่สำเร็จ</span>
                 </span>,
-                t('credit:approve.request.failed', { mobileNumber: data?.mobileNumber }),
+                'มีบางอย่างผิดปกติ กรุณาทำรายการใหม่อีกครั้งภายหลัง',
             )
-        }).finally(() => {
-            setIsOpen(false)
-            setIsLoading(false)
-        })
+        }).finally(() => setIsLoading(false))
     }
 
     const handleReject = () => {
         setIsLoading(true)
         data.redeemId && updateRedeemCredit(data.redeemId, RedeemAction.Reject, {}, () => {
+            setIsOpen(false)
             data.redeemId && dispatch(removeRedeemCreditById(data.redeemId))
             showNotification(
                 <span className='d-flex align-items-center'>
@@ -80,14 +90,11 @@ const CreditModal = ({ id, isOpen, setIsOpen, properties }: CreditModalInterface
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('credit:reject.failed')}</span>
+                    <span>ยกเลิกไม่สำเร็จ</span>
                 </span>,
-                t('credit:reject.request.failed', { mobileNumber: data?.mobileNumber }),
+                'มีบางอย่างผิดปกติ กรุณาทำรายการใหม่อีกครั้งภายหลัง',
             )
-        }).finally(() => {
-            setIsOpen(false)
-            setIsLoading(false)
-        })
+        }).finally(() => setIsLoading(false))
     }
 
     return (

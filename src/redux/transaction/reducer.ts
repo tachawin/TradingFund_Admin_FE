@@ -5,6 +5,7 @@ const INITIAL_STATE: InitialState = {
   transactionQuery: {
     keyword: '',
     bank: '',
+    status: '',
     transactionType: '',
     min: '',
     max: '',

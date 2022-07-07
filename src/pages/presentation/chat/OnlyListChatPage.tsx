@@ -21,11 +21,11 @@ import USERS from '../../../common/data/userDummyData';
 import OffCanvas, { OffCanvasBody, OffCanvasHeader } from '../../../components/bootstrap/OffCanvas';
 import InputGroup from '../../../components/bootstrap/forms/InputGroup';
 import Textarea from '../../../components/bootstrap/forms/Textarea';
-import { demoPages } from '../../../menu';
 import CHATS from '../../../common/data/chatDummyData';
 import CommonChatStatus from '../../common/CommonChatStatus';
 import { AccountCircleTwoTone, InfoTwoTone, Logout, SendTwoTone } from '@mui/icons-material';
 import COLORS from 'common/data/enumColors';
+import { pages } from 'menu';
 
 const OnlyListChatPage = () => {
 	const navigate = useNavigate();
@@ -70,7 +70,7 @@ const OnlyListChatPage = () => {
 	}, [canvasStatus]);
 
 	return (
-		<PageWrapper title={demoPages.chat.subMenu.onlyListChat.text}>
+		<PageWrapper title={pages.chat.text}>
 			<SubHeader>
 				<SubHeaderLeft>
 					<span>
@@ -87,7 +87,7 @@ const OnlyListChatPage = () => {
 						icon={Logout}
 						color='danger'
 						isLight
-						onClick={() => navigate(`../${demoPages.login.path}`)}>
+						onClick={() => navigate(`../${pages.login.path}`)}>
 						Logout
 					</Button>
 				</SubHeaderRight>

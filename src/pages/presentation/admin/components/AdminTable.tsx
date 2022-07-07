@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
@@ -8,8 +8,6 @@ import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components
 import { AdminModalType } from './AdminEditModal'
 import { AdminInterface, AdminRole, AdminStatus } from 'common/apis/admin'
 import moment from 'moment'
-import { useSelector } from 'react-redux'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { DeleteTwoTone, EditTwoTone, FilterList, LabelTwoTone, MoreHoriz, VisibilityTwoTone } from '@mui/icons-material'
 
@@ -37,12 +35,16 @@ const AdminTable = ({
     cardHeader 
 }: AdminTableInterface) => {
     const { t } = useTranslation('common')
-    const permission = useSelector(selectPermission)
+    const permission = JSON.parse(localStorage.getItem('features') ?? '')
 
     const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
     const [isOpenDropdown, setIsOpenDropdown] = useState<number | null>(null)
+
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [items])
 
     const ADMIN_ROW_ACTIONS: AdminRowAction[] = [
 		{
@@ -81,9 +83,7 @@ const AdminTable = ({
                 <table className='table table-modern table-hover'>
                     <thead>
                         <tr>
-                            <th 
-                                onClick={() => requestSort('no')}
-                                className='cursor-pointer text-decoration-underline text-center'>
+                            <th className='text-center'>
                                 {t('column.no')}
                             </th>
                             <th
@@ -124,7 +124,7 @@ const AdminTable = ({
                         {items.length > 0 ? dataPagination(items, currentPage, perPage).map((admin: AdminInterface, index: number) => (
                             <tr key={admin.adminId}>
                                 <td className='text-center'>
-                                    <div>{index + 1}</div>
+                                    <div>{perPage * (currentPage - 1) + (index + 1)}</div>
                                 </td>
                                 <td>
                                     <div>{admin.username}</div>
@@ -225,7 +225,6 @@ const AdminTable = ({
             </CardBody>
             <PaginationButtons
                 data={data}
-                label={t('admin')}
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
                 perPage={perPage}

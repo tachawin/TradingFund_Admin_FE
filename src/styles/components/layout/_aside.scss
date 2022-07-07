@@ -20,26 +20,6 @@
 	width: calc(100% - 2rem);
 	justify-content: space-between;
 
-	// Mobile Status
-	@include aside-close(true) {
-		@include media-breakpoint-down(map.get($aside, mobile-breakpoint)) {
-			// stylelint-disable declaration-colon-newline-after
-			left: calc(
-				(
-						#{map-deep-get($aside, width)} + #{if(
-								map.get($aside, border-size) == 0,
-								#{0px},
-								#{map.get($aside, border-size)}
-							)}
-					) * -1
-			);
-			// stylelint-enable declaration-colon-newline-after
-		}
-	}
-
-	@include media-breakpoint-down(map.get($aside, mobile-breakpoint)) {
-		width: map.get($aside, width);
-	}
 
 	&:not(.open):hover {
 		@include backdrop-filter-blur(map-deep-get($aside, hover, blur));

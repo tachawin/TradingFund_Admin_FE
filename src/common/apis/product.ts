@@ -37,6 +37,7 @@ export const createProduct = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     }
 )
@@ -58,6 +59,7 @@ export const updateProduct = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     }
 )
@@ -77,6 +79,7 @@ export const getProductList = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })
 
@@ -96,6 +99,7 @@ export const deleteProduct = async (
             next()
 		} catch (error: any) {
 			handleError(error)
+            throw error
 		}
     })
 
@@ -118,5 +122,6 @@ export const uploadProductImage = async (
             next(res.data)
 		} catch (error: any) {
 			handleError(error)
+            throw error
 		}
     })

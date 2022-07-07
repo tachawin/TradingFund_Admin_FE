@@ -7,7 +7,6 @@ import SubHeader, {
 	SubHeaderRight
 } from '../../../layout/SubHeader/SubHeader'
 import Page from '../../../layout/Page/Page'
-import { demoPages } from '../../../menu'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
 import Button, { ButtonGroup } from '../../../components/bootstrap/Button'
@@ -38,6 +37,11 @@ import { selectCompanyBankList } from 'redux/companyBank/selector'
 import { storeCompanyBank } from 'redux/companyBank/action'
 import { InfoTwoTone, Search } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { CommonString } from 'common/data/enumStrings'
+import { pages } from 'menu'
+import 'moment/locale/th'
+import Checks from 'components/bootstrap/forms/Checks'
 
 interface WithdrawFilterInterface {
 	searchInput: string
@@ -56,11 +60,17 @@ interface WithdrawFilterInterface {
 		endDate: Date
 		key: string
 	}[]
+	isCreatedAtDateChanged: boolean
 }
 
-interface WithdrawModalProperties {
+export interface WithdrawModalProperties {
 	type: WithdrawModalType
-	selectedRow: any
+	bank?: CompanyBankInterface
+	selectedRow: TransactionInterface
+}
+
+export interface WithdrawCancelModalProperties {
+	selectedRow: TransactionInterface
 }
 
 export enum WithdrawTableState {
@@ -74,7 +84,7 @@ const Withdraw = () => {
 
 	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
 	const [searchInput, setSearchInput] = useState('')
-    const [isOpenCancelWithdrawModal, setIsOpenCancelWithdrawModal] = useState<WithdrawModalProperties>()
+    const [isOpenCancelWithdrawModal, setIsOpenCancelWithdrawModal] = useState<WithdrawCancelModalProperties>()
 	const [isOpenWithdrawModal, setIsOpenWithdrawModal] = useState<WithdrawModalProperties>()
     const [withdrawTableState, setWithdrawTableState] = useState(WithdrawTableState.Request)
 	const [isLoading, setIsLoading] = useState(false)
@@ -82,6 +92,9 @@ const Withdraw = () => {
 	const banks = useSelector(selectCompanyBankList)
 	const withdrawList = useSelector(selectWithdrawList)
 	const withdrawQueryList = useSelector(selectWithdrawQuery)
+
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
+	const readPermission = permission.withdraw[PermissionType.Read] === PermissionValue.Available
 
 	useEffect(() => {
 		let queryString = Object.values(withdrawQueryList).filter(Boolean).join('&')
@@ -97,12 +110,15 @@ const Withdraw = () => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.withdraw.failed')}</span>
+					<span>ไม่สามารถเรียกดูรายการถอนเงินได้</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		})
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [withdrawQueryList, withdrawTableState])
 
+	useEffect(() => {
 		banks.length === 0 && getCompanyBankList('?type=withdraw,deposit_and_withdraw', (companyBankList: CompanyBankInterface[]) => {
 			dispatch(storeCompanyBank(companyBankList))
 			setIsLoading && setIsLoading(false)
@@ -113,13 +129,13 @@ const Withdraw = () => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.company.bank.failed')}</span>
+					<span>ไม่สามารถเรียกดูธนาคารได้</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [withdrawQueryList, withdrawTableState])
+	}, [])
 
 	const formik = useFormik<WithdrawFilterInterface>({
 		initialValues: {
@@ -140,13 +156,14 @@ const Withdraw = () => {
 				},
 			],
             bank: [],
-			companyBank: []
+			companyBank: [],
+			isCreatedAtDateChanged: false
 		},
 		onSubmit: (values) => {
 			const defaultWithdrawQuery = {
 				...withdrawQueryList,
-				startCreated: `startCreated=${moment(values.timestamp[0].startDate).format('YYYY-MM-DD')}`,
-				endCreated: `endCreated=${moment(values.timestamp[0].endDate).format('YYYY-MM-DD')}`,
+				startCreated: values.isCreatedAtDateChanged ? `start=${moment(values.timestamp[0].startDate).format('YYYY-MM-DD')}` : '',
+				endCreated: values.isCreatedAtDateChanged ? `end=${moment(values.timestamp[0].endDate).format('YYYY-MM-DD')}` : '',
 				min: values.amount.min ? `min=${values.amount.min}` : '',
 				max: values.amount.max ? `max=${values.amount.max}` : '',
 			}
@@ -156,7 +173,7 @@ const Withdraw = () => {
 					...defaultWithdrawQuery,
 					minLastDeposit: values.lastDepositAmount.min ? `minLastDeposit=${values.lastDepositAmount.min}` : '',
 					maxLastDeposit: values.lastDepositAmount.max ? `maxLastDeposit=${values.lastDepositAmount.max}` : '',
-					bank: values.bank.length > 0 ? `bank=${values.bank.join(',')}` : '',
+					bank: values.bank.length > 0 ? `bankName=${values.bank.join(',')}` : '',
 				}))
 			} else {
 				dispatch(storeWithdrawQuery({
@@ -202,7 +219,7 @@ const Withdraw = () => {
 	}
 
 	return (
-		<PageWrapper title={demoPages.crm.subMenu.customersList.text}>
+		<PageWrapper title={pages.withdraw.text}>
 			<SubHeader>
 				<SubHeaderLeft>
 					<label
@@ -220,7 +237,7 @@ const Withdraw = () => {
 					/>
 				</SubHeaderLeft>
 				<SubHeaderRight>
-					<CommonTableFilter
+					{readPermission && <CommonTableFilter
 						resetLabel={t('filter.reset')}
 						onReset={resetForm}
 						submitLabel={t('filter')}
@@ -228,18 +245,28 @@ const Withdraw = () => {
 						filters={[
                             {
 								label: t('filter.timestamp'),
-								children: <Dropdown >
-									<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										<span data-tour='date-range'>
-											{`${moment(values.timestamp[0].startDate).format('MMM Do YY')} - ${moment(
-												values.timestamp[0].endDate,
-											).format('MMM Do YY')}`}
-										</span>
-									</DropdownToggle>
-									<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
-										{datePicker(values.timestamp, 'timestamp')}
-									</DropdownMenu>
-								</Dropdown>
+								children: <div>
+									<Checks
+										id='isCreatedAtDateChanged'
+										type='switch'
+										label={t('filter.created.at')}
+										onChange={handleChange}
+										checked={values.isCreatedAtDateChanged}
+										ariaLabel='Filter Created At Date'
+									/>
+									{values.isCreatedAtDateChanged && <Dropdown className='mt-2'>
+										<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
+											<span data-tour='date-range'>
+												{`${moment(values.timestamp[0].startDate).format('MMM Do YY')} - ${moment(
+													values.timestamp[0].endDate,
+												).format('MMM Do YY')}`}
+											</span>
+										</DropdownToggle>
+										<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
+											{datePicker(values.timestamp, 'timestamp')}
+										</DropdownMenu>
+									</Dropdown>}
+								</div>
 							},
 							{
 								label: t('filter.amount'),
@@ -309,7 +336,7 @@ const Withdraw = () => {
 								/>
 							},
 						]} 
-					/>
+					/>}
 				</SubHeaderRight>
 			</SubHeader>
 			<Page>
@@ -323,7 +350,7 @@ const Withdraw = () => {
 										<CardLabel>
 											<CardTitle>{
 												withdrawTableState === WithdrawTableState.Request ?
-												t('withdraw:withdraw.request') : t('withdraw:withdraw.history')
+												t('request') : t('history')
 											}</CardTitle>
 										</CardLabel>
 										<ButtonGroup>
@@ -332,14 +359,14 @@ const Withdraw = () => {
 												isLight={withdrawTableState !== WithdrawTableState.Request}
 												onClick={() => setWithdrawTableState(WithdrawTableState.Request)}
 											>
-												{t('withdraw:request')}
+												{t('request')}
 											</Button>
 											<Button
 												color={withdrawTableState === WithdrawTableState.History ? 'success' : 'dark'}
 												isLight={withdrawTableState !== WithdrawTableState.History}
 												onClick={() => setWithdrawTableState(WithdrawTableState.History)}
 											>
-												{t('withdraw:history')}
+												{t('history')}
 											</Button>
 										</ButtonGroup>
 									</CardHeader>
@@ -348,7 +375,7 @@ const Withdraw = () => {
 								setIsOpenWithdrawModal={withdrawTableState === WithdrawTableState.Request ? setIsOpenWithdrawModal : undefined} 
 								setIsOpenCancelWithdrawModal={withdrawTableState === WithdrawTableState.Request ? setIsOpenCancelWithdrawModal : undefined}
 								columns={{ 
-									id: false,
+									id: true,
 									status: withdrawTableState === WithdrawTableState.History, 
 									mobileNumber: true, 
 									notes: withdrawTableState === WithdrawTableState.History, 

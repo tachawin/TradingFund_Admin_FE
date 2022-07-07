@@ -12,6 +12,8 @@ import showNotification from 'components/extras/showNotification'
 import Spinner from 'components/bootstrap/Spinner'
 import { InfoTwoTone } from '@mui/icons-material'
 import LevelSubHeader from './LevelSubHeader'
+import { CommonString } from 'common/data/enumStrings'
+import { PermissionType, PermissionValue } from 'common/apis/user'
 
 export interface LevelModalProperties {
 	type: string
@@ -36,6 +38,9 @@ const Level = ({ isOpenLevelModal, setIsOpenLevelModal }: LevelProps) => {
 
 	const [isLoading, setIsLoading] = useState(false)
     const [isOpenDeleteLevelModal, setIsOpenDeleteLevelModal] = useState<LevelModalProperties>()
+
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
+    const readPermission = permission.level[PermissionType.Read] === PermissionValue.Available
 	
 	const levels = useSelector(selectLevels)
 	const queryList = useSelector(selectCompanyLevelQuery)
@@ -51,9 +56,9 @@ const Level = ({ isOpenLevelModal, setIsOpenLevelModal }: LevelProps) => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.bank.failed')}</span>
+					<span>ไม่สามารถเรียกดูระดับขั้นได้</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		}).finally(() => setIsLoading(false))
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,10 +71,10 @@ const Level = ({ isOpenLevelModal, setIsOpenLevelModal }: LevelProps) => {
 					: <LevelTable
 						cardHeader={
 							<>
-								<LevelSubHeader isOpenLevelModal={isOpenLevelModal} setIsOpenLevelModal={setIsOpenLevelModal}  />
+								{readPermission && <LevelSubHeader isOpenLevelModal={isOpenLevelModal} setIsOpenLevelModal={setIsOpenLevelModal}  />}
 								<CardHeader>
 									<CardLabel>
-										<CardTitle>{t('level:level')}</CardTitle>
+										<CardTitle>{t('level')}</CardTitle>
 									</CardLabel>
 								</CardHeader>
 							</>

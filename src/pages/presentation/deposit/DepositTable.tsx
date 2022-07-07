@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
@@ -8,8 +8,6 @@ import { TransactionInterface, TransactionStatus } from 'common/apis/transaction
 import moment from 'moment'
 import 'moment/locale/th'
 import { DepositModalProperties, DepositModalType } from './DepositModal'
-import { useSelector } from 'react-redux'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { FilterList, LabelTwoTone } from '@mui/icons-material'
 
@@ -27,7 +25,12 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
 
-    const permission = useSelector(selectPermission)
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [items])
+
+    const permission = JSON.parse(localStorage.getItem('features') ?? '')
+    const updatePermission = permission.deposit[PermissionType.Update] === PermissionValue.Available
 
     const getStatusText = (status: string): ReactNode => {
         if (status === TransactionStatus.Success) {
@@ -46,9 +49,7 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                 <table className='table table-modern table-hover'>
                     <thead>
                         <tr>
-                            <th 
-                                onClick={() => requestSort('no')}
-                                className='cursor-pointer text-decoration-underline text-center'>
+                            <th className='text-center'>
                                 {t('column.no')}
                             </th>
                             <th
@@ -58,22 +59,22 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                                 <FilterList fontSize='small' className={getClassNamesFor('status')} />
                             </th>
                             <th
-                                onClick={() => requestSort('timestamp')}
+                                onClick={() => requestSort('transactionTimestamp')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.timestamp')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('timestamp')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('transactionTimestamp')} />
                             </th>
                             <th
-                                onClick={() => requestSort('from')}
+                                onClick={() => requestSort('payerBankAccountNumber')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.from')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('from')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('payerBankAccountNumber')} />
                             </th>
                             <th
-                                onClick={() => requestSort('to')}
+                                onClick={() => requestSort('payerBankAccountNumber')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.to')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('to')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('payerBankAccountNumber')} />
                             </th>
                             <th
                                 onClick={() => requestSort('amount')}
@@ -83,23 +84,23 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                             </th>
                             {!disabledColumns?.includes('mobile-number') && <th>{t('column.mobile.number')}</th>}
                             {!disabledColumns?.includes('notes') && <th>{t('column.notes')}</th>}
-                            {setIsOpenDepositModal && <td />}
+                            {(setIsOpenDepositModal && updatePermission) && <td />}
                         </tr>
                     </thead>
                     <tbody>
                         {items.length > 0 ? dataPagination(items, currentPage, perPage).map((transaction: TransactionInterface, index: number) => (
                             <tr key={transaction.transactionId}>
                                 <td className='text-center'>
-                                    <div>{index + 1}</div>
+                                    <div>{perPage * (currentPage - 1) + (index + 1)}</div>
                                 </td>
                                 <td>
                                     <div>{getStatusText(transaction.status)}</div>
                                 </td>
                                 <td>
-                                    <div>{moment(transaction.createdAt).format('ll')}</div>
+                                    <div>{moment(transaction.transactionTimestamp).format('ll')}</div>
                                     <div>
                                         <small className='text-muted'>
-                                            {moment(transaction.createdAt).fromNow()}
+                                            {moment(transaction.transactionTimestamp).fromNow()}
                                         </small>
                                     </div>
                                 </td>
@@ -114,7 +115,7 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                                             </div>
                                             <div className='text-muted'>
                                                 <LabelTwoTone fontSize='small' />{' '}
-                                                <small>{transaction.recipientBankName.toUpperCase()}</small>
+                                                <small>{transaction.recipientBank?.acronym.toUpperCase()}</small>
                                             </div>
                                         </div>
                                     </div>
@@ -132,27 +133,27 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                                         <div>{transaction.notes}</div>
                                     </td>
                                 }
-                                {setIsOpenDepositModal && <td>
+                                {(setIsOpenDepositModal && updatePermission) && <td>
                                     <div className='row gap-3 w-100'>
                                         {transaction.status === TransactionStatus.Success ? 
                                             <Button
                                                 onClick={() => setIsOpenDepositModal({ type: DepositModalType.Refund, selectedRow: transaction})}
                                                 color='light-dark'
-                                                className='col fit-content'
+                                                className='col fit-content text-nowrap'
                                             >
                                                 {t('refund')}
                                             </Button>
                                             : transaction.status === TransactionStatus.NotFound ? <Button
                                                 onClick={() => setIsOpenDepositModal({ type: DepositModalType.SelectPayer, selectedRow: transaction})}
                                                 color='light-dark'
-                                                className='col fit-content'
+                                                className='col fit-content text-nowrap'
                                             >
                                                 {t('select.payer')}
                                             </Button> : <></>
                                         } {(transaction.status === TransactionStatus.Success || transaction.status === TransactionStatus.Cancel) && <Button
                                                 onClick={() => setIsOpenDepositModal({ type: DepositModalType.Edit, selectedRow: transaction})}
                                                 color='light-dark'
-                                                className='col fit-content'
+                                                className='col fit-content text-nowrap'
                                             >
                                             {t('edit')}
                                         </Button>}
@@ -171,7 +172,6 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
             </CardBody>
             <PaginationButtons
                 data={data}
-                label='customers'
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
                 perPage={perPage}

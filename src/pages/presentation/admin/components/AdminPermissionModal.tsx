@@ -38,18 +38,20 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
     }, [permissions])
 
     const featureTitle: Permission = {
-        report: t("report"),
-        customer: t("customer"),
-        deposit: t("deposit"),
-        withdraw: t("withdraw"),
-        bank: t("bank"),
-        reward: t("reward"),
-        credit: t("credit"),  
-        chat: t("chat"),
-        product: t("product"),
-        adminManage: t('admin'),
-        level: t('level'),
-        systemSetting: t('system.setting'),
+        report: 'รายงาน',
+        customer: 'ลูกค้า',
+        deposit: 'ฝากเงิน',
+        withdraw: 'ถอนเงิน',
+        bank: 'ธนาคารบริษัท',
+        reward: 'แลกรางวัล',
+        cashback: 'เครดิตเงินคืน',
+        credit: 'แลกเครดิต',  
+        creditCondition: 'เงื่อนไขแลกเครดิต',
+        chat: 'แชทสนทนา',
+        product: 'สินค้า',
+        adminManage: 'แอดมิน',
+        level: 'ระดับขั้น',
+        systemSetting: 'การตั้งค่า',
     }
 
     const onSelectCheckbox = (event: ChangeEvent<HTMLInputElement>) => {
@@ -64,10 +66,11 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
     const onSubmit = () => {
         id && updatePermission(id, permissionsValue, () => {
             dispatch(updatePermissionById(id, permissionsValue))
+            setIsOpen(false)
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('admin:save.successfully')}</span>
+                    <span>{t('save.successfully')}</span>
                 </span>,
                 t('admin:save.admin.successfully', { adminName: name }),
             )
@@ -78,14 +81,11 @@ const AdminPermissionModal = ({ id, name, permissions, isOpen, setIsOpen }: Admi
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('admin:save.failed')}</span>
+                    <span>{t('save.failed')}</span>
                 </span>,
                 t('admin:save.admin.failed', { adminName: name }),
             )
-        }).finally(() => {
-            setIsLoading(false)
-            setIsOpen(false)
-        })
+        }).finally(() => setIsLoading(false))
     }
 
     return (

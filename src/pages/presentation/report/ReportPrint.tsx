@@ -16,10 +16,10 @@ const ReportPrint = () => {
         'transactionTimestamp',
         'mobileNumber',
         'amount',
+        'payerBank',
         'payerBankAccountNumber',
-        'payerBankName',
+        'recipientBank',
         'recipientBankAccountNumber',
-        'recipientBankName',
         'status',
         'notes',
     ]
@@ -30,7 +30,11 @@ const ReportPrint = () => {
             transactionColumns.forEach((column: string) => {
                 if (row[column as keyof TransactionInterface]) {
                     if (column === 'transactionTimestamp') {
-                        sortedFields[column] = moment(row[column as keyof TransactionInterface]).format()
+                        sortedFields[column] = moment(row.transactionTimestamp).format()
+                    } else if (column === 'payerBank') {
+                        sortedFields[column] = row.payerBank?.acronym.toUpperCase()
+                    } else if (column === 'recipientBank') {
+                        sortedFields[column] = row.recipientBank?.acronym.toUpperCase()
                     } else {
                         sortedFields[column] = row[column as keyof TransactionInterface]
                     }

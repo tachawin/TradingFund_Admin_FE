@@ -5,12 +5,12 @@ import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components
 import { useDispatch, useSelector } from 'react-redux'
 import { storeCustomerMobileNumber } from 'redux/customer/action'
 import showNotification from 'components/extras/showNotification'
-import { useTranslation } from 'react-i18next'
 import Spinner from 'components/bootstrap/Spinner'
 import { selectCustomerMobileNumber } from 'redux/customer/selector'
 import Input from 'components/bootstrap/forms/Input'
 import { Check, InfoTwoTone } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
+import { CommonString } from 'common/data/enumStrings'
 
 interface CustomerMobileNumberDropdownInterface {
     selectedMobileNumber: string | string[]
@@ -25,13 +25,10 @@ interface CustomerMobileNumberDropdownInterface {
 const CustomerMobileNumberDropdown = ({ 
     selectedMobileNumber, setSelectedMobileNumber, disabled = false, multipleSelect = false, isValid, touched, error 
 }: CustomerMobileNumberDropdownInterface) => {
-    const { t } = useTranslation('customer')
     const dispatch = useDispatch()
     const mobileNumberList = useSelector(selectCustomerMobileNumber)
     const [isLoading, setIsLoading] = useState(false)
     const [filteredMobileNumber, setFilteredMobileNumber] = useState(mobileNumberList)
-
-    console.log(isValid, touched, error)
 
     useEffect(() => {
         setFilteredMobileNumber(mobileNumberList)
@@ -76,9 +73,9 @@ const CustomerMobileNumberDropdown = ({
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.mobile.number.failed')}</span>
+					<span>เรียกดูรายการลูกค้าไม่สำเร็จ</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		}).finally(() => setIsLoading(false))
 	// eslint-disable-next-line react-hooks/exhaustive-deps

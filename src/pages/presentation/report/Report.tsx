@@ -8,7 +8,6 @@ import SubHeader, {
 	SubheaderSeparator,
 } from '../../../layout/SubHeader/SubHeader'
 import Page from '../../../layout/Page/Page'
-import { demoPages } from '../../../menu'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
 import Button from '../../../components/bootstrap/Button'
@@ -26,7 +25,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectTransactionQuery, selectTransactionsList } from 'redux/transaction/selector'
 import showNotification from 'components/extras/showNotification'
 import { exportExcel, getTransactionList } from 'common/apis/report'
-import { TransactionInterface, TransactionType, TYPE } from 'common/apis/transaction'
+import { STATUS, TransactionInterface, TransactionStatus, TransactionType, TYPE } from 'common/apis/transaction'
 import { storeTransaction, storeTransactionQuery } from 'redux/transaction/action'
 import CompanyBanksDropdown from 'pages/common/CompanyBanksDropdown'
 import { CompanyBankInterface } from 'common/apis/companyBank'
@@ -35,10 +34,14 @@ import { useNavigate } from 'react-router-dom'
 import Spinner from 'components/bootstrap/Spinner'
 import { ArticleTwoTone, InfoTwoTone, PrintTwoTone, Search } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { CommonString } from 'common/data/enumStrings'
+import { pages } from 'menu'
 
 interface ReportFilterInterface {
 	searchInput: string
 	transactionType: TransactionType[]
+	status: TransactionStatus[]
 	amount: {
 		min: string
 		max: string
@@ -53,7 +56,7 @@ interface ReportFilterInterface {
 }
 
 const Report = () => {
-    const { t } = useTranslation('report')
+    const { t } = useTranslation(['common', 'report'])
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 
@@ -63,6 +66,8 @@ const Report = () => {
 
 	const transactions = useSelector(selectTransactionsList)
 	const transactionQueryList = useSelector(selectTransactionQuery)
+
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
 
 	useEffect(() => {
 		let queryString = Object.values(transactionQueryList).filter(Boolean).join('&')
@@ -78,9 +83,9 @@ const Report = () => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.transaction.failed')}</span>
+					<span>ไม่สามารถเรียกดูธุรกรรมได้</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -89,6 +94,7 @@ const Report = () => {
 	const formik = useFormik<ReportFilterInterface>({
 		initialValues: {
 			searchInput: '',
+			status: [],
 			transactionType: [],
 			amount: {
 				min: '',
@@ -108,6 +114,7 @@ const Report = () => {
 			dispatch(storeTransactionQuery({ 
 				...transactionQueryList,
 				bank: values.bank.length > 0 ? `companyBankId=${values.bank.map(bank => bank.bankId).join(',')}` : '',
+				status: values.status.length > 0 ? `status=${values.status.join(',')}` : '',
 				transactionType: values.transactionType.length > 0 ? `transactionType=${values.transactionType.join(',')}` : '',
 				min: values.amount.min ? `min=${values.amount.min}` : '',
 				max: values.amount.max ? `max=${values.amount.max}` : '',
@@ -163,9 +170,9 @@ const Report = () => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('download.transaction.failed')}</span>
+					<span>ดาวน์โหลดไฟล์ไม่สำเร็จ</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		})
 	}
@@ -190,7 +197,7 @@ const Report = () => {
 
 
 	return (
-		<PageWrapper title={demoPages.crm.subMenu.customersList.text}>
+		<PageWrapper title={pages.report.text}>
 			<SubHeader>
 				<SubHeaderLeft>
 					<label
@@ -202,12 +209,12 @@ const Report = () => {
 						id='searchInput'
 						type='search'
 						className='border-0 shadow-none bg-transparent'
-						placeholder={t('search.transaction') + '...'}
+						placeholder={t('report:search.transaction') + '...'}
 						onChange={handleSearchChange}
 						value={searchInput}
 					/>
 				</SubHeaderLeft>
-				<SubHeaderRight>
+				{permission.report[PermissionType.Read] === PermissionValue.Available && <SubHeaderRight>
 					<CommonTableFilter
 						resetLabel={t('filter.reset')}
 						onReset={resetForm}
@@ -215,7 +222,7 @@ const Report = () => {
 						onSubmit={handleSubmit}
 						filters={[
 							{
-								label: t('filter.type'),
+								label: t('filter.payment.type'),
 								children: <div>
 									{TYPE.map((type: TransactionType) => {
 										let indexInTypeFilter = values.transactionType.indexOf(type)
@@ -235,6 +242,28 @@ const Report = () => {
 										}
 									)}
 								</div>
+							},
+							{
+								label: t('filter.status'),
+								children: <div>
+									{STATUS.map((status: TransactionStatus) => {
+										let indexInStatusFilter = values.status.indexOf(status)
+										return <Checks
+												key={status}
+												label={
+													status === TransactionStatus.Success ? t('success') 
+														: status ===  TransactionStatus.NotFound ? t('not.found') 
+														: t('cancel')
+												}
+												name={status}
+												value={indexInStatusFilter}
+												onChange={(e) => handleOnChangeMultipleSelector(e, 'status')}
+												checked={indexInStatusFilter > -1}
+												ariaLabel={status}
+											/>
+										}
+									)}
+                                </div>
 							},
 							{
 								label: t('filter.timestamp'),
@@ -302,7 +331,7 @@ const Report = () => {
 						isLight
 						onClick={() => handleExportExcel()}
 					>
-						{t('export.excel')}
+						{t('report:export.excel')}
 					</Button>
 					<Button
 						icon={PrintTwoTone}
@@ -310,9 +339,9 @@ const Report = () => {
 						isLight
 						onClick={() => handlePrint()}
 					>
-						{t('print')}
+						{t('report:print')}
 					</Button>
-				</SubHeaderRight>
+				</SubHeaderRight>}
 			</SubHeader>
 			<Page>
 				<div className='row h-100'>

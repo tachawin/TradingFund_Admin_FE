@@ -16,8 +16,6 @@ import Badge from 'components/bootstrap/Badge'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import PlaceholderImage from 'components/extras/PlaceholderImage'
-import { useSelector } from 'react-redux'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { DeleteTwoTone, EditTwoTone, MoreHoriz } from '@mui/icons-material'
 
@@ -42,7 +40,7 @@ const ProductItem = ({
 	deleteAction,
 }: ProductItemInterface) => {
 	const { t } = useTranslation(['common', 'product'])
-	const permission = useSelector(selectPermission)
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
 	const [isOpenDropdown, setIsOpenDropdown] = useState<boolean>(false)
 
 	const handleEdit = () => {

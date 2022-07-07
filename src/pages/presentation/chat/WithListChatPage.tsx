@@ -19,11 +19,11 @@ import Chat, { ChatAvatar, ChatGroup, ChatListItem } from '../../../components/C
 import InputGroup from '../../../components/bootstrap/forms/InputGroup';
 import Textarea from '../../../components/bootstrap/forms/Textarea';
 import USERS from '../../../common/data/userDummyData';
-import { demoPages } from '../../../menu';
 import CHATS from '../../../common/data/chatDummyData';
 import CommonChatStatus from '../../common/CommonChatStatus';
 import { AccountCircleTwoTone, ChevronLeft, InfoTwoTone, Logout, SendTwoTone } from '@mui/icons-material';
 import COLORS from 'common/data/enumColors';
+import { pages } from 'menu';
 
 const WithListChatPage = () => {
 	const navigate = useNavigate();
@@ -61,7 +61,7 @@ const WithListChatPage = () => {
 	};
 
 	return (
-		<PageWrapper title={demoPages.chat.subMenu.withListChat.text}>
+		<PageWrapper title={pages.chat.text}>
 			<SubHeader>
 				<SubHeaderLeft>
 					<span>
@@ -208,7 +208,7 @@ const WithListChatPage = () => {
 											color='danger'
 											isLight
 											className='w-100 p-3'
-											onClick={() => navigate(`../${demoPages.login.path}`)}>
+											onClick={() => navigate(`../${pages.login.path}`)}>
 											Logout
 										</Button>
 									</CardFooterLeft>

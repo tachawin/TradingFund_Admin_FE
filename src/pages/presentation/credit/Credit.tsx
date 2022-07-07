@@ -7,7 +7,6 @@ import SubHeader, {
 	SubHeaderRight
 } from '../../../layout/SubHeader/SubHeader'
 import Page from '../../../layout/Page/Page'
-import { demoPages } from '../../../menu'
 import moment from 'moment'
 import { DateRange } from 'react-date-range'
 import Button, { ButtonGroup } from '../../../components/bootstrap/Button'
@@ -31,6 +30,9 @@ import showNotification from 'components/extras/showNotification'
 import Spinner from 'components/bootstrap/Spinner'
 import { InfoTwoTone, Search } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { CommonString } from 'common/data/enumStrings'
+import { pages } from 'menu'
 
 interface CreditFilterInterface {
 	searchInput: string
@@ -74,6 +76,9 @@ const Credit = () => {
 	const redeemCreditList = useSelector(selectRedeemCreditList)
 	const queryList = useSelector(selectRedeemCreditQuery)
 
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
+	const readPermission = permission.credit[PermissionType.Read] === PermissionValue.Available
+
 	useEffect(() => {
 		let queryString = Object.values(queryList).filter(Boolean).join('&')
 		let query = queryString ? `?${queryString}` : ''
@@ -88,9 +93,9 @@ const Credit = () => {
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.deposit.failed')}</span>
+					<span>เรียกดูรายการแลกเครดิตไม่สำเร็จ</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.NoPermission,
 			)
 		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -180,7 +185,7 @@ const Credit = () => {
 	}
 
 	return (
-		<PageWrapper title={demoPages.crm.subMenu.customersList.text}>
+		<PageWrapper title={pages.credit.text}>
 			<SubHeader>
 				<SubHeaderLeft>
 					<label
@@ -200,7 +205,7 @@ const Credit = () => {
 					/>
 				</SubHeaderLeft>
 				<SubHeaderRight>
-					<CommonTableFilter
+					{readPermission && <CommonTableFilter
 						resetLabel={t('filter.reset')}
 						onReset={resetForm}
 						submitLabel={t('filter')}
@@ -299,7 +304,7 @@ const Credit = () => {
 								</div>
 							}
 						]} 
-					/>
+					/>}
 				</SubHeaderRight>
 			</SubHeader>
 			<Page>
@@ -311,7 +316,7 @@ const Credit = () => {
 									<CardHeader>
 										<CardLabel>
 										<CardTitle>{creditTableState === CreditTableState.Request ? 
-											t('credit:credit.request') : t('credit:credit.history')}</CardTitle>
+											t('request') : t('history')}</CardTitle>
 										</CardLabel>
 										<ButtonGroup>
 											<Button
@@ -319,14 +324,14 @@ const Credit = () => {
 												isLight={creditTableState !== CreditTableState.Request}
 												onClick={() => setCreditTableState(CreditTableState.Request)}
 											>
-												{t('credit:request')}
+												{t('request')}
 											</Button>
 											<Button
 												color={creditTableState === CreditTableState.History ? 'success' : 'dark'}
 												isLight={creditTableState !== CreditTableState.History}
 												onClick={() => setCreditTableState(CreditTableState.History)}
 											>
-												{t('credit:history')}
+												{t('history')}
 											</Button>
 										</ButtonGroup>
 									</CardHeader>

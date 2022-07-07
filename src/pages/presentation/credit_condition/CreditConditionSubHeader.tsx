@@ -1,13 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useFormik } from 'formik'
 import SubHeader, { SubHeaderLeft, SubHeaderRight, SubheaderSeparator } from '../../../layout/SubHeader/SubHeader'
-import moment from 'moment'
-import { DateRange } from 'react-date-range'
 import Input from '../../../components/bootstrap/forms/Input'
-import Dropdown, {
-	DropdownMenu,
-	DropdownToggle,
-} from '../../../components/bootstrap/Dropdown'
 import { useTranslation } from 'react-i18next'
 import InputGroup, { InputGroupText } from 'components/bootstrap/forms/InputGroup'
 import CommonTableFilter from 'components/common/CommonTableFilter'
@@ -20,6 +14,7 @@ import { storeCreditConditionQuery } from 'redux/creditCondition/action'
 import 'moment/locale/th'
 import Checks from 'components/bootstrap/forms/Checks'
 import { selectCreditConditionQuery } from 'redux/creditCondition/selector'
+import { PermissionType, PermissionValue } from 'common/apis/user'
 
 interface CreditConditionFilterInterface {
 	searchInput: string
@@ -35,18 +30,6 @@ interface CreditConditionFilterInterface {
 		min: string
 		max: string
 	}
-	createdAt: {
-		startDate: Date
-		endDate: Date
-		key: string
-	}[]
-    updatedAt: {
-		startDate: Date
-		endDate: Date
-		key: string
-	}[]
-	isCreatedAtDateChanged: boolean
-	isUpdatedAtDateChanged: boolean
 	isLimited: boolean
 }
 
@@ -54,8 +37,8 @@ const CreditConditionSubHeader = ({ setIsOpenCreditConditionModal }: CreditCondi
 	const { t } = useTranslation(['common', 'creditCondition'])
 	const dispatch = useDispatch()
 
-	const [isOpenCreatedAtDatePicker, setIsOpenCreatedAtDatePicker] = useState(false)
-    const [isOpenUpdatedAtDatePicker, setIsOpenUpdatedAtDatePicker] = useState(false)
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
+    const createPermission = permission.creditCondition[PermissionType.Create] === PermissionValue.Available
 
 	const queryList = useSelector(selectCreditConditionQuery)
 
@@ -74,22 +57,6 @@ const CreditConditionSubHeader = ({ setIsOpenCreditConditionModal }: CreditCondi
                 min: '',
                 max: ''
             },
-			createdAt: [
-				{
-					startDate: moment().startOf('week').add('-1', 'week').toDate(),
-					endDate: moment().endOf('week').toDate(),
-					key: 'selection',
-				},
-			],
-            updatedAt: [
-				{
-					startDate: moment().startOf('week').add('-1', 'week').toDate(),
-					endDate: moment().endOf('week').toDate(),
-					key: 'selection',
-				},
-			],
-			isCreatedAtDateChanged: false,
-			isUpdatedAtDateChanged: false,
 			isLimited: true,
 		},
 		onSubmit: (values) => {
@@ -101,33 +68,16 @@ const CreditConditionSubHeader = ({ setIsOpenCreditConditionModal }: CreditCondi
 				maxPoint: values.point.max ? `maxPoint=${values.point.max}` : '',
 				minQuantity: !values.isLimited ? `minQuantity=-1` : values.quantity.min ? `minQuantity=${values.quantity.min}` : '',
 				maxQuantity: !values.isLimited ? `maxQuantity=-1` : values.quantity.max ? `maxQuantity=${values.quantity.max}` : '',
-				startCreated: values.isCreatedAtDateChanged ? `startCreated=${moment(values.createdAt[0].startDate).format('YYYY-MM-DD')}` : '',
-				endCreated: values.isCreatedAtDateChanged ?`endCreated=${moment(values.createdAt[0].endDate).format('YYYY-MM-DD')}` : '',
-				startUpdated: values.isUpdatedAtDateChanged ? `startUpdated=${moment(values.updatedAt[0].startDate).format('YYYY-MM-DD')}` : '',
-				endUpdated: values.isUpdatedAtDateChanged ? `endUpdated=${moment(values.updatedAt[0].endDate).format('YYYY-MM-DD')}` : ''
 			}))
 		},
 	})
 
 	const { 
 		values,
-		setFieldValue,
 		handleChange,
 		resetForm,
 		handleSubmit
 	} = formik
-
-	const datePicker = (selectedDate: any, field: string) => (
-		<DateRange
-			onChange={(item) => setFieldValue(field, [item.selection])}
-			showPreview
-			moveRangeOnFirstSelection={false}
-			retainEndDateOnFirstSelection={false}
-			ranges={selectedDate}
-			direction='horizontal'
-			rangeColors={['#6c5dd3']}
-		/>
-	)
 
 	return (<SubHeader className='pt-3 mx-3' style={{ boxShadow: 'none' }}>
 		<SubHeaderLeft>
@@ -139,56 +89,6 @@ const CreditConditionSubHeader = ({ setIsOpenCreditConditionModal }: CreditCondi
 				submitLabel={t('filter')}
 				onSubmit={handleSubmit}
 				filters={[
-					{
-						label: t('filter.created.at'),
-						children: <div>
-							<Checks
-								id='isCreatedAtDateChanged'
-								type='switch'
-								label={t('filter.created.at')}
-								onChange={handleChange}
-								checked={values.isCreatedAtDateChanged}
-								ariaLabel='Filter Created At Date'
-							/>
-							{values.isCreatedAtDateChanged && <Dropdown className='mt-2'>
-								<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenCreatedAtDatePicker)} setIsOpen={setIsOpenCreatedAtDatePicker}>
-									<span data-tour='date-range'>
-										{`${moment(values.createdAt[0].startDate).format('MMM Do YY')} - ${moment(
-											values.createdAt[0].endDate,
-										).format('MMM Do YY')}`}
-									</span>
-								</DropdownToggle>
-								<DropdownMenu isAlignmentEnd isOpen={isOpenCreatedAtDatePicker} setIsOpen={setIsOpenCreatedAtDatePicker}>
-									{datePicker(values.createdAt, 'createdAt')}
-								</DropdownMenu>
-							</Dropdown>}
-						</div>
-					},
-					{
-						label: t('filter.updated.at'),
-						children: <div>
-							<Checks
-								id='isUpdatedAtDateChanged'
-								type='switch'
-								label={t('filter.updated.at')}
-								onChange={handleChange}
-								checked={values.isUpdatedAtDateChanged}
-								ariaLabel='Filter Updated At Date'
-							/>
-							{values.isCreatedAtDateChanged && <Dropdown className='mt-2'>
-								<DropdownToggle color='dark' isLight hasIcon={false} isOpen={Boolean(isOpenUpdatedAtDatePicker)} setIsOpen={setIsOpenUpdatedAtDatePicker}>
-									<span data-tour='date-range'>
-										{`${moment(values.updatedAt[0].startDate).format('MMM Do YY')} - ${moment(
-											values.updatedAt[0].endDate,
-										).format('MMM Do YY')}`}
-									</span>
-								</DropdownToggle>
-								<DropdownMenu isAlignmentEnd isOpen={isOpenUpdatedAtDatePicker} setIsOpen={setIsOpenUpdatedAtDatePicker}>
-									{datePicker(values.updatedAt, 'updatedAt')}
-								</DropdownMenu>
-							</Dropdown>}
-						</div>
-					},
 					{
 						label: t('filter.credit'),
 						children: <div>
@@ -272,16 +172,18 @@ const CreditConditionSubHeader = ({ setIsOpenCreditConditionModal }: CreditCondi
 					}
 				]} 
 			/>
-			<SubheaderSeparator />
-			<Button
-				className='text-nowrap'
-				icon={Add}
-				color='primary'
-				isLight
-				onClick={() => setIsOpenCreditConditionModal({ type: CreditConditionModalType.Add, selectedRow: undefined})}
-			>
-				{t('creditCondition:add.creditCondition')}
-			</Button>
+			{createPermission && <>
+				<SubheaderSeparator />
+				<Button
+					className='text-nowrap'
+					icon={Add}
+					color='primary'
+					isLight
+					onClick={() => setIsOpenCreditConditionModal({ type: CreditConditionModalType.Add, selectedRow: undefined})}
+				>
+					{t('creditCondition:add.credit.condition')}
+				</Button>
+			</>}
 		</SubHeaderRight>
 	</SubHeader>)
 }

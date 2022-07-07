@@ -1,5 +1,7 @@
 import { InfoTwoTone } from '@mui/icons-material'
 import { ServiceType, updateOTPSetting } from 'common/apis/settings'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { CommonString } from 'common/data/enumStrings'
 import Card, { CardBody, CardHeader, CardLabel, CardTitle } from 'components/bootstrap/Card'
 import Checks from 'components/bootstrap/forms/Checks'
 import showNotification from 'components/extras/showNotification'
@@ -11,11 +13,13 @@ import { selectOTPSetting } from 'redux/setting/selector'
 
 
 const OTPSettings = () => {
-    const { t } = useTranslation('common')
+    const { t } = useTranslation(['common', 'setting'])
     const [isLoading, setIsLoading] = useState(false)
     const dispatch = useDispatch()
 
     const OTPSetting = useSelector(selectOTPSetting)
+    const permission = JSON.parse(localStorage.getItem('features') ?? '')
+    const readPermission = permission.systemSetting[PermissionType.Read] === PermissionValue.Available
 
     const handleOTPSettingChange = (type: ServiceType, checked: boolean) => {
         setIsLoading(true)
@@ -24,8 +28,8 @@ const OTPSettings = () => {
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('update.otp.setting.successfully')}</span>
-                </span>, t(`update.otp.setting.${type}.successfully`)
+                    <span>{t('setting:update.otp.setting.successfully')}</span>
+                </span>, t(`setting:update.otp.setting.${type}.successfully`)
             )
         }, (error) => {
             const { response } = error
@@ -33,8 +37,8 @@ const OTPSettings = () => {
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
-                    <span>{t('update.otp.setting.failed')}</span>
-                </span>, t(`update.otp.setting.${type}.failed`)
+                    <span>{t('setting:update.otp.setting.failed')}</span>
+                </span>, t(`setting:update.otp.setting.${type}.failed`)
             )
         }).finally(() => setIsLoading(false))
     }
@@ -48,15 +52,15 @@ const OTPSettings = () => {
                             <CardTitle>{t('otp.setting')}</CardTitle>
                         </CardLabel>
                     </CardHeader>
-                    <CardBody>
-                        <div className='d-flex justify-content-between align-items-center'>
+                    <CardBody className={readPermission ? '' : 'd-flex justify-content-center align-items-center'}>
+                        {readPermission ? <><div className='d-flex justify-content-between align-items-center'>
                             <div>
                                 <h5>{t('customer')}</h5>
-                                <p>{t('otp.customer.desc')}</p>
+                                <p>{t('setting:otp.customer.desc')}</p>
                             </div>
                             <Checks
                                 key='customer'
-                                label={OTPSetting.customer ? t('on') : t('off')}
+                                label={OTPSetting.customer ? t('active') : t('inactive')}
                                 name='customer'
                                 value={OTPSetting.customer}
                                 onChange={(e: ChangeEvent<HTMLInputElement>) => handleOTPSettingChange(ServiceType.Customer, e.target.checked)}
@@ -69,11 +73,11 @@ const OTPSettings = () => {
                         <div className='d-flex justify-content-between align-items-center'>
                             <div>
                                 <h5>{t('admin')}</h5>
-                                <p>{t('otp.admin.desc')}</p>
+                                <p>{t('setting:otp.admin.desc')}</p>
                             </div>
                             <Checks
                                 key='admin'
-                                label={OTPSetting.admin ? t('on') : t('off')}
+                                label={OTPSetting.admin ? t('active') : t('inactive')}
                                 name='admin'
                                 value={OTPSetting.admin}
                                 onChange={(e: ChangeEvent<HTMLInputElement>) => handleOTPSettingChange(ServiceType.Admin, e.target.checked)}
@@ -82,7 +86,7 @@ const OTPSettings = () => {
                                 ariaLabel='admin'
                                 type='switch'
                             />
-                        </div>
+                        </div></> : <div>{CommonString.NoPermission}</div>}
                     </CardBody>
                 </Card>
 			</div>

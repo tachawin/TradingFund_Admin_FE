@@ -11,7 +11,6 @@ import { ProductProps } from './Product'
 import { useDispatch, useSelector } from 'react-redux'
 import { storeProductQuery } from 'redux/product/action'
 import { selectProductQuery } from 'redux/product/selector'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { ProductModalType } from './ProductModal'
 import { Add, Search } from '@mui/icons-material'
@@ -32,7 +31,7 @@ interface ProductFilterInterface {
 const ProductSubHeader = ({ setIsOpenProductModal }: ProductProps) => {
 	const { t } = useTranslation(['common', 'product'])
 	const dispatch = useDispatch()
-	const permission = useSelector(selectPermission)
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
 	const [searchInput, setSearchInput] = useState('')
 
 	const productQueryList = useSelector(selectProductQuery)

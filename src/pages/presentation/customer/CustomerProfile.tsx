@@ -38,12 +38,18 @@ import { selectRedeemCreditList } from 'redux/redeemCredit/selector';
 import CreditTable from '../credit/CreditTable';
 import { AccountBalanceWalletTwoTone, AccountCircleTwoTone, ArrowBack, CreditCardTwoTone, CurrencyExchangeTwoTone, GroupTwoTone, InfoTwoTone, LocalAtmTwoTone, PhoneIphoneTwoTone, ReceiptTwoTone, StarTwoTone, VpnKeyTwoTone } from '@mui/icons-material';
 import COLORS from 'common/data/enumColors';
+import { selectCashbackList } from 'redux/cashback/selector';
+import { CashbackInterface, getCashbackHistory, getCurrentCashback } from 'common/apis/cashback';
+import { CommonString } from 'common/data/enumStrings';
+import { storeCashbackList } from 'redux/cashback/action';
+import CashbackTable from '../cashback/CashbackTable';
 
 enum TransactionState {
 	Deposit = 'deposit',
 	Withdraw = 'withdraw',
 	Reward = 'reward',
-	Credit = 'credit'
+	Credit = 'credit',
+	Cashback = 'cashback'
 }
 
 const CustomerProfile = () => {
@@ -51,8 +57,10 @@ const CustomerProfile = () => {
 
 	const { id } = useParams()
 	const [customer, setCustomer] = useState<CustomerInterface>()
+	const [currentCashbackAmount, setCurrentCashbackAmount] = useState<number>()
 	const [isLoading, setIsLoading] = useState(false)
 	const [isCustomerLoading, setIsCustomerLoading] = useState(false)
+	const [isCashbackAmountLoading, setIsCashbackAmountLoading] = useState(false)
 
 	const [transactionState, setTransactionState] = useState(TransactionState.Deposit)
     const [isOpenTransactionDropdown, setIsOpenTransactionDropdown] = useState(false)
@@ -62,12 +70,12 @@ const CustomerProfile = () => {
 	const withdrawList = useSelector(selectWithdrawList)
 	const rewardList = useSelector(selectRedeemProductList)
 	const creditList = useSelector(selectRedeemCreditList)
+	const cashbackList = useSelector(selectCashbackList)
 
 	useEffect(() => {
 		setIsLoading(true)
 		if (transactionState === TransactionState.Deposit) {
 			getDepositList(`?customerId=${id}`, (depositList: TransactionInterface[]) => {
-				console.log(depositList)
 				dispatch(storeDepositList(depositList))
 			}, (error: any) => {
 				const { response } = error
@@ -75,9 +83,9 @@ const CustomerProfile = () => {
 				showNotification(
 					<span className='d-flex align-items-center'>
 						<InfoTwoTone className='me-1' />
-						<span>{t('get.deposit.failed')}</span>
+						<span>เรียกดูรายการฝากไม่สำเร็จ</span>
 					</span>,
-					t('please.refresh.again'),
+					CommonString.TryAgain,
 				)
 			}).finally(() => setIsLoading(false))
 		} else if (transactionState === TransactionState.Withdraw) {
@@ -89,9 +97,9 @@ const CustomerProfile = () => {
 				showNotification(
 					<span className='d-flex align-items-center'>
 						<InfoTwoTone className='me-1' />
-						<span>{t('get.withdraw.failed')}</span>
+						<span>เรียกดูรายการถอนไม่สำเร็จ</span>
 					</span>,
-					t('please.refresh.again'),
+					CommonString.TryAgain,
 				)
 			}).finally(() => setIsLoading(false))
 		} else if (transactionState === TransactionState.Reward) {
@@ -105,10 +113,10 @@ const CustomerProfile = () => {
 						<InfoTwoTone className='me-1' />
 						<span>เรียกดูรายการแลกสินค้าไม่สำเร็จ</span>
 					</span>,
-					'กรุณาลองใหม่อีกครั้ง',
+					CommonString.TryAgain,
 				)
 			}).finally(() => setIsLoading(false))
-		} else {
+		} else if (transactionState === TransactionState.Credit) {
 			getRedeemCreditList(`?customerId=${id}`, '', (redeemCreditRequest: RedeemInterface[]) => {
 				dispatch(storeRedeemCreditList(redeemCreditRequest))
 			}, (error: any) => {
@@ -117,28 +125,60 @@ const CustomerProfile = () => {
 				showNotification(
 					<span className='d-flex align-items-center'>
 						<InfoTwoTone className='me-1' />
-						<span>{t('get.deposit.failed')}</span>
+						<span>เรียกดูรายการแลกเครดิตไม่สำเร็จ</span>
 					</span>,
-					t('please.refresh.again'),
+					CommonString.TryAgain,
+				)
+			}).finally(() => setIsLoading(false))
+		} else if (transactionState === TransactionState.Cashback) {
+			customer?.mobileNumber && getCashbackHistory(customer.mobileNumber, (cashbackList: CashbackInterface[]) => {
+				dispatch(storeCashbackList(cashbackList))
+			}, (error: any) => {
+				const { response } = error
+				console.log(response.data)
+				showNotification(
+					<span className='d-flex align-items-center'>
+						<InfoTwoTone className='me-1' />
+						<span>เรียกดูรายการเครดิตเงินคืนไม่สำเร็จ</span>
+					</span>,
+					CommonString.TryAgain,
 				)
 			}).finally(() => setIsLoading(false))
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [transactionState])
 
-	useEffect(() => {
-		setIsCustomerLoading(true)
-		id && getCustomer(id, (customer: CustomerInterface) => {
-			setCustomer(customer)
+	const getCurrentCashbackByMobileNumber = (mobileNumber: string) => {
+		setIsCashbackAmountLoading(true)
+		getCurrentCashback(mobileNumber, (amount: number) => {
+			setCurrentCashbackAmount(amount)
 		}, (error: any) => {
 			const { response } = error
 			console.log(response.data)
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.customer.failed')}</span>
+					<span>เรียกดูยอดเครดิตเงินคืนไม่สำเร็จ</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
+			)
+		}).finally(() => setIsCashbackAmountLoading(false))
+	}
+
+	useEffect(() => {
+		setIsCustomerLoading(true)
+		id && getCustomer(id, (customer: CustomerInterface) => {
+			setCustomer(customer)
+			getCurrentCashbackByMobileNumber(customer.mobileNumber)
+		}, (error: any) => {
+			const { response } = error
+			console.log(response.data)
+			showNotification(
+				<span className='d-flex align-items-center'>
+					<InfoTwoTone className='me-1' />
+					<span>เรียกดูลูกค้าไม่สำเร็จ</span>
+				</span>,
+				CommonString.TryAgain,
 			)
 		}).finally(() => setIsCustomerLoading(false))
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -148,14 +188,15 @@ const CustomerProfile = () => {
 		<CardHeader className='pb-0'>
 			<div className='d-flex justify-content-start align-items-center'>
 				<ReceiptTwoTone className='me-2' fontSize='large' htmlColor={COLORS.PRIMARY.code} />
-				<CardTitle className='mb-0'>{t('customer:transaction.history')}</CardTitle>
+				<CardTitle className='mb-0'>{t('transaction.history')}</CardTitle>
 			</div>
 			<Dropdown>
 				<DropdownToggle isOpen={Boolean(isOpenTransactionDropdown)} setIsOpen={setIsOpenTransactionDropdown}>
 					<span>
 						{transactionState === 'deposit' ? t('deposit') :
 							transactionState === 'withdraw' ? t('withdraw') :
-							transactionState === 'credit' ? t('credit') : t('reward')}
+							transactionState === 'credit' ? t('credit') : 
+							transactionState === 'reward' ? t('reward') : t('cashback')}
 					</span>
 				</DropdownToggle>
 				<DropdownMenu isAlignmentEnd isOpen={Boolean(isOpenTransactionDropdown)} setIsOpen={setIsOpenTransactionDropdown}>
@@ -191,6 +232,14 @@ const CustomerProfile = () => {
 							{t('reward')}
 						</Button>
 					</DropdownItem>
+					<DropdownItem>
+						<Button
+							color='link'
+							isActive={transactionState === TransactionState.Cashback}
+							onClick={() => setTransactionState(TransactionState.Cashback)}>
+							{t('cashback')}
+						</Button>
+					</DropdownItem>
 				</DropdownMenu>
 			</Dropdown>
 		</CardHeader>
@@ -209,20 +258,10 @@ const CustomerProfile = () => {
 					</Button>
 				</SubHeaderLeft>
 			</SubHeader>
-			<Page className='p-3 justify-content-center'>
+			<Page className='p-3'>
 				{isCustomerLoading ? <Spinner isGrow color='primary' size={50} className='align-self-center' /> : <>
 					<div className='p-3 d-flex align-items-center'>
 						<span className='display-4 fw-bold me-3'>{customer?.name}</span>
-						<span className='border border-primary border-2 text-primary fw-bold px-3 py-2 rounded'>
-							<img 
-								src={customer?.level?.imageURL} alt={customer?.level?.levelName}
-								width={40} 
-								height={40} 
-								style={{ objectFit: 'contain' }} 
-								className='me-2 rounded-circle'
-							/>{' '}
-							{' ' + customer?.level?.levelName}
-						</span>
 					</div>
 					<div className='row'>
 						<div className='col-lg-4'>
@@ -247,6 +286,21 @@ const CustomerProfile = () => {
 															{t('column.mobile.number')}
 														</div>
 													</div>
+													<img 
+														src={customer?.level?.imageURL} alt={customer?.level?.levelName}
+														width={30} 
+														height={30} 
+														style={{ objectFit: 'contain' }} 
+														className='me-2 rounded-circle border border-2 border-primary'
+													/>
+													<div className='flex-grow-1 ms-3'>
+														<div className='fw-bold fs-5 mb-0'>
+															{customer?.level?.levelName}
+														</div>
+														<div className='text-muted'>
+															{t('level')}
+														</div>
+													</div>
 												</div>
 											</div>
 											<div className='col-12'>
@@ -256,18 +310,10 @@ const CustomerProfile = () => {
 													</div>
 													<div className='flex-grow-1 ms-3'>
 														<div className='fw-bold fs-5 mb-0'>
-															{customer?.bank?.acronym.toLocaleUpperCase()}
+															{customer?.bank?.acronym.toLocaleUpperCase()}{' '}{customer?.bankAccountNumber}
 														</div>
 														<div className='text-muted'>
-															{t('column.bank.account')}
-														</div>
-													</div>
-													<div className='flex-grow-1 ms-3'>
-														<div className='fw-bold fs-5 mb-0'>
-															{customer?.bankAccountNumber}
-														</div>
-														<div className='text-muted'>
-															{customer?.bankAccountName}
+															{t('column.bank.account')}{' '}{customer?.bankAccountName}
 														</div>
 													</div>
 												</div>
@@ -337,9 +383,25 @@ const CustomerProfile = () => {
 												<div className='flex-grow-1 ms-3'>
 													<div className='fw-bold fs-3 mb-0'>{customer?.cashbackBonus?.toLocaleString()}</div>
 													<div className='text-muted mt-n2 truncate-line-1'>
-														{t('cashback.bonus')}
+														{t('cashback')}
 													</div>
 												</div>
+											</div>
+										</div>
+										<div className='col-xl-6'>
+											<div
+												className={`d-flex align-items-center bg-l10-secondary rounded-2 p-3`}>
+												<div className='flex-shrink-0'>
+													<CurrencyExchangeTwoTone fontSize='large' htmlColor={COLORS.SECONDARY.code} />
+												</div>
+												{isCashbackAmountLoading ? <Spinner className='mx-3' color='secondary' size={16} /> :
+													<div className='flex-grow-1 ms-3'>
+														<div className='fw-bold fs-3 mb-0'>{currentCashbackAmount?.toLocaleString()}</div>
+														<div className='text-muted mt-n2 truncate-line-1'>
+															{t('cashback.this.month')}
+														</div>
+													</div>
+												}
 											</div>
 										</div>
 										<div className='col-xl-6'>
@@ -375,10 +437,13 @@ const CustomerProfile = () => {
 										cardHeader={transactionHeader()}
 										data={rewardList}
 										columns={{ status: true }}
-									/> : <CreditTable 
+									/> : transactionState === 'credit' ? <CreditTable 
 										cardHeader={transactionHeader()}
 										data={creditList}
 										columns={{ status: true }}
+									/> : <CashbackTable 
+										cardHeader={transactionHeader()}
+										data={cashbackList}
 									/>
 							}
 						</div>

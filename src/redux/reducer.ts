@@ -13,9 +13,11 @@ import redeemCreditReducer from './redeemCredit/reducer'
 import redeemProductReducer from './redeemProduct/reducer'
 import systemSettingReducer from './setting/reducer'
 import creditConditionReducer from './creditCondition/reducer'
+import cashbackReducer from './cashback/reducer'
 
 const rootReducer = combineReducers({
   admin: adminReducer,
+  cashback: cashbackReducer,
   commonBank: commonBankReducer,
   companyBank: companyBankReducer,
   creditCondition: creditConditionReducer,

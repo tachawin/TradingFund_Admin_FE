@@ -1,7 +1,7 @@
 import { getAccessToken } from 'common/utils/auth'
 import { CreditTableState } from 'pages/presentation/credit/Credit'
 import { RewardTableState } from 'pages/presentation/reward/Reward'
-import axios, { authorizationHandler } from './axios'
+import axios, { authorizationHandler, ErrorResponse } from './axios'
 
 export enum RedeemType {
     Credit = 'credit',
@@ -66,6 +66,7 @@ export const getRedeemProductList = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })
 
@@ -85,6 +86,7 @@ export const getRedeemCreditList = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })
  
@@ -92,20 +94,21 @@ export const updateRedeem = async (
     redeemId: string,
     action: RedeemAction,
     data: RedeemUpdateBodyInterface,
-    next: () => void,
+    next: (res: ErrorResponse) => void,
     handleError: (error: any) => void
 ) =>
     await authorizationHandler(async () => {
         try {
-			await axios({
+			const res = await axios({
                 method: 'patch',
                 url: `/redeem_product/${action}/${redeemId}`,
                 headers: { Authorization: `Bearer ${getAccessToken()}` },
                 data
             })
-            next()
+            next(res.data)
 		} catch (error: any) {
 			handleError(error)
+            throw error
 		}
     })
 
@@ -113,20 +116,21 @@ export const updateRedeemCredit = async (
     redeemId: string,
     action: RedeemAction,
     data: RedeemUpdateBodyInterface,
-    next: () => void,
+    next: (res: ErrorResponse) => void,
     handleError: (error: any) => void
 ) =>
     await authorizationHandler(async () => {
         try {
-            await axios({
+            const res = await axios({
                 method: 'patch',
                 url: `/redeem_credit/${action}/${redeemId}`,
                 headers: { Authorization: `Bearer ${getAccessToken()}` },
                 data
             })
-            next()
+            next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
     })
     

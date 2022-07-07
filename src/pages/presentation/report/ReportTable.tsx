@@ -1,11 +1,9 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import moment from 'moment'
-import { useSelector } from 'react-redux'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { TransactionInterface, TransactionStatus, TransactionType } from 'common/apis/transaction'
 import { FilterList, LabelTwoTone } from '@mui/icons-material'
@@ -16,11 +14,15 @@ interface ReportTableInterface {
 
 const ReportTable = ({ data }: ReportTableInterface) => {
     const { t } = useTranslation('common')
-    const permission = useSelector(selectPermission)
+    const permission = JSON.parse(localStorage.getItem('features') ?? '')
 
     const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
+
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [items])
 
     const getTypeText = (type: string): ReactNode => {
         if (type === TransactionType.Deposit) {
@@ -47,35 +49,23 @@ const ReportTable = ({ data }: ReportTableInterface) => {
             <table className='table table-modern table-hover'>
                 <thead>
                     <tr>
-                        <th 
-                            onClick={() => requestSort('no')}
-                            className='cursor-pointer text-decoration-underline text-center'>
+                        <th className='text-center'>
                             {t('column.no')}
                         </th>
                         <th
-                            onClick={() => requestSort('type')}
-                            className='cursor-pointer text-decoration-underline'>
-                            {t('column.type')}{' '}
-                            <FilterList fontSize='small' className={getClassNamesFor('type')} />
-                        </th>
-                        <th
-                            onClick={() => requestSort('mobileNumber')}
-                            className='cursor-pointer text-decoration-underline'>
-                            {t('column.mobile.number')}{' '}
-                            <FilterList fontSize='small' className={getClassNamesFor('mobileNumber')} />
-                        </th>
-                        <th
-                            onClick={() => requestSort('timestamp')}
+                            onClick={() => requestSort('transactionTimestamp')}
                             className='cursor-pointer text-decoration-underline'>
                             {t('column.timestamp')}{' '}
-                            <FilterList fontSize='small' className={getClassNamesFor('timestamp')} />
+                            <FilterList fontSize='small' className={getClassNamesFor('transactionTimestamp')} />
                         </th>
                         <th
-                            onClick={() => requestSort('bank')}
+                            onClick={() => requestSort('transactionType')}
                             className='cursor-pointer text-decoration-underline'>
-                            {t('column.bank')}{' '}
-                            <FilterList fontSize='small' className={getClassNamesFor('bank')} />
+                            {t('column.type')}{' '}
+                            <FilterList fontSize='small' className={getClassNamesFor('transactionType')} />
                         </th>
+                        <th>{t('column.mobile.number')}</th>
+                        <th>{t('column.bank')}</th>
                         <th
                             onClick={() => requestSort('amount')}
                             className='cursor-pointer text-decoration-underline'>
@@ -95,7 +85,15 @@ const ReportTable = ({ data }: ReportTableInterface) => {
                     {items.length > 0 ? dataPagination(items, currentPage, perPage).map((transaction: TransactionInterface, index: number) => (
                         <tr key={transaction.transactionId}>
                             <td className='text-center'>
-                                <div>{index + 1}</div>
+                                <div>{perPage * (currentPage - 1) + (index + 1)}</div>
+                            </td>
+                            <td>
+                                <div>{moment(transaction.transactionTimestamp).format('ll')}</div>
+                                <div>
+                                    <small className='text-muted'>
+                                        {moment(transaction.transactionTimestamp).fromNow()}
+                                    </small>
+                                </div>
                             </td>
                             <td>
                                 <div>{getTypeText(transaction.transactionType)}</div>
@@ -104,22 +102,14 @@ const ReportTable = ({ data }: ReportTableInterface) => {
                                 <div>{transaction.mobileNumber}</div>
                             </td>
                             <td>
-                                <div>{moment(transaction.createdAt).format('ll')}</div>
-                                <div>
-                                    <small className='text-muted'>
-                                        {moment(transaction.createdAt).fromNow()}
-                                    </small>
-                                </div>
-                            </td>
-                            <td>
                                 <div className='d-flex align-items-center'>
                                     <div className='flex-grow-1'>
                                         <div className='fs-6 fw-bold'>
-                                            {transaction.transactionType === TransactionType.Deposit ? `*${transaction.recipientBankAccountNumber}` : `*${transaction.payerBankAccountNumber}`}
+                                            {transaction.transactionType === TransactionType.Deposit ? `*${transaction.recipientBankAccountNumber.slice(-4)}` : `*${transaction.payerBankAccountNumber.slice(-4)}`}
                                         </div>
                                         <div className='text-muted'>
                                             <LabelTwoTone fontSize='small' />{' '}
-                                            <small>{transaction.transactionType === TransactionType.Deposit ? transaction.recipientBankName.toUpperCase() : transaction.payerBankName.toUpperCase()}</small>
+                                            <small>{transaction.transactionType === TransactionType.Deposit ? transaction.recipientBank?.acronym.toUpperCase() : transaction.payerBank?.acronym.toUpperCase()}</small>
                                         </div>
                                     </div>
                                 </div>
@@ -146,7 +136,6 @@ const ReportTable = ({ data }: ReportTableInterface) => {
         </CardBody>
         <PaginationButtons
             data={data}
-            label='customers'
             setCurrentPage={setCurrentPage}
             currentPage={currentPage}
             perPage={perPage}

@@ -12,6 +12,8 @@ import showNotification from 'components/extras/showNotification'
 import Spinner from 'components/bootstrap/Spinner'
 import { InfoTwoTone } from '@mui/icons-material'
 import CreditConditionSubHeader from './CreditConditionSubHeader'
+import { PermissionType, PermissionValue } from 'common/apis/user'
+import { CommonString } from 'common/data/enumStrings'
 
 export interface CreditConditionModalProperties {
 	type: CreditConditionModalType
@@ -37,6 +39,9 @@ const CreditCondition = ({ isOpenCreditConditionModal, setIsOpenCreditConditionM
 	const [isLoading, setIsLoading] = useState(false)
     const [isOpenDeleteCreditConditionModal, setIsOpenDeleteCreditConditionModal] = useState<CreditConditionModalProperties>()
 	
+	const permission = JSON.parse(localStorage.getItem('features') ?? '')
+    const readPermission = permission.creditCondition[PermissionType.Read] === PermissionValue.Available
+
 	const creditConditions = useSelector(selectCreditConditions)
 	const queryList = useSelector(selectCreditConditionQuery)
 
@@ -51,9 +56,9 @@ const CreditCondition = ({ isOpenCreditConditionModal, setIsOpenCreditConditionM
 			showNotification(
 				<span className='d-flex align-items-center'>
 					<InfoTwoTone className='me-1' />
-					<span>{t('get.bank.failed')}</span>
+					<span>ไม่สามารถเรียกดูเงื่อนไขแลกเครดิตได้</span>
 				</span>,
-				t('please.refresh.again'),
+				CommonString.TryAgain,
 			)
 		}).finally(() => setIsLoading(false))
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,10 +71,10 @@ const CreditCondition = ({ isOpenCreditConditionModal, setIsOpenCreditConditionM
 					: <CreditConditionTable
 						cardHeader={
 							<>
-								<CreditConditionSubHeader isOpenCreditConditionModal={isOpenCreditConditionModal} setIsOpenCreditConditionModal={setIsOpenCreditConditionModal}  />
+								{readPermission && <CreditConditionSubHeader isOpenCreditConditionModal={isOpenCreditConditionModal} setIsOpenCreditConditionModal={setIsOpenCreditConditionModal} />}
 								<CardHeader>
 									<CardLabel>
-										<CardTitle>{t('creditCondition:creditCondition')}</CardTitle>
+										<CardTitle>{t('credit.condition')}</CardTitle>
 									</CardLabel>
 								</CardHeader>
 							</>

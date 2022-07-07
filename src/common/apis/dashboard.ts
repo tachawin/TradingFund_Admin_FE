@@ -34,6 +34,7 @@ export const getTransactionMetric = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })
 
@@ -53,5 +54,6 @@ export const getCustomerRegisterAndActionMetric = async (
             next(res.data)
         } catch (error: any) {
             handleError(error)
+            throw error
         }
 })

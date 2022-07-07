@@ -2,7 +2,7 @@ import { TransactionInterface } from '../../common/apis/transaction'
 
 export const STORE_WITHDRAW_LIST = 'STORE_WITHDRAW_LIST'
 export const STORE_WITHDRAW_LIST_QUERY = 'STORE_WITHDRAW_LIST_QUERY'
-
+export const REMOVE_WITHDRAW = 'REMOVE_WITHDRAW'
 export interface InitialState {
   withdrawList: TransactionInterface[]
   withdrawQuery: { [key: string] : string }
@@ -18,4 +18,9 @@ interface StoreWithdrawtListQuery {
   payload: { [key: string] : string }
 }
 
-export type WithdrawActionTypes = StoreWithdrawList | StoreWithdrawtListQuery
+interface RemoveWithdraw {
+  type: typeof REMOVE_WITHDRAW
+  payload: string
+}
+
+export type WithdrawActionTypes = StoreWithdrawList | StoreWithdrawtListQuery | RemoveWithdraw

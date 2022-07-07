@@ -1,6 +1,8 @@
 {
     "search.deposit.transaction": "ค้นหาธุรกรรมการฝากเงิน",
-    "cancel": "ถูกดึงเครดิต",
+    "was.refund": "ถูกดึงเครดิต",
+
+    "form.notes.refund.reason.placeholder": "กรุณาใส่เหตุผลดึงเครดิต",
 
     "save.deposit.successfully": "บันทึกรายการโอนสำเร็จ",
     "save.deposit.failed": "บันทึกรายการโอนไม่สำเร็จ",

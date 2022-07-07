@@ -281,7 +281,7 @@ interface NavigationInterface extends DetailedHTMLProps<HTMLAttributes<HTMLEleme
 const Navigation = forwardRef<any, NavigationInterface>(({ menu, horizontal = false, id, className, ...props }, ref) => {
 	const [activeItem, setActiveItem] = useState<any>(null)
 
-	const { t } = useTranslation('menu')
+	const { t } = useTranslation('common')
 
 	function fillMenu(data: any, parentId: string | number, rootId: string | number, isHorizontal: boolean, isMore?: boolean) {
 		return Object.values(data).map((item: any) =>
@@ -319,7 +319,7 @@ const Navigation = forwardRef<any, NavigationInterface>(({ menu, horizontal = fa
 				{horizontal && (
 					<Item
 						rootId={`other-${id}`}
-						title={t('More')}
+						title={t('more')}
 						icon={MoreHoriz}
 						isHorizontal
 						isMore>

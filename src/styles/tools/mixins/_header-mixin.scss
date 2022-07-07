@@ -7,10 +7,6 @@
 		@include media-breakpoint-up($modern-design-breakpoint) {
 			@content;
 		}
-	} @else {
-		@include media-breakpoint-down($modern-design-breakpoint) {
-			@content;
-		}
 	}
 }
 

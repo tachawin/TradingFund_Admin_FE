@@ -1,12 +1,10 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
 import { PermissionType, PermissionValue } from 'common/apis/user'
-import { useSelector } from 'react-redux'
-import { selectPermission } from 'redux/user/selector'
 import { RedeemInterface, RedeemStatus } from 'common/apis/redeem'
 import 'moment/locale/th'
 import moment from 'moment'
@@ -32,7 +30,12 @@ const CreditTable = ({
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
 
-    const permission = useSelector(selectPermission)
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [items])
+
+    const permission = JSON.parse(localStorage.getItem('features') ?? '')
+    const updatePermission = permission.credit[PermissionType.Update] === PermissionValue.Available
 
     const getStatusText = (status: string): ReactNode => {
         if (status === 'success') {
@@ -51,23 +54,21 @@ const CreditTable = ({
                 <table className='table table-modern table-hover'>
                     <thead>
                         <tr>
-                            <th 
-                                onClick={() => requestSort('no')}
-                                className='cursor-pointer text-decoration-underline text-center'>
+                            <th className='text-center'>
                                 {t('column.no')}
                             </th>
                             <th
-                                onClick={() => requestSort('timestamp')}
+                                onClick={() => requestSort('createdAt')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.timestamp')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('timestamp')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('createdAt')} />
                             </th>
                             {columns?.mobileNumber && <th>{t('column.mobile.number')}</th>}
                             <th
-                                onClick={() => requestSort('points')}
+                                onClick={() => requestSort('point')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.points')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('points')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('point')} />
                             </th>
                             <th
                                 onClick={() => requestSort('credit')}
@@ -85,20 +86,20 @@ const CreditTable = ({
                             }
                             {columns?.operator &&
                                 <th
-                                    onClick={() => requestSort('operator')}
+                                    onClick={() => requestSort('adminName')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.operator')}{' '}
-                                    <FilterList fontSize='small' className={getClassNamesFor('operator')} />
+                                    <FilterList fontSize='small' className={getClassNamesFor('adminName')} />
                                 </th>
                             }
-                            {setIsOpenCreditModal && <td />}
+                            {(setIsOpenCreditModal && updatePermission) && <td />}
                         </tr>
                     </thead>
                     <tbody>
                         {items.length > 0 ? dataPagination(items, currentPage, perPage).map((item: RedeemInterface, index: number) => (
                             <tr key={item.redeemId}>
                                 <td className='text-center'>
-                                    <div>{index + 1}</div>
+                                    <div>{perPage * (currentPage - 1) + (index + 1)}</div>
                                 </td>
                                 <td>
                                     <div>{moment(item.createdAt).format('ll')}</div>
@@ -129,7 +130,7 @@ const CreditTable = ({
                                         <div>{item.adminName}</div>
                                     </td>
                                 }
-                                {setIsOpenCreditModal && <td>
+                                {(setIsOpenCreditModal && updatePermission) && <td>
                                     {item.status === RedeemStatus.Request ?
                                         <div className='row gap-3'><Button
                                         onClick={() => setIsOpenCreditModal({ type: CreditModalType.Approve, selectedRow: item})}
@@ -162,7 +163,6 @@ const CreditTable = ({
             </CardBody>
             <PaginationButtons
                 data={data}
-                label='customers'
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
                 perPage={perPage}

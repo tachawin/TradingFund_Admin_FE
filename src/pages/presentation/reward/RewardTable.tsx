@@ -1,11 +1,9 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import Card, { CardBody } from 'components/bootstrap/Card'
 import useSortableData from 'hooks/useSortableData'
 import { useTranslation } from 'react-i18next'
 import PaginationButtons, { dataPagination, PER_COUNT } from 'components/PaginationButtons'
 import Button from 'components/bootstrap/Button'
-import { useSelector } from 'react-redux'
-import { selectPermission } from 'redux/user/selector'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { RedeemInterface, RedeemStatus } from 'common/apis/redeem'
 import moment from 'moment'
@@ -32,13 +30,20 @@ const RewardTable = ({
 	const [perPage, setPerPage] = useState(PER_COUNT['10'])
     const { items, requestSort, getClassNamesFor } = useSortableData(data)
 
-    const permission = useSelector(selectPermission)
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [items])
+
+    const permission = JSON.parse(localStorage.getItem('features') ?? '')
+    const updatePermission = permission.reward[PermissionType.Update] === PermissionValue.Available
 
     const getStatusText = (status: RedeemStatus): ReactNode => {
         if (status === RedeemStatus.Success) {
             return <div className='fw-bold text-success'>{t('success')}</div>
-        } else if (status === RedeemStatus.Sending || status === RedeemStatus.Request) {
-            return <div className='fw-bold text-warning'>{status === RedeemStatus.Sending ? t('sending') : t('request')}</div>
+        } else if (status === RedeemStatus.Sending) {
+            return <div className='fw-bold text-warning'>{t('sending')}</div>
+        } else if (status === RedeemStatus.Request) {
+            return <div className='fw-bold text-info'>{t('request')}</div>
         } else {
             return <div className='fw-bold text-danger'>{t('cancel')}</div>
         }
@@ -51,30 +56,23 @@ const RewardTable = ({
                 <table className='table table-modern table-hover'>
                     <thead>
                         <tr>
-                            <th 
-                                onClick={() => requestSort('no')}
-                                className='cursor-pointer text-decoration-underline text-center'>
+                            <th className='text-center'>
                                 {t('column.no')}
                             </th>
                             <th
-                                onClick={() => requestSort('timestamp')}
+                                onClick={() => requestSort('createdAt')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.timestamp')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('timestamp')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('createdAt')} />
                             </th>
                             {columns?.mobileNumber && <th>{t('column.mobile.number')}</th>}
                             <th
-                                onClick={() => requestSort('points')}
+                                onClick={() => requestSort('point')}
                                 className='cursor-pointer text-decoration-underline'>
                                 {t('column.points')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('points')} />
+                                <FilterList fontSize='small' className={getClassNamesFor('point')} />
                             </th>
-                            <th
-                                onClick={() => requestSort('product')}
-                                className='cursor-pointer text-decoration-underline'>
-                                {t('column.product')}{' '}
-                                <FilterList fontSize='small' className={getClassNamesFor('product')} />
-                            </th>
+                            <th>{t('column.product')}</th>
                             <th style={{ width: '15%' }}>{t('column.address')}</th>
                             {columns?.notes && <th>{t('column.notes')}</th>}
                             {columns?.status &&
@@ -87,20 +85,20 @@ const RewardTable = ({
                             }
                             {columns?.operator &&
                                 <th
-                                    onClick={() => requestSort('operator')}
+                                    onClick={() => requestSort('adminName')}
                                     className='cursor-pointer text-decoration-underline'>
                                     {t('column.operator')}{' '}
-                                    <FilterList fontSize='small' className={getClassNamesFor('operator')} />
+                                    <FilterList fontSize='small' className={getClassNamesFor('adminName')} />
                                 </th>
                             }
-                            {setIsOpenRewardModal && <td />}
+                            {(setIsOpenRewardModal && updatePermission) && <td />}
                         </tr>
                     </thead>
                     <tbody>
                         {items.length > 0 ? dataPagination(items, currentPage, perPage).map((item: RedeemInterface, index: number) => (
                             <tr key={item.redeemId}>
                                 <td className='text-center'>
-                                    <div>{index + 1}</div>
+                                    <div>{perPage * (currentPage - 1) + (index + 1)}</div>
                                 </td>
                                 <td>
                                     <div>{moment(item.createdAt).format('ll')}</div>
@@ -139,7 +137,7 @@ const RewardTable = ({
                                         <div>{item.adminName}</div>
                                     </td>
                                 }
-                                {setIsOpenRewardModal && <td>
+                                {(setIsOpenRewardModal && updatePermission) && <td>
                                     {item.status === RedeemStatus.Request || item.status === RedeemStatus.Sending ? 
                                         <div className='row gap-3'><Button
                                             onClick={() => setIsOpenRewardModal({ type: RewardModalType.Approve, selectedRow: item})}
@@ -172,7 +170,6 @@ const RewardTable = ({
             </CardBody>
             <PaginationButtons
                 data={data}
-                label='customers'
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
                 perPage={perPage}

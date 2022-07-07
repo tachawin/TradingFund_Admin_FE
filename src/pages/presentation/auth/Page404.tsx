@@ -1,12 +1,12 @@
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper';
 import Page from '../../../layout/Page/Page';
 import Button from '../../../components/bootstrap/Button';
-import { demoPages } from '../../../menu';
 import { HolidayVillageTwoTone } from '@mui/icons-material';
+import { pages } from 'menu';
 
 const Page404 = () => {
 	return (
-		<PageWrapper title={demoPages.page404.text}>
+		<PageWrapper title={pages.page404.text}>
 			<Page>
 				<div className='row d-flex align-items-center h-100'>
 					<div className='col-12 d-flex flex-column justify-content-center align-items-center'>
