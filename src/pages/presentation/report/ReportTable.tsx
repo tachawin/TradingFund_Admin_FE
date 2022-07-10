@@ -103,15 +103,16 @@ const ReportTable = ({ data }: ReportTableInterface) => {
                             </td>
                             <td>
                                 <div className='d-flex align-items-center'>
-                                    <div className='flex-grow-1'>
+                                    { transaction.transactionType !== TransactionType.RequestWithdraw ? <div className='flex-grow-1'>
                                         <div className='fs-6 fw-bold'>
-                                            {transaction.transactionType === TransactionType.Deposit ? `*${transaction.recipientBankAccountNumber.slice(-4)}` : `*${transaction.payerBankAccountNumber.slice(-4)}`}
+                                            {transaction.transactionType === TransactionType.Deposit ? 
+                                                `*${transaction.recipientBankAccountNumber.slice(-4)}` : `*${transaction.payerBankAccountNumber.slice(-4)}`}
                                         </div>
                                         <div className='text-muted'>
                                             <LabelTwoTone fontSize='small' />{' '}
                                             <small>{transaction.transactionType === TransactionType.Deposit ? transaction.recipientBank?.acronym.toUpperCase() : transaction.payerBank?.acronym.toUpperCase()}</small>
                                         </div>
-                                    </div>
+                                    </div> : t('not.specify')}
                                 </div>
                             </td>
                             <td>

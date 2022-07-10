@@ -1,7 +1,7 @@
 import { RedeemInterface } from 'common/apis/redeem'
 
 export const STORE_REDEEM_CREDIT_LIST = 'STORE_REDEEM_CREDIT_LIST'
-export const STORE_LIST_QUERY = 'STORE_LIST_QUERY'
+export const STORE_REDEEM_CREDIT_QUERY = 'STORE_REDEEM_CREDIT_QUERY'
 export const REMOVE_REDEEM_CREDIT = 'REMOVE_REDEEM_CREDIT'
 
 export interface InitialState {
@@ -14,8 +14,8 @@ interface StoreRedeemCreditList {
   payload: RedeemInterface[]
 }
 
-interface StoreListQuery {
-  type: typeof STORE_LIST_QUERY
+interface StoreRedeemCreditQuery {
+  type: typeof STORE_REDEEM_CREDIT_QUERY
   payload: { [key: string] : string }
 }
 
@@ -24,4 +24,4 @@ interface RemoveRedeemCredit {
   payload: string
 }
 
-export type RedeemCreditActionTypes = StoreRedeemCreditList | StoreListQuery | RemoveRedeemCredit
+export type RedeemCreditActionTypes = StoreRedeemCreditList | StoreRedeemCreditQuery | RemoveRedeemCredit
