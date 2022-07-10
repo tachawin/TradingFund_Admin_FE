@@ -1,5 +1,5 @@
 import { RedeemInterface } from 'common/apis/redeem'
-import { RedeemProductActionTypes, REMOVE_REDEEM_PRODUCT, STORE_LIST_QUERY, STORE_REDEEM_PRODUCT_LIST } from './types'
+import { RedeemProductActionTypes, REMOVE_REDEEM_PRODUCT, STORE_REDEEM_PRODUCT_QUERY, STORE_REDEEM_PRODUCT_LIST } from './types'
 
 export const storeRedeemProductList = (list: RedeemInterface[]): RedeemProductActionTypes => ({
   type: STORE_REDEEM_PRODUCT_LIST,
@@ -7,7 +7,7 @@ export const storeRedeemProductList = (list: RedeemInterface[]): RedeemProductAc
 })
 
 export const storeRedeemProductQuery = (query: { [key: string]: string }): RedeemProductActionTypes => ({
-  type: STORE_LIST_QUERY,
+  type: STORE_REDEEM_PRODUCT_QUERY,
   payload: query,
 })
 

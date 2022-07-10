@@ -3,12 +3,14 @@
     "withdraw.request": "คำขอถอนเงิน",
     "withdraw.history": "ประวัติถอนเงิน",
 
+    "withdraw.successfully": "ถอนเงินสำเร็จ",
+    "withdraw:withdraw.to.account.successfully": "ถอนเงินของ {{mobileNumber}} สำเร็จ",
+
     "form.reject.request.confirmation": "ต้องการยกเลิกคำขอถอนเงินใช่หรือไม่",
     "reject.successfully": "ยกเลิกคำขอถอนเงินสำเร็จ",
     "reject.request.successfully": "ยกเลิกคำขอถอนเงินของ {{mobileNumber}} สำเร็จ",
     "reject.failed": "ยกเลิกคำขอถอนเงินไม่สำเร็จ",
     "reject.request.failed": "ยกเลิกคำขอถอนเงินของ {{mobileNumber}} ไม่สำเร็จ",
-
     
     "withdraw.system": "ถอนผ่านระบบ",
     "withdraw.manual": "ถอนด้วยตนเอง",

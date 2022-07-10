@@ -1,5 +1,5 @@
 import { removeItemById } from 'redux/utils'
-import { InitialState, STORE_LIST_QUERY, RedeemCreditActionTypes, STORE_REDEEM_CREDIT_LIST, REMOVE_REDEEM_CREDIT } from './types'
+import { InitialState, RedeemCreditActionTypes, STORE_REDEEM_CREDIT_LIST, REMOVE_REDEEM_CREDIT, STORE_REDEEM_CREDIT_QUERY } from './types'
 
 const INITIAL_STATE: InitialState = {
   redeemCreditList: [],
@@ -22,7 +22,7 @@ const redeemCreditReducer = (state = INITIAL_STATE, action: RedeemCreditActionTy
         ...state,
         redeemCreditList: action.payload
       }
-    case STORE_LIST_QUERY:
+    case STORE_REDEEM_CREDIT_QUERY:
       return {
         ...state,
         query: action.payload

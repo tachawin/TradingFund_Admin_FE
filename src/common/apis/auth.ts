@@ -80,13 +80,13 @@ export const renewToken = async () =>
         try {
             const res = await axios({
                 method: 'post',
-                url: '/auth/admin/2fa/token/refresh',
-                headers: { Authorization: `Bearer ${getAccessToken()}` },
+                url: '/auth/admin/2fa/token/refresh'
             })
             const { accessToken } = res.data
             setAccessToken(accessToken)
             return accessToken
         } catch (error: any) {
+            console.log(error.response)
             return false
         }
 })

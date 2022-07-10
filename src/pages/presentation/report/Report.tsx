@@ -24,7 +24,7 @@ import ReportTable from './ReportTable'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectTransactionQuery, selectTransactionsList } from 'redux/transaction/selector'
 import showNotification from 'components/extras/showNotification'
-import { exportExcel, getTransactionList } from 'common/apis/report'
+import { getTransactionList } from 'common/apis/report'
 import { STATUS, TransactionInterface, TransactionStatus, TransactionType, TYPE } from 'common/apis/transaction'
 import { storeTransaction, storeTransactionQuery } from 'redux/transaction/action'
 import CompanyBanksDropdown from 'pages/common/CompanyBanksDropdown'
@@ -161,20 +161,7 @@ const Report = () => {
 	const handleExportExcel = () => {
 		let queryString = Object.values(transactionQueryList).filter(Boolean).join('&')
 		let query = queryString ? `?${queryString}` : ''
-		exportExcel(query, () => {
-			setIsLoading(false)
-		}, (error: any) => {
-			const { response } = error
-			console.log(response.data)
-			setIsLoading(false)
-			showNotification(
-				<span className='d-flex align-items-center'>
-					<InfoTwoTone className='me-1' />
-					<span>ดาวน์โหลดไฟล์ไม่สำเร็จ</span>
-				</span>,
-				CommonString.TryAgain,
-			)
-		})
+		window.open(`http://localhost:8080/transaction/report/list/excel/export${query}`)
 	}
 
 	const handlePrint = () => {

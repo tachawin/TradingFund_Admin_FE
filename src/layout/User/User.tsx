@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import classNames from 'classnames'
-import USERS from '../../common/data/userDummyData'
 import { pages } from '../../menu'
 import { DropdownItem, DropdownMenu } from '../../components/bootstrap/Dropdown'
 import Button from '../../components/bootstrap/Button'
@@ -9,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { didLogout } from 'common/utils/auth'
 import { logout } from 'common/apis/auth'
 import showNotification from 'components/extras/showNotification'
-import { AccountBoxTwoTone, InfoTwoTone } from '@mui/icons-material'
+import { ExitToAppTwoTone, InfoTwoTone, SettingsApplicationsTwoTone } from '@mui/icons-material'
 
 const User = () => {
 	const { t } = useTranslation(['common', 'login'])
@@ -64,7 +63,7 @@ const User = () => {
 			<DropdownMenu isOpen={collapseStatus} setIsOpen={setCollapseStatus}>
 				<DropdownItem>
 					<Button
-						icon={AccountBoxTwoTone}
+						icon={ExitToAppTwoTone}
 						onClick={handleLogout}
 					>
 						{t('login:logout')}
@@ -72,7 +71,7 @@ const User = () => {
 				</DropdownItem>
 				<DropdownItem>
 					<Button
-						icon={AccountBoxTwoTone}
+						icon={SettingsApplicationsTwoTone}
 						onClick={() => navigate('/settings')}
 					>
 						{t('settings')}
