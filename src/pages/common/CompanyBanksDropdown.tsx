@@ -4,7 +4,7 @@ import Button from 'components/bootstrap/Button'
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from 'components/bootstrap/Dropdown'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectCompanyBankList } from 'redux/companyBank/selector'
-import { getCompanyBankList, CompanyBankInterface } from 'common/apis/companyBank'
+import { getCompanyBankList, CompanyBankInterface, CompanyBankType } from 'common/apis/companyBank'
 import showNotification from 'components/extras/showNotification'
 import Spinner from 'components/bootstrap/Spinner'
 import { storeCompanyBank } from 'redux/companyBank/action'
@@ -20,10 +20,11 @@ interface CompanyBanksDropdownInterface {
     isValid?: boolean
     touched?: boolean
     error?: string
+    bankType?: CompanyBankType
 }
 
 const CompanyBanksDropdown = ({ 
-    selectedBank, setSelectedBank, disabled = false, multipleSelect = false, isValid, touched, error
+    selectedBank, setSelectedBank, disabled = false, multipleSelect = false, touched, error, bankType
 }: CompanyBanksDropdownInterface) => {
     const dispatch = useDispatch()
 
@@ -50,7 +51,9 @@ const CompanyBanksDropdown = ({
 	}
 
     useEffect(() => {
-        companyBankList.length === 0 && getCompanyBankList('', (companyBankList: CompanyBankInterface[]) => {
+        let query = bankType ? `?type=${bankType},${CompanyBankType.DepositAndWithdraw}` : ''
+        console.log(query)
+        getCompanyBankList(query, (companyBankList: CompanyBankInterface[]) => {
             dispatch(storeCompanyBank(companyBankList))
         }, (error: any) => {
             const { response } = error

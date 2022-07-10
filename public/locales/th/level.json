@@ -5,10 +5,16 @@
 
     "added.successfully": "เพิ่มสำเร็จ",
     "added.level.successfully": "เพิ่มขั้น {{levelName}} สำเร็จ",
+    "added.failed": "เพิ่มไม่สำเร็จ",
+    "added.level.failed": "เพิ่มขั้น {{levelName}} ไม่สำเร็จ",
     "edit.successfully": "แก้ไขสำเร็จ",
     "edit.level.successfully": "แก้ไขขั้น {{levelName}} สำเร็จ",
+    "edit.failed": "แก้ไขไม่สำเร็จ",
+    "edit.level.failed": "แก้ไขขั้น {{levelName}} ไม่สำเร็จ",
     "delete.successfully": "ลบสำเร็จ",
     "delete.level.successfully": "ลบขั้น {{levelName}} สำเร็จ",
+    "delete.failed": "ลบสำเร็จ",
+    "delete.level.failed": "ลบขั้น {{levelName}} ไม่สำเร็จ",
     "upload.image.failed": "อัปโหลดรูปภาพไม่สำเร็จ",
     "upload.level.image.failed": "อัปโหลดรูปภาพ {{levelName}} ไม่สำเร็จ",
 

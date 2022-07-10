@@ -2,7 +2,7 @@ import { getAccessToken } from 'common/utils/auth'
 import axios, { authorizationHandler } from './axios'
 
 export enum CashbackStatus {
-    Success = 'sucess',
+    Success = 'success',
     Cancel = 'cancel',
     Check = 'check'
 }

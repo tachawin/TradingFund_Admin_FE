@@ -294,6 +294,7 @@ const DepositModal = ({ isOpen, setIsOpen, properties }: DepositModalInterface) 
                                 isValid={isValid}
                                 touched={touched.recipientBank?.bankId}
                                 error={errors.recipientBank?.bankId}
+                                bankType={CompanyBankType.Deposit}
                             />
                         </FormGroup>
                     </>}

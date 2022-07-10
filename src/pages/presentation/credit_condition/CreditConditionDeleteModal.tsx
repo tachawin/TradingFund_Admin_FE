@@ -31,7 +31,7 @@ const CreditConditionDeleteModal = ({ id, isOpen, setIsOpen, properties }: Credi
                     <InfoTwoTone className='me-1' />
                     <span>{t('creditCondition:delete.successfully')}</span>
                 </span>,
-                t('creditCondition:delete.credit.condition.successfully', { point: data?.point }),
+                t('creditCondition:delete.credit.condition.successfully', { point: data?.point, credit: data.credit }),
             )
         }, () => {
             showNotification(
@@ -39,7 +39,7 @@ const CreditConditionDeleteModal = ({ id, isOpen, setIsOpen, properties }: Credi
                     <InfoTwoTone className='me-1' />
                     <span>{t('creditCondition:delete.failed')}</span>
                 </span>,
-                t('creditCondition:delete.credit.condition.failed', { point: data?.point }),
+                t('creditCondition:delete.credit.condition.failed', { point: data?.point, credit: data.credit }),
             )
         }).finally(() => setIsLoading(false))
     }

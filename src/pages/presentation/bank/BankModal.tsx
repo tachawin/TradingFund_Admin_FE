@@ -52,7 +52,7 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
             bankAccountName: data?.bankAccountName || '',
             bankName: data?.bankName?.acronym || 'scb',
             type: data?.type ? (data?.type === CompanyBankType.DepositAndWithdraw ? [CompanyBankType.Deposit, CompanyBankType.Withdraw] : [data?.type]) : [],
-            status: data?.status === CompanyBankStatus.Active || true
+            status: data?.status ? data?.status === CompanyBankStatus.Active : true
 		},
         validationSchema: BankFormSchema,
 		onSubmit: (values) => {
@@ -152,7 +152,7 @@ const BankModal = ({ id, isOpen, setIsOpen, properties }: BankModalInterface) =>
 		} else {
 			newPaymentTypeValue.splice(indexInPaymentType, 1)
 		}
-		setFieldValue('bank', newPaymentTypeValue)
+		setFieldValue('type', newPaymentTypeValue)
 	}
 
     return (

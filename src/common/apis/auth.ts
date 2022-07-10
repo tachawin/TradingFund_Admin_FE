@@ -1,4 +1,4 @@
-import { getAccessToken, setAccessToken } from 'common/utils/auth'
+import { setAccessToken } from 'common/utils/auth'
 import axios, { authorizationHandler } from './axios'
 
 export interface OTPResponse {

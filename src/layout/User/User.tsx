@@ -60,21 +60,21 @@ const User = () => {
 					<div className='user-sub-title'>{roleToString[user.role]}</div>
 				</div>
 			</div>
-			<DropdownMenu isOpen={collapseStatus} setIsOpen={setCollapseStatus}>
-				<DropdownItem>
-					<Button
-						icon={ExitToAppTwoTone}
-						onClick={handleLogout}
-					>
-						{t('login:logout')}
-					</Button>
-				</DropdownItem>
+			<DropdownMenu isOpen={collapseStatus} setIsOpen={setCollapseStatus} isAlignmentEnd>
 				<DropdownItem>
 					<Button
 						icon={SettingsApplicationsTwoTone}
 						onClick={() => navigate('/settings')}
 					>
 						{t('settings')}
+					</Button>
+				</DropdownItem>
+				<DropdownItem>
+					<Button
+						icon={ExitToAppTwoTone}
+						onClick={handleLogout}
+					>
+						{t('login:logout')}
 					</Button>
 				</DropdownItem>
 			</DropdownMenu>

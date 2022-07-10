@@ -105,7 +105,7 @@ const DepositTable = ({ data, setIsOpenDepositModal, disabledColumns, cardHeader
                                     </div>
                                 </td>
                                 <td>
-                                    <div>*{transaction.payerBankAccountNumber.slice(-4)}</div>
+                                    <div>{transaction.payerBankAccountNumber ? `*${transaction.payerBankAccountNumber.slice(-4)}` : t('not.specify')}</div>
                                 </td>
                                 <td>
                                     <div className='d-flex align-items-center'>

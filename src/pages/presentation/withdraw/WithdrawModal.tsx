@@ -51,14 +51,13 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
 
     const withdrawCredit = (requestBody: WithdrawCreateInterface, withdrawType: WithdrawType) => {
         withdraw(requestBody, withdrawType, (response) => {
-            console.log(response)
             data.transactionId && dispatch(removeWithdrawById(data.transactionId))
             showNotification(
                 <span className='d-flex align-items-center'>
                     <InfoTwoTone className='me-1' />
                     <span>{t('withdraw:withdraw.successfully')}</span>
                 </span>,
-                t('withdraw:withdraw.to.account.successfully'),
+                t('withdraw:withdraw.to.account.successfully', { mobileNumber: requestBody.mobileNumber }),
             )
         }, () => {
             showNotification(
@@ -66,7 +65,7 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                     <InfoTwoTone className='me-1' />
                     <span>{t('withdraw:withdraw.failed')}</span>
                 </span>,
-                t('withdraw:withdraw.to.account.failed'),
+                t('withdraw:withdraw.to.account.failed', { mobileNumber: requestBody.mobileNumber }),
             )
         }).finally(() => {
             setIsLoading(false)
@@ -135,9 +134,9 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                         showNotification(
                             <span className='d-flex align-items-center'>
                                 <InfoTwoTone className='me-1' />
-                                <span>{t('withdraw:upload.withdraw.failed')}</span>
+                                <span>{t('withdraw:withdraw.failed')}</span>
                             </span>,
-                            t('withdraw:upload.withdraw.to.account.failed'),
+                            t('withdraw:withdraw.to.account.failed', { mobileNumber: requestBody.mobileNumber }),
                         )
                     }).finally(() => setIsLoading(false))
                 } else {
@@ -250,6 +249,7 @@ const WithdrawModal = ({ id, isOpen, setIsOpen, properties }: WithdrawModalInter
                                     isValid={isValid}
                                     touched={touched.payerBank?.bankId}
                                     error={errors.payerBank?.bankId}
+                                    bankType={CompanyBankType.Withdraw}
                                 />
                             </FormGroup>
                             <Button color='info' className='w-auto mx-3' onClick={handleSubmit}>

@@ -232,7 +232,7 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 						</div>
 					},
 					{
-						label: t('filter.minimum.deposit.amount'),
+						label: t('filter.minimum.deposit'),
 						children: <div>
 							<InputGroup>
 								<Input
@@ -256,7 +256,7 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 						</div>
 					},
 					{
-						label: t('filter.maximum.deposit.amount'),
+						label: t('filter.maximum.deposit'),
 						children: <div>
 							<InputGroup>
 								<Input
@@ -280,7 +280,7 @@ const LevelSubHeader = ({ setIsOpenLevelModal }: LevelProps) => {
 						</div>
 					},
 					{
-						label: t('filter.investment.amount'),
+						label: t('filter.investment'),
 						children: <div>
 							<InputGroup>
 								<Input

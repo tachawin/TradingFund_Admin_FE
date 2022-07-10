@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { storeCompanyBankQuery } from 'redux/companyBank/action'
 import { CompanyBankStatus, CompanyBankType, STATUS, TYPE } from 'common/apis/companyBank'
 import { selectCompanyBankQuery } from 'redux/companyBank/selector'
-import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 import { PermissionType, PermissionValue } from 'common/apis/user'
 import { SavingsTwoTone, Search } from '@mui/icons-material'
 import COLORS from 'common/data/enumColors'
@@ -21,7 +20,6 @@ interface BankFilterInterface {
 	searchInput: string
     type: string[]
 	status: string[]
-	bank: string[]
 }
 
 interface BankSubHeaderInterface {
@@ -42,14 +40,12 @@ const BankSubHeader = ({ setIsOpenBankModal }: BankSubHeaderInterface) => {
 			searchInput: '',
 			type: [],
             status: [],
-			bank: []
 		},
 		onSubmit: (values) => {
 			const queryList = { 
 				...companyBankQuery,
 				type: values.type.length > 0 ? `type=${values.type.join(',')}` : '',
 				status: values.status.length > 0 ? `status=${values.status.join(',')}` : '',
-				bank: values.bank.length > 0 ? `bank=${values.bank.join(',')}` : '',
 			}
 			dispatch(storeCompanyBankQuery(queryList))
 		},
@@ -58,7 +54,8 @@ const BankSubHeader = ({ setIsOpenBankModal }: BankSubHeaderInterface) => {
 	const { 
 		values,
 		setFieldValue,
-		resetForm,
+		initialValues,
+		setValues,
 		handleSubmit,
 	} = formik
 
@@ -106,7 +103,7 @@ const BankSubHeader = ({ setIsOpenBankModal }: BankSubHeaderInterface) => {
 		/>
 		<CommonTableFilter
 			resetLabel={t('filter.reset')}
-			onReset={resetForm}
+			onReset={() => setValues({ ...initialValues, type: [], status: [] })}
 			submitLabel={t('filter')}
 			onSubmit={handleSubmit}
 			filters={[
@@ -129,14 +126,6 @@ const BankSubHeader = ({ setIsOpenBankModal }: BankSubHeaderInterface) => {
 							}
 						)}
 					</div>
-				},
-				{
-					label: t('filter.bank'),
-					children: <CommonBanksDropdown 
-						selectedBankName={values.bank}
-						setSelectedBankName={(bank: string | string[]) => setFieldValue('bank', bank)}
-						multipleSelect
-					/>
 				},
 				{
 					label: t('filter.status'),

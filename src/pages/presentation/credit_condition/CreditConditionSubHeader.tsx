@@ -79,7 +79,7 @@ const CreditConditionSubHeader = ({ setIsOpenCreditConditionModal }: CreditCondi
 		handleSubmit
 	} = formik
 
-	return (<SubHeader className='pt-3 mx-3' style={{ boxShadow: 'none' }}>
+	return (<SubHeader className='pt-3 mx-3' style={{ boxShadow: 'none', zIndex: 1 }}>
 		<SubHeaderLeft>
 		</SubHeaderLeft>
 		<SubHeaderRight>

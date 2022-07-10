@@ -27,9 +27,8 @@ import { getWithdrawList } from 'common/apis/withdraw'
 import showNotification from 'components/extras/showNotification'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectWithdrawList, selectWithdrawQuery } from 'redux/withdraw/selector'
-import { TransactionInterface } from 'common/apis/transaction'
+import { TransactionInterface, TransactionStatus, WITHDRAW_STATUS } from 'common/apis/transaction'
 import { storeWithdrawList, storeWithdrawQuery } from 'redux/withdraw/action'
-import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 import CompanyBanksDropdown from 'pages/common/CompanyBanksDropdown'
 import { CompanyBankInterface, getCompanyBankList } from 'common/apis/companyBank'
 import Spinner from 'components/bootstrap/Spinner'
@@ -45,6 +44,7 @@ import Checks from 'components/bootstrap/forms/Checks'
 
 interface WithdrawFilterInterface {
 	searchInput: string
+	status: string[]
 	amount: {
 		min: string
 		max: string
@@ -53,7 +53,6 @@ interface WithdrawFilterInterface {
 		min: string
 		max: string
 	},
-	bank: string[]
 	companyBank: CompanyBankInterface[]
 	timestamp: {
 		startDate: Date
@@ -140,6 +139,7 @@ const Withdraw = () => {
 	const formik = useFormik<WithdrawFilterInterface>({
 		initialValues: {
 			searchInput: '',
+			status: [],
             amount: {
                 min: '',
                 max: ''
@@ -155,7 +155,6 @@ const Withdraw = () => {
 					key: 'selection',
 				},
 			],
-            bank: [],
 			companyBank: [],
 			isCreatedAtDateChanged: false
 		},
@@ -163,6 +162,7 @@ const Withdraw = () => {
 			const defaultWithdrawQuery = {
 				...withdrawQueryList,
 				startCreated: values.isCreatedAtDateChanged ? `start=${moment(values.timestamp[0].startDate).format('YYYY-MM-DD')}` : '',
+				status: values.status.length > 0 ? `status=${values.status.join(',')}` : '',
 				endCreated: values.isCreatedAtDateChanged ? `end=${moment(values.timestamp[0].endDate).format('YYYY-MM-DD')}` : '',
 				min: values.amount.min ? `min=${values.amount.min}` : '',
 				max: values.amount.max ? `max=${values.amount.max}` : '',
@@ -173,7 +173,6 @@ const Withdraw = () => {
 					...defaultWithdrawQuery,
 					minLastDeposit: values.lastDepositAmount.min ? `minLastDeposit=${values.lastDepositAmount.min}` : '',
 					maxLastDeposit: values.lastDepositAmount.max ? `maxLastDeposit=${values.lastDepositAmount.max}` : '',
-					bank: values.bank.length > 0 ? `bankName=${values.bank.join(',')}` : '',
 				}))
 			} else {
 				dispatch(storeWithdrawQuery({
@@ -188,7 +187,8 @@ const Withdraw = () => {
 		values,
 		setFieldValue,
 		handleChange,
-		resetForm,
+		initialValues,
+		setValues,
 		handleSubmit
 	} = formik
 
@@ -218,6 +218,20 @@ const Withdraw = () => {
 		debounceSearchChange(value)
 	}
 
+	const handleOnChangeMultipleSelector = (event: ChangeEvent<HTMLInputElement>, field: string) => {
+		let selectedValue = event.target.name
+		let index = parseInt(event.target.value)
+		let isSelected = event.target.checked
+		let newValue = values[field as keyof WithdrawFilterInterface] as string[]
+
+		if (isSelected) {
+			newValue.push(selectedValue)
+		} else {
+			newValue.splice(index, 1)
+		}
+		setFieldValue(field, newValue)
+	}
+
 	return (
 		<PageWrapper title={pages.withdraw.text}>
 			<SubHeader>
@@ -239,10 +253,32 @@ const Withdraw = () => {
 				<SubHeaderRight>
 					{readPermission && <CommonTableFilter
 						resetLabel={t('filter.reset')}
-						onReset={resetForm}
+						onReset={() => setValues({ ...initialValues, status: [], companyBank: [] })}
 						submitLabel={t('filter')}
 						onSubmit={handleSubmit}
 						filters={[
+							{
+								label: t('filter.status'),
+								disabled: withdrawTableState === WithdrawTableState.Request,
+								children: <div>
+									{WITHDRAW_STATUS.map((status: string) => {
+										let indexInStatusFilter = values.status.indexOf(status)
+										return <Checks
+												key={status}
+												label={
+													status === TransactionStatus.Success ? t('success') 
+														: t('cancel')
+												}
+												name={status}
+												value={indexInStatusFilter}
+												onChange={(e) => handleOnChangeMultipleSelector(e, 'status')}
+												checked={indexInStatusFilter > -1}
+												ariaLabel={status}
+											/>
+										}
+									)}
+                                </div>
+							},
                             {
 								label: t('filter.timestamp'),
 								children: <div>
@@ -325,16 +361,7 @@ const Withdraw = () => {
 									selectedBank={values.companyBank}
 									setSelectedBank={(bank: CompanyBankInterface | CompanyBankInterface[]) => setFieldValue('companyBank', bank)}
 								/>
-							},
-							{
-								label: t('filter.recipient.bank'),
-								disabled: withdrawTableState === WithdrawTableState.History,
-								children: <CommonBanksDropdown
-									multipleSelect
-									selectedBankName={values.bank}
-									setSelectedBankName={(bank: string | string[]) => setFieldValue('bank', bank)}
-								/>
-							},
+							}
 						]} 
 					/>}
 				</SubHeaderRight>
