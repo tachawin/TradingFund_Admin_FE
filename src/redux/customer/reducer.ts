@@ -10,7 +10,6 @@ import {
 const INITIAL_STATE: InitialState = {
   customers: [],
   customerQuery: {
-    bank: '',
     level: '',
     keyword: '',
     startCreated: '',

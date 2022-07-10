@@ -4,6 +4,7 @@ export enum TransactionStatus {
     Cancel = 'cancel',
 }
 export const STATUS = [TransactionStatus.Success, TransactionStatus.NotFound, TransactionStatus.Cancel]
+export const WITHDRAW_STATUS = [TransactionStatus.Success, TransactionStatus.Cancel]
 
 export enum TransactionType {
     Withdraw = 'withdraw',

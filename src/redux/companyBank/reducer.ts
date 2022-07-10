@@ -15,7 +15,6 @@ const INITIAL_STATE: InitialState = {
     keyword: '',
     type: '',
     status: '',
-    bankName: '',
     startCreated: '',
     endCreated: '',
   },

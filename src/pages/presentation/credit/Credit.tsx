@@ -140,7 +140,8 @@ const Credit = () => {
 		values,
 		setFieldValue,
 		handleChange,
-		resetForm,
+		initialValues,
+		setValues,
 		handleSubmit
 	} = formik
 
@@ -207,7 +208,7 @@ const Credit = () => {
 				<SubHeaderRight>
 					{readPermission && <CommonTableFilter
 						resetLabel={t('filter.reset')}
-						onReset={resetForm}
+						onReset={() => setValues({ ...initialValues, status: [] })}
 						submitLabel={t('filter')}
 						onSubmit={handleSubmit}
 						filters={[

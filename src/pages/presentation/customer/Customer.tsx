@@ -26,7 +26,6 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import CustomerAddModal from './CustomerAddModal'
 import CommonTableFilter from 'components/common/CommonTableFilter'
-import CommonBanksDropdown from 'pages/common/CommonBanksDropdown'
 import CommonLevelsDropdown from 'pages/common/CommonLevelsDropdown'
 import { LevelInterface } from 'common/apis/level'
 import { CustomerInterface, getCustomerList } from 'common/apis/customer'
@@ -44,9 +43,8 @@ import { CommonString } from 'common/data/enumStrings'
 import { pages } from 'menu'
 import Checks from 'components/bootstrap/forms/Checks'
 
-interface DepositFilterInterface {
+interface CustomerFilterInterface {
 	searchInput: string
-	bank: string[]
 	level: LevelInterface[]
 	createdAtDate: {
 		startDate: Date
@@ -87,10 +85,9 @@ const Customer = () => {
 	const readPermission = permission.customer[PermissionType.Read] === PermissionValue.Available
 	const createPermission = permission.customer[PermissionType.Create] === PermissionValue.Available
 
-	const formik = useFormik<DepositFilterInterface>({
+	const formik = useFormik<CustomerFilterInterface>({
 		initialValues: {
 			searchInput: '',
-            bank: [],
 			level: [],
 			createdAtDate: [
 				{
@@ -112,7 +109,6 @@ const Customer = () => {
 		onSubmit: (values) => {
 			dispatch(storeCustomerQuery({
 				...customerQueryList,
-				bank: values.bank.length > 0 ? `bank=${values.bank.join(',')}` : '',
 				level: values.level.length > 0 ? `level=${values.level.map((item) => item.levelId).join(',')}` : '',
 				startCreated: values.isCreatedAtDateChanged ? `startCreated=${moment(values.createdAtDate[0].startDate).format('YYYY-MM-DD')}` : '',
 				endCreated: values.isCreatedAtDateChanged ? `endCreated=${moment(values.createdAtDate[0].endDate).format('YYYY-MM-DD')}` : '',
@@ -132,7 +128,8 @@ const Customer = () => {
 	const { 
 		values,
 		setFieldValue,
-		resetForm,
+		setValues,
+		initialValues,
 		handleSubmit,
 		handleChange
 	} = formik
@@ -204,7 +201,7 @@ const Customer = () => {
 				<SubHeaderRight>
 					{readPermission && <CommonTableFilter
 						resetLabel={t('filter.reset')}
-						onReset={resetForm}
+						onReset={() => setValues({ ...initialValues, level: [] })}
 						submitLabel={t('filter')}
 						onSubmit={handleSubmit}
 						filters={[
@@ -242,12 +239,12 @@ const Customer = () => {
 								</div>
 							},
 							{
-								label: t('filter.updated.at'),
+								label: t('filter.last.active.at'),
 								children: <div>
 									<Checks
 										id='isLastLoginAtDateChanged'
 										type='switch'
-										label={t('filter.updated.at')}
+										label={t('filter.last.active.at')}
 										onChange={handleChange}
 										checked={values.isLastLoginAtDateChanged}
 										ariaLabel='Filter Last Login At Date'
@@ -265,17 +262,7 @@ const Customer = () => {
 										</DropdownMenu>
 									</Dropdown>}
 								</div>
-							},
-							{
-								label: t('filter.bank'),
-								children: <div>
-                                    <CommonBanksDropdown
-                                        multipleSelect
-                                        selectedBankName={values.bank} 
-                                        setSelectedBankName={(bank: string | string[]) => setFieldValue('bank', bank)} 
-                                    />
-								</div>
-							},
+							}
 						]} 
 					/>}
 					{(readPermission && createPermission) && <SubheaderSeparator />}

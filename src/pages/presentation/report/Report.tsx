@@ -126,8 +126,9 @@ const Report = () => {
 
 	const { 
 		values,
+		initialValues,
 		setFieldValue,
-		resetForm,
+		setValues,
 		handleSubmit,
 		handleChange
 	} = formik
@@ -161,7 +162,7 @@ const Report = () => {
 	const handleExportExcel = () => {
 		let queryString = Object.values(transactionQueryList).filter(Boolean).join('&')
 		let query = queryString ? `?${queryString}` : ''
-		window.open(`http://localhost:8080/transaction/report/list/excel/export${query}`)
+		window.open(`http://api.luckynobug.com/transaction/report/list/excel/export${query}`)
 	}
 
 	const handlePrint = () => {
@@ -204,7 +205,7 @@ const Report = () => {
 				{permission.report[PermissionType.Read] === PermissionValue.Available && <SubHeaderRight>
 					<CommonTableFilter
 						resetLabel={t('filter.reset')}
-						onReset={resetForm}
+						onReset={() => setValues({ ...initialValues, status: [], transactionType: [], bank: [] })}
 						submitLabel={t('filter')}
 						onSubmit={handleSubmit}
 						filters={[

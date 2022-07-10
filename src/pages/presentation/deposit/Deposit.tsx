@@ -125,7 +125,8 @@ const Deposit = () => {
 	const { 
 		values,
 		setFieldValue,
-		resetForm,
+		setValues,
+		initialValues,
 		handleSubmit,
 		handleChange
 	} = formik
@@ -191,7 +192,7 @@ const Deposit = () => {
 				<SubHeaderRight>
 					{readPermission && <CommonTableFilter
 						resetLabel={t('filter.reset')}
-						onReset={resetForm}
+						onReset={() => setValues({ ...initialValues, status: [], bank: [] })}
 						submitLabel={t('filter')}
 						onSubmit={handleSubmit}
 						filters={[

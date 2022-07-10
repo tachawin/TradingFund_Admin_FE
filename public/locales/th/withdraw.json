@@ -4,7 +4,9 @@
     "withdraw.history": "ประวัติถอนเงิน",
 
     "withdraw.successfully": "ถอนเงินสำเร็จ",
-    "withdraw:withdraw.to.account.successfully": "ถอนเงินของ {{mobileNumber}} สำเร็จ",
+    "withdraw.to.account.successfully": "ถอนเงินของ {{mobileNumber}} สำเร็จ",
+    "withdraw.failed": "ถอนเงินไม่สำเร็จ",
+    "withdraw.to.account.failed": "ถอนเงินของ {{mobileNumber}} ไม่สำเร็จ",
 
     "form.reject.request.confirmation": "ต้องการยกเลิกคำขอถอนเงินใช่หรือไม่",
     "reject.successfully": "ยกเลิกคำขอถอนเงินสำเร็จ",

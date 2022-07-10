@@ -6,11 +6,13 @@ const INITIAL_STATE: InitialState = {
   withdrawQuery: {
     keyword: '',
     status: '',
-    bankName: '',
     start: '',
     end: '',
     min: '',
-    max: ''
+    max: '',
+    minLastDeposit: '',
+    maxLastDeposit: '',
+    companyBankId: '',
   },
 }
 

@@ -13,5 +13,10 @@
     "edit.successfully": "แก้ไขเงื่อนไขสำเร็จ",
     "edit.credit.condition.successfully": "แก้ไขเงื่อนไขแลก {{point}} เป็น {{credit}} สำเร็จ",
     "edit.failed": "แก้ไขเงื่อนไขไม่สำเร็จ",
-    "edit.credit.condition.failed": "แก้ไขเงื่อนไขแลก {{point}} เป็น {{credit}} สำเร็จ"
+    "edit.credit.condition.failed": "แก้ไขเงื่อนไขแลก {{point}} เป็น {{credit}} สำเร็จ",
+
+    "delete.successfully": "ลบเงื่อนไขสำเร็จ",
+    "delete.credit.condition.successfully": "ลบเงื่อนไขแลก {{point}} เป็น {{credit}} สำเร็จ",
+    "delete.failed": "ลบเงื่อนไขไม่สำเร็จ",
+    "delete.credit.condition.failed": "ลบเงื่อนไขแลก {{point}} เป็น {{credit}} สำเร็จ"
 }

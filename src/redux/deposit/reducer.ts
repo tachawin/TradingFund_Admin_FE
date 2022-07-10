@@ -14,7 +14,7 @@ const INITIAL_STATE: InitialState = {
   depositQuery: {
     keyword: '',
     status: '',
-    bankName: '',
+    bank: '',
     start: '',
     end: '',
     min: '',
